@@ -30,6 +30,9 @@ jobs:
           # fallback to using the latest cache if no exact match is found
           - v1-dependencies-
 
+      - store_artifacts:
+          path: ${PWD}/coverage
+
       - run:
           name: 'package install'
           command: yarn install
