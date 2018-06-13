@@ -10,8 +10,24 @@
     "production": "./node_modules/.bin/webpack --mode production --optimize-minimize",
     "babel-node": "./node_modules/.bin/babel src -d dist/src --keep-file-extension"
   },
-  "author": "Jun Kurihara",
+  "author": "Jun Kurihara <kurihara@ieee.org>",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/junkurihara/jscu.git"
+  },
+  "bugs": {
+    "url": "https://github.com/junkurihara/jscu/issues"
+  },
+  "homepage": "https://github.com/junkurihara/jscu#readme",
+  "keywords": [
+    "webcrypto",
+    "jwk",
+    "pem",
+    "ec",
+    "es6",
+    "openssl"
+  ],
   "devDependencies": {
     "@babel/cli": "^7.0.0-beta.51",
     "@babel/core": "^7.0.0-beta.51",
