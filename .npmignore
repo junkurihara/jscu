@@ -4,8 +4,9 @@ test/
 yarn-error.log
 .babelrc
 .eslintrc.json
-.karma.conf.js
-.idea/
+karma.conf.js
 webpack.config.js
+.idea/
 .git/
 .gitignore
+.circleci/
