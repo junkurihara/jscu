@@ -10,7 +10,7 @@
     "production": "./node_modules/.bin/webpack --mode production --optimize-minimize",
     "babel-node": "./node_modules/.bin/babel src -d dist/src --keep-file-extension"
   },
-  "author": "Jun Kurihara <kurihara@ieee.org>",
+  "author": "Jun Kurihara",
   "license": "MIT",
   "repository": {
     "type": "git",

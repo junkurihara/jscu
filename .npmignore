@@ -1,0 +1,10 @@
+coverage/
+obsolete/
+test/
+yarn-error.log
+.babelrc
+.eslintrc.json
+.karma.conf.js
+webpack.config.js
+.git/
+.gitignore
