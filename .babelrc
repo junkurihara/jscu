@@ -1,0 +1,27 @@
+{
+  "presets": [
+    [ "@babel/preset-env", {
+      "targets": {
+        "node": "current",
+        "electron": "2.0.2"
+      },
+      "useBuiltIns": false
+    } ]
+  ],
+  "env": {
+    "test": {
+      "presets": ["@babel/preset-env"]
+    }
+  },
+  "plugins": [
+    "babel-plugin-dynamic-import-node-sync",
+    "@babel/plugin-syntax-dynamic-import",
+    [
+      "@babel/plugin-transform-runtime",
+      {
+        "@babel/polyfill": false,
+        "regenerator": true
+      }
+    ]
+  ]
+}
