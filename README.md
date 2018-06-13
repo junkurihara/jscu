@@ -1,5 +1,7 @@
 JavaScript Cryptographic Utilities for Browser and Node.js Crypto-Suite Compatibility
 --
+[![CircleCI](https://circleci.com/gh/junkurihara/jscu.svg?style=svg)](https://circleci.com/gh/junkurihara/jscu)
+
 > **WARNING**: At this time this solution should be considered suitable for research and experimentation, further code and security review is needed before utilization in a production application.
 
 # Overview
