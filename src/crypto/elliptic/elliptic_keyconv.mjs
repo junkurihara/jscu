@@ -6,7 +6,7 @@
 import elliptic from 'elliptic';
 const Ec = elliptic.ec;
 
-import asn from '../../../node_modules/asn1.js/lib/asn1.js';
+import asn from 'asn1.js';
 
 import BufferMod from 'buffer';
 const Buffer = BufferMod.Buffer;
