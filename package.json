@@ -2,7 +2,7 @@
   "name": "js-crypto-utils",
   "version": "0.1.5",
   "description": "JavaScript cryptographic utilities for OpenSSL-WebCrypto compatibility including PEM-JWK converter.",
-  "main": "dist/index.mjs",
+  "main": "src/index.mjs",
   "scripts": {
     "test": "./node_modules/.bin/mocha --require @babel/register --recursive $(find test -name '*.spec.mjs')",
     "karma": "./node_modules/.bin/karma start",
@@ -64,5 +64,10 @@
     "elliptic": "^6.4.0",
     "node-webcrypto-ossl": "^1.0.37",
     "pino": "^4.17.3"
+  },
+  "browser": {
+    "node-webcrypto-ossl": false,
+    "btoa": false,
+    "atob": false
   }
 }

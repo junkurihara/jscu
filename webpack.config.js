@@ -61,7 +61,6 @@ const webConfig = {
   },
   externals:[{
     'node-webcrypto-ossl': true,
-    'path': true,
     'btoa': true,
     'atob': true
   }],
