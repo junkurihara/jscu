@@ -8,6 +8,19 @@ import pino from 'pino';
 const logOptions = env.getEnvLogOptions();
 const logger = pino(Object.assign(logOptions, {name: 'random'}));
 
+export async function getRandomAsciiString(len) {
+  const array = await getRandomBytes(len);
+  let finalString = '';
+
+  // Ascii code excluding control characters are in 0x20 -- 0x7e
+  for (let i = 0; i < len; i++) {
+    array[i] = (array[i] % 0x5e) + 0x20;
+    finalString += String.fromCharCode(array[i]);
+  }
+
+  return finalString;
+}
+
 
 export async function getRandomBytes(len) {
   const crypto = await env.getEnvWebCrypto(); // web crypto api or its implementation on node.js

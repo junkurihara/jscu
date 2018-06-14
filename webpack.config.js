@@ -40,7 +40,7 @@ const webConfig = {
     chunkFilename: '[name].js',
     path: path.resolve(__dirname, 'dist'),
     publicPath: path.resolve(__dirname, 'dist'),
-    library: 'Auth',
+    library: 'jscu',
     libraryTarget: 'umd',
     globalObject: 'this' // for node js import
   },
