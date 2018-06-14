@@ -1,6 +1,6 @@
 {
   "name": "js-crypto-utils",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "JavaScript cryptographic utilities for OpenSSL-WebCrypto compatibility including PEM-JWK converter.",
   "main": "dist/index.mjs",
   "scripts": {
