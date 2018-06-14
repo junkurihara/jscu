@@ -23,12 +23,7 @@ const dynamicLoadElliptic = async () => cryptoUtil.env.dynamicModuleLoad(await i
 export async function jwkToPem(jwkey, type) {
   if (type !== 'public' && type !== 'private') throw new Error('type must be public or private');
 
-  let algo;
-  if (jwkey.kty === 'EC'){
-    if (!jwkey.crv) throw new Error('Invalid jwk format');
-    algo = {name: 'ECDSA', namedCurve: jwkey.crv };
-  }
-  else throw new Error('RSA is unsupported at this point');
+  const algo = cryptoUtil.algo.getParamsFromJwk(jwkey);
 
   const crypto = await cryptoUtil.env.getEnvWebCrypto(); // web crypto api or its implementation on node.js
 

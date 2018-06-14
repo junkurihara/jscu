@@ -1,5 +1,5 @@
 /**
- * default_params.mjs
+ * params.mjs
  */
 
 import pino from 'pino';
@@ -22,3 +22,4 @@ export default {
     keyUsage: ['sign', 'verify']
   },
 };
+

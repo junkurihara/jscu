@@ -32,10 +32,8 @@ describe('Signing and verification test via exported api', () => {
   it('ECDSA Signing and verification should be done successfully', async () => {
     for (let i = 0; i < curves.length; i++){
       for (let j = 0; j < hashes.length; j++){
-        const sig = await jscu.crypto.sign(
-          msg, keySet[i].privateKey.key, {name: 'ECDSA', namedCurve: curves[i], hash: { name: hashes[j] } });
-        const result = await jscu.crypto.verify(
-          msg, sig, keySet[i].publicKey.key, {name: 'ECDSA', namedCurve: curves[i], hash: {name: hashes[j]}});
+        const sig = await jscu.crypto.sign(msg, keySet[i].privateKey.key, {name: hashes[j]});
+        const result = await jscu.crypto.verify(msg, sig, keySet[i].publicKey.key, {name: hashes[j]});
         expect(result).to.be.true;
       }
     }

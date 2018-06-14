@@ -11,14 +11,16 @@ const dynamicLoadElliptic = async () => cryptoUtil.env.dynamicModuleLoad(await i
 
 /**
  * sign message with given private key in jwk
- * @param algo
  * @param privkey
  * @param msg
+ * @param hash
  * @return {Promise<ArrayBuffer>}
  */
-export async function sign(msg, privkey, algo=cryptoUtil.defaultParams.keyParams.algo){
+export async function sign(msg, privkey, hash = {name: 'SHA-256'} ){
   logger.debug('sign message');
 
+  const algo = cryptoUtil.algo.getParamsFromJwk(privkey);
+  algo.hash = hash;
   const crypto = await cryptoUtil.env.getEnvWebCrypto(); // web crypto api or its implementation on node.js
 
   let signature;
@@ -47,12 +49,14 @@ export async function sign(msg, privkey, algo=cryptoUtil.defaultParams.keyParams
  * @param msg
  * @param sig
  * @param pubkey
- * @param algo
+ * @param hash
  * @return {Promise<boolean>}
  */
-export async function verify(msg, sig, pubkey, algo=cryptoUtil.defaultParams.keyParams.algo){
+export async function verify(msg, sig, pubkey, hash = {name: 'SHA-256'}){
   logger.debug('verify message');
 
+  const algo = cryptoUtil.algo.getParamsFromJwk(pubkey);
+  algo.hash = hash;
   const crypto = await cryptoUtil.env.getEnvWebCrypto(); // web crypto api or its implementation on node.js
 
   let result;

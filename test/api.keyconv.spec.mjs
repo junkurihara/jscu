@@ -45,7 +45,7 @@ describe('Generated JWK key should be successfully converted to PEM SPKI/PKCS8, 
     await Promise.all(
       curves.map( async (curve, idx) => await Promise.all(
         hashes.map( async (hash) => {
-          const sig = await jscu.crypto.sign(msg, keySet[idx].privateKey.key, {name: 'ECDSA', namedCurve: curve, hash: { name: hash }});
+          const sig = await jscu.crypto.sign(msg, keySet[idx].privateKey.key, {name: hash});
 
           const pemPub = await jscu.crypto.keyconv.jwkToPem(keySet[idx].publicKey.key, 'public');
           const binKey = await jscu.helper.formatter.pemToBin(pemPub);
@@ -66,7 +66,7 @@ describe('Generated JWK key should be successfully converted to PEM SPKI/PKCS8, 
           const binKey = await jscu.helper.formatter.pemToBin(pemPriv);
           const key = await crypto.subtle.importKey('pkcs8', binKey, {name: 'ECDSA', namedCurve: curve}, false, ['sign']);
           const sig = await crypto.subtle.sign({name: 'ECDSA', namedCurve: curve, hash: { name: hash }}, key, msg);
-          const result = await jscu.crypto.verify(msg, sig, keySet[idx].publicKey.key, {name: 'ECDSA', namedCurve: curve, hash: { name: hash }});
+          const result = await jscu.crypto.verify(msg, sig, keySet[idx].publicKey.key, {name: hash});
           expect(result).to.be.true;
           return result;
         })
@@ -99,8 +99,8 @@ describe('PEM SPKI/PKCS8 key should be successfully converted to usable JWK', ()
         const jwkPriv = await jscu.crypto.keyconv.pemToJwk(privOSSL, 'private', {name: 'ECDSA'});
         const jwkPub = await jscu.crypto.keyconv.pemToJwk(pubOSSL, 'public', {name: 'ECDSA'});
 
-        const sig = await jscu.crypto.sign(msg, jwkPriv, {name: 'ECDSA', namedCurve: jwkPriv.crv, hash: { name: hash }});
-        const result = await jscu.crypto.verify(msg, sig, jwkPub, {name: 'ECDSA', namedCurve: jwkPub.crv, hash: { name: hash }});
+        const sig = await jscu.crypto.sign(msg, jwkPriv, {name: hash});
+        const result = await jscu.crypto.verify(msg, sig, jwkPub, {name: hash});
         expect(result).to.be.true;
         return result;
       })

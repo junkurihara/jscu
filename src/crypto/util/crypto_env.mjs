@@ -2,7 +2,7 @@
  * crypto_env.mjs
  */
 
-import defaultParams from './default_params.mjs';
+import defaultParams from './params.mjs';
 
 export function dynamicModuleLoad(module) {
   if (Object.keys(module).length === 1 && module.default) module = module.default;  // for node --experimental-modules
