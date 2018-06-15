@@ -28,8 +28,14 @@ export async function getEnvWebCrypto () {
     _window = window;
     crypto = window.crypto;
   } catch (error) { //running on node.js
-    crypto = dynamicModuleLoad(await import('node-webcrypto-ossl'));
-    crypto = new crypto();
+    // crypto = dynamicModuleLoad(await import('node-webcrypto-ossl'));
+    // crypto = new crypto();
+    crypto = undefined;
   }
   return crypto;
+}
+
+export async function getEnvNodeCrypto(){
+  if(typeof window !== 'undefined') return undefined;
+  else return require('crypto');
 }

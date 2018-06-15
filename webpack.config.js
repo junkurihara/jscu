@@ -33,7 +33,8 @@ const getBabelWebOpt = () => {
 const webConfig = {
   target: 'web',
   entry: {
-    jscu: ['./src/index.mjs']
+    jscu: ['./src/index.mjs'],
+    // test: ['./test/api.keygen.spec.mjs']
   },
   output: {
     filename: '[name].bundle.js',
@@ -45,7 +46,8 @@ const webConfig = {
     globalObject: 'this' // for node js import
   },
   resolve: {
-    extensions: ['.mjs', '.jsx', '.js']
+    extensions: ['.mjs', '.jsx', '.js'],
+    modules: ['node_modules']
   },
   module: {
     rules: [
@@ -59,14 +61,9 @@ const webConfig = {
       }
     ]
   },
-  externals:[{
-    'node-webcrypto-ossl': true,
-    'btoa': true,
-    'atob': true
-  }],
   plugins:[
     new webpack.optimize.LimitChunkCountPlugin({
-      maxChunks: 2
+      maxChunks: 1
     }),
     new webpack.optimize.MinChunkSizePlugin({minChunkSize: 1000})
   ],

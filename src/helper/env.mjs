@@ -3,31 +3,35 @@
  * crypto_env.mjs
  */
 
-export function dynamicModuleLoad(module){
-  if(Object.keys(module).length === 1 && module.default) module = module.default;  // for node --experimental-modules
-  return module;
-}
+// export function dynamicModuleLoad(module){
+//   if(Object.keys(module).length === 1 && module.default) module = module.default;  // for node --experimental-modules
+//   return module;
+// }
 
 export async function getEnvBtoa(){
-  let _window; // eslint-disable-line no-unused-vars
-  let btoa;
-  try { // running on browser
-    _window = window;
-    btoa = window.btoa;
-  } catch (error) { // running on node.js
-    btoa = dynamicModuleLoad(await import('btoa'));
-  }
-  return btoa;
+  if(typeof window !== 'undefined') return window.btoa; // browser
+  else return nodeBtoa; // node
 }
 
 export async function getEnvAtob(){
-  let _window; // eslint-disable-line no-unused-vars
-  let atob;
-  try { // running on browser
-    _window = window;
-    atob = window.atob;
-  } catch (error) { // running on node.js
-    atob = dynamicModuleLoad(await import('atob'));
-  }
-  return atob;
+  if(typeof window !== 'undefined') return window.atob; // browser
+  else return nodeAtob; // node
 }
+
+const nodeBtoa = (str) => {
+  const Buffer = require('Buffer').Buffer;
+  let buffer;
+  if (Buffer.isBuffer(str)) {
+    buffer = str;
+  }
+  else {
+    buffer = new Buffer(str.toString(), 'binary');
+  }
+
+  return buffer.toString('base64');
+};
+
+const nodeAtob = (str) => {
+  const Buffer = require('Buffer').Buffer;
+  return new Buffer(str, 'base64').toString('binary');
+};

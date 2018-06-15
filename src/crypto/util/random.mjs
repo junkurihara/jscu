@@ -23,12 +23,17 @@ export async function getRandomAsciiString(len) {
 
 
 export async function getRandomBytes(len) {
-  const crypto = await env.getEnvWebCrypto(); // web crypto api or its implementation on node.js
-  const array = new Uint8Array(len);
+  const webCrypto = await env.getEnvWebCrypto(); // web crypto api
+  const nodeCrypto = await env.getEnvNodeCrypto(); // implementation on node.js
+  let array = new Uint8Array(len);
 
-  if (typeof crypto !== 'undefined' && typeof crypto === 'object' && typeof crypto.getRandomValues === 'function') {
+  if (typeof webCrypto !== 'undefined' && typeof webCrypto === 'object' && typeof webCrypto.getRandomValues === 'function') {
     logger.debug('modern webcrypto is available');
-    crypto.getRandomValues(array); // for modern browsers
+    webCrypto.getRandomValues(array); // for modern browsers
+  }
+  else if (typeof nodeCrypto !== 'undefined' ) { // for node
+    logger.debug('node crypto is available');
+    array = new Uint8Array(nodeCrypto.randomBytes(len));
   }
   else if (typeof window !== 'undefined' && typeof window.msCrypto === 'object' && typeof window.msCrypto.getRandomValues === 'function') {
     // for legacy ie 11

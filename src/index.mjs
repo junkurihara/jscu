@@ -7,3 +7,4 @@ import helper from './helper/index.mjs';
 
 
 export default { crypto, helper };
+export {crypto, helper}; // workaround

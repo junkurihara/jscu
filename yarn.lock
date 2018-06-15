@@ -504,13 +504,6 @@
     "@babel/helper-regex" "7.0.0-beta.51"
     regexpu-core "^4.1.3"
 
-"@babel/polyfill@^7.0.0-beta.51":
-  version "7.0.0-beta.51"
-  resolved "https://registry.yarnpkg.com/@babel/polyfill/-/polyfill-7.0.0-beta.51.tgz#f880a16825571729dceeb76a9bbe74c06321e756"
-  dependencies:
-    core-js "^2.5.7"
-    regenerator-runtime "^0.11.1"
-
 "@babel/preset-env@^7.0.0-beta.51":
   version "7.0.0-beta.51"
   resolved "https://registry.yarnpkg.com/@babel/preset-env/-/preset-env-7.0.0-beta.51.tgz#5b580e6e9e8304166c1317017e863c06dcfc04a2"
@@ -1373,10 +1366,6 @@ browserslist@^3.0.0:
     caniuse-lite "^1.0.30000844"
     electron-to-chromium "^1.3.47"
 
-btoa@^1.2.1:
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/btoa/-/btoa-1.2.1.tgz#01a9909f8b2c93f6bf680ba26131eb30f7fa3d73"
-
 buffer-from@^1.0.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/buffer-from/-/buffer-from-1.1.0.tgz#87fcaa3a298358e0ade6e442cfce840740d1ad04"
@@ -1662,14 +1651,14 @@ collection-visit@^1.0.0:
     object-visit "^1.0.0"
 
 color-convert@^1.9.0:
-  version "1.9.1"
-  resolved "https://registry.yarnpkg.com/color-convert/-/color-convert-1.9.1.tgz#c1261107aeb2f294ebffec9ed9ecad529a6097ed"
+  version "1.9.2"
+  resolved "https://registry.yarnpkg.com/color-convert/-/color-convert-1.9.2.tgz#49881b8fba67df12a96bdf3f56c0aab9e7913147"
   dependencies:
-    color-name "^1.1.1"
+    color-name "1.1.1"
 
-color-name@^1.1.1:
-  version "1.1.3"
-  resolved "https://registry.yarnpkg.com/color-name/-/color-name-1.1.3.tgz#a7d0558bd89c42f795dd42328f740831ca53bc25"
+color-name@1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/color-name/-/color-name-1.1.1.tgz#4b1415304cf50028ea81643643bd82ea05803689"
 
 colors@^1.1.0:
   version "1.3.0"
@@ -1687,7 +1676,7 @@ combined-stream@1.0.6, combined-stream@^1.0.5, combined-stream@~1.0.5:
   dependencies:
     delayed-stream "~1.0.0"
 
-commander@2.15.1, commander@^2.8.1, commander@^2.9.0:
+commander@2.15.1, commander@^2.7.1, commander@^2.8.1, commander@^2.9.0:
   version "2.15.1"
   resolved "https://registry.yarnpkg.com/commander/-/commander-2.15.1.tgz#df46e867d0fc2aec66a34662b406a9ccafff5b0f"
 
@@ -2504,6 +2493,10 @@ filename-regex@^2.0.0:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/filename-regex/-/filename-regex-2.0.1.tgz#c1c4b9bee3e09725ddb106b75c1e301fe2f18b26"
 
+filesize@^3.1.2:
+  version "3.6.1"
+  resolved "https://registry.yarnpkg.com/filesize/-/filesize-3.6.1.tgz#090bb3ee01b6f801a8a8be99d31710b3422bb317"
+
 fill-range@^2.1.0:
   version "2.2.4"
   resolved "https://registry.yarnpkg.com/fill-range/-/fill-range-2.2.4.tgz#eb1e773abb056dcd8df2bfdf6af59b8b3a936565"
@@ -3028,6 +3021,10 @@ https-proxy-agent@^2.2.1:
   dependencies:
     agent-base "^4.1.0"
     debug "^3.1.0"
+
+humanize@0.0.9:
+  version "0.0.9"
+  resolved "https://registry.yarnpkg.com/humanize/-/humanize-0.0.9.tgz#1994ffaecdfe9c441ed2bdac7452b7bb4c9e41a4"
 
 iconv-lite@0.4.15:
   version "0.4.15"
@@ -5114,8 +5111,8 @@ rx-lite@*, rx-lite@^4.0.8:
   resolved "https://registry.yarnpkg.com/rx-lite/-/rx-lite-4.0.8.tgz#0b1e11af8bc44836f04a6407e92da42467b79444"
 
 rxjs@^6.1.0:
-  version "6.2.0"
-  resolved "https://registry.yarnpkg.com/rxjs/-/rxjs-6.2.0.tgz#e024d0e180b72756a83c2aaea8f25423751ba978"
+  version "6.2.1"
+  resolved "https://registry.yarnpkg.com/rxjs/-/rxjs-6.2.1.tgz#246cebec189a6cbc143a3ef9f62d6f4c91813ca1"
   dependencies:
     tslib "^1.9.0"
 
@@ -5940,9 +5937,17 @@ webcrypto-core@^0.1.22:
   dependencies:
     tslib "^1.7.1"
 
+webpack-bundle-size-analyzer@^2.7.0:
+  version "2.7.0"
+  resolved "https://registry.yarnpkg.com/webpack-bundle-size-analyzer/-/webpack-bundle-size-analyzer-2.7.0.tgz#2ec0539fd57f8716083898b38b892fe94c88c6bc"
+  dependencies:
+    commander "^2.7.1"
+    filesize "^3.1.2"
+    humanize "0.0.9"
+
 webpack-cli@^3.0.3:
-  version "3.0.3"
-  resolved "https://registry.yarnpkg.com/webpack-cli/-/webpack-cli-3.0.3.tgz#1a8c6e09dee1fd45305f3b3828cf081903cee0f2"
+  version "3.0.7"
+  resolved "https://registry.yarnpkg.com/webpack-cli/-/webpack-cli-3.0.7.tgz#d4171aa6a52f28d3a40048db3d0764e1c601c029"
   dependencies:
     chalk "^2.4.1"
     cross-spawn "^6.0.5"

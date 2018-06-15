@@ -21,5 +21,10 @@ export default {
     extractable: true, // to export private key as PEM
     keyUsage: ['sign', 'verify']
   },
-};
 
+  hashes: {
+    'SHA-256': 'sha256',
+    'SHA-384': 'sha384',
+    'SHA-512': 'sha512'
+  }
+};

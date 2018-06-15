@@ -81,16 +81,14 @@ One of the listed APIs/libraries is automatically chosen and leveraged for each 
 
 - ECDSA functions:
   * WebCrypto API for browsers;
-  * [elliptic](https://github.com/indutny/elliptic) for browsers; and
-  * [node-webcrypto-ossl](https://github.com/PeculiarVentures/node-webcrypto-ossl) for Node.js
+  * [elliptic](https://github.com/indutny/elliptic) for browsers and Node.js
 - Key format conversion:
   * WebCrypto API for browsers;
-  * [asn1.js](https://github.com/indutny/asn1.js) for browsers; and
-  * [node-webcrypto-ossl](https://github.com/PeculiarVentures/node-webcrypto-ossl) for Node.js
+  * [asn1.js](https://github.com/indutny/asn1.js) for browsers and Node.js
 - Random and digest functions:
   * WebCrypto API for browsers;
   * MsCrypto for IE; and
-  * [node-webcrypto-ossl](https://github.com/PeculiarVentures/node-webcrypto-ossl) for Node.js
+  * NodeCrypto for Node.js
 
 # License
 Licensed under the MIT license, see `LICENSE` file.
