@@ -19,7 +19,8 @@ export async function getEnvAtob(){
 }
 
 const nodeBtoa = (str) => {
-  const Buffer = require('Buffer').Buffer;
+  const Buffer = require('buffer').Buffer;
+  console.log(Buffer);
   let buffer;
   if (Buffer.isBuffer(str)) {
     buffer = str;
@@ -32,6 +33,6 @@ const nodeBtoa = (str) => {
 };
 
 const nodeAtob = (str) => {
-  const Buffer = require('Buffer').Buffer;
+  const Buffer = require('buffer').Buffer;
   return new Buffer(str, 'base64').toString('binary');
 };

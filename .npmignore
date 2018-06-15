@@ -2,6 +2,7 @@ src/
 coverage/
 obsolete/
 test/
+yarn.lock
 yarn-error.log
 .babelrc
 .eslintrc.json
