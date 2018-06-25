@@ -13,7 +13,7 @@ export async function getHash(hashAlgo, msg) {
     msgHash = await webCrypto.subtle.digest(hashAlgo, msg); // for modern browsers
   }
   else if (typeof nodeCrypto !== 'undefined' ){ // for node
-    const alg = params.hashes[hashAlgo];
+    const alg = params.hashes[hashAlgo].name;
     const hashFunc = nodeCrypto.createHash(alg);
     hashFunc.update(msg);
     msgHash = hashFunc.digest();

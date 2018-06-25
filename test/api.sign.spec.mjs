@@ -7,12 +7,7 @@ const expect = chai.expect;
 
 describe('Signing and verification test via exported api', () => {
   const getKeyParam = (elem) => {
-    const keyParams =  {
-      extractable: true,
-      keyUsage: ['sign', 'verify']
-    };
-    const algo = {algo: {name: 'ECDSA', namedCurve: elem}};
-    return Object.assign(algo, keyParams);
+    return {keyType: 'EC', namedCurve: elem};
   };
   const curves = ['P-256', 'P-384', 'P-521'];
   const hashes = [ 'SHA-256', 'SHA-384', 'SHA-512'];

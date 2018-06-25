@@ -46,12 +46,12 @@ export async function convertRawHexKeyToJwk(hexKeyObj, type, algo){
     y: b64uY
     // ext: true
   };
-  if(type === 'public'){
-    jwKey.key_ops = ['verify'];
-  }
-  else{
+  // if(type === 'public'){
+  //   jwKey.key_ops = ['verify'];
+  // }
+  if(type === 'private') {
     jwKey.d = await helper.encoder.encodeBase64Url(helper.formatter.hexStringToArrayBuffer(hexKeyObj.privateKey));
-    jwKey.key_ops = ['sign'];
+    // jwKey.key_ops = ['sign'];
   }
   return jwKey;
 }
@@ -70,7 +70,7 @@ export async function convertRawKeyPairToJwk(rawKeyPair, algo) {
     x: b64uX, // hex to base64url
     y: b64uY,
     // ext: true,
-    key_ops: ['verify']
+    // key_ops: ['verify']
   };
 
   const privjwk = { // https://www.rfc-editor.org/rfc/rfc7518.txt
@@ -79,7 +79,7 @@ export async function convertRawKeyPairToJwk(rawKeyPair, algo) {
     x: b64uX, // hex to base64url
     y: b64uY,
     // ext: true,
-    key_ops: ['sign'],
+    // key_ops: ['sign'],
     d: b64uD
   };
 

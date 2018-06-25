@@ -10,6 +10,23 @@ import helper from '../../helper/index.mjs';
 
 const Ec = EC.ec;
 
+export async function deriveSharedKey(algo, pubkey, privkey){
+  if(algo.name !== 'ECDH') throw new Error('unsupported algorithm name in keyParams');
+  const namedCurve = algo.namedCurve;
+  const curve = util.getCurveName(namedCurve);
+  const ec = new Ec(curve);
+
+  const rawHexPriv = await util.convertJwkToRawHexKey(privkey, 'private');
+  const rawHexPub = await util.convertJwkToRawHexKey(pubkey, 'public');
+  const ecPriv = ec.keyFromPrivate(rawHexPriv, 'hex');
+  const ecPub = ec.keyFromPublic(rawHexPub, 'hex');
+
+  // derive shared key
+  const len = params.curveList[algo.namedCurve].payloadSize;
+  return new Uint8Array(ecPriv.derive(ecPub.getPublic()).toArray('be', len));
+}
+
+
 export async function sign(algo, key, msg){
   if(algo.name !== 'ECDSA') throw new Error('unsupported algorithm name in keyParams');
   const namedCurve = algo.namedCurve;

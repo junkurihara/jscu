@@ -7,22 +7,17 @@ const expect = chai.expect;
 async function keyAssert(keyParams){
   const keys = await jscu.crypto.generateKeyPair(keyParams);
   expect(keys).to.be.a('object');
-  expect(keys.privateKey.key.x, `failed at ${keyParams.algo.namedCurve}`).to.be.a('string');
-  expect(keys.privateKey.key.y, `failed at ${keyParams.algo.namedCurve}`).to.be.a('string');
-  expect(keys.privateKey.key.d, `failed at ${keyParams.algo.namedCurve}`).to.be.a('string');
-  expect(keys.publicKey.key.x, `failed at ${keyParams.algo.namedCurve}`).equal(keys.privateKey.key.x);
-  expect(keys.publicKey.key.y, `failed at ${keyParams.algo.namedCurve}`).equal(keys.privateKey.key.y);
+  expect(keys.privateKey.key.x, `failed at ${keyParams.namedCurve}`).to.be.a('string');
+  expect(keys.privateKey.key.y, `failed at ${keyParams.namedCurve}`).to.be.a('string');
+  expect(keys.privateKey.key.d, `failed at ${keyParams.namedCurve}`).to.be.a('string');
+  expect(keys.publicKey.key.x, `failed at ${keyParams.namedCurve}`).equal(keys.privateKey.key.x);
+  expect(keys.publicKey.key.y, `failed at ${keyParams.namedCurve}`).equal(keys.privateKey.key.y);
 }
 
 describe('Key generation test via exported api', () => {
 
   const getKeyParam = (elem) => {
-    const keyParams =  {
-      extractable: true,
-      keyUsage: ['sign', 'verify']
-    };
-    const algo = {algo: {name: 'ECDSA', namedCurve: elem}};
-    return Object.assign(algo, keyParams);
+    return {keyType: 'EC', namedCurve: elem};
   };
 
   const curves = ['P-256', 'P-384', 'P-521'];

@@ -20,7 +20,6 @@ export async function getEnvAtob(){
 
 const nodeBtoa = (str) => {
   const Buffer = require('buffer').Buffer;
-  console.log(Buffer);
   let buffer;
   if (Buffer.isBuffer(str)) {
     buffer = str;

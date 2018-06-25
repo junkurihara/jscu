@@ -36,11 +36,7 @@ At your project directory, do either one of the following.
   ```javascript
   import jscu from 'js-crypto-utils';
   
-  const params = {
-    extractable: true,
-    keyUsage: ['sign', 'verify'],
-    algo: {name: 'ECDSA', namedCurve: 'P-256'} // or 'P-384', 'P-521'
-  };
+  const params = {keyType: 'EC', namedCurve: 'P-256'}; // or 'P-384', 'P-521'
   jscu.crypto.generateKeyPair(params) // key generation
     .then( async (keyPair) => {  
       const msg = new Uint8Array(32);
@@ -51,6 +47,25 @@ At your project directory, do either one of the following.
     })
   ```
 
+- Encryption through ECDH with AES-GCM of 256 bits key and SHA-256 based HKDF
+  ```javascript
+  import jscu from 'js-crypto-utils';
+
+  const msg = new Uint8Array(32);
+  for(let i = 0; i < 32; i++) msg[i] = 0xFF & i;
+      
+  let options = { hash: 'SHA-256', encrypt: 'AES-GCM', keyLength: 32};
+  jscu.crypto.encrypt(msg, remotePublicJwkey, myPrivateJwkey, options)
+  .then( async (encrypted) => { // encrypted data object {data: <Uint8Array>, salt: <Uint8Array>, iv: <Uint8Array>}
+    options = { hash: 'SHA-256', encrypt: 'AES-GCM', keyLength: 32, salt: encrypted.salt, iv: encrypted.iv };
+    return await jscu.crypto.decrypt(encrypted.data, remotePrivateJwkey, myPublicJwkey, options);
+  })
+  .then( (decrypted) => {
+    // now you get decrypted message
+  });
+  ```
+  **ECDH with HKDF and AES encryption is currently unavailable in IE and Edge due to lack of HMAC features.** Note that AES and HKDF are independently available from `jscu.crypto.aes` and `jscu.crypto.hkdf` as well as `random` and `hash`.
+  
 - Key conversion between PEM (SPKI/PKCS8) and JWK
   ```javascript
   import jscu from 'js-crypto-utils';
@@ -58,10 +73,13 @@ At your project directory, do either one of the following.
   const jwk = {kty: 'EC', ...}; // JWK formatted ECDSA key
   jscu.crypto.keyconv.jwkToPem(jwk, 'public')  // or 'private'
     .then( async (pemKey) => { // PEM formatted ECDSA key  
-      return await jscu.crypto.keyconv.pemToJwk(pem, 'public', {name: 'ECDSA'}); // or 'private'
+      return await jscu.crypto.keyconv.pemToJwk(pem, 'public', {keyType: 'EC'}); // or 'private'
+      // namedCurve can be specified in addtion to keyType as below. Then native WebCryptoAPI will be used.
+      // return await jscu.crypto.keyconv.pemToJwk(pem, 'public', {keyType: 'EC', namedCurve: 'P-256'});
     })
     .then( (jwkey) =>{
-      // now you get the original jwk 
+      // now you get the original jwk
+      // NOTE: key_ops and ext entries will be omitted.
     });
   ```
 
@@ -76,16 +94,32 @@ At your project directory, do either one of the following.
   };
   ```
 
+- HKDF
+  ```javascript
+  import jscu from 'js-crypto-utils';
+
+  const randomMasterKeyAndHKDF = async () => {
+    const master = await jscu.crypto.random.getRandomBytes(32);
+  
+  const sessionKey = await jscu.crypto.hkdf.getKeySalt(master, 'SHA-256', 64, '', null); // with automatic random salt generation
+    console.log(sessionKey); // {key: <Uint8Array>, salt: <Uint8Array>}
+  
+    const duplicated = await jscu.crypto.hkdf.getKeySalt(master, 'SHA-256', 64, '', sessionKey.salt); // with externally-generated salt
+    console.log(sessionKey.key.toString() === duplicated.key.toString()); // true
+  };
+  ```
+  **HKDF is unavailabel in IE and Edge due to lack of features in these legacy environments.**
+  
 # Notes
 One of the listed APIs/libraries is automatically chosen and leveraged for each implemented function, and unified interfaces are provided for browsers and Node.js.
 
-- ECDSA functions:
+- ECDH and ECDSA functions:
   * WebCrypto API for browsers;
   * [elliptic](https://github.com/indutny/elliptic) for browsers and Node.js
 - Key format conversion:
   * WebCrypto API for browsers;
   * [asn1.js](https://github.com/indutny/asn1.js) for browsers and Node.js
-- Random and digest functions:
+- Random, digest, hash-based key derivation functions:
   * WebCrypto API for browsers;
   * MsCrypto for IE; and
   * NodeCrypto for Node.js

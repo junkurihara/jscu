@@ -15,12 +15,7 @@ const curves = ['P-256', 'P-384', 'P-521'];
 const hashes = [ 'SHA-256', 'SHA-384', 'SHA-512'];
 describe('Generated JWK key should be successfully converted to PEM SPKI/PKCS8, and vice varsa', () => {
   const getKeyParam = (elem) => {
-    const keyParams =  {
-      extractable: true,
-      keyUsage: ['sign', 'verify']
-    };
-    const algo = {algo: {name: 'ECDSA', namedCurve: elem}};
-    return Object.assign(algo, keyParams);
+    return {keyType: 'EC', namedCurve: elem};
   };
   let keySet = [];
   let msg;
@@ -96,8 +91,8 @@ describe('PEM SPKI/PKCS8 key should be successfully converted to usable JWK', ()
   it('JWK converted from PEM should successfully sign and verify messages', async () => {
     await Promise.all(
       hashes.map( async (hash) => {
-        const jwkPriv = await jscu.crypto.keyconv.pemToJwk(privOSSL, 'private', {name: 'ECDSA'});
-        const jwkPub = await jscu.crypto.keyconv.pemToJwk(pubOSSL, 'public', {name: 'ECDSA'});
+        const jwkPriv = await jscu.crypto.keyconv.pemToJwk(privOSSL, 'private', {keyType: 'EC', namedCurve: 'P-256'});
+        const jwkPub = await jscu.crypto.keyconv.pemToJwk(pubOSSL, 'public', {keyType: 'EC', namedCurve: 'P-256'});
 
         const sig = await jscu.crypto.sign(msg, jwkPriv, {name: hash});
         const result = await jscu.crypto.verify(msg, sig, jwkPub, {name: hash});
