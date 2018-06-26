@@ -135,15 +135,18 @@ At your project directory, do either one of the following.
 # Notes
 One of the listed APIs/libraries is automatically chosen and leveraged for each implemented function, and unified interfaces are provided for browsers and Node.js.
 
-- ECDH and ECDSA functions:
-  * WebCrypto API for browsers;
+- ECDH and ECDSA functions: (may not work in IE)
+  * WebCrypto API for browsers
   * [elliptic](https://github.com/indutny/elliptic) for browsers and Node.js
+- AES: (may not work in IE)
+  * WebCrypto API for browsers
+  * NodeCrypto for Node.js
 - Key format conversion:
-  * WebCrypto API for browsers;
+  * WebCrypto API for browsers
   * [asn1.js](https://github.com/indutny/asn1.js) for browsers and Node.js
-- Random, digest, hash-based key derivation functions, hash-based message authentication code:
-  * WebCrypto API for browsers;
-  * MsCrypto for IE; and
+- Random, hash, HKDF, HMAC:
+  * WebCrypto API for browsers
+  * MsCrypto for IE
   * NodeCrypto for Node.js
 
 # License
