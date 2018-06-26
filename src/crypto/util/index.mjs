@@ -5,6 +5,7 @@ import * as hash from './hash.mjs';
 import * as algo from './algo.mjs';
 import * as hkdf from './hkdf.mjs';
 import * as aes from './aes.mjs';
+import * as hmac from './hmac.mjs';
 
 
-export default { env, defaultParams, algo, random, hash, hkdf, aes};
+export default { env, defaultParams, algo, random, hash, hkdf, aes, hmac};

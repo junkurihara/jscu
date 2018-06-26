@@ -34,7 +34,7 @@ const webConfig = {
   target: 'web',
   entry: {
     jscu: ['./src/index.mjs'],
-    // test: ['./test/api.keygen.spec.mjs']
+    // test: ['./test/api.hkdf.spec.mjs']
   },
   output: {
     filename: '[name].bundle.js',

@@ -12,6 +12,8 @@ Firstly, we just started to provide the following functions that works in most m
 - Public/private key format conversion between ECDSA JWK and PEM (SPKI for public/PKCS8 for private) 
 - Generation of random byte array
 - Generation of message digest (SHA-256/384/512)
+- HMAC (SHA-256/384/512)
+- HKDF (SHA-256/384/512)
 
 The module is totally written in ES6+ and needed to get transpiled with babel for legacy environments.
 
@@ -64,7 +66,7 @@ At your project directory, do either one of the following.
     // now you get decrypted message
   });
   ```
-  **ECDH with HKDF and AES encryption is currently unavailable in IE and Edge due to lack of HMAC features.** Note that AES and HKDF are independently available from `jscu.crypto.aes` and `jscu.crypto.hkdf` as well as `random` and `hash`.
+  Note that AES and HKDF are independently available from `jscu.crypto.aes` and `jscu.crypto.hkdf` as well as `random` and `hash`.
   
 - Key conversion between PEM (SPKI/PKCS8) and JWK
   ```javascript
@@ -101,14 +103,34 @@ At your project directory, do either one of the following.
   const randomMasterKeyAndHKDF = async () => {
     const master = await jscu.crypto.random.getRandomBytes(32);
   
-  const sessionKey = await jscu.crypto.hkdf.getKeySalt(master, 'SHA-256', 64, '', null); // with automatic random salt generation
+    const sessionKey = await jscu.crypto.hkdf.getKeySalt(master, 'SHA-256', 64, '', null); // with automatic random salt generation
     console.log(sessionKey); // {key: <Uint8Array>, salt: <Uint8Array>}
   
     const duplicated = await jscu.crypto.hkdf.getKeySalt(master, 'SHA-256', 64, '', sessionKey.salt); // with externally-generated salt
     console.log(sessionKey.key.toString() === duplicated.key.toString()); // true
   };
   ```
-  **HKDF is unavailabel in IE and Edge due to lack of features in these legacy environments.**
+  
+- HMAC
+  ```javascript
+  import jscu from 'js-crypto-utils';
+  
+  const hmacWithRandomKey = async () => {
+    const msg = new Uint8Array(32);
+    for(let i = 0; i < 32; i++) msg[i] = 0xFF & i;
+  
+    const key = await jscu.crypto.random.getRandomBytes(32);
+    const mac = await jscu.crypto.hmac.getMac(key, msg, hash);  
+    
+    const macx = await jscu.crypto.hmac.getMac(key, msg, hash);
+    console.log(mac.toString() === macx.toString()); // true
+      
+    const newmsg = Object.assign({}, {x: msg}).x;
+    newmsg[1] = 0x33;
+    const macy = await jscu.crypto.hmac.getMac(key, newmsg, hash);
+    console.log(mac.toString() === macy.toString()); // false
+  };
+  ```
   
 # Notes
 One of the listed APIs/libraries is automatically chosen and leveraged for each implemented function, and unified interfaces are provided for browsers and Node.js.
@@ -119,7 +141,7 @@ One of the listed APIs/libraries is automatically chosen and leveraged for each 
 - Key format conversion:
   * WebCrypto API for browsers;
   * [asn1.js](https://github.com/indutny/asn1.js) for browsers and Node.js
-- Random, digest, hash-based key derivation functions:
+- Random, digest, hash-based key derivation functions, hash-based message authentication code:
   * WebCrypto API for browsers;
   * MsCrypto for IE; and
   * NodeCrypto for Node.js

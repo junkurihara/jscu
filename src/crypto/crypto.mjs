@@ -57,9 +57,6 @@ export async function decrypt(data, privkey, pubkey=null, options = {hkdf: 'SHA-
   if (privkey.kty !== 'EC') throw new Error('RSA is not supported at this point');
   else if (!pubkey) throw new Error('Public key must be specified for ECDH');
 
-  const webCrypto = await cryptoUtil.env.getEnvWebCrypto(); // web crypto api
-  const nodeCrypto = await cryptoUtil.env.getEnvNodeCrypto(); // node crypto
-
   // TODO: This is for ecdh only. this must be wrapped with if-statements when we implement another algo.
   const algo = cryptoUtil.algo.getWebCryptoParamsFromJwk(privkey, 'deriveBits');
   const sharedSecret = await deriveECDHSharedSecret(algo, pubkey, privkey);
