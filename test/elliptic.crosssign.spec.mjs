@@ -18,7 +18,7 @@ describe('Signing and verification cross test between pure js ecdsa and webcrypt
   let msg;
   before(async () => {
     if (!crypto){
-      crypto = await import('node-webcrypto-ossl');
+      crypto = require('node-webcrypto-ossl');
       if(typeof crypto !== 'undefined' && typeof crypto.WebCrypto !== 'function' && typeof crypto.default !=='undefined')
         crypto = crypto.default;
       crypto = new crypto();

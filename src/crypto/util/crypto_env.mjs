@@ -36,6 +36,13 @@ export async function getEnvWebCrypto () {
 }
 
 export async function getEnvNodeCrypto(){
-  if(typeof window !== 'undefined') return undefined;
-  else return require('crypto');
+  let crypto;
+  if(typeof window !== 'undefined'){
+    crypto = undefined;
+  }
+  else {
+    crypto = require('crypto');
+  }
+
+  return crypto;
 }

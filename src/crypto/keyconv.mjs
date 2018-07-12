@@ -5,13 +5,12 @@
 
 import helper from '../helper/index.mjs';
 import cryptoUtil from './util/index.mjs';
+import elliptic from './elliptic/index.mjs';
 
 import pino from 'pino';
 // log options
 const logOptions = cryptoUtil.env.getEnvLogOptions();
 const logger = pino(Object.assign(logOptions, {name: 'conv'}));
-
-const dynamicLoadElliptic = async () => cryptoUtil.env.dynamicModuleLoad(await import(/* webpackChunkName: 'elliptic' */ './elliptic/index.mjs'));
 
 /**
  * convert key in jwk format to pem spki/pkcs8
@@ -64,7 +63,6 @@ export async function jwkToPem(jwkey, type) {
  * @return {Promise<void>}
  */
 async function jwkToPemElliptic(jwkey, type, namedCurve) {
-  const elliptic = await dynamicLoadElliptic();
   const binKey = await elliptic.keyconv.JwkToBin(jwkey, type, namedCurve);
   return await helper.formatter.binToPem(binKey, type);
 }
@@ -113,7 +111,6 @@ export async function pemToJwk(pem, type, keyParams) {
  */
 // TODO: ここはellipticに吸収したほうが良さそう。
 async function pemToJwkElliptic(pem, type) {
-  const elliptic = await dynamicLoadElliptic();
   const binKey = await helper.formatter.pemToBin(pem);
   return await elliptic.keyconv.binToJwk(binKey, type);
 }

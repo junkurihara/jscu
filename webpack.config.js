@@ -8,7 +8,7 @@ const webpack = require('webpack');
 
 // port babelrc from .babelrc
 const getBabelWebOpt = () => {
-  const pluginExclude = ['babel-plugin-dynamic-import-node-sync'];
+  const pluginExclude = []; // add here node-specific plugins
   const envBrowserTargets = [
     'last 2 chrome versions',
     'last 2 firefox versions',
@@ -75,11 +75,9 @@ const webConfig = {
 module.exports = (env, argv) => {
   const config = webConfig;
   if (argv.mode === 'development'){
-    console.log('build for development');
     config.devtool = 'inline-source-map'; // add inline source map
   }
-  else if(argv.mode === 'production'){
-    console.log('build for production');
-  }
+  // else if(argv.mode === 'production'){
+  // }
   return config;
 };

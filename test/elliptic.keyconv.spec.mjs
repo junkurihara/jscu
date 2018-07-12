@@ -20,7 +20,7 @@ describe('Signing and verification test with key conversion in pure js ecdsa and
   let msg;
   before(async () => {
     if (!crypto){
-      crypto = await import('node-webcrypto-ossl');
+      crypto = require('node-webcrypto-ossl');
       if(typeof crypto !== 'undefined' && typeof crypto.WebCrypto !== 'function' && typeof crypto.default !=='undefined')
         crypto = crypto.default;
       crypto = new crypto();

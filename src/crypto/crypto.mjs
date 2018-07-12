@@ -4,11 +4,12 @@
 import cryptoUtil from './util/index.mjs';
 import helper from '../helper/index.mjs';
 
+import elliptic from './elliptic/index.mjs';
+
 import pino from 'pino';
 const logOptions = cryptoUtil.env.getEnvLogOptions(); // log options
 const logger = pino(Object.assign(logOptions, {name: 'crypto'}));
 
-const dynamicLoadElliptic = async () => cryptoUtil.env.dynamicModuleLoad(await import(/* webpackChunkName: 'elliptic' */ './elliptic/index.mjs'));
 
 /**
  * encryption with public key algorithm. in case of ECDH, the session key is derived from HKDF and the data itself will be encrypted by symmetric cipher.
@@ -95,14 +96,21 @@ async function deriveECDHSharedSecret(algo, pubkey, privkey){
       sharedKey = new Uint8Array(await webCrypto.subtle.deriveBits(Object.assign(algo, {public: pubKeyObj}), privKeyObj, await bitlen()));
     }
     else if (typeof nodeCrypto !== 'undefined'){
-      // TODO: NEED TO IMPLEMENT WITH NODE CRYPTO
-      throw new Error('fallback to elliptic');
+      const curve = cryptoUtil.defaultParams.curves[algo.namedCurve].nodeName;
+      const ecdh = nodeCrypto.createECDH(curve);
+      const privKeyBuf = await helper.encoder.decodeBase64Url(privkey.d);
+      const payloadSize = cryptoUtil.defaultParams.curves[algo.namedCurve].payloadSize;
+      const pubKeyBuf = new Uint8Array( payloadSize * 2 + 1 );
+      pubKeyBuf[0] = 0xFF & 0x04;
+      pubKeyBuf.set(await helper.encoder.decodeBase64Url(pubkey.x), 1);
+      pubKeyBuf.set(await helper.encoder.decodeBase64Url(pubkey.y), payloadSize + 1);
+      ecdh.setPrivateKey(privKeyBuf);
+      sharedKey = new Uint8Array(ecdh.computeSecret(pubKeyBuf));
     }
     else throw new Error('fallback to elliptic');
   }
   catch (e) {
-    logger.info(`web crypto api is not supported for key derivation. fallen back to pure javascript shared secret derivation. ${JSON.stringify(e)}`);
-    const elliptic = await dynamicLoadElliptic();
+    logger.info(`web crypto api is not supported for key derivation. fallen back to pure javascript shared secret derivation. ${e}`);
     sharedKey = await elliptic.crypto.deriveSharedKey(algo, pubkey, privkey);
   }
 
@@ -143,7 +151,6 @@ export async function sign(msg, privkey, hash = {name: 'SHA-256'} ){
   }
   catch (e) {
     logger.info(`web crypto api is not supported for signing of the parameter. fallen back to pure javascript ecdsa signing. ${JSON.stringify(e)}`);
-    const elliptic = await dynamicLoadElliptic();
     signature = await elliptic.crypto.sign(algo, privkey, msg);
   }
 
@@ -186,7 +193,6 @@ export async function verify(msg, sig, pubkey, hash = {name: 'SHA-256'}){
   }
   catch (e) {
     logger.info(`web crypto api is not supported for verification of the parameter. fallen back to pure javascript ecdsa verification. ${JSON.stringify(e)}`);
-    const elliptic = await dynamicLoadElliptic();
     result = await elliptic.crypto.verify(algo, pubkey, sig, msg);
   }
 
@@ -238,7 +244,6 @@ export async function generateKeyPair(keyParams){
   }
   catch (e) {
     logger.info(`something wrong maybe do to lack of web crypto api feature. fall back to elliptic to generate key. ${JSON.stringify(e)}`);
-    const elliptic = await dynamicLoadElliptic();
     keyPair = await elliptic.crypto.generateKeyPair(
       Object.assign(cryptoUtil.defaultParams.webCryptoKeyParamsEC.algo, {namedCurve: keyParams.namedCurve})
     );

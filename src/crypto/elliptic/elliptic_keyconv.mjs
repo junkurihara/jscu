@@ -4,16 +4,17 @@
 
 
 import elliptic from 'elliptic';
-const Ec = elliptic.ec;
-
 import asn from 'asn1.js';
 
 import BufferMod from 'buffer';
-const Buffer = BufferMod.Buffer;
-
 import helper from '../../helper/index.mjs';
 import * as util from './elliptic_util.mjs';
-import * as params from './elliptic_params.mjs';
+import cryptoUtil from '../util/index.mjs';
+const curveList = cryptoUtil.defaultParams.curves;
+
+const Ec = elliptic.ec;
+
+const Buffer = BufferMod.Buffer;
 
 export async function JwkToBin(jwkey, type, namedCurve){
   if(type !== 'public' && type !== 'private') throw new Error('type must be public or private');
@@ -83,7 +84,7 @@ export async function binToJwk(binKey, type){
     hexKeyObj.privateKey = helper.formatter.arrayBufferToHexString(decoded.privateKey.privateKey);
 
   }
-  const filtered = Object.keys(params.curveList).filter((elem) => (params.curveList[elem].oid.toString() === oid.toString()));
+  const filtered = Object.keys(curveList).filter((elem) => (curveList[elem].oid.toString() === oid.toString()));
 
   return await util.convertRawHexKeyToJwk(hexKeyObj, type, (filtered.length > 0) ? filtered[0] : oid);
 }
@@ -148,10 +149,10 @@ const SubjectPublicKeyInfo = asn.define('SubjectPublicKeyInfo', function() {
 
 const parameters = {};
 const algorithms = {};
-Object.keys(params.curveList).forEach((crv) => {
+Object.keys(curveList).forEach((crv) => {
   parameters[crv] = ECParameters.encode({
     type: 'namedCurve',
-    value: params.curveList[crv].oid
+    value: curveList[crv].oid
   }, 'der');
   algorithms[crv] = {
     algorithm:  [1, 2, 840, 10045, 2, 1],

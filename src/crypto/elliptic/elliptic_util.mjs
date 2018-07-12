@@ -3,10 +3,11 @@
  */
 
 import helper from '../../helper/index.mjs';
-import * as params from './elliptic_params.mjs';
+import cryptoUtil from '../util/index.mjs';
+const curveList = cryptoUtil.defaultParams.curves;
 
 export function getCurveName(algoCurve) {
-  const curve = params.curveList[algoCurve].name;
+  const curve = curveList[algoCurve].name;
   if (!curve) throw new Error('unsupported curve is specified');
   return curve;
 }
@@ -29,10 +30,10 @@ export async function convertJwkToRawHexKey(jwkey, type) {
 
 export async function convertRawHexKeyToJwk(hexKeyObj, type, algo){
   if (type !== 'public' && type !== 'private') throw new Error('type must be public or private');
-  if (Object.keys(params.curveList).indexOf(algo) < 0) throw new Error('unsupported curve (alg)');
+  if (Object.keys(curveList).indexOf(algo) < 0) throw new Error('unsupported curve (alg)');
   if (hexKeyObj.publicKey.length % 2 !== 0) throw new Error('something wrong in public key length');
 
-  const len = params.curveList[algo].payloadSize;
+  const len = curveList[algo].payloadSize;
   const offset = 2;
   const hexX = hexKeyObj.publicKey.slice(offset, offset+len*2);
   const hexY = hexKeyObj.publicKey.slice(offset+len*2, offset+len*4);
@@ -57,9 +58,9 @@ export async function convertRawHexKeyToJwk(hexKeyObj, type, algo){
 }
 
 export async function convertRawKeyPairToJwk(rawKeyPair, algo) {
-  if (Object.keys(params.curveList).indexOf(algo) < 0) throw new Error('unsupported curve (alg)');
+  if (Object.keys(curveList).indexOf(algo) < 0) throw new Error('unsupported curve (alg)');
   const point = rawKeyPair.getPublic();
-  const len = params.curveList[algo].payloadSize;
+  const len = curveList[algo].payloadSize;
   const b64uX = await helper.encoder.encodeBase64Url(new Uint8Array(point.getX().toArray('be', len)));
   const b64uY = await helper.encoder.encodeBase64Url(new Uint8Array(point.getY().toArray('be', len)));
   const b64uD = await helper.encoder.encodeBase64Url(new Uint8Array(rawKeyPair.getPrivate().toArray('be', len)));

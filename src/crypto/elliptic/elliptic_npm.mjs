@@ -4,10 +4,9 @@
 
 import EC from 'elliptic';
 import * as util from './elliptic_util.mjs';
-import * as params from './elliptic_params.mjs';
 import cryptoUtil from '../util/index.mjs';
 import helper from '../../helper/index.mjs';
-
+const curveList = cryptoUtil.defaultParams.curves;
 const Ec = EC.ec;
 
 export async function deriveSharedKey(algo, pubkey, privkey){
@@ -22,7 +21,7 @@ export async function deriveSharedKey(algo, pubkey, privkey){
   const ecPub = ec.keyFromPublic(rawHexPub, 'hex');
 
   // derive shared key
-  const len = params.curveList[algo.namedCurve].payloadSize;
+  const len = curveList[algo.namedCurve].payloadSize;
   return new Uint8Array(ecPriv.derive(ecPub.getPublic()).toArray('be', len));
 }
 
@@ -44,7 +43,7 @@ export async function sign(algo, key, msg){
   const signature = await eckey.sign(msgHash);
 
   // formatting
-  const len = params.curveList[algo.namedCurve].payloadSize;
+  const len = curveList[algo.namedCurve].payloadSize;
   const arrayR = new Uint8Array(signature.r.toArray('be', len));
   const arrayS = new Uint8Array(signature.s.toArray('be', len));
   const hexConcat = helper.formatter.arrayBufferToHexString(arrayR) + helper.formatter.arrayBufferToHexString(arrayS);
@@ -62,7 +61,7 @@ export async function verify(algo, key, sig, msg){
   const eckey = ec.keyFromPublic(rawHexKey, 'hex');
 
   // parse signature
-  const len = params.curveList[algo.namedCurve].payloadSize;
+  const len = curveList[algo.namedCurve].payloadSize;
   const strSig = helper.formatter.arrayBufferToHexString(sig);
   const sigR = strSig.slice(0, len*2);
   const sigS = strSig.slice(len*2, len*4);

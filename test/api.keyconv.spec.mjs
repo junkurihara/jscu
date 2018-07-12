@@ -21,7 +21,7 @@ describe('Generated JWK key should be successfully converted to PEM SPKI/PKCS8, 
   let msg;
   before( async () => {
     if (!crypto){
-      crypto = await import('node-webcrypto-ossl');
+      crypto = require('node-webcrypto-ossl');
       if(typeof crypto !== 'undefined' && typeof crypto.WebCrypto !== 'function' && typeof crypto.default !=='undefined')
         crypto = crypto.default;
       crypto = new crypto();
