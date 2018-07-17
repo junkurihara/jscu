@@ -93,6 +93,15 @@ export async function binToJwk(binKey, type){
 // Originally written by Owen Smith https://github.com/omsmith
 // Adapted on Feb 2018 from https://github.com/Brightspace/node-jwk-to-pem/
 
+export const ECDSASignature = asn.define('ECDSASignature', function() {
+  this.seq().obj(
+    this.key('r').int(),
+    this.key('s').int()
+  );
+});
+
+
+
 /* eslint-disable no-invalid-this */
 const ECParameters = asn.define('ECParameters', function() {
   this.choice({

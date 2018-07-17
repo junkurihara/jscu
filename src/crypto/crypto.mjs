@@ -3,6 +3,7 @@
  */
 import cryptoUtil from './util/index.mjs';
 import helper from '../helper/index.mjs';
+import {jwkToPem} from './keyconv.mjs';
 
 import elliptic from './elliptic/index.mjs';
 
@@ -140,12 +141,23 @@ export async function sign(msg, privkey, hash = {name: 'SHA-256'} ){
       && typeof webCrypto.subtle.importKey === 'function' && typeof webCrypto.subtle.sign === 'function'
     // && false // eslint-disable-line //TODO 強制False
     ) {
+      logger.debug('webCrypto ECDSA');
       const key = await webCrypto.subtle.importKey('jwk', privkey, algo, false, ['sign']);
       signature = await webCrypto.subtle.sign(algo, key, msg);
     }
     else if (typeof nodeCrypto !== 'undefined'){
-      // TODO: NEED TO IMPLEMENT WITH NODE CRYPTO
-      throw new Error('fallback to elliptic');
+      logger.debug('nodeCrypto ECDSA');
+      const pemKey = await jwkToPem(privkey, 'private');
+      const sign = nodeCrypto.createSign(cryptoUtil.defaultParams.hashes[hash.name].name);
+      sign.update(msg);
+      const asn1sig = sign.sign(pemKey);
+      signature = elliptic.keyconv.ECDSASignature.decode(asn1sig, 'der');
+      const len = cryptoUtil.defaultParams.curves[algo.namedCurve].payloadSize;
+      const r = new Uint8Array(signature.r.toArray('be', len));
+      const s = new Uint8Array(signature.s.toArray('be', len));
+      signature = new Uint8Array(len*2);
+      signature.set(r);
+      signature.set(s, len);
     }
     else throw new Error('fallback to elliptic');
   }
@@ -186,6 +198,12 @@ export async function verify(msg, sig, pubkey, hash = {name: 'SHA-256'}){
       result =  await webCrypto.subtle.verify(algo, key, sig, msg);
     }
     else if (typeof nodeCrypto !== 'undefined'){
+      // logger.debug('nodeCrypto ECDSA');
+      // const pemKey = await jwkToPem(pubkey, 'public');
+      // const verify = nodeCrypto.createVerify(cryptoUtil.defaultParams.hashes[hash.name].name);
+      // verify.update(msg);
+      // result = verify.verify(pemKey, sig);
+      // console.log(result);
       // TODO: NEED TO IMPLEMENT WITH NODE CRYPTO
       throw new Error('fallback to elliptic');
     }
