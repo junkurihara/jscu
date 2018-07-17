@@ -137,7 +137,8 @@ One of the listed APIs/libraries is automatically chosen and leveraged for each 
 
 - ECDH and ECDSA functions: (may not work in IE)
   * WebCrypto API for browsers
-  * [elliptic](https://github.com/indutny/elliptic) for browsers and Node.js
+  * NodeCrypto for Node.js 
+  * [elliptic](https://github.com/indutny/elliptic) for browsers
 - AES: (may not work in IE)
   * WebCrypto API for browsers
   * NodeCrypto for Node.js
