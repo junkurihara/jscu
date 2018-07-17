@@ -198,12 +198,10 @@ export async function verify(msg, sig, pubkey, hash = {name: 'SHA-256'}){
       result =  await webCrypto.subtle.verify(algo, key, sig, msg);
     }
     else if (typeof nodeCrypto !== 'undefined'){
-      // logger.debug('nodeCrypto ECDSA');
-      // const pemKey = await jwkToPem(pubkey, 'public');
-      // const verify = nodeCrypto.createVerify(cryptoUtil.defaultParams.hashes[hash.name].name);
-      // verify.update(msg);
-      // result = verify.verify(pemKey, sig);
-      // console.log(result);
+      logger.debug('nodeCrypto ECDSA');
+      //
+      //
+      //
       // TODO: NEED TO IMPLEMENT WITH NODE CRYPTO
       throw new Error('fallback to elliptic');
     }
