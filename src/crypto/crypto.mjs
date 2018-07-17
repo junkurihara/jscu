@@ -138,9 +138,7 @@ export async function sign(msg, privkey, hash = {name: 'SHA-256'} ){
   if(privkey.kty !== 'EC') throw new Error('RSA is not supported at this point');
   try{
     if (typeof webCrypto !== 'undefined' && typeof webCrypto.subtle === 'object'
-      && typeof webCrypto.subtle.importKey === 'function' && typeof webCrypto.subtle.sign === 'function'
-    // && false // eslint-disable-line //TODO 強制False
-    ) {
+      && typeof webCrypto.subtle.importKey === 'function' && typeof webCrypto.subtle.sign === 'function') {
       logger.debug('webCrypto ECDSA');
       const key = await webCrypto.subtle.importKey('jwk', privkey, algo, false, ['sign']);
       signature = await webCrypto.subtle.sign(algo, key, msg);
@@ -151,13 +149,7 @@ export async function sign(msg, privkey, hash = {name: 'SHA-256'} ){
       const sign = nodeCrypto.createSign(cryptoUtil.defaultParams.hashes[hash.name].name);
       sign.update(msg);
       const asn1sig = sign.sign(pemKey);
-      signature = elliptic.keyconv.ECDSASignature.decode(asn1sig, 'der');
-      const len = cryptoUtil.defaultParams.curves[algo.namedCurve].payloadSize;
-      const r = new Uint8Array(signature.r.toArray('be', len));
-      const s = new Uint8Array(signature.s.toArray('be', len));
-      signature = new Uint8Array(len*2);
-      signature.set(r);
-      signature.set(s, len);
+      signature = elliptic.keyconv.decodeAsn1Signature(asn1sig, algo.namedCurve);
     }
     else throw new Error('fallback to elliptic');
   }
@@ -191,19 +183,18 @@ export async function verify(msg, sig, pubkey, hash = {name: 'SHA-256'}){
   if(pubkey.kty !== 'EC') throw new Error('RSA is not supported at this point');
   try{
     if (typeof webCrypto !== 'undefined' && typeof webCrypto.subtle === 'object'
-      && typeof webCrypto.subtle.importKey === 'function' && typeof webCrypto.subtle.verify === 'function'
-    // && false // eslint-disable-line //TODO 強制False
-    ) {
+      && typeof webCrypto.subtle.importKey === 'function' && typeof webCrypto.subtle.verify === 'function') {
+      logger.debug('webCrypto ECDSA');
       const key = await webCrypto.subtle.importKey('jwk', pubkey, algo, false, ['verify']);
       result =  await webCrypto.subtle.verify(algo, key, sig, msg);
     }
     else if (typeof nodeCrypto !== 'undefined'){
       logger.debug('nodeCrypto ECDSA');
-      //
-      //
-      //
-      // TODO: NEED TO IMPLEMENT WITH NODE CRYPTO
-      throw new Error('fallback to elliptic');
+      const pemKey = await jwkToPem(pubkey, 'public');
+      const verify = nodeCrypto.createVerify(cryptoUtil.defaultParams.hashes[hash.name].name);
+      verify.update(msg);
+      const asn1sig = elliptic.keyconv.encodeAsn1Signature(sig, algo.namedCurve);
+      result = verify.verify(pemKey, asn1sig);
     }
     else throw new Error('fallback to elliptic');
   }
@@ -231,9 +222,7 @@ export async function generateKeyPair(keyParams){
   if(keyParams.keyType !== 'EC') throw new Error('RSA is not supported at this point');
   try {
     if (typeof webCrypto !== 'undefined' && typeof webCrypto.subtle === 'object'
-      && typeof webCrypto.subtle.exportKey === 'function' && typeof webCrypto.subtle.generateKey === 'function'
-    // && false // eslint-disable-line //TODO 強制False
-    ) {
+      && typeof webCrypto.subtle.exportKey === 'function' && typeof webCrypto.subtle.generateKey === 'function' ) {
       logger.debug('modern webcrypto is available for key generation');
       // generate ecdsa key
       const keys = await webCrypto.subtle.generateKey(

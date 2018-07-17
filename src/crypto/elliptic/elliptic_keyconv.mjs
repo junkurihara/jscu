@@ -5,6 +5,7 @@
 
 import elliptic from 'elliptic';
 import asn from 'asn1.js';
+const BN = asn.bignum;
 
 import BufferMod from 'buffer';
 import helper from '../../helper/index.mjs';
@@ -89,11 +90,33 @@ export async function binToJwk(binKey, type){
   return await util.convertRawHexKeyToJwk(hexKeyObj, type, (filtered.length > 0) ? filtered[0] : oid);
 }
 
+
+export function decodeAsn1Signature(asn1sig, namedCurve){
+  const decoded = ECDSASignature.decode(asn1sig, 'der');
+  const len = cryptoUtil.defaultParams.curves[namedCurve].payloadSize;
+  const r = new Uint8Array(decoded.r.toArray('be', len));
+  const s = new Uint8Array(decoded.s.toArray('be', len));
+  const signature = new Uint8Array(len*2);
+  signature.set(r);
+  signature.set(s, len);
+  return signature;
+}
+
+export function encodeAsn1Signature(signature, namedCurve){
+  const len = cryptoUtil.defaultParams.curves[namedCurve].payloadSize;
+  const r = signature.slice(0, len);
+  const s = signature.slice(len, signature.length);
+  const asn1sig = ECDSASignature.encode({
+    r: new BN(r), s: new BN(s)
+  }, 'der');
+  return new Uint8Array(asn1sig);
+}
+
 /////////////////////////////////////////////////////////////////////////////////////////
 // Originally written by Owen Smith https://github.com/omsmith
 // Adapted on Feb 2018 from https://github.com/Brightspace/node-jwk-to-pem/
 
-export const ECDSASignature = asn.define('ECDSASignature', function() {
+const ECDSASignature = asn.define('ECDSASignature', function() {
   this.seq().obj(
     this.key('r').int(),
     this.key('s').int()
