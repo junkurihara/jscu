@@ -17,6 +17,55 @@ const Ec = elliptic.ec;
 
 const Buffer = BufferMod.Buffer;
 
+
+export async function convertJwkToRawKey(jwkey, type) {
+  if (type !== 'public' && type !== 'private') throw new Error('type must be public or private');
+
+  let rawKey;
+  if (type === 'public') {
+    const bufX = await helper.encoder.decodeBase64Url(jwkey.x);
+    const bufY = await helper.encoder.decodeBase64Url(jwkey.y);
+    rawKey = new Uint8Array(bufX.length + bufY.length + 1);
+    rawKey[0]=0x04;
+    rawKey.set(bufX, 1);
+    rawKey.set(bufY, bufX.length+1);
+  }
+  else {
+    rawKey = await helper.encoder.decodeBase64Url(jwkey.d);
+  }
+  return rawKey;
+}
+
+
+export async function convertRawKeyToJwk(rawKeyObj, type, algo) {
+  if (type !== 'public' && type !== 'private') throw new Error('type must be public or private');
+  if (Object.keys(curveList).indexOf(algo) < 0) throw new Error('unsupported curve (alg)');
+
+  const len = curveList[algo].payloadSize;
+  if (rawKeyObj.publicKey.length !== len*2+1) throw new Error('something wrong in public key length');
+
+  const bufX = rawKeyObj.publicKey.slice(1, len+1);
+  const bufY = rawKeyObj.publicKey.slice(len+1, len*2+1);
+  const b64uX = await helper.encoder.encodeBase64Url(bufX);
+  const b64uY = await helper.encoder.encodeBase64Url(bufY);
+
+  const jwKey = { // https://www.rfc-editor.org/rfc/rfc7518.txt
+    kty: 'EC', // or "RSA", "oct"
+    crv: algo,
+    x: b64uX, // hex to base64url
+    y: b64uY
+    // ext: true
+  };
+  // if(type === 'public'){
+  //   jwKey.key_ops = ['verify'];
+  // }
+  if(type === 'private') {
+    jwKey.d = await helper.encoder.encodeBase64Url(rawKeyObj.privateKey);
+    // jwKey.key_ops = ['sign'];
+  }
+  return jwKey;
+}
+
 export async function JwkToBin(jwkey, type, namedCurve){
   if(type !== 'public' && type !== 'private') throw new Error('type must be public or private');
 
@@ -69,7 +118,7 @@ export async function binToJwk(binKey, type){
     decoded.algorithm.parameters = ECParameters.decode(decoded.algorithm.parameters, 'der'); // overwrite nested binary object as parsed object
     oid = decoded.algorithm.parameters.value; // get object id
 
-    hexKeyObj.publicKey = helper.formatter.arrayBufferToHexString(decoded.subjectPublicKey.data);
+    hexKeyObj.publicKey = new Uint8Array(decoded.subjectPublicKey.data);
   }
   else{
     const decoded = PrivateKeyInfo.decode(binKeyBuffer, 'der'); // decode binary pkcs8-formatted key to parsed object
@@ -81,13 +130,12 @@ export async function binToJwk(binKey, type){
 
     oid = decoded.privateKeyAlgorithm.parameters.value; // get object id
 
-    hexKeyObj.publicKey = helper.formatter.arrayBufferToHexString(decoded.privateKey.publicKey.data);
-    hexKeyObj.privateKey = helper.formatter.arrayBufferToHexString(decoded.privateKey.privateKey);
-
+    hexKeyObj.publicKey = new Uint8Array(decoded.privateKey.publicKey.data);
+    hexKeyObj.privateKey = new Uint8Array(decoded.privateKey.privateKey);
   }
   const filtered = Object.keys(curveList).filter((elem) => (curveList[elem].oid.toString() === oid.toString()));
 
-  return await util.convertRawHexKeyToJwk(hexKeyObj, type, (filtered.length > 0) ? filtered[0] : oid);
+  return await convertRawKeyToJwk(hexKeyObj, type, (filtered.length > 0) ? filtered[0] : oid);
 }
 
 

@@ -242,8 +242,13 @@ export async function generateKeyPair(keyParams){
       keyPair = {publicKey: {format: 'jwk', key: jwkPair[0]}, privateKey: {format: 'jwk', key: jwkPair[1]}};
     }
     else if (typeof nodeCrypto !== 'undefined'){
-      // TODO: NEED TO IMPLEMENT WITH NODE CRYPTO
-      throw new Error('fallback to elliptic');
+      logger.debug('nodeCrypto is available');
+      const ecdh = nodeCrypto.ECDH(cryptoUtil.defaultParams.curves[keyParams.namedCurve].nodeName);
+      ecdh.generateKeys();
+      const rawKeyPair = {publicKey: new Uint8Array(ecdh.getPublicKey()), privateKey: new Uint8Array(ecdh.getPrivateKey())};
+      const pubKey = await elliptic.keyconv.convertRawKeyToJwk(rawKeyPair, 'public', keyParams.namedCurve);
+      const privKey = await elliptic.keyconv.convertRawKeyToJwk(rawKeyPair, 'private', keyParams.namedCurve);
+      keyPair = { publicKey: { format: 'jwk', key: pubKey}, privateKey: { format: 'jwk', key: privKey} };
     }
     else throw new Error('fallback to elliptic');
   }
