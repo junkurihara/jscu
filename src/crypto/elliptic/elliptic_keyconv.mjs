@@ -10,8 +10,7 @@ const BN = asn.bignum;
 import BufferMod from 'buffer';
 import helper from '../../helper/index.mjs';
 import * as util from './elliptic_util.mjs';
-import cryptoUtil from '../util/index.mjs';
-const curveList = cryptoUtil.defaultParams.curves;
+const curveList = util.getCurveList();
 
 const Ec = elliptic.ec;
 
@@ -37,11 +36,11 @@ export async function convertJwkToRawKey(jwkey, type) {
 }
 
 
-export async function convertRawKeyToJwk(rawKeyObj, type, algo) {
+export async function convertRawKeyToJwk(rawKeyObj, type, namedCurve) {
   if (type !== 'public' && type !== 'private') throw new Error('type must be public or private');
-  if (Object.keys(curveList).indexOf(algo) < 0) throw new Error('unsupported curve (alg)');
+  if (Object.keys(curveList).indexOf(namedCurve) < 0) throw new Error('unsupported curve (alg)');
 
-  const len = curveList[algo].payloadSize;
+  const len = util.getPayloadSize(namedCurve);
   if (rawKeyObj.publicKey.length !== len*2+1) throw new Error('something wrong in public key length');
 
   const bufX = rawKeyObj.publicKey.slice(1, len+1);
@@ -51,7 +50,7 @@ export async function convertRawKeyToJwk(rawKeyObj, type, algo) {
 
   const jwKey = { // https://www.rfc-editor.org/rfc/rfc7518.txt
     kty: 'EC', // or "RSA", "oct"
-    crv: algo,
+    crv: namedCurve,
     x: b64uX, // hex to base64url
     y: b64uY
     // ext: true
@@ -69,7 +68,7 @@ export async function convertRawKeyToJwk(rawKeyObj, type, algo) {
 export async function JwkToBin(jwkey, type, namedCurve){
   if(type !== 'public' && type !== 'private') throw new Error('type must be public or private');
 
-  const rawHexKey = await util.convertJwkToRawHexKey(jwkey, type);
+  const rawKey = await convertJwkToRawKey(jwkey, type);
   const curve = util.getCurveName(namedCurve);
 
   // load elliptic for compacting key
@@ -77,7 +76,7 @@ export async function JwkToBin(jwkey, type, namedCurve){
 
   let returnKey;
   if(type === 'public'){
-    const ecKey = ec.keyFromPublic(rawHexKey, 'hex'); // convert raw hex key to ec key object
+    const ecKey = ec.keyFromPublic(rawKey); // convert raw key to ec key object
     const publicKey = ecKey.getPublic('array'); // export as array
 
     // encode as DER ASN.1 in SubjectPublicKeyInfo (SPKI) format that is readable for WebCrypto API
@@ -87,7 +86,7 @@ export async function JwkToBin(jwkey, type, namedCurve){
     }, 'der');
   }
   else {
-    const ecKey = ec.keyFromPrivate(rawHexKey, 'hex');
+    const ecKey = ec.keyFromPrivate(rawKey);
     const publicKey = ecKey.getPublic('array'); // export as array
     const privateKey = ecKey.getPrivate().toArray(); // export as array
     // encode as DER ASN.1 in PrivateKeyInfo of PKCS#8 format that is readable for WebCrypto API
@@ -141,7 +140,7 @@ export async function binToJwk(binKey, type){
 
 export function decodeAsn1Signature(asn1sig, namedCurve){
   const decoded = ECDSASignature.decode(asn1sig, 'der');
-  const len = cryptoUtil.defaultParams.curves[namedCurve].payloadSize;
+  const len = util.getPayloadSize(namedCurve);
   const r = new Uint8Array(decoded.r.toArray('be', len));
   const s = new Uint8Array(decoded.s.toArray('be', len));
   const signature = new Uint8Array(len*2);
@@ -151,7 +150,7 @@ export function decodeAsn1Signature(asn1sig, namedCurve){
 }
 
 export function encodeAsn1Signature(signature, namedCurve){
-  const len = cryptoUtil.defaultParams.curves[namedCurve].payloadSize;
+  const len = util.getPayloadSize(namedCurve);
   const r = signature.slice(0, len);
   const s = signature.slice(len, signature.length);
   const asn1sig = ECDSASignature.encode({
