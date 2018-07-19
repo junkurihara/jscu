@@ -139,7 +139,8 @@ export async function binToJwk(binKey, type){
 
 
 export function decodeAsn1Signature(asn1sig, namedCurve){
-  const decoded = ECDSASignature.decode(asn1sig, 'der');
+  const asn1sigBuffer = Buffer.from(asn1sig); // This must be Buffer object to get decoded;
+  const decoded = ECDSASignature.decode(asn1sigBuffer, 'der');
   const len = util.getPayloadSize(namedCurve);
   const r = new Uint8Array(decoded.r.toArray('be', len));
   const s = new Uint8Array(decoded.s.toArray('be', len));
