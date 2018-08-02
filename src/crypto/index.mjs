@@ -11,6 +11,7 @@ const random = util.random;
 const hkdf = util.hkdf;
 const aes = util.aes;
 const hmac = util.hmac;
+const jwkey = util.jwkey;
 
-export { sign, verify, generateKeyPair, encrypt, decrypt, keyconv, random, hash, hkdf, aes, hmac};
+export { sign, verify, generateKeyPair, encrypt, decrypt, keyconv, random, hash, hkdf, aes, hmac, jwkey };
 

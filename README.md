@@ -9,7 +9,8 @@ This library is build to provide unified (and specific) APIs for browsers and No
 
 Firstly, we just started to provide the following functions that works in most modern browsers (Vivaldi/Chrome/Safari/Firefox/Edge/IE) and Node.js (with and without `--experimental-modules`):
 - ECDSA signing, verification, key generation (P-256/P-384/P-521)
-- Public/private key format conversion between ECDSA JWK and PEM (SPKI for public/PKCS8 for private) 
+- Public/private key format conversion between ECDSA JWK and PEM (SPKI for public/PKCS8 for private)
+- JWK EC public key thumbprint 
 - Generation of random byte array
 - Generation of message digest (SHA-256/384/512)
 - HMAC (SHA-256/384/512)
@@ -84,6 +85,20 @@ At your project directory, do either one of the following.
       // NOTE: key_ops and ext entries will be omitted.
     });
   ```
+- Generation of JWK EC public key thumbprint https://tools.ietf.org/html/rfc7638
+  ```javascript
+  import jscu from 'js-crypto-utils';  
+
+  const jwk = {kty: 'EC', ...}; // JWK formatted ECDSA key
+  jscu.crypto.jwkey.getThumbprint(jwk, 'SHA-256') // default (jwk, hash='SHA-256', output='array')
+    .then( (uint8Thumbprint) => {
+    // now you get jwk thumbprint of uint8array
+    });
+  jscu.crypto.jwkey.getThumbprint(jwk, 'SHA-256', 'hex')
+    .then( (hexThumbprint) => {
+    // now you get jwk thumbprint of hex string
+    });
+  ``` 
 
 - Random and Hash
   ```javascript
@@ -145,7 +160,7 @@ One of the listed APIs/libraries is automatically chosen and leveraged for each 
 - Key format conversion:
   * WebCrypto API for browsers
   * [asn1.js](https://github.com/indutny/asn1.js) for browsers and Node.js
-- Random, hash, HKDF, HMAC:
+- Random, hash, HKDF, HMAC, JWK Thumbprint:
   * WebCrypto API for browsers
   * MsCrypto for IE
   * NodeCrypto for Node.js

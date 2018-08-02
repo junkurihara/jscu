@@ -16,14 +16,12 @@ async function keyAssert(keyParams){
 
 describe('Key generation test via exported api', () => {
 
-  const getKeyParam = (elem) => {
-    return {keyType: 'EC', namedCurve: elem};
-  };
+  const getKeyParam = (elem) => ({keyType: 'EC', namedCurve: elem});
 
   const curves = ['P-256', 'P-384', 'P-521'];
   it('ECDSA Key Generation should be done successfully', async () => {
 
-    await Promise.all(curves.map( async (crv) =>{
+    await Promise.all(curves.map( async (crv) => {
       const param = getKeyParam(crv);
       await keyAssert(param);
     }));

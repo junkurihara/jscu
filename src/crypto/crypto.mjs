@@ -111,7 +111,7 @@ async function deriveECDHSharedSecret(algo, pubkey, privkey){
     else throw new Error('fallback to elliptic');
   }
   catch (e) {
-    logger.info(`web crypto api is not supported for key derivation. fallen back to pure javascript shared secret derivation. ${e}`);
+    logger.info(e, 'web crypto api is not supported for key derivation. fallen back to pure javascript shared secret derivation.');
     sharedKey = await elliptic.crypto.deriveSharedKey(algo, pubkey, privkey);
   }
 
@@ -154,7 +154,7 @@ export async function sign(msg, privkey, hash = {name: 'SHA-256'} ){
     else throw new Error('fallback to elliptic');
   }
   catch (e) {
-    logger.info(`web crypto api is not supported for signing of the parameter. fallen back to pure javascript ecdsa signing. ${JSON.stringify(e)}`);
+    logger.info(e, 'web crypto api is not supported for signing of the parameter. fallen back to pure javascript ecdsa signing.');
     signature = await elliptic.crypto.sign(algo, privkey, msg);
   }
 
@@ -199,7 +199,7 @@ export async function verify(msg, sig, pubkey, hash = {name: 'SHA-256'}){
     else throw new Error('fallback to elliptic');
   }
   catch (e) {
-    logger.info(`web crypto api is not supported for verification of the parameter. fallen back to pure javascript ecdsa verification. ${JSON.stringify(e)}`);
+    logger.info(e, 'web crypto api is not supported for verification of the parameter. fallen back to pure javascript ecdsa verification');
     result = await elliptic.crypto.verify(algo, pubkey, sig, msg);
   }
 
@@ -253,7 +253,7 @@ export async function generateKeyPair(keyParams){
     else throw new Error('fallback to elliptic');
   }
   catch (e) {
-    logger.info(`something wrong maybe do to lack of web crypto api feature. fall back to elliptic to generate key. ${JSON.stringify(e)}`);
+    logger.info(e, 'something wrong maybe do to lack of web crypto api feature. fall back to elliptic to generate key');
     keyPair = await elliptic.crypto.generateKeyPair(
       Object.assign(cryptoUtil.defaultParams.webCryptoKeyParamsEC.algo, {namedCurve: keyParams.namedCurve})
     );
