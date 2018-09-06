@@ -7,6 +7,7 @@ import * as hkdf from './hkdf.mjs';
 import * as aes from './aes.mjs';
 import * as hmac from './hmac.mjs';
 import * as jwkey from './jwkey.mjs';
+import * as x509 from './x509.mjs';
 
 
-export default { env, defaultParams, algo, random, hash, hkdf, aes, hmac, jwkey };
+export default { env, defaultParams, algo, random, hash, hkdf, aes, hmac, jwkey, x509 };

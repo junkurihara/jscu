@@ -77,8 +77,10 @@ function formatAsPem(str, type) {
 }
 
 function dearmorPem(str) {
-  const beginRegExp = RegExp('^-----[\s]*BEGIN[^-]*KEY-----$', 'gm');
-  const endRegExp = RegExp('^-----[\s]*END[^-]*KEY-----$', 'gm');
+  // const beginRegExp = RegExp('^-----[\s]*BEGIN[^-]*KEY-----$', 'gm');
+  // const endRegExp = RegExp('^-----[\s]*END[^-]*KEY-----$', 'gm');
+  const beginRegExp = RegExp('^-----[\s]*BEGIN[^-]*-----$', 'gm');
+  const endRegExp = RegExp('^-----[\s]*END[^-]*-----$', 'gm');
 
   // check if the object starts from 'begin'
   try {
