@@ -62,7 +62,8 @@
     "asn1.js-rfc5280": "^3.0.0",
     "buffer": "5.2.1",
     "elliptic": "6.4.1",
-    "pino": "5.5.0"
+    "pino": "5.5.0",
+    "pino-pretty": "^2.1.0"
   },
   "browser": {
     "crypto": false,

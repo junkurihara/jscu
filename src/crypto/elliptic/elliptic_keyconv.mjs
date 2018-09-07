@@ -4,12 +4,15 @@
 
 
 import elliptic from 'elliptic';
+import rfc5280 from 'asn1.js-rfc5280';
 import asn from 'asn1.js';
 const BN = asn.bignum;
 
 import BufferMod from 'buffer';
 import helper from '../../helper/index.mjs';
+import cryptoUtil from '../util/index.mjs';
 import * as util from './elliptic_util.mjs';
+import * as ell from './elliptic_npm.mjs';
 const curveList = util.getCurveList();
 
 const Ec = elliptic.ec;
@@ -159,6 +162,73 @@ export function encodeAsn1Signature(signature, namedCurve){
   }, 'der');
   return new Uint8Array(asn1sig);
 }
+
+
+/////////////////////////////////////////////////////////////////////////////////////////
+// SPKI PEM <=> X509 Certificate
+// https://tools.ietf.org/html/rfc5280
+export async function convertJwkToX509 ({publicJwk, privateJwk, options = {}}){
+  // default values
+  if(typeof options.signature === 'undefined') options.signature = 'ecdsa-with-sha256';
+  if(typeof options.days === 'undefined') options.days = 3650;
+
+  // elements of TBSCertificate
+  const version = 0; // default, TODO: other versions?
+
+  const serialNumber = new BN(0); // TODO: generate serial num
+
+  const signature = { algorithm: util.getSignatureOid(options.signature) };
+
+  const issuer = { // TODO: set issuer
+    type: 'rdnSequence',
+    value: [[]],
+  };
+
+  const current = (Date.now()/1000) * 1000;
+  const validity = {
+    notBefore: { type: 'utcTime', value: current },
+    notAfter: { type: 'utcTime', value: (current + options.days*86400*1000) }
+  };
+
+  const subject = { // TODO: set subject
+    type: 'rdnSequence',
+    value: [[]],
+  };
+
+  const subjectPublicKeyInfo = rfc5280.SubjectPublicKeyInfo.decode(await JwkToBin(publicJwk, 'public', publicJwk.crv), 'der');
+
+  // elements of Certificate
+  const tbsCertificate = { version, serialNumber, signature, issuer, validity, subject, subjectPublicKeyInfo };
+  const signatureAlgorithm = tbsCertificate.signature; // This must be the same as tbsCertificate.signature field (as specified in RFC).
+
+  // generate signature value
+  const encodedTbsCertificate = rfc5280.TBSCertificate.encode(tbsCertificate, 'der');
+  const algo = Object.assign(
+    { hash: {name: util.getSignatureHash(options.signature)} },
+    cryptoUtil.algo.getWebCryptoParamsFromJwk(privateJwk, 'sign')
+  );
+  const bareSig = await ell.sign(algo, privateJwk, encodedTbsCertificate);
+  const signatureValue = { unused: 0, data: Buffer.from(await encodeAsn1Signature(bareSig, privateJwk.crv)) };
+
+  // construct Certificate
+  const certBin = rfc5280.Certificate.encode({ tbsCertificate, signatureAlgorithm, signature: signatureValue }, 'der');
+
+  return await helper.formatter.binToPem(certBin, 'certificate');
+}
+
+
+// TODO: pem?
+export async function convertX509ToJwk ({certX509Pem}){
+
+  const x509bin = await helper.formatter.pemToBin(certX509Pem);
+  const binKeyBuffer = Buffer.from(x509bin); // This must be Buffer object to get decoded;
+
+  const decoded = rfc5280.Certificate.decode(binKeyBuffer, 'der'); // decode binary x509-formatted public key to parsed object
+  const binSpki = rfc5280.SubjectPublicKeyInfo.encode(decoded.tbsCertificate.subjectPublicKeyInfo, 'der');
+
+  return await binToJwk(binSpki, 'public');
+}
+
 
 /////////////////////////////////////////////////////////////////////////////////////////
 // Originally written by Owen Smith https://github.com/omsmith

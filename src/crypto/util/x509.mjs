@@ -25,7 +25,9 @@ export async function convertX509ToJwk ({certX509Pem}){
   const binKeyBuffer = Buffer.from(x509bin); // This must be Buffer object to get decoded;
 
   const decoded = rfc5280.Certificate.decode(binKeyBuffer, 'der'); // decode binary x509-formatted public key to parsed object
+  const spki = decoded.tbsCertificate.subjectPublicKeyInfo;
   console.log(decoded);
+  console.log(spki);
 
   return 'howdy';
 }

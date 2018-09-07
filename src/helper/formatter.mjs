@@ -60,10 +60,11 @@ export function stringToArrayBuffer(binary) {
 
 function formatAsPem(str, type) {
   let typeString;
-  if (type === 'public') typeString = 'PUBLIC';
-  else if (type === 'private') typeString = 'PRIVATE';
+  if (type === 'public') typeString = 'PUBLIC KEY';
+  else if (type === 'private') typeString = 'PRIVATE KEY';
+  else if (type === 'certificate') typeString = 'CERTIFICATE';
 
-  let finalString = `-----BEGIN ${typeString} KEY-----\n`;
+  let finalString = `-----BEGIN ${typeString}-----\n`;
 
 
   while (str.length > 0) {
@@ -71,7 +72,7 @@ function formatAsPem(str, type) {
     str = str.substring(64);
   }
 
-  finalString = `${finalString}-----END ${typeString} KEY-----`;
+  finalString = `${finalString}-----END ${typeString}-----`;
 
   return finalString;
 }

@@ -4,6 +4,7 @@
 
 import cryptoUtil from '../util/index.mjs';
 const curveList = cryptoUtil.defaultParams.curves;
+const signatureList = cryptoUtil.defaultParams.signatureAlgorithms;
 
 export function getCurveName(algoCurve) {
   const curve = curveList[algoCurve].name;
@@ -19,4 +20,16 @@ export function getPayloadSize(algoCurve) {
 
 export function getCurveList(){
   return curveList;
+}
+
+export function getSignatureOid(signatureAlgorithm){
+  const oid = signatureList[signatureAlgorithm].oid;
+  if(!oid) throw new Error('unsupported signature algorithm');
+  return oid;
+}
+
+export function getSignatureHash(signatureAlgorithm){
+  const hash = signatureList[signatureAlgorithm].hash;
+  if(!hash) throw new Error('unsupported signature algorithm');
+  return hash;
 }

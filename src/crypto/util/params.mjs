@@ -38,6 +38,12 @@ export default {
     'P-521': {name: 'p521', nodeName: 'secp521r1', payloadSize: 66, oid: [1, 3, 132, 0, 35]}
   },
 
+  signatureAlgorithms: {
+    'ecdsa-with-sha256': { oid: [ 1, 2, 840, 10045, 4, 3, 2 ], hash: 'SHA-256' },
+    'ecdsa-with-sha384': { oid: [ 1, 2, 840, 10045, 4, 3, 3 ], hash: 'SHA-384' },
+    'ecdsa-with-sha512': { oid: [ 1, 2, 840, 10045, 4, 3, 4 ], hash: 'SHA-512' }
+  },
+
   ciphers: {
     'AES-GCM': {prefix: 'aes', suffix: 'gcm', ivLength: 12, tagLength: 16}  // 12 bytes is recommended for AES-GCM
   }
