@@ -10,6 +10,7 @@ This library is build to provide unified (and specific) APIs for browsers and No
 Firstly, we just started to provide the following functions that works in most modern browsers (Vivaldi/Chrome/Safari/Firefox/Edge/IE) and Node.js (with and without `--experimental-modules`):
 - ECDSA signing, verification, key generation (P-256/P-384/P-521)
 - Public/private key format conversion between ECDSA JWK and PEM (SPKI for public/PKCS8 for private)
+- Generation of X.509 public key certificate from JWK and extraction of JWK public key from X.509 public key certificate.
 - JWK EC public key thumbprint 
 - Generation of random byte array
 - Generation of message digest (SHA-256/384/512)
@@ -98,7 +99,36 @@ At your project directory, do either one of the following.
     .then( (hexThumbprint) => {
     // now you get jwk thumbprint of hex string
     });
-  ``` 
+  ```
+  
+- Generation of self-signed X.509 EC public key certificate from JWK-formatted key pair
+  ```javascript
+  import jscu from 'js-crypto-utils';  
+
+  const kp = {publicKey: {kty: 'EC', ...}, privateKey: {kty: 'EC', ...}}; // JWK formatted ECDSA key pair
+  const name = {
+        countryName: 'JP',
+        stateOrProvinceName: 'Tokyo',
+        localityName: 'Chiyoda',
+        organizationName: 'example',
+        organizationalUnitName: 'Research',
+        commonName: 'example.com'
+      }; // parameters for issuer and subject fields
+   jscu.crypto.x509.convertJwkToX509({
+        publicJwk: kp.publicKey, // your public key to be certified
+        privateJwk: kp.privateKey, // paired with public JWK for self certified public key
+        options: {
+          signature: 'ecdsa-with-sha256',
+          days: 365,
+          format: 'pem',
+          issuer: name,
+          subject: name
+        }
+   }).then( (x509) => {
+     // now you get x509 formatted public key certificate
+   });
+  ```
+  you can also parse and extract signature/message parts and jwk-formatted public key from x509 with another api.
 
 - Random and Hash
   ```javascript
