@@ -4,7 +4,7 @@
 
 import buffer from 'buffer';
 import {getHash} from './hash.mjs';
-import helper from '../../helper/index.mjs';
+import jseu from 'js-encoding-utils';
 
 const Buffer = buffer.Buffer;
 
@@ -24,6 +24,6 @@ export async function getThumbprint(jwkey, hash='SHA-256', output='array'){
   const uint8json = new Uint8Array(Buffer.from(jsonString, 'utf8'));
   const thumbPrintBuf = await getHash(hash, uint8json);
 
-  if(output === 'hex') return helper.formatter.arrayBufferToHexString(thumbPrintBuf);
+  if(output === 'hex') return jseu.encoder.arrayBufferToHexString(thumbPrintBuf);
   else if (output === 'array') return thumbPrintBuf;
 }

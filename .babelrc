@@ -3,13 +3,11 @@
     [ "@babel/preset-env", {
       "targets": { },
       "useBuiltIns": false
-    } ]
+    } ],
+    "babel-preset-minify"
   ],
-  "env": {
-    "test": {
-      "presets": ["@babel/preset-env"]
-    }
-  },
+  "ignore": [ "node_modules" ],
+  "only": [ "src", "test" ],
   "plugins": [
     "@babel/plugin-syntax-dynamic-import",
     [

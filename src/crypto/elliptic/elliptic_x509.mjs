@@ -11,9 +11,9 @@ import asn from 'asn1.js';
 import BufferMod from 'buffer';
 import cryptoUtil from '../util/index.mjs';
 import * as util from './elliptic_util.mjs';
-import helper from '../../helper/index.mjs';
 import {binToJwk, decodeAsn1Signature, encodeAsn1Signature, JwkToBin} from './elliptic_keyconv.mjs';
 import * as ell from './elliptic_npm';
+import jseu from 'js-encoding-utils';
 
 const BN = asn.bignum;
 const Buffer = BufferMod.Buffer;
@@ -75,7 +75,7 @@ export async function convertJwkToX509({publicJwk, privateJwk, options = {}}) {
   const certBin = rfc5280.Certificate.encode({tbsCertificate, signatureAlgorithm, signature: signatureValue}, 'der');
 
   if (options.format === 'pem') {
-    return await helper.formatter.binToPem(certBin, 'certificate');
+    return await jseu.formatter.binToPem(certBin, 'certificate');
   }
   else if (options.format === 'der') {
     return certBin;
@@ -95,7 +95,7 @@ export async function convertX509ToJwk({certX509, format}) {
   if (typeof format === 'undefined') format = 'pem';
 
   let x509bin;
-  if (format === 'pem') x509bin = await helper.formatter.pemToBin(certX509);
+  if (format === 'pem') x509bin = await jseu.formatter.pemToBin(certX509);
   else if (format === 'der') x509bin = certX509;
   else throw new Error('InvalidFormatSpecification');
 
@@ -111,7 +111,7 @@ export async function parseX509forVerification({certX509, publicJWK, format}){
   if (typeof format === 'undefined') format = 'pem';
 
   let x509bin;
-  if (format === 'pem') x509bin = await helper.formatter.pemToBin(certX509);
+  if (format === 'pem') x509bin = await jseu.formatter.pemToBin(certX509);
   else if (format === 'der') x509bin = certX509;
   else throw new Error('InvalidFormatSpecification');
 

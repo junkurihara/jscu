@@ -3,8 +3,7 @@
  */
 
 import * as crypto from './crypto/index.mjs';
-import helper from './helper/index.mjs';
 
 
-export default { crypto, helper };
-export {crypto, helper}; // workaround
+export default { crypto };
+export {crypto }; // workaround

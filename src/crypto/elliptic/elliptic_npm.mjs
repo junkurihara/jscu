@@ -6,7 +6,8 @@ import EC from 'elliptic';
 import * as util from './elliptic_util.mjs';
 import * as keyconv from './elliptic_keyconv.mjs';
 import cryptoUtil from '../util/index.mjs';
-import helper from '../../helper/index.mjs';
+import jseu from 'js-encoding-utils';
+
 const Ec = EC.ec;
 
 export async function deriveSharedKey(algo, pubkey, privkey){
@@ -82,7 +83,7 @@ export async function generateKeyPair(algo){
   const ec = new Ec(curve);
 
   const rawKeyPair = await ec.genKeyPair({
-    entropy: helper.formatter.arrayBufferToString(await cryptoUtil.random.getRandomBytes(32))
+    entropy: jseu.encoder.arrayBufferToString(await cryptoUtil.random.getRandomBytes(32))
   });
 
   const len = util.getPayloadSize(namedCurve);

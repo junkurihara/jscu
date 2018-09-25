@@ -1,4 +1,5 @@
 import jscu from '../src/index.mjs';
+import jseu from 'js-encoding-utils';
 
 let crypto;
 if (typeof window !== 'undefined' && typeof window.crypto !== 'undefined' && typeof window.crypto.subtle === 'object'
@@ -43,7 +44,7 @@ describe('Generated JWK key should be successfully converted to PEM SPKI/PKCS8, 
           const sig = await jscu.crypto.sign(msg, keySet[idx].privateKey.key, {name: hash});
 
           const pemPub = await jscu.crypto.keyconv.jwkToPem(keySet[idx].publicKey.key, 'public');
-          const binKey = await jscu.helper.formatter.pemToBin(pemPub);
+          const binKey = await jseu.formatter.pemToBin(pemPub);
           const key = await crypto.subtle.importKey('spki', binKey, {name: 'ECDSA', namedCurve: curve}, true, ['verify']);
           const result = await crypto.subtle.verify({name: 'ECDSA', namedCurve: curve, hash: { name: hash }}, key, sig, msg);
           expect(result).to.be.true;
@@ -58,7 +59,7 @@ describe('Generated JWK key should be successfully converted to PEM SPKI/PKCS8, 
       curves.map( async (curve, idx) => await Promise.all(
         hashes.map( async (hash) => {
           const pemPriv = await jscu.crypto.keyconv.jwkToPem(keySet[idx].privateKey.key, 'private');
-          const binKey = await jscu.helper.formatter.pemToBin(pemPriv);
+          const binKey = await jseu.formatter.pemToBin(pemPriv);
           const key = await crypto.subtle.importKey('pkcs8', binKey, {name: 'ECDSA', namedCurve: curve}, false, ['sign']);
           const sig = await crypto.subtle.sign({name: 'ECDSA', namedCurve: curve, hash: { name: hash }}, key, msg);
           const result = await jscu.crypto.verify(msg, sig, keySet[idx].publicKey.key, {name: hash});

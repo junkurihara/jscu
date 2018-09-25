@@ -2,7 +2,7 @@
  * crypto.mjs
  */
 import cryptoUtil from './util/index.mjs';
-import helper from '../helper/index.mjs';
+import jseu from 'js-encoding-utils';
 import {jwkToPem} from './keyconv.mjs';
 
 import elliptic from './elliptic/index.mjs';
@@ -93,18 +93,18 @@ async function deriveECDHSharedSecret(algo, pubkey, privkey){
     ) {
       const privKeyObj = await webCrypto.subtle.importKey('jwk', privkey, algo, false, ['deriveBits']);
       const pubKeyObj = await webCrypto.subtle.importKey('jwk', pubkey, algo, false, []);
-      const bitlen = async () => { const arr = await helper.encoder.decodeBase64Url(privkey.x); return 8*arr.length; };
+      const bitlen = async () => { const arr = await jseu.encoder.decodeBase64Url(privkey.x); return 8*arr.length; };
       sharedKey = new Uint8Array(await webCrypto.subtle.deriveBits(Object.assign(algo, {public: pubKeyObj}), privKeyObj, await bitlen()));
     }
     else if (typeof nodeCrypto !== 'undefined'){
       const curve = cryptoUtil.defaultParams.curves[algo.namedCurve].nodeName;
       const ecdh = nodeCrypto.createECDH(curve);
-      const privKeyBuf = await helper.encoder.decodeBase64Url(privkey.d);
+      const privKeyBuf = await jseu.encoder.decodeBase64Url(privkey.d);
       const payloadSize = cryptoUtil.defaultParams.curves[algo.namedCurve].payloadSize;
       const pubKeyBuf = new Uint8Array( payloadSize * 2 + 1 );
       pubKeyBuf[0] = 0xFF & 0x04;
-      pubKeyBuf.set(await helper.encoder.decodeBase64Url(pubkey.x), 1);
-      pubKeyBuf.set(await helper.encoder.decodeBase64Url(pubkey.y), payloadSize + 1);
+      pubKeyBuf.set(await jseu.encoder.decodeBase64Url(pubkey.x), 1);
+      pubKeyBuf.set(await jseu.encoder.decodeBase64Url(pubkey.y), payloadSize + 1);
       ecdh.setPrivateKey(privKeyBuf);
       sharedKey = new Uint8Array(ecdh.computeSecret(pubKeyBuf));
     }

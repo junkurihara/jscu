@@ -3,10 +3,10 @@
  * keyconv.mjs
  */
 
-import helper from '../helper/index.mjs';
 import cryptoUtil from './util/index.mjs';
 import elliptic from './elliptic/index.mjs';
 
+import jseu from 'js-encoding-utils';
 import pino from 'pino';
 // log options
 const logOptions = cryptoUtil.env.getEnvLogOptions();
@@ -42,7 +42,7 @@ export async function jwkToPem(jwkey, type) {
 
       const key = await crypto.subtle.importKey('jwk', jwkey, algo, true, usages);
       const binKey = await crypto.subtle.exportKey(structure, key);
-      pemKey = await helper.formatter.binToPem(binKey, type);
+      pemKey = await jseu.formatter.binToPem(binKey, type);
     }
     else throw new Error('fall back to elliptic');
   }
@@ -64,7 +64,7 @@ export async function jwkToPem(jwkey, type) {
  */
 async function jwkToPemElliptic(jwkey, type, namedCurve) {
   const binKey = await elliptic.keyconv.JwkToBin(jwkey, type, namedCurve);
-  return await helper.formatter.binToPem(binKey, type);
+  return await jseu.formatter.binToPem(binKey, type);
 }
 
 /**
@@ -89,7 +89,7 @@ export async function pemToJwk(pem, type, keyParams) {
 
       const usages = (type === 'public') ? ['verify'] : ['sign']; // just for importing
 
-      const binKey = await helper.formatter.pemToBin(pem);
+      const binKey = await jseu.formatter.pemToBin(pem);
       const key = await crypto.subtle.importKey(structure, binKey, {name: 'ECDSA', namedCurve: keyParams.namedCurve}, true, usages); // just for importing
       jwkey = await crypto.subtle.exportKey('jwk', key);
       delete jwkey.key_ops; // key pair is exported as both for ecdh and ecdsa
@@ -111,6 +111,6 @@ export async function pemToJwk(pem, type, keyParams) {
  */
 // TODO: ここはellipticに吸収したほうが良さそう。
 async function pemToJwkElliptic(pem, type) {
-  const binKey = await helper.formatter.pemToBin(pem);
+  const binKey = await jseu.formatter.pemToBin(pem);
   return await elliptic.keyconv.binToJwk(binKey, type);
 }

@@ -7,8 +7,8 @@ import elliptic from 'elliptic';
 import rfc5280 from 'asn1.js-rfc5280';
 import asn from 'asn1.js';
 import BufferMod from 'buffer';
-import helper from '../../helper/index.mjs';
 import * as util from './elliptic_util.mjs';
+import jseu from 'js-encoding-utils';
 
 const BN = asn.bignum;
 const Ec = elliptic.ec;
@@ -23,15 +23,15 @@ export async function convertJwkToRawKey(jwkey, type) {
 
   let rawKey;
   if (type === 'public') {
-    const bufX = await helper.encoder.decodeBase64Url(jwkey.x);
-    const bufY = await helper.encoder.decodeBase64Url(jwkey.y);
+    const bufX = await jseu.encoder.decodeBase64Url(jwkey.x);
+    const bufY = await jseu.encoder.decodeBase64Url(jwkey.y);
     rawKey = new Uint8Array(bufX.length + bufY.length + 1);
     rawKey[0]=0x04;
     rawKey.set(bufX, 1);
     rawKey.set(bufY, bufX.length+1);
   }
   else {
-    rawKey = await helper.encoder.decodeBase64Url(jwkey.d);
+    rawKey = await jseu.encoder.decodeBase64Url(jwkey.d);
   }
   return rawKey;
 }
@@ -46,8 +46,8 @@ export async function convertRawKeyToJwk(rawKeyObj, type, namedCurve) {
 
   const bufX = rawKeyObj.publicKey.slice(1, len+1);
   const bufY = rawKeyObj.publicKey.slice(len+1, len*2+1);
-  const b64uX = await helper.encoder.encodeBase64Url(bufX);
-  const b64uY = await helper.encoder.encodeBase64Url(bufY);
+  const b64uX = await jseu.encoder.encodeBase64Url(bufX);
+  const b64uY = await jseu.encoder.encodeBase64Url(bufY);
 
   const jwKey = { // https://www.rfc-editor.org/rfc/rfc7518.txt
     kty: 'EC', // or "RSA", "oct"
@@ -60,7 +60,7 @@ export async function convertRawKeyToJwk(rawKeyObj, type, namedCurve) {
   //   jwKey.key_ops = ['verify'];
   // }
   if(type === 'private') {
-    jwKey.d = await helper.encoder.encodeBase64Url(rawKeyObj.privateKey);
+    jwKey.d = await jseu.encoder.encodeBase64Url(rawKeyObj.privateKey);
     // jwKey.key_ops = ['sign'];
   }
   return jwKey;
