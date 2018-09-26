@@ -148,10 +148,10 @@ At your project directory, do either one of the following.
   const randomMasterKeyAndHKDF = async () => {
     const master = await jscu.crypto.random.getRandomBytes(32);
   
-    const sessionKey = await jscu.crypto.hkdf.getKeySalt(master, 'SHA-256', 64, '', null); // with automatic random salt generation
+    const sessionKey = await jscu.crypto.hkdf.compute(master, 'SHA-256', 64, '', null); // with automatic random salt generation
     console.log(sessionKey); // {key: <Uint8Array>, salt: <Uint8Array>}
   
-    const duplicated = await jscu.crypto.hkdf.getKeySalt(master, 'SHA-256', 64, '', sessionKey.salt); // with externally-generated salt
+    const duplicated = await jscu.crypto.hkdf.compute(master, 'SHA-256', 64, '', sessionKey.salt); // with externally-generated salt
     console.log(sessionKey.key.toString() === duplicated.key.toString()); // true
   };
   ```
