@@ -165,14 +165,14 @@ At your project directory, do either one of the following.
     for(let i = 0; i < 32; i++) msg[i] = 0xFF & i;
   
     const key = await jscu.crypto.random.getRandomBytes(32);
-    const mac = await jscu.crypto.hmac.getMac(key, msg, 'SHA-256');  
+    const mac = await jscu.crypto.hmac.compute(key, msg, 'SHA-256');  
     
-    const macx = await jscu.crypto.hmac.getMac(key, msg, 'SHA-256');
+    const macx = await jscu.crypto.hmac.compute(key, msg, 'SHA-256');
     console.log(mac.toString() === macx.toString()); // true
       
     const newmsg = Object.assign({}, {x: msg}).x;
     newmsg[1] = 0x33;
-    const macy = await jscu.crypto.hmac.getMac(key, newmsg, 'SHA-256');
+    const macy = await jscu.crypto.hmac.compute(key, newmsg, 'SHA-256');
     console.log(mac.toString() === macy.toString()); // false
   };
   ```

@@ -4,9 +4,10 @@
  */
 
 import * as env from './crypto_env.mjs';
-import * as random from './random.mjs';
-import * as hmac from './hmac.mjs';
 import params from './params.mjs';
+
+import random from 'js-crypto-random';
+import hmac  from 'js-crypto-hmac';
 
 export async function getKeySalt(master, hashAlgo = 'SHA-256', length = 32, info = '', salt = null){
   if(!info) info = '';
@@ -50,7 +51,7 @@ async function rfc5869(master, salt, hashAlgo, info, length){
   const len = params.hashes[hashAlgo].hashSize;
 
   // RFC5869 Step 1 (Extract)
-  const prk = await hmac.getMac(salt, master, hashAlgo);
+  const prk = await hmac.compute(salt, master, hashAlgo);
 
   // RFC5869 Step 2 (Expand)
   let t = new Uint8Array([]);
@@ -61,7 +62,7 @@ async function rfc5869(master, salt, hashAlgo, info, length){
     concat.set(t);
     concat.set(uintInfo, t.length);
     concat.set(new Uint8Array([i+1]), t.length + uintInfo.length);
-    t = await hmac.getMac(prk, concat, hashAlgo);
+    t = await hmac.compute(prk, concat, hashAlgo);
     okm.set(t, len * i);
   }
   return okm.slice(0, length);

@@ -18,8 +18,8 @@ describe('HMAC test', () => {
     await Promise.all(hashes.map( async (hash) => {
       const keya = await jscu.crypto.random.getRandomBytes(32);
       const keyb = await jscu.crypto.random.getRandomBytes(32);
-      const da = await jscu.crypto.hmac.getMac(keya, msg, hash);
-      const db = await jscu.crypto.hmac.getMac(keyb, msg, hash);
+      const da = await jscu.crypto.hmac.compute(keya, msg, hash);
+      const db = await jscu.crypto.hmac.compute(keyb, msg, hash);
       expect(da).to.be.a('Uint8Array');
       expect(db).to.be.a('Uint8Array');
       expect(da.toString() === db.toString(), `failed at ${hash}`).to.be.false;
@@ -30,19 +30,18 @@ describe('HMAC test', () => {
     this.timeout(20000);
     await Promise.all(hashes.map( async (hash) => {
       const key = await jscu.crypto.random.getRandomBytes(32);
-      const d = await jscu.crypto.hmac.getMac(key, msg, hash);
+      const d = await jscu.crypto.hmac.compute(key, msg, hash);
 
-      const dx = await jscu.crypto.hmac.getMac(key, msg, hash);
+      const dx = await jscu.crypto.hmac.compute(key, msg, hash);
 
       expect(d.toString() === dx.toString(), `failed at ${hash}`).to.be.true;
 
       const newmsg = Object.assign({}, {x: msg}).x;
       newmsg[1] = 0x33;
-      const dy = await jscu.crypto.hmac.getMac(key, newmsg, hash);
+      const dy = await jscu.crypto.hmac.compute(key, newmsg, hash);
 
 
       expect(d.toString() === dy.toString(), `failed at ${hash}`).to.be.false;
     }));
   });
 });
-
