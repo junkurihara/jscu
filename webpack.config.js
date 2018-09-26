@@ -61,6 +61,9 @@ const webConfig = {
       }
     ]
   },
+  externals: {
+    'crypto': true
+  },
   plugins:[
     new webpack.optimize.LimitChunkCountPlugin({
       maxChunks: 1

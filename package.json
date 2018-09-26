@@ -8,7 +8,7 @@
     "karma": "./node_modules/.bin/karma start",
     "babel": "NODE_ENV=production ./node_modules/.bin/babel src -d dist/ --keep-file-extension",
     "build": "./node_modules/.bin/webpack --mode development",
-    "production": "./node_modules/.bin/webpack --mode production --optimize-minimize --display-modules --json"
+    "production": "./node_modules/.bin/webpack --mode production --optimize-minimize"
   },
   "author": "Jun Kurihara",
   "license": "MIT",
@@ -40,6 +40,7 @@
     "babel-eslint": "9.0.0",
     "babel-loader": "8.0.2",
     "babel-plugin-istanbul": "5.1.0",
+    "babel-preset-minify": "^0.5.0",
     "chai": "^4.1.2",
     "eslint": "5.6.0",
     "karma": "3.0.0",

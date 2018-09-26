@@ -6,9 +6,8 @@
 import * as env from './crypto_env.mjs';
 import params from './params.mjs';
 
-import {random, hmac} from './index.mjs';
-// import random from 'js-crypto-random';
-// import hmac  from 'js-crypto-hmac';
+import random from 'js-crypto-random';
+import hmac  from 'js-crypto-hmac';
 
 export async function getKeySalt(master, hashAlgo = 'SHA-256', length = 32, info = '', salt = null){
   if(!info) info = '';
