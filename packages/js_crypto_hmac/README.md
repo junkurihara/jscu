@@ -1,5 +1,6 @@
 Universal Module for HMAC (Hash-based Message Authentication Code) in JavaScript
 --
+[![CircleCI](https://circleci.com/gh/junkurihara/js-crypto-hmac.svg?style=svg)](https://circleci.com/gh/junkurihara/js-crypto-hmac)
 
 > **WARNING**: At this time this solution should be considered suitable for research and experimentation, further code and security review is needed before utilization in a production application.
 
