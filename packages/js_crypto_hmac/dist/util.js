@@ -1,0 +1,3 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.getWebCrypto=getWebCrypto,exports.getNodeCrypto=getNodeCrypto,exports.getMsCrypto=getMsCrypto;/**
+ * util.js
+ */function getWebCrypto(){if("undefined"!=typeof window)return window.crypto?window.crypto.subtle:void 0}function getNodeCrypto(){return"undefined"==typeof window?require("crypto"):void 0}function getMsCrypto(){if("undefined"!=typeof window)return window.crypto?void 0:window.msCrypto?window.msCrypto.subtle:void 0}
