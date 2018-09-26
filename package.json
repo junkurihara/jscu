@@ -8,7 +8,7 @@
     "karma": "./node_modules/.bin/karma start",
     "babel": "NODE_ENV=production ./node_modules/.bin/babel src -d dist/ --keep-file-extension",
     "build": "./node_modules/.bin/webpack --mode development",
-    "production": "./node_modules/.bin/webpack --mode production --optimize-minimize"
+    "production": "./node_modules/.bin/webpack --mode production --optimize-minimize --display-modules --json"
   },
   "author": "Jun Kurihara",
   "license": "MIT",
@@ -70,7 +70,6 @@
     "pino-pretty": "^2.2.1"
   },
   "browser": {
-    "crypto": false,
-    "node-webcrypto-ossl": false
+    "crypto": false
   }
 }
