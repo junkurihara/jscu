@@ -1,5 +1,6 @@
 Universal Module for RFC5869 HKDF (Hash-based Key Derivation Function) in JavaScript
 --
+[![CircleCI](https://circleci.com/gh/junkurihara/js-crypto-hkdf.svg?style=svg)](https://circleci.com/gh/junkurihara/js-crypto-hkdf)
 
 > **WARNING**: At this time this solution should be considered suitable for research and experimentation, further code and security review is needed before utilization in a production application.
 
