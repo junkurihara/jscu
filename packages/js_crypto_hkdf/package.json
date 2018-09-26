@@ -37,7 +37,6 @@
     "babel-preset-minify": "^0.5.0",
     "chai": "^4.1.2",
     "eslint": "5.6.0",
-    "js-crypto-random": "^0.1.0",
     "karma": "3.0.0",
     "karma-chrome-launcher": "^2.2.0",
     "karma-cli": "^1.0.1",
@@ -53,6 +52,7 @@
   "dependencies": {
     "@babel/plugin-transform-regenerator": "7.0.0",
     "@babel/runtime": "7.0.0",
-    "js-crypto-hmac": "^0.1.0"
+    "js-crypto-hmac": "^0.1.0",
+    "js-crypto-random": "^0.1.0"
   }
 }
