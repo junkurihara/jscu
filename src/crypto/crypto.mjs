@@ -29,7 +29,7 @@ export async function encrypt(msg, pubkey, privkey=null, options = {hkdf: 'SHA-2
   // TODO: This is for ecdh only. this must be wrapped with if-statements when we implement another algo.
   const algo = cryptoUtil.algo.getWebCryptoParamsFromJwk(privkey, 'deriveBits');
   const sharedSecret = await deriveECDHSharedSecret(algo, pubkey, privkey);
-  const sessionKeySalt = await cryptoUtil.hkdf.getKeySalt(sharedSecret, 'SHA-256', options.keyLength, options.info);
+  const sessionKeySalt = await cryptoUtil.hkdf.compute(sharedSecret, 'SHA-256', options.keyLength, options.info);
 
   let data;
   if(Object.keys(cryptoUtil.defaultParams.ciphers).indexOf(options.encrypt) >= 0){
@@ -62,7 +62,7 @@ export async function decrypt(data, privkey, pubkey=null, options = {hkdf: 'SHA-
   // TODO: This is for ecdh only. this must be wrapped with if-statements when we implement another algo.
   const algo = cryptoUtil.algo.getWebCryptoParamsFromJwk(privkey, 'deriveBits');
   const sharedSecret = await deriveECDHSharedSecret(algo, pubkey, privkey);
-  const sessionKeySalt = await cryptoUtil.hkdf.getKeySalt(sharedSecret, 'SHA-256', options.keyLength, options.info, options.salt);
+  const sessionKeySalt = await cryptoUtil.hkdf.compute(sharedSecret, 'SHA-256', options.keyLength, options.info, options.salt);
 
   let msg;
   if(Object.keys(cryptoUtil.defaultParams.ciphers).indexOf(options.encrypt) >= 0){
