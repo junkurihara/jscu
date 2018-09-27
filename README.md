@@ -136,7 +136,7 @@ At your project directory, do either one of the following.
 
   const randomMessageAndHash = async () => {
     const msg = await jscu.crypto.random.getRandomBytes(32);
-    const digest = await jscu.crypto.hash.getHash('SHA-256', msg);
+    const digest = await jscu.crypto.hash.compute(msg, 'SHA-256');
     return {msg: msg, digest: digest};
   };
   ```

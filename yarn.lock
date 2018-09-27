@@ -3297,6 +3297,14 @@ jmespath@^0.15.0:
   resolved "https://registry.yarnpkg.com/jmespath/-/jmespath-0.15.0.tgz#a3f222a9aae9f966f5d27c796510e28091764217"
   integrity sha1-o/Iiqarp+Wb10nx5ZRDigJF2Qhc=
 
+js-crypto-hash@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/js-crypto-hash/-/js-crypto-hash-0.1.0.tgz#c99006bc77f2bf581b5208a045daf75416885a00"
+  integrity sha512-kUEpQkSrXCKU4H/EAJjrWt1hNN38+LUV8z/tofFsw4C1uHoIPmjkLWJhsaiWIPOt+RZjbimMzOeUKKZL+2K7Ew==
+  dependencies:
+    "@babel/plugin-transform-regenerator" "7.0.0"
+    "@babel/runtime" "7.0.0"
+
 js-crypto-hkdf@^0.2.0:
   version "0.2.0"
   resolved "https://registry.yarnpkg.com/js-crypto-hkdf/-/js-crypto-hkdf-0.2.0.tgz#164b61260fb2baefd4328acbd664b1fc6965e65f"

@@ -38,7 +38,7 @@ export async function sign(algo, key, msg){
   const eckey = ec.keyFromPrivate(rawKey);
 
   // get hash
-  const msgHash = await cryptoUtil.hash.getHash(hashAlgo, msg);
+  const msgHash = await cryptoUtil.hash.compute(msg, hashAlgo);
 
   // generate signature
   const signature = await eckey.sign(msgHash);
@@ -70,7 +70,7 @@ export async function verify(algo, key, sig, msg){
   const sigS = sig.slice(len, len+sigR.length);
 
   // get hash
-  const msgHash = await cryptoUtil.hash.getHash(hashAlgo, msg);
+  const msgHash = await cryptoUtil.hash.compute(msg, hashAlgo);
 
   return await eckey.verify(msgHash, {s: sigS, r: sigR});
 }
