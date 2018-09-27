@@ -36,7 +36,7 @@ export async function encrypt(msg, pubkey, privkey=null, options = {hkdf: 'SHA-2
     if(options.encrypt === 'AES-GCM') {  // or TODO: other iv-required algorithms
       if (!options.iv) options.iv = await cryptoUtil.random.getRandomBytes(cryptoUtil.defaultParams.ciphers[options.encrypt].ivLength);
     }
-    data = await cryptoUtil.aes.encrypt(options.encrypt, msg, sessionKeySalt.key, options.iv);
+    data = await cryptoUtil.aes.encrypt(msg, sessionKeySalt.key, {name: options.encrypt, iv: options.iv});
   }
   else throw new Error('unsupported cipher type (currently only AEC-GCM is supported)');
 
@@ -66,7 +66,7 @@ export async function decrypt(data, privkey, pubkey=null, options = {hkdf: 'SHA-
 
   let msg;
   if(Object.keys(cryptoUtil.defaultParams.ciphers).indexOf(options.encrypt) >= 0){
-    msg = await cryptoUtil.aes.decrypt(options.encrypt, data, sessionKeySalt.key, options.iv);
+    msg = await cryptoUtil.aes.decrypt(data, sessionKeySalt.key, {name: options.encrypt, iv: options.iv});
   }
   else throw new Error('unsupported cipher type (currently only AEC-GCM is supported)');
 
