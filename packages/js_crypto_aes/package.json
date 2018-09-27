@@ -1,6 +1,6 @@
 {
   "name": "js-crypto-aes",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Universal Module for Secure Random Generator in JavaScript",
   "main": "dist/index.js",
   "scripts": {
