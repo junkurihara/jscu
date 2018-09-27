@@ -1,6 +1,6 @@
 {
   "name": "js-crypto-hash",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Universal Module for Hash Function in JavaScript",
   "main": "dist/index.js",
   "scripts": {
