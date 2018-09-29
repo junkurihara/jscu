@@ -5,35 +5,44 @@
 import * as asn1enc from './asn1enc.js';
 import * as octenc from './octenc.js';
 
+
 // ASN.1 in RFC5280 (SPKI) and RFC5208 (PKCS8) -> RSA and EC, encode='asn', format='pem' or 'der'
 // -> SPKI (in X.509): RFC5280 for public key, PKCS8: RFC5208 for private key
 // Octet Form in ANSI X9.63 -> EC, encode='oct', format='string' or 'binary', compact=true or false
 // -> Standards for Efficient Cryptography Group (SECG), "SEC1: Elliptic Curve Cryptography", Version 1.0, September 2000.
 /**
  * Convert JWK to ASN.1 (for RSA and EC) and Octet (for EC) encoded keys.
+ * @param output : 'pem', 'der', or 'oct' (only EC JWK)
  * @param jwkey
- * @param type
- * @param encode
- * @param format
- * @param compact
+ * @param type : 'public' or 'private' indicating the key type of input jwk
+ * @param options
+  * For EC JWK : options.compact = true or false
+  * For EC JWK with output = 'oct' : options.format = 'binary' or 'string'
  * @return {Uint8Array}
  */
-export function fromJwkTo(jwkey, type, { encode = 'asn', format='pem', compact=false}){
+export function fromJwkTo(output = 'pem', jwkey, type, options={}){
   // assertion
+  if (['pem', 'der', 'oct'].indexOf(output) < 0) throw new Error('InvalidOutputForm');
   if (type !== 'public' && type !== 'private') throw new Error('InvalidKeyType');
-  // TODO: parameter assertion for each case of EC and RSA
+  if (typeof jwkey !== 'object') throw new Error('InvalidJWKAsObject');
+  if (jwkey.kty !== 'EC' && jwkey.kty !== 'RSA') throw new Error('UnsupportedKeyType');
 
-  // In the case of PEM
-  if (encode === 'asn') {
-    if(!encode || !format) throw new Error('InvalidEncodingSpecs');
-    return asn1enc.fromJwk(jwkey, {type, format, compact});
+  // default values
+  if (jwkey.key === 'EC' && typeof options.compact !== 'boolean') options.compact = false;
+  if (output === 'oct' && options.format !== 'string') options.format = 'binary';
+
+  // In the case of PEM/DER
+  if (output === 'der' || output === 'pem') {
+    return asn1enc.fromJwk(jwkey, {type, format: output, compact: options.compact});
   }
   // In the case of Oct
-  else if (encode === 'oct' && jwkey.kty === 'EC') {
-    return octenc.fromJwk(jwkey, type, format, compact);
+  else if (output === 'oct' && jwkey.kty === 'EC') {
+    return octenc.fromJwk(jwkey, type, options.format, options.compact);
   }
   else throw new Error('UnsupportedEnvironment');
+
 }
+
 
 /**
  * Convert ASN.1 encoded (for RSA and EC) or octet formed (for EC) keys to JWK.
@@ -44,19 +53,23 @@ export function fromJwkTo(jwkey, type, { encode = 'asn', format='pem', compact=f
  * @param namedCurve
  * @return {*}
  */
-export function toJwkFrom(key, type, {encode='asn', format='pem', namedCurve}){
+export function toJwkFrom(input, key, type, options={}){
   // assertion
+  if (['pem', 'der', 'oct'].indexOf(input) < 0) throw new Error('InvalidInputForm');
   if (type !== 'public' && type !== 'private') throw new Error('InvalidKeyType');
-  // TODO: parameter assertion
+  if (input === 'oct' && !options.namedCurve ) throw new Error('InappropriateOptions');
+
+  // default values
+  if (input === 'oct' && options.format !== 'string') options.format = 'binary';
+
 
   // In the case of PEM
-  if (encode === 'asn') {
-    if(!encode || !format) throw new Error('InvalidEncodingSpecs');
-    return asn1enc.toJwk(key, {type, format});
+  if (input === 'der' || input === 'pem') {
+    return asn1enc.toJwk(key, {type, format: input});
   }
   // In the case of Oct
-  else if (encode === 'oct') {
-    return octenc.toJwk(key, type, namedCurve, format);
+  else if (input === 'oct') {
+    return octenc.toJwk(key, type, options.namedCurve, options.format);
   }
   else throw new Error('UnsupportedEnvironment');
 }

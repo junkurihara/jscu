@@ -3,6 +3,7 @@
  */
 
 import * as asn1ec from './asn1ec.js';
+import * as asn1rsa from './asn1rsa.js';
 import params, {getAlgorithmFromOid} from './params.js';
 import asn from 'asn1.js';
 import jseu from 'js-encoding-utils';
@@ -23,8 +24,7 @@ export function fromJwk(jwkey, {type, format, compact=false}){
     decoded = asn1ec.fromJWK(jwkey, type, compact);
   }
   else if (jwkey.kty === 'RSA'){
-    // TODO: Implement RSA key parser
-    throw new Error('RSACurrentlyUnsupported');
+    decoded = asn1rsa.fromJwk(jwkey, type);
   }
 
   let binKey = (type === 'public') ? SubjectPublicKeyInfo.encode(decoded, 'der') : PrivateKeyInfo.encode(decoded, 'der');
@@ -58,9 +58,9 @@ export function toJwk(key, {type, format}){
     return asn1ec.toJWK(decoded, type);
   }
   else if (keyTypes[0] === 'RSA'){
-    // TODO: Implement RSA key parser
-    throw new Error('RSACurrentlyUnsupported');
+    return asn1rsa.toJwk(decoded, type);
   }
+  else throw new Error('InvalidKeyType');
 }
 
 

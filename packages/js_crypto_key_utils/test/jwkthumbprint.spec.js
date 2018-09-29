@@ -7,7 +7,7 @@ import chai from 'chai';
 const expect = chai.expect;
 
 const curves = ['P-256', 'P-384', 'P-521'];
-const bits = ['2048', '3072', '4096'];
+const bits = ['2048', '4096'];
 const hashes = [ 'SHA-256', 'SHA-384', 'SHA-512'];
 describe('JWK thumbprint generation test.', () => {
 

@@ -7,16 +7,17 @@ import jseu from 'js-encoding-utils';
 import elliptic from 'elliptic';
 const Ec = elliptic.ec;
 
+
 /**
  * Convert JWK EC public/private keys to octet form
  * compressed form of ec public key: https://tools.ietf.org/html/rfc5480
  * @param jwkey
  * @param type
- * @param format
+ * @param outputFormat
  * @param compact
  * @return {*}
  */
-export function fromJwk(jwkey, type, format='binary', compact=false){
+export function fromJwk(jwkey, type, outputFormat='binary', compact=false){
   if (type !== 'public' && type !== 'private') throw new Error('InvalidType');
   if(type === 'public'){
     const bufX = jseu.encoder.decodeBase64Url(jwkey.x);
@@ -37,12 +38,12 @@ export function fromJwk(jwkey, type, format='binary', compact=false){
       publicKey.set(bufX, 1);
       publicKey.set(bufY, bufX.length+1);
     }
-    return (format === 'string') ? jseu.encoder.arrayBufferToHexString(publicKey): publicKey;
+    return (outputFormat === 'string') ? jseu.encoder.arrayBufferToHexString(publicKey): publicKey;
   }
   else if (type === 'private'){
     if (!jwkey.d) throw new Error('InvalidKey');
     const bufD = jseu.encoder.decodeBase64Url(jwkey.d);
-    return (format === 'string') ? jseu.encoder.arrayBufferToHexString(bufD) : bufD;
+    return (outputFormat === 'string') ? jseu.encoder.arrayBufferToHexString(bufD) : bufD;
   }
 }
 
@@ -51,14 +52,14 @@ export function fromJwk(jwkey, type, format='binary', compact=false){
  * @param octkey
  * @param type
  * @param namedCurve
- * @param format
+ * @param inputFormat
  * @return {{kty: string, crv: *, x, y}}
  */
-export function toJwk(octkey, type, namedCurve, format='binary'){
+export function toJwk(octkey, type, namedCurve, inputFormat='binary'){
   if (type !== 'public' && type !== 'private') throw new Error('InvalidType');
   if (Object.keys(params.namedCurves).indexOf(namedCurve) < 0) throw new Error('UnsupportedCurve');
 
-  const binKey = (format === 'string') ? jseu.encoder.hexStringToArrayBuffer(octkey): octkey;
+  const binKey = (inputFormat === 'string') ? jseu.encoder.hexStringToArrayBuffer(octkey): octkey;
 
   const curve = params.namedCurves[namedCurve].indutnyName;
   const ec = new Ec(curve);
@@ -79,8 +80,8 @@ export function toJwk(octkey, type, namedCurve, format='binary'){
   };
 
   if(type === 'private'){
-    const privateKey = new Uint8Array(ecKey.getPrivate().toArray());
-    jwKey.d = jseu.encoder.encodeBase64Url(privateKey);
+    // octkey is exactly private key if type is private.
+    jwKey.d = jseu.encoder.encodeBase64Url(binKey);
   }
   return jwKey;
 }
