@@ -36,5 +36,15 @@ hmac.compute(msg, hash).then( (digest) => {
 });
 ```
 
+## How to bundle scripts importing this module via Webpack
+When you bundle files importing this module via Webpack for web, the bundler tries to simultaneously bundle modules that are compatible to some native modules of Node.js, i.e., those in`node-libs-browser` module. But this module automatically chooses the native `crypto` module in Node.js and `crypto.subtle` of Web API in browsers by checking its running environment, and hence the bundled modules of `node-libs-browser` are redundant. From this observation, you should exclude them wen you create bundle scripts importing this module. In particular, the `externals` option of `webpack.config.js` is useful as follows.
+```javascript
+{
+  externals: {
+    'crypto': true
+  }
+}
+```  
+
 # License
 Licensed under the MIT license, see `LICENSE` file.
