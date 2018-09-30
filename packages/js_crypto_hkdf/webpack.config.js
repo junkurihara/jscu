@@ -66,6 +66,9 @@ const webConfig = {
     }),
     new webpack.optimize.MinChunkSizePlugin({minChunkSize: 1000})
   ],
+  externals: {
+    'crypto': true
+  },
   node: {
     fs: 'empty'
   }
