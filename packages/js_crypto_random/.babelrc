@@ -10,8 +10,7 @@
         ]
       },
       "useBuiltIns": false
-    } ],
-    "babel-preset-minify"
+    } ]
   ],
   "ignore": [ "node_modules" ],
   "only": [ "src", "test" ],
