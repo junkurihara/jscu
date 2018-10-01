@@ -1,7 +1,7 @@
 {
   "name": "js-crypto-aes",
   "version": "0.1.2",
-  "description": "Universal Module for Secure Random Generator in JavaScript",
+  "description": "Universal Module for AES Encryption and Decryption in JavaScript",
   "main": "dist/jscaes.bundle.js",
   "scripts": {
     "test": "./node_modules/.bin/mocha --require @babel/register --recursive $(find test -name '*.spec.js')",
