@@ -31,9 +31,11 @@
     "ecc",
     "rsa",
     "jwk thumbprint",
+    "rfc3447",
     "rfc5280",
     "rfc5208",
     "rfc5480",
+    "rfc5915",
     "rfc7638"
   ],
   "devDependencies": {

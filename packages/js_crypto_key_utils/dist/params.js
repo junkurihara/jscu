@@ -26,6 +26,11 @@ var _default = {
       indutnyName: 'p521',
       payloadSize: 66,
       oid: [1, 3, 132, 0, 35]
+    },
+    'P-256K': {
+      indutnyName: 'secp256k1',
+      payloadSize: 32,
+      oid: [1, 3, 132, 0, 10]
     }
   },
   // https://tools.ietf.org/html/rfc3279

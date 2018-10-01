@@ -14,9 +14,9 @@ const Buffer = BufferMod.Buffer;
  * @param output
  * @return {Promise<*>}
  */
-export async function getJwkThumbprint(jwkey, alg='SHA-256', output='array'){
+export async function getJwkThumbprint(jwkey, alg='SHA-256', output='binary'){
   // assertion
-  if(['hex', 'array'].indexOf(output) < 0) throw new Error('UnsupportedOutputFormat');
+  if(['hex', 'binary'].indexOf(output) < 0) throw new Error('UnsupportedOutputFormat');
 
   let jsonString;
   if(jwkey.kty === 'EC'){
@@ -31,5 +31,5 @@ export async function getJwkThumbprint(jwkey, alg='SHA-256', output='array'){
   const thumbPrintBuf = await hash.compute(uint8json, alg);
 
   if(output === 'hex') return jseu.encoder.arrayBufferToHexString(thumbPrintBuf);
-  else if (output === 'array') return thumbPrintBuf;
+  else if (output === 'binary') return thumbPrintBuf;
 }

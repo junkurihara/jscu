@@ -49,9 +49,9 @@ function _getJwkThumbprint() {
         switch (_context.prev = _context.next) {
           case 0:
             alg = _args.length > 1 && _args[1] !== undefined ? _args[1] : 'SHA-256';
-            output = _args.length > 2 && _args[2] !== undefined ? _args[2] : 'array';
+            output = _args.length > 2 && _args[2] !== undefined ? _args[2] : 'binary';
 
-            if (!(['hex', 'array'].indexOf(output) < 0)) {
+            if (!(['hex', 'binary'].indexOf(output) < 0)) {
               _context.next = 4;
               break;
             }
@@ -106,7 +106,7 @@ function _getJwkThumbprint() {
             return _context.abrupt("return", _jsEncodingUtils.default.encoder.arrayBufferToHexString(thumbPrintBuf));
 
           case 21:
-            if (!(output === 'array')) {
+            if (!(output === 'binary')) {
               _context.next = 23;
               break;
             }
