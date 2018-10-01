@@ -2,11 +2,12 @@
   "name": "js-crypto-hash",
   "version": "0.1.1",
   "description": "Universal Module for Hash Function in JavaScript",
-  "main": "dist/index.js",
+  "main": "dist/jschash.bundle.js",
   "scripts": {
     "test": "./node_modules/.bin/mocha --require @babel/register --recursive $(find test -name '*.spec.js')",
     "karma": "./node_modules/.bin/karma start",
-    "build": "NODE_ENV=production ./node_modules/.bin/babel src -d dist/ --keep-file-extension"
+    "webpack": "./node_modules/.bin/webpack --optimize-minimize --mode production",
+    "build": "NODE_ENV=production ./node_modules/.bin/babel src -d dist/ --keep-file-extension && npm run webpack"
   },
   "author": "Jun Kurihara",
   "license": "MIT",
