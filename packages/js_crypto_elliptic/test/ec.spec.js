@@ -48,8 +48,8 @@ describe('Elliptic curve cryptography test', () => {
     const results = await Promise.all(keys.map( async (kp) => {
       let result = true;
       const newKey = await elliptic.generateKey(kp.privateKey.crv).catch( (e) => {result = false;});
-      const shared1 = await elliptic.deriveSharedSecret(kp.publicKey, newKey.privateKey).catch( (e) => {result = false;});
-      const shared2 = await elliptic.deriveSharedSecret(newKey.publicKey, kp.privateKey).catch( (e) => {result = false;});
+      const shared1 = await elliptic.deriveSecret(kp.publicKey, newKey.privateKey).catch( (e) => {result = false;});
+      const shared2 = await elliptic.deriveSecret(newKey.publicKey, kp.privateKey).catch( (e) => {result = false;});
       expect(result).to.be.true;
 
       return (shared1.toString() === shared2.toString());

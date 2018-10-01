@@ -38,6 +38,6 @@ var _default = {
   generateKey: _ec.generateKey,
   sign: _ec.sign,
   verify: _ec.verify,
-  deriveSharedSecret: _ec.deriveSecret
+  deriveSecret: _ec.deriveSecret
 };
 exports.default = _default;

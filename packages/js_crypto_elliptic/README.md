@@ -22,13 +22,62 @@ At your project directory, do either one of the following.
 
 Then you should import the package as follows.
 ```shell
-import random from 'js-crypto-ec'; // for npm
-import random from 'js-crypto-ec/dist/index.js'; // for github
+import ec from 'js-crypto-ec'; // for npm
+import ec from 'js-crypto-ec/dist/index.js'; // for github
 ```
   
 # Usage
-writing....
+This library always uses JWK-formatted keys ([RFC7517](https://tools.ietf.org/html/rfc7517)) to do any operations. If you utilize keys of other format, like PEM, please use [`js-crypto-key-utils`](https://github.com/junkurihara/js-crypto-key-utils) to convert them to JWK.
 
+## Key generation
+```javascript
+elliptic.generateKey('P-256').then( (key) => {
+  // now you get the JWK public and private keys
+  const publicKey = key.publicKey;
+  const privateKey = key.privateKey;
+})
+```
+
+## Sign and verify
+```javascript
+const publicJwk = {kty: 'EC', crv: 'P-256', x: '...', y: '...'}; // public key
+const privateJwk = {ktyp: 'EC', crv: 'P-256', x: '...', y: '...', d: '...'}; // paired private key
+const msg = ...; // Uint8Array
+
+// sign
+ec.sign(msg, privateJwk, 'SHA-256').then( (signature) => {
+  // now you get the signature in Uint8Array
+  return ec.verify(msg, sign, publicJwk, 'SHA-256');  
+}).then( (valid) => {
+  // now you get the result of verification in boolean
+});
+```
+## Derive shared secret
+```javascript
+const publicJwkA = {kty: 'EC', crv: 'P-256', x: '...', y: '...'}; // public key of player A
+const privateJwkA = {ktyp: 'EC', crv: 'P-256', x: '...', y: '...', d: '...'}; // paired private key of player A
+
+const publicJwkB = {kty: 'EC', crv: 'P-256', x: '...', y: '...'}; // public key of player B
+const privateJwkB = {ktyp: 'EC', crv: 'P-256', x: '...', y: '...', d: '...'}; // paired private key of player B
+
+// At A's side
+const sharedAtPlayerA = ec.deriveSecret(publicJwkB, privateJwkA).then( (secretAtA) => {
+  // now you get the shared secret from my (player A's) private key and player B's public key
+})
+
+// At B's side
+const sharedAtPlayerB = ec.deriveSecret(publicJwkA, privateJwkB).then( (secretAtB) => {
+  // now you get the shared secret from my (player B's) private key and player A's public key
+})
+```
+**NOTE:** We SHOULD NOT use the derived secret as an encryption key directly. We should employ an appropriate key derivation procedure like HKDF to use the secret for symmetric key encryption.
+
+# Note
+At this point, this library supports the following curve for elliptic curve cryptography.
+- P-256 (secp256r1)
+- P-384 (secp384r1)
+- P-521 (secp521r1)
+- P-256K (secp256k1)
 
 # License
 Licensed under the MIT license, see `LICENSE` file.
