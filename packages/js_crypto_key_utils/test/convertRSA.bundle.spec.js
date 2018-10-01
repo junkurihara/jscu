@@ -1,4 +1,4 @@
-import keyutils from '../src/index.js';
+import keyutils from '../dist/jsckeyutil.bundle.js';
 import sampleRSA from './rsa_sample.js';
 
 import jseu from 'js-encoding-utils';
