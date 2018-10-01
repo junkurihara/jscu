@@ -3397,18 +3397,18 @@ istanbul@^0.4.0:
     which "^1.1.1"
     wordwrap "^1.0.0"
 
-js-crypto-hmac@^0.1.1:
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/js-crypto-hmac/-/js-crypto-hmac-0.1.1.tgz#d28c255e4381c07452768da5ac929fef88e16bc2"
-  integrity sha512-aw5P/zFDq25MOiRXiTlSCAhVVVNEfz/tsZtz2ghbK8Pm6JcX2aki1rPEvBrAL4lxAgAn+GZtzd8DuCocLaIiAg==
+js-crypto-hmac@^0.1.2:
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/js-crypto-hmac/-/js-crypto-hmac-0.1.2.tgz#d7a5510bc6bb04a2fed8310cce1c161304c7ced3"
+  integrity sha512-U/+udP+J6zqgzZ450Wv3WB7Pfbum3febD6WVcchIlL2JwXrhKI8/WlU8ipuZAf/h1UnZMVnJIN887Zy1MqT9Vw==
   dependencies:
     "@babel/plugin-transform-regenerator" "7.0.0"
     "@babel/runtime" "7.1.2"
 
-js-crypto-random@^0.1.1:
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/js-crypto-random/-/js-crypto-random-0.1.1.tgz#5c3a353eb39cf90aa89cd95a14deeedb1332ce81"
-  integrity sha512-c3hFsPNCFi9Ibz2TYxWRnne7b4dPbfzr4vR5DH5rOFL9t3b/wJUIH3tPM6E4pApeDWYunEUrrDUqT1JVVxwNeA==
+js-crypto-random@^0.1.2:
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/js-crypto-random/-/js-crypto-random-0.1.2.tgz#30046958027d8cfcb775b6eebc72ab4acb533b13"
+  integrity sha512-MDHosjzuGaCANi2l6LPSjNM2RWtQC4p8QRzJJC/kugmcoYetihhS1el9zO6FLSpY6ckJWq1aKqnmlZ7YQ2eeXA==
   dependencies:
     "@babel/plugin-transform-regenerator" "^7.0.0"
     "@babel/runtime" "^7.1.2"

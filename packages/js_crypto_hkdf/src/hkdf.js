@@ -5,8 +5,8 @@
 import params from './params.js';
 import * as util from './util.js';
 
-import random from 'js-crypto-random';
-import hmac  from 'js-crypto-hmac';
+import random from 'js-crypto-random/dist/index.js';
+import hmac  from 'js-crypto-hmac/dist/index.js';
 
 /**
  * Hash-based Key Derivation Function computing from given master secret and salt.
