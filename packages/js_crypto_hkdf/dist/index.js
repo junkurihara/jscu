@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),Object.defineProperty(exports,"compute",{enumerable:!0,get:function a(){return _hkdf.compute}}),exports.default=void 0;var _hkdf=require("./hkdf.js"),_default={compute:_hkdf.compute};exports.default=_default;
