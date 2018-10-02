@@ -79,7 +79,7 @@ At your project directory, do either one of the following.
     .then( async (pemKey) => { // PEM formatted ECDSA key  
       return await jscu.crypto.keyconv.pemToJwk(pem, 'public', {keyType: 'EC'}); // or 'private'
       // namedCurve can be specified in addtion to keyType as below. Then native WebCryptoAPI will be used.
-      // return await jscu.crypto.keyconv.pemToJwk(pem, 'public', {keyType: 'EC', namedCurve: 'P-256'});
+      keyutil
     })
     .then( (jwkey) =>{
       // now you get the original jwk
@@ -114,17 +114,17 @@ At your project directory, do either one of the following.
         organizationalUnitName: 'Research',
         commonName: 'example.com'
       }; // parameters for issuer and subject fields
-   jscu.crypto.x509.convertJwkToX509({
-        publicJwk: kp.publicKey, // your public key to be certified
-        privateJwk: kp.privateKey, // paired with public JWK for self certified public key
-        options: {
+   jscu.crypto.x509.fromJwk(
+        kp.publicKey, // your public key to be certified
+        kp.privateKey, // paired with public JWK for self certified public key
+        'pem',
+        {
           signature: 'ecdsa-with-sha256',
           days: 365,
-          format: 'pem',
           issuer: name,
           subject: name
         }
-   }).then( (x509) => {
+   ).then( (cert) => {
      // now you get x509 formatted public key certificate
    });
   ```

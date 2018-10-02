@@ -43,8 +43,8 @@ describe('Generated JWK key should be successfully converted to PEM SPKI/PKCS8, 
         hashes.map( async (hash) => {
           const sig = await jscu.crypto.sign(msg, keySet[idx].privateKey.key, {name: hash});
 
-          const pemPub = await jscu.crypto.keyconv.jwkToPem(keySet[idx].publicKey.key, 'public');
-          const binKey = await jseu.formatter.pemToBin(pemPub);
+          const pemPub = jscu.crypto.keyutil.jwkToPem(keySet[idx].publicKey.key, 'public');
+          const binKey = jseu.formatter.pemToBin(pemPub);
           const key = await crypto.subtle.importKey('spki', binKey, {name: 'ECDSA', namedCurve: curve}, true, ['verify']);
           const result = await crypto.subtle.verify({name: 'ECDSA', namedCurve: curve, hash: { name: hash }}, key, sig, msg);
           expect(result).to.be.true;
@@ -58,8 +58,8 @@ describe('Generated JWK key should be successfully converted to PEM SPKI/PKCS8, 
     await Promise.all(
       curves.map( async (curve, idx) => await Promise.all(
         hashes.map( async (hash) => {
-          const pemPriv = await jscu.crypto.keyconv.jwkToPem(keySet[idx].privateKey.key, 'private');
-          const binKey = await jseu.formatter.pemToBin(pemPriv);
+          const pemPriv = jscu.crypto.keyutil.jwkToPem(keySet[idx].privateKey.key, 'private');
+          const binKey = jseu.formatter.pemToBin(pemPriv);
           const key = await crypto.subtle.importKey('pkcs8', binKey, {name: 'ECDSA', namedCurve: curve}, false, ['sign']);
           const sig = await crypto.subtle.sign({name: 'ECDSA', namedCurve: curve, hash: { name: hash }}, key, msg);
           const result = await jscu.crypto.verify(msg, sig, keySet[idx].publicKey.key, {name: hash});
@@ -92,8 +92,8 @@ describe('PEM SPKI/PKCS8 key should be successfully converted to usable JWK', ()
   it('JWK converted from PEM should successfully sign and verify messages', async () => {
     await Promise.all(
       hashes.map( async (hash) => {
-        const jwkPriv = await jscu.crypto.keyconv.pemToJwk(privOSSL, 'private', {keyType: 'EC', namedCurve: 'P-256'});
-        const jwkPub = await jscu.crypto.keyconv.pemToJwk(pubOSSL, 'public', {keyType: 'EC', namedCurve: 'P-256'});
+        const jwkPriv = jscu.crypto.keyutil.pemToJwk(privOSSL, 'private');
+        const jwkPub = jscu.crypto.keyutil.pemToJwk(pubOSSL, 'public');
 
         const sig = await jscu.crypto.sign(msg, jwkPriv, {name: hash});
         const result = await jscu.crypto.verify(msg, sig, jwkPub, {name: hash});

@@ -47,20 +47,20 @@ describe('Generated JWK public key should be successfully converted to X509 PEM 
     let result = true;
     await Promise.all(
       keySet.map( async (kp) => sigopt.map( async (so) => {
-        const x509 = await jscu.crypto.x509.convertJwkToX509({
-          publicJwk: kp.publicKey.key,
-          privateJwk: kp.privateKey.key,
-          options: {
+        const x509c = await jscu.crypto.x509.fromJwk(
+          kp.publicKey.key,
+          kp.privateKey.key,
+          'pem',
+          {
             signature: so,
             days: 365,
-            format: 'pem',
             issuer: name,
             subject: name
           }
-        });
-        console.log(x509);
-        const parsed = await jscu.crypto.x509.parseX509forVerification({certX509: x509, publicJWK: kp.publicKey.key});
-        const re = await jscu.crypto.verify(parsed.tbsCertificate, parsed.signature, kp.publicKey.key, parsed.hash);
+        );
+        console.log(x509c);
+        const parsed = await jscu.crypto.x509.parse(x509c, 'pem');
+        const re = await jscu.crypto.verify(parsed.tbsCertificate, parsed.signatureValue, kp.publicKey.key, {name: parsed.hash}, 'der');
         console.log('verification result: ' + re);
         expect(re).to.be.true;
         result = re && result;
@@ -71,10 +71,10 @@ describe('Generated JWK public key should be successfully converted to X509 PEM 
   });
 
   it('Transform X509 Self Signed PEM to JWK, and verify it', async () => {
-    const jwkey = await jscu.crypto.x509.convertX509ToJwk({certX509: crtsample});
+    const jwkey = await jscu.crypto.x509.toJwk(crtsample, 'pem');
 
-    const parsed = await jscu.crypto.x509.parseX509forVerification({certX509: crtsample, publicJWK: jwkey});
-    const re = await jscu.crypto.verify(parsed.tbsCertificate, parsed.signature, jwkey, parsed.hash);
+    const parsed = await jscu.crypto.x509.parse(crtsample, 'pem');
+    const re = await jscu.crypto.verify(parsed.tbsCertificate, parsed.signatureValue, jwkey, {name: parsed.hash}, 'der');
     console.log(jwkey);
     console.log(re);
     expect(re).to.be.true;

@@ -21,7 +21,7 @@ describe('JWK thumbprint generation test.', () => {
     const tps = await Promise.all( keySet.map(
       async (jwkey) => await Promise.all( hashes.map(
         async (h) => {
-          const tp = await jscu.crypto.jwkey.getThumbprint(jwkey.publicKey.key, h);
+          const tp = await jscu.crypto.keyutil.getJwkThumbprint(jwkey.publicKey.key, h);
           expect(tp instanceof Uint8Array).to.be.true;
           return tp;
         }
@@ -33,7 +33,7 @@ describe('JWK thumbprint generation test.', () => {
     const tps = await Promise.all( keySet.map(
       async (jwkey) => await Promise.all( hashes.map(
         async (h) => {
-          const tp = await jscu.crypto.jwkey.getThumbprint(jwkey.publicKey.key, h, 'hex');
+          const tp = await jscu.crypto.keyutil.getJwkThumbprint(jwkey.publicKey.key, h, 'hex');
           expect(typeof(tp)==='string').to.be.true;
           return tp;
         }

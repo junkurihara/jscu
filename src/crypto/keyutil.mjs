@@ -1,6 +1,6 @@
 /**
  * For key conversion between jwk and pem
- * keyconv.mjs
+ * keyutil.mjs
  */
 
 import keyutil from 'js-crypto-key-utils/dist/index.js';
@@ -11,7 +11,7 @@ import keyutil from 'js-crypto-key-utils/dist/index.js';
  * @param type
  * @return {Promise<*|*>}
  */
-export async function jwkToPem(jwkey, type) {
+export function jwkToPem(jwkey, type) {
   if (type !== 'public' && type !== 'private') throw new Error('type must be public or private');
 
   return keyutil.fromJwkTo('pem', jwkey, type, {compact: false}); // {compact: false} is just for EC keys (in RSA, will be omitted.)
@@ -25,8 +25,20 @@ export async function jwkToPem(jwkey, type) {
  * @param keyParams
  * @return {Promise<*>}
  */
-export async function pemToJwk(pem, type, keyParams) {
+export function pemToJwk(pem, type) {
   if (type !== 'public' && type !== 'private') throw new Error('type must be public or private');
 
   return keyutil.toJwkFrom('pem', pem, type);
+}
+
+/**
+ * get jwk public key thumprint specified in https://tools.ietf.org/html/rfc7638
+ * @param jwkey {Object}
+ * @param hashAlgo {string}
+ * @param output {string}
+ * @return {Promise<*>}
+ */
+
+export async function getJwkThumbprint(jwkey, hashAlgo='SHA-256', output='binary'){
+  return await keyutil.getJwkThumbprint(jwkey, hashAlgo, output);
 }

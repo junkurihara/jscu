@@ -1,5 +1,5 @@
 /**
- * index.mjs
+ * util.mjs
  */
 
 import * as crypto from './crypto/index.mjs';
