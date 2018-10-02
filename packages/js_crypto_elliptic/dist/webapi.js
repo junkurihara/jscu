@@ -1,5 +1,7 @@
 "use strict";
 
+var _interopRequireWildcard = require("@babel/runtime/helpers/interopRequireWildcard");
+
 var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
 
 Object.defineProperty(exports, "__esModule", {
@@ -15,6 +17,8 @@ var _regenerator = _interopRequireDefault(require("@babel/runtime/regenerator"))
 var _asyncToGenerator2 = _interopRequireDefault(require("@babel/runtime/helpers/asyncToGenerator"));
 
 var _jsEncodingUtils = _interopRequireDefault(require("js-encoding-utils"));
+
+var asn1enc = _interopRequireWildcard(require("./asn1enc.js"));
 
 /**
  * webapi.js
@@ -73,14 +77,14 @@ function _generateKey() {
   return _generateKey.apply(this, arguments);
 }
 
-function sign(_x3, _x4, _x5, _x6) {
+function sign(_x3, _x4, _x5, _x6, _x7) {
   return _sign.apply(this, arguments);
 }
 
 function _sign() {
   _sign = (0, _asyncToGenerator2.default)(
   /*#__PURE__*/
-  _regenerator.default.mark(function _callee2(msg, privateJwk, hash, webCrypto) {
+  _regenerator.default.mark(function _callee2(msg, privateJwk, hash, signatureFormat, webCrypto) {
     var algo, key, signature;
     return _regenerator.default.wrap(function _callee2$(_context2) {
       while (1) {
@@ -103,7 +107,7 @@ function _sign() {
 
           case 6:
             signature = _context2.sent;
-            return _context2.abrupt("return", new Uint8Array(signature));
+            return _context2.abrupt("return", signatureFormat === 'raw' ? new Uint8Array(signature) : asn1enc.encodeAsn1Signature(new Uint8Array(signature), privateJwk.crv));
 
           case 8:
           case "end":
@@ -115,15 +119,15 @@ function _sign() {
   return _sign.apply(this, arguments);
 }
 
-function verify(_x7, _x8, _x9, _x10, _x11) {
+function verify(_x8, _x9, _x10, _x11, _x12, _x13) {
   return _verify.apply(this, arguments);
 }
 
 function _verify() {
   _verify = (0, _asyncToGenerator2.default)(
   /*#__PURE__*/
-  _regenerator.default.mark(function _callee3(msg, signature, publicJwk, hash, webCrypto) {
-    var algo, key;
+  _regenerator.default.mark(function _callee3(msg, signature, publicJwk, hash, signatureFormat, webCrypto) {
+    var algo, key, rawSignature;
     return _regenerator.default.wrap(function _callee3$(_context3) {
       while (1) {
         switch (_context3.prev = _context3.next) {
@@ -140,13 +144,14 @@ function _verify() {
 
           case 3:
             key = _context3.sent;
-            _context3.next = 6;
-            return webCrypto.verify(algo, key, signature, msg);
-
-          case 6:
-            return _context3.abrupt("return", _context3.sent);
+            rawSignature = signatureFormat === 'raw' ? signature : asn1enc.decodeAsn1Signature(signature, publicJwk.crv);
+            _context3.next = 7;
+            return webCrypto.verify(algo, key, rawSignature, msg);
 
           case 7:
+            return _context3.abrupt("return", _context3.sent);
+
+          case 8:
           case "end":
             return _context3.stop();
         }
@@ -156,7 +161,7 @@ function _verify() {
   return _verify.apply(this, arguments);
 }
 
-function deriveSecret(_x12, _x13, _x14) {
+function deriveSecret(_x14, _x15, _x16) {
   return _deriveSecret.apply(this, arguments);
 }
 

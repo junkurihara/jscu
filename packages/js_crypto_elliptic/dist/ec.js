@@ -39,8 +39,9 @@ function generateKey() {
 /**
  * Sign message with ECDSA
  * @param msg
- * @param privateJWK
+ * @param privateJwk
  * @param hash
+ * @param signatureFormat
  * @return {Promise<*>}
  */
 
@@ -134,6 +135,7 @@ function sign(_x, _x2) {
  * @param signature
  * @param publicJwk
  * @param hash
+ * @param signatureFormat
  * @return {Promise<*>}
  */
 
@@ -143,6 +145,7 @@ function _sign() {
   /*#__PURE__*/
   _regenerator.default.mark(function _callee2(msg, privateJwk) {
     var hash,
+        signatureFormat,
         webCrypto,
         nodeCrypto,
         native,
@@ -153,6 +156,16 @@ function _sign() {
         switch (_context2.prev = _context2.next) {
           case 0:
             hash = _args2.length > 2 && _args2[2] !== undefined ? _args2[2] : 'SHA-256';
+            signatureFormat = _args2.length > 3 && _args2[3] !== undefined ? _args2[3] : 'raw';
+
+            if (!(signatureFormat !== 'raw' && signatureFormat !== 'der')) {
+              _context2.next = 4;
+              break;
+            }
+
+            throw new Error('InvalidSignatureFormat');
+
+          case 4:
             webCrypto = util.getWebCrypto(); // web crypto api
 
             nodeCrypto = util.getNodeCrypto(); // implementation on node.js
@@ -160,59 +173,59 @@ function _sign() {
             native = true;
 
             if (!(typeof webCrypto !== 'undefined' && typeof webCrypto.importKey === 'function' && typeof webCrypto.sign === 'function')) {
-              _context2.next = 10;
+              _context2.next = 13;
               break;
             }
 
-            _context2.next = 7;
-            return webapi.sign(msg, privateJwk, hash, webCrypto).catch(function () {
+            _context2.next = 10;
+            return webapi.sign(msg, privateJwk, hash, signatureFormat, webCrypto).catch(function () {
               native = false;
             });
 
-          case 7:
+          case 10:
             signature = _context2.sent;
-            _context2.next = 11;
+            _context2.next = 14;
             break;
 
-          case 10:
+          case 13:
             if (typeof nodeCrypto !== 'undefined') {
               // for node
               try {
-                signature = nodeapi.sign(msg, privateJwk, hash, nodeCrypto);
+                signature = nodeapi.sign(msg, privateJwk, hash, signatureFormat, nodeCrypto);
               } catch (e) {
                 native = false;
               }
             } else native = false;
 
-          case 11:
+          case 14:
             if (!(native === false)) {
-              _context2.next = 21;
+              _context2.next = 24;
               break;
             }
 
-            _context2.prev = 12;
-            _context2.next = 15;
-            return purejs.sign(msg, privateJwk, hash);
-
-          case 15:
-            signature = _context2.sent;
-            _context2.next = 21;
-            break;
+            _context2.prev = 15;
+            _context2.next = 18;
+            return purejs.sign(msg, privateJwk, hash, signatureFormat);
 
           case 18:
-            _context2.prev = 18;
-            _context2.t0 = _context2["catch"](12);
-            throw new Error('UnsupportedEnvironment');
+            signature = _context2.sent;
+            _context2.next = 24;
+            break;
 
           case 21:
+            _context2.prev = 21;
+            _context2.t0 = _context2["catch"](15);
+            throw new Error('UnsupportedEnvironment');
+
+          case 24:
             return _context2.abrupt("return", signature);
 
-          case 22:
+          case 25:
           case "end":
             return _context2.stop();
         }
       }
-    }, _callee2, this, [[12, 18]]);
+    }, _callee2, this, [[15, 21]]);
   }));
   return _sign.apply(this, arguments);
 }
@@ -235,6 +248,7 @@ function _verify() {
   /*#__PURE__*/
   _regenerator.default.mark(function _callee3(msg, signature, publicJwk) {
     var hash,
+        signatureFormat,
         webCrypto,
         nodeCrypto,
         native,
@@ -245,6 +259,16 @@ function _verify() {
         switch (_context3.prev = _context3.next) {
           case 0:
             hash = _args3.length > 3 && _args3[3] !== undefined ? _args3[3] : 'SHA-256';
+            signatureFormat = _args3.length > 4 && _args3[4] !== undefined ? _args3[4] : 'raw';
+
+            if (!(signatureFormat !== 'raw' && signatureFormat !== 'der')) {
+              _context3.next = 4;
+              break;
+            }
+
+            throw new Error('InvalidSignatureFormat');
+
+          case 4:
             webCrypto = util.getWebCrypto(); // web crypto api
 
             nodeCrypto = util.getNodeCrypto(); // implementation on node.js
@@ -252,59 +276,59 @@ function _verify() {
             native = true;
 
             if (!(typeof webCrypto !== 'undefined' && typeof webCrypto.importKey === 'function' && typeof webCrypto.verify === 'function')) {
-              _context3.next = 10;
+              _context3.next = 13;
               break;
             }
 
-            _context3.next = 7;
-            return webapi.verify(msg, signature, publicJwk, hash, webCrypto).catch(function () {
+            _context3.next = 10;
+            return webapi.verify(msg, signature, publicJwk, hash, signatureFormat, webCrypto).catch(function () {
               native = false;
             });
 
-          case 7:
+          case 10:
             valid = _context3.sent;
-            _context3.next = 11;
+            _context3.next = 14;
             break;
 
-          case 10:
+          case 13:
             if (typeof nodeCrypto !== 'undefined') {
               // for node
               try {
-                valid = nodeapi.verify(msg, signature, publicJwk, hash, nodeCrypto);
+                valid = nodeapi.verify(msg, signature, publicJwk, hash, signatureFormat, nodeCrypto);
               } catch (e) {
                 native = false;
               }
             } else native = false;
 
-          case 11:
+          case 14:
             if (!(native === false)) {
-              _context3.next = 21;
+              _context3.next = 24;
               break;
             }
 
-            _context3.prev = 12;
-            _context3.next = 15;
-            return purejs.verify(msg, signature, publicJwk, hash);
-
-          case 15:
-            valid = _context3.sent;
-            _context3.next = 21;
-            break;
+            _context3.prev = 15;
+            _context3.next = 18;
+            return purejs.verify(msg, signature, publicJwk, hash, signatureFormat);
 
           case 18:
-            _context3.prev = 18;
-            _context3.t0 = _context3["catch"](12);
-            throw new Error('UnsupportedEnvironment');
+            valid = _context3.sent;
+            _context3.next = 24;
+            break;
 
           case 21:
+            _context3.prev = 21;
+            _context3.t0 = _context3["catch"](15);
+            throw new Error('UnsupportedEnvironment');
+
+          case 24:
             return _context3.abrupt("return", valid);
 
-          case 22:
+          case 25:
           case "end":
             return _context3.stop();
         }
       }
-    }, _callee3, this, [[12, 18]]);
+    }, _callee3, this, [[15, 21]]);
   }));
   return _verify.apply(this, arguments);
 }

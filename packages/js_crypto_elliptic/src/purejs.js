@@ -3,6 +3,7 @@
  */
 
 import params from './params.js';
+import * as asn1enc from './asn1enc.js';
 import random from 'js-crypto-random/dist/index.js';
 import jschash from 'js-crypto-hash/dist/index.js';
 import keyutil from 'js-crypto-key-utils/dist/index.js';
@@ -27,7 +28,7 @@ export async function generateKey(namedCurve){
   return {publicKey, privateKey};
 }
 
-export async function sign(msg, privateJwk, hash) {
+export async function sign(msg, privateJwk, hash, signatureFormat) {
   const namedCurve = privateJwk.crv;
   const curve = params.namedCurves[namedCurve].indutnyName;
   const ec = new Ec(curve);
@@ -48,10 +49,10 @@ export async function sign(msg, privateJwk, hash) {
   const concat = new Uint8Array(arrayR.length + arrayS.length);
   concat.set(arrayR);
   concat.set(arrayS, arrayR.length);
-  return concat;
+  return (signatureFormat === 'raw') ? concat : asn1enc.encodeAsn1Signature(concat, namedCurve);
 }
 
-export async function verify(msg, signature, publicJwk, hash){
+export async function verify(msg, signature, publicJwk, hash, signatureFormat){
   const namedCurve = publicJwk.crv;
   const curve = params.namedCurves[namedCurve].indutnyName;
   const ec = new Ec(curve);
@@ -62,6 +63,7 @@ export async function verify(msg, signature, publicJwk, hash){
   // parse signature
   const len = params.namedCurves[namedCurve].payloadSize;
   if(!(signature instanceof Uint8Array)) signature = new Uint8Array(signature);
+  signature = (signatureFormat === 'raw') ? signature : asn1enc.decodeAsn1Signature(signature, namedCurve);
   const sigR = signature.slice(0, len);
   const sigS = signature.slice(len, len+sigR.length);
 

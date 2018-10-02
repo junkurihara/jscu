@@ -43,6 +43,7 @@ function encodeAsn1Signature(signature, namedCurve) {
   }, 'der');
   return new Uint8Array(asn1sig);
 } /////////////////////////////////////////////////////////////////////////////////////////
+// RFC5759 https://tools.ietf.org/html/rfc5759.html
 
 
 var ECDSASignature = _asn.default.define('ECDSASignature', function () {

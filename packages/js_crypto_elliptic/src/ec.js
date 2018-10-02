@@ -45,25 +45,29 @@ export async function generateKey(namedCurve='P-256'){
 /**
  * Sign message with ECDSA
  * @param msg
- * @param privateJWK
+ * @param privateJwk
  * @param hash
+ * @param signatureFormat
  * @return {Promise<*>}
  */
-export async function sign(msg, privateJwk, hash = 'SHA-256') {
+export async function sign(msg, privateJwk, hash = 'SHA-256', signatureFormat='raw') {
+  // assertion
+  if (signatureFormat !== 'raw' && signatureFormat !== 'der') throw new Error('InvalidSignatureFormat');
+
   const webCrypto = util.getWebCrypto(); // web crypto api
   const nodeCrypto = util.getNodeCrypto(); // implementation on node.js
 
   let native = true;
   let signature;
   if (typeof webCrypto !== 'undefined' && typeof webCrypto.importKey === 'function' && typeof webCrypto.sign === 'function') { // for web API
-    signature = await webapi.sign(msg, privateJwk, hash, webCrypto)
+    signature = await webapi.sign(msg, privateJwk, hash, signatureFormat, webCrypto)
       .catch(() => {
         native = false;
       });
   }
   else if (typeof nodeCrypto !== 'undefined' ) { // for node
     try {
-      signature = nodeapi.sign(msg, privateJwk, hash, nodeCrypto);
+      signature = nodeapi.sign(msg, privateJwk, hash, signatureFormat, nodeCrypto);
     } catch(e) {
       native = false;
     }
@@ -71,7 +75,7 @@ export async function sign(msg, privateJwk, hash = 'SHA-256') {
 
   if (native === false){ // fallback to native implementation
     try{
-      signature = await purejs.sign(msg, privateJwk, hash);
+      signature = await purejs.sign(msg, privateJwk, hash, signatureFormat);
     } catch (e) { throw new Error('UnsupportedEnvironment');}
   }
   return signature;
@@ -84,23 +88,27 @@ export async function sign(msg, privateJwk, hash = 'SHA-256') {
  * @param signature
  * @param publicJwk
  * @param hash
+ * @param signatureFormat
  * @return {Promise<*>}
  */
-export async function verify(msg, signature, publicJwk, hash = 'SHA-256') {
+export async function verify(msg, signature, publicJwk, hash = 'SHA-256', signatureFormat='raw') {
+  // assertion
+  if (signatureFormat !== 'raw' && signatureFormat !== 'der') throw new Error('InvalidSignatureFormat');
+
   const webCrypto = util.getWebCrypto(); // web crypto api
   const nodeCrypto = util.getNodeCrypto(); // implementation on node.js
 
   let native = true;
   let valid;
   if (typeof webCrypto !== 'undefined' && typeof webCrypto.importKey === 'function' && typeof webCrypto.verify === 'function') { // for web API
-    valid = await webapi.verify(msg, signature, publicJwk, hash, webCrypto)
+    valid = await webapi.verify(msg, signature, publicJwk, hash, signatureFormat, webCrypto)
       .catch(() => {
         native = false;
       });
   }
   else if (typeof nodeCrypto !== 'undefined' ) { // for node
     try {
-      valid = nodeapi.verify(msg, signature, publicJwk, hash, nodeCrypto);
+      valid = nodeapi.verify(msg, signature, publicJwk, hash, signatureFormat, nodeCrypto);
     } catch(e) {
       native = false;
     }
@@ -108,7 +116,7 @@ export async function verify(msg, signature, publicJwk, hash = 'SHA-256') {
 
   if (native === false){ // fallback to native implementation
     try{
-      valid = await purejs.verify(msg, signature, publicJwk, hash);
+      valid = await purejs.verify(msg, signature, publicJwk, hash, signatureFormat);
     } catch (e) { throw new Error('UnsupportedEnvironment');}
   }
 

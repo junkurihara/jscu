@@ -45,7 +45,7 @@ function generateKey(namedCurve, nodeCrypto) {
   };
 }
 
-function sign(msg, privateJwk, hash, nodeCrypto) {
+function sign(msg, privateJwk, hash, signatureFormat, nodeCrypto) {
   var privatePem = _index.default.fromJwkTo('pem', privateJwk, 'private', {
     compact: false
   });
@@ -53,17 +53,17 @@ function sign(msg, privateJwk, hash, nodeCrypto) {
   var sign = nodeCrypto.createSign(_params.default.hashes[hash].nodeName);
   sign.update(msg);
   var asn1sig = sign.sign(privatePem);
-  return asn1enc.decodeAsn1Signature(asn1sig, privateJwk.crv);
+  return signatureFormat === 'raw' ? asn1enc.decodeAsn1Signature(asn1sig, privateJwk.crv) : asn1sig;
 }
 
-function verify(msg, signature, publicJwk, hash, nodeCrypto) {
+function verify(msg, signature, publicJwk, hash, signatureFormat, nodeCrypto) {
   var publicPem = _index.default.fromJwkTo('pem', publicJwk, 'public', {
     compact: false
   });
 
   var verify = nodeCrypto.createVerify(_params.default.hashes[hash].nodeName);
   verify.update(msg);
-  var asn1sig = asn1enc.encodeAsn1Signature(signature, publicJwk.crv);
+  var asn1sig = signatureFormat === 'raw' ? asn1enc.encodeAsn1Signature(signature, publicJwk.crv) : signature;
   return verify.verify(publicPem, asn1sig);
 }
 

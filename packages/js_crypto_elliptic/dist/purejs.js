@@ -1,5 +1,7 @@
 "use strict";
 
+var _interopRequireWildcard = require("@babel/runtime/helpers/interopRequireWildcard");
+
 var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
 
 Object.defineProperty(exports, "__esModule", {
@@ -15,6 +17,8 @@ var _regenerator = _interopRequireDefault(require("@babel/runtime/regenerator"))
 var _asyncToGenerator2 = _interopRequireDefault(require("@babel/runtime/helpers/asyncToGenerator"));
 
 var _params = _interopRequireDefault(require("./params.js"));
+
+var asn1enc = _interopRequireWildcard(require("./asn1enc.js"));
 
 var _index = _interopRequireDefault(require("js-crypto-random/dist/index.js"));
 
@@ -84,14 +88,14 @@ function _generateKey() {
   return _generateKey.apply(this, arguments);
 }
 
-function sign(_x2, _x3, _x4) {
+function sign(_x2, _x3, _x4, _x5) {
   return _sign.apply(this, arguments);
 }
 
 function _sign() {
   _sign = (0, _asyncToGenerator2.default)(
   /*#__PURE__*/
-  _regenerator.default.mark(function _callee2(msg, privateJwk, hash) {
+  _regenerator.default.mark(function _callee2(msg, privateJwk, hash, signatureFormat) {
     var namedCurve, curve, ec, privateOct, ecKey, md, signature, len, arrayR, arrayS, concat;
     return _regenerator.default.wrap(function _callee2$(_context2) {
       while (1) {
@@ -119,7 +123,7 @@ function _sign() {
             concat = new Uint8Array(arrayR.length + arrayS.length);
             concat.set(arrayR);
             concat.set(arrayS, arrayR.length);
-            return _context2.abrupt("return", concat);
+            return _context2.abrupt("return", signatureFormat === 'raw' ? concat : asn1enc.encodeAsn1Signature(concat, namedCurve));
 
           case 16:
           case "end":
@@ -131,14 +135,14 @@ function _sign() {
   return _sign.apply(this, arguments);
 }
 
-function verify(_x5, _x6, _x7, _x8) {
+function verify(_x6, _x7, _x8, _x9, _x10) {
   return _verify.apply(this, arguments);
 }
 
 function _verify() {
   _verify = (0, _asyncToGenerator2.default)(
   /*#__PURE__*/
-  _regenerator.default.mark(function _callee3(msg, signature, publicJwk, hash) {
+  _regenerator.default.mark(function _callee3(msg, signature, publicJwk, hash, signatureFormat) {
     var namedCurve, curve, ec, publicOct, ecKey, len, sigR, sigS, md;
     return _regenerator.default.wrap(function _callee3$(_context3) {
       while (1) {
@@ -154,24 +158,25 @@ function _verify() {
 
             len = _params.default.namedCurves[namedCurve].payloadSize;
             if (!(signature instanceof Uint8Array)) signature = new Uint8Array(signature);
+            signature = signatureFormat === 'raw' ? signature : asn1enc.decodeAsn1Signature(signature, namedCurve);
             sigR = signature.slice(0, len);
             sigS = signature.slice(len, len + sigR.length); // get hash
 
-            _context3.next = 11;
+            _context3.next = 12;
             return _index2.default.compute(msg, hash);
 
-          case 11:
+          case 12:
             md = _context3.sent;
-            _context3.next = 14;
+            _context3.next = 15;
             return ecKey.verify(md, {
               s: sigS,
               r: sigR
             });
 
-          case 14:
+          case 15:
             return _context3.abrupt("return", _context3.sent);
 
-          case 15:
+          case 16:
           case "end":
             return _context3.stop();
         }

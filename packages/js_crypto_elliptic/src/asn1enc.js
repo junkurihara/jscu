@@ -32,6 +32,7 @@ export function encodeAsn1Signature(signature, namedCurve){
 
 
 /////////////////////////////////////////////////////////////////////////////////////////
+// RFC5759 https://tools.ietf.org/html/rfc5759.html
 const ECDSASignature = asn.define('ECDSASignature', function() {
   this.seq().obj(
     this.key('r').int(),

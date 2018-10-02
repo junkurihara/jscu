@@ -45,9 +45,20 @@ const privateJwk = {ktyp: 'EC', crv: 'P-256', x: '...', y: '...', d: '...'}; // 
 const msg = ...; // Uint8Array
 
 // sign
-ec.sign(msg, privateJwk, 'SHA-256').then( (signature) => {
+ec.sign(
+  msg,
+  privateJwk,
+  'SHA-256',
+  'raw' // output signature is not formatted. DER-encoded signature is available with 'der'.
+  ).then( (signature) => {
   // now you get the signature in Uint8Array
-  return ec.verify(msg, sign, publicJwk, 'SHA-256');  
+  return ec.verify(
+    msg,
+    sign,
+    publicJwk,
+    'SHA-256',
+    'raw' // input signature is not formatted. DER-encoded signature is available with 'der'. 
+    );  
 }).then( (valid) => {
   // now you get the result of verification in boolean
 });

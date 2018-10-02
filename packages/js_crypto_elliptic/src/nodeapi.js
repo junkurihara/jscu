@@ -17,19 +17,19 @@ export function generateKey(namedCurve, nodeCrypto){
   return {publicKey, privateKey};
 }
 
-export function sign(msg, privateJwk, hash, nodeCrypto){
+export function sign(msg, privateJwk, hash, signatureFormat, nodeCrypto){
   const privatePem = keyutil.fromJwkTo('pem', privateJwk, 'private', {compact: false});
   const sign = nodeCrypto.createSign(params.hashes[hash].nodeName);
   sign.update(msg);
   const asn1sig = sign.sign(privatePem);
-  return asn1enc.decodeAsn1Signature(asn1sig, privateJwk.crv);
+  return (signatureFormat === 'raw') ? asn1enc.decodeAsn1Signature(asn1sig, privateJwk.crv) : asn1sig;
 }
 
-export function verify(msg, signature, publicJwk, hash, nodeCrypto){
+export function verify(msg, signature, publicJwk, hash, signatureFormat, nodeCrypto){
   const publicPem = keyutil.fromJwkTo('pem', publicJwk, 'public', {compact: false});
   const verify = nodeCrypto.createVerify(params.hashes[hash].nodeName);
   verify.update(msg);
-  const asn1sig = asn1enc.encodeAsn1Signature(signature, publicJwk.crv);
+  const asn1sig = (signatureFormat === 'raw') ? asn1enc.encodeAsn1Signature(signature, publicJwk.crv) : signature;
   return verify.verify(publicPem, asn1sig);
 }
 

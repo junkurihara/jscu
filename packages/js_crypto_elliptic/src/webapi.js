@@ -3,7 +3,7 @@
  */
 
 import jseu from 'js-encoding-utils';
-
+import * as asn1enc from './asn1enc.js';
 
 export async function generateKey(namedCurve, webCrypto){
   // generate ecdsa key
@@ -23,17 +23,22 @@ export async function generateKey(namedCurve, webCrypto){
   return {publicKey, privateKey};
 }
 
-export async function sign(msg, privateJwk, hash, webCrypto){
+export async function sign(msg, privateJwk, hash, signatureFormat, webCrypto){
   const algo = {name: 'ECDSA', namedCurve: privateJwk.crv, hash: {name: hash}};
   const key = await webCrypto.importKey('jwk', privateJwk, algo, false, ['sign']);
   const signature = await webCrypto.sign(algo, key, msg);
-  return new Uint8Array(signature);
+  return (signatureFormat === 'raw')
+    ? new Uint8Array(signature)
+    : asn1enc.encodeAsn1Signature(new Uint8Array(signature), privateJwk.crv);
 }
 
-export async function verify(msg, signature, publicJwk, hash, webCrypto){
+export async function verify(msg, signature, publicJwk, hash, signatureFormat, webCrypto){
   const algo = {name: 'ECDSA', namedCurve: publicJwk.crv, hash: {name: hash}};
   const key = await webCrypto.importKey('jwk', publicJwk, algo, false, ['verify']);
-  return await webCrypto.verify(algo, key, signature, msg);
+  const rawSignature = (signatureFormat === 'raw')
+    ? signature
+    : asn1enc.decodeAsn1Signature(signature, publicJwk.crv);
+  return await webCrypto.verify(algo, key, rawSignature, msg);
 }
 
 export async function deriveSecret(publicJwk, privateJwk, webCrypto){

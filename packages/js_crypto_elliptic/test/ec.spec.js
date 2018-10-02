@@ -57,4 +57,20 @@ describe('Elliptic curve cryptography test', () => {
     console.log(results);
     expect(results.every( (r) => r)).to.be.true;
   });
+
+  it('Message is successfully signed and verified with generated JWK pairs with DER signature', async function () {
+    this.timeout(5000);
+    const results = await Promise.all(keys.map( async (kp) => {
+      let result = true;
+      const sign = await elliptic.sign(msg, kp.privateKey, 'SHA-256', 'der').catch( (e) => {result = false;});
+      //console.log(sign);
+      const valid = await elliptic.verify(msg, sign, kp.publicKey, 'SHA-256', 'der').catch( (e) => {result = false;});
+      expect(result).to.be.true;
+
+      return valid;
+    }));
+    console.log(results);
+    expect(results.every( (r) => r)).to.be.true;
+  });
+
 });
