@@ -4,8 +4,6 @@
 // SPKI PEM <=> X509 Certificate
 // X509 specification is given in https://tools.ietf.org/html/rfc5280
 
-// TODO: add verification of X509 self cert
-
 import rfc5280 from 'asn1.js-rfc5280';
 import asn from 'asn1.js';
 import BufferMod from 'buffer';

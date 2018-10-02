@@ -626,6 +626,13 @@
   dependencies:
     regenerator-runtime "^0.12.0"
 
+"@babel/runtime@7.1.2", "@babel/runtime@^7.1.2":
+  version "7.1.2"
+  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.1.2.tgz#81c89935f4647706fc54541145e6b4ecfef4b8e3"
+  integrity sha512-Y3SCjmhSupzFB6wcv1KmmFucH6gDVnI30WjOcicV10ju0cZjak3Jcs67YLIXBrmZYw1xCrVeJPbycFwrqNyxpg==
+  dependencies:
+    regenerator-runtime "^0.12.0"
+
 "@babel/template@^7.0.0":
   version "7.0.0"
   resolved "https://registry.yarnpkg.com/@babel/template/-/template-7.0.0.tgz#c2bc9870405959c89a9c814376a2ecb247838c80"
@@ -1050,7 +1057,7 @@ asn1.js@^4.0.0:
     inherits "^2.0.1"
     minimalistic-assert "^1.0.0"
 
-asn1.js@^5.0.0:
+asn1.js@^5.0.0, asn1.js@^5.0.1:
   version "5.0.1"
   resolved "https://registry.yarnpkg.com/asn1.js/-/asn1.js-5.0.1.tgz#7668b56416953f0ce3421adbb3893ace59c96f59"
   integrity sha512-aO8EaEgbgqq77IEw+1jfx5c9zTbzvkfuRBuZsSsPnTHMkmd5AI4J6OtITLZFa381jReeaQL67J0GBTUu0+ZTVw==
@@ -1354,7 +1361,7 @@ buffer-xor@^1.0.3:
   resolved "https://registry.yarnpkg.com/buffer-xor/-/buffer-xor-1.0.3.tgz#26e61ed1422fb70dd42e6e36729ed51d855fe8d9"
   integrity sha1-JuYe0UIvtw3ULm42cp7VHYVf6Nk=
 
-buffer@5.2.1:
+buffer@5.2.1, buffer@^5.2.1:
   version "5.2.1"
   resolved "https://registry.yarnpkg.com/buffer/-/buffer-5.2.1.tgz#dd57fa0f109ac59c602479044dca7b8b3d0b71d6"
   integrity sha512-c+Ko0loDaFfuPWiL02ls9Xd3GO3cPVmUobQ6t3rXNUk304u6hGq+8N/kFi+QEIKhzK3uwolVhLzszmfLmMLnqg==
@@ -2036,7 +2043,7 @@ electron-to-chromium@^1.3.62:
   resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.63.tgz#6485f5f4f3375358aa8fa23c2029ada208483b8d"
   integrity sha512-Ec35NNY040HKuSxMAzBMgz/uUI78amSWpBUD9x2gN7R7gkb/wgAcClngWklcLP0/lm/g0UUYHnC/tUIlZj8UvQ==
 
-elliptic@6.4.1:
+elliptic@6.4.1, elliptic@^6.4.1:
   version "6.4.1"
   resolved "https://registry.yarnpkg.com/elliptic/-/elliptic-6.4.1.tgz#c2d0b7776911b86722c632c3c06c60f2f819939a"
   integrity sha512-BsXLz5sqX8OHcsh7CqBMztyXARmGQ3LWPtGjJi6DiJHq5C/qvi9P3OqgswKSDftbu8+IoI/QDTAm2fFnQ9SZSQ==
@@ -3305,6 +3312,21 @@ js-crypto-aes@^0.1.0:
     "@babel/plugin-transform-regenerator" "7.0.0"
     "@babel/runtime" "7.0.0"
 
+js-crypto-ec@^0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/js-crypto-ec/-/js-crypto-ec-0.2.0.tgz#2129b74a94d590960ed70505ee112d9e0f297b1d"
+  integrity sha512-bEkDLTP7oDTWm2K2Y1Ax1sDprnlW3tekQDwMLX6xsZqgWUc7vEZ4kESIk1QkWUXE+g9OVW4FfdzPZNDKB5nS5w==
+  dependencies:
+    "@babel/plugin-transform-regenerator" "^7.0.0"
+    "@babel/runtime" "^7.1.2"
+    asn1.js "^5.0.1"
+    buffer "^5.2.1"
+    elliptic "^6.4.1"
+    js-crypto-hash "^0.1.2"
+    js-crypto-key-utils "^0.1.0"
+    js-crypto-random "^0.1.2"
+    js-encoding-utils "^0.2.6"
+
 js-crypto-hash@^0.1.0:
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/js-crypto-hash/-/js-crypto-hash-0.1.0.tgz#c99006bc77f2bf581b5208a045daf75416885a00"
@@ -3312,6 +3334,14 @@ js-crypto-hash@^0.1.0:
   dependencies:
     "@babel/plugin-transform-regenerator" "7.0.0"
     "@babel/runtime" "7.0.0"
+
+js-crypto-hash@^0.1.2:
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/js-crypto-hash/-/js-crypto-hash-0.1.2.tgz#dce0d4e41f420f7bef8f940daeb7c4403592fc81"
+  integrity sha512-vjHKaC3Fwp60YFB/QzwkAE34ggmRkBrZ7Ap1ERSWeTvICdnxO93wE1iXfF8BxkXJWvMvAMSb4Xf/0Yz+sVpmyA==
+  dependencies:
+    "@babel/plugin-transform-regenerator" "7.0.0"
+    "@babel/runtime" "7.1.2"
 
 js-crypto-hkdf@^0.2.0:
   version "0.2.0"
@@ -3331,6 +3361,19 @@ js-crypto-hmac@^0.1.0:
     "@babel/plugin-transform-regenerator" "7.0.0"
     "@babel/runtime" "7.0.0"
 
+js-crypto-key-utils@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/js-crypto-key-utils/-/js-crypto-key-utils-0.1.0.tgz#365f87fcba8bcf52a14acb7b650ba8412ab8722d"
+  integrity sha512-aEvLYNqMkfCNla8UgqVQKNpxl0TkKMMYFtOEWx2PcrfPbZ9BOrqOJW5P4toc28VM+fJRvROqVAc8K96HjCK4nQ==
+  dependencies:
+    "@babel/plugin-transform-regenerator" "7.0.0"
+    "@babel/runtime" "7.1.2"
+    asn1.js "^5.0.1"
+    buffer "^5.2.1"
+    elliptic "^6.4.1"
+    js-crypto-hash "^0.1.2"
+    js-encoding-utils "^0.2.6"
+
 js-crypto-random@^0.1.0:
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/js-crypto-random/-/js-crypto-random-0.1.0.tgz#0eb206df7345c4fc9810e401ad9be78efea6fe64"
@@ -3339,6 +3382,14 @@ js-crypto-random@^0.1.0:
     "@babel/plugin-transform-regenerator" "7.0.0"
     "@babel/runtime" "7.0.0"
 
+js-crypto-random@^0.1.2:
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/js-crypto-random/-/js-crypto-random-0.1.2.tgz#30046958027d8cfcb775b6eebc72ab4acb533b13"
+  integrity sha512-MDHosjzuGaCANi2l6LPSjNM2RWtQC4p8QRzJJC/kugmcoYetihhS1el9zO6FLSpY6ckJWq1aKqnmlZ7YQ2eeXA==
+  dependencies:
+    "@babel/plugin-transform-regenerator" "^7.0.0"
+    "@babel/runtime" "^7.1.2"
+
 js-encoding-utils@^0.2.3:
   version "0.2.3"
   resolved "https://registry.yarnpkg.com/js-encoding-utils/-/js-encoding-utils-0.2.3.tgz#94debd63358cc91c537149dba24ec6dd47b92eb0"
@@ -3346,6 +3397,14 @@ js-encoding-utils@^0.2.3:
   dependencies:
     "@babel/plugin-transform-regenerator" "7.0.0"
     "@babel/runtime" "7.0.0"
+
+js-encoding-utils@^0.2.6:
+  version "0.2.6"
+  resolved "https://registry.yarnpkg.com/js-encoding-utils/-/js-encoding-utils-0.2.6.tgz#81809f998333df2c4a94fed2c620b8975f6f9327"
+  integrity sha512-d7b0bVglC3sFUSRLTWlzF4hJL38v4hZm5h+k8oozXK+UXSkE1Ag8frEn5zEUMTybLDXhMZTqIiwVi8hn2snK+A==
+  dependencies:
+    "@babel/plugin-transform-regenerator" "7.0.0"
+    "@babel/runtime" "7.1.2"
 
 js-levenshtein@^1.1.3:
   version "1.1.3"
