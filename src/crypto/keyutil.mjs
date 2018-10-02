@@ -12,8 +12,6 @@ import keyutil from 'js-crypto-key-utils/dist/index.js';
  * @return {Promise<*|*>}
  */
 export function jwkToPem(jwkey, type) {
-  if (type !== 'public' && type !== 'private') throw new Error('type must be public or private');
-
   return keyutil.fromJwkTo('pem', jwkey, type, {compact: false}); // {compact: false} is just for EC keys (in RSA, will be omitted.)
 }
 
@@ -26,8 +24,6 @@ export function jwkToPem(jwkey, type) {
  * @return {Promise<*>}
  */
 export function pemToJwk(pem, type) {
-  if (type !== 'public' && type !== 'private') throw new Error('type must be public or private');
-
   return keyutil.toJwkFrom('pem', pem, type);
 }
 
