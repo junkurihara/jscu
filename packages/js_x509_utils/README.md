@@ -1,5 +1,6 @@
 Universal Module of X.509 Certificate Utilities in JavaScript 
 --
+[![CircleCI](https://circleci.com/gh/junkurihara/js-x509-utils.svg?style=svg)](https://circleci.com/gh/junkurihara/js-x509-utils)
 
 > **WARNING**: At this time this solution should be considered suitable for research and experimentation, further code and security review is needed before utilization in a production application.
 
