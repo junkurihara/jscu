@@ -1,0 +1,86 @@
+Universal Module of X.509 Certificate Utilities in JavaScript 
+--
+
+> **WARNING**: At this time this solution should be considered suitable for research and experimentation, further code and security review is needed before utilization in a production application.
+
+# Introduction and Overview
+This library is designed to be 'universal' as a utility to handle X.509 in JavaScript, i.e., it works both on most browsers and on Node.js just by importing from npm/source code. This library provides APIs to convert between Json Web Key (JWK) and X.509 DER/PEM.
+
+# Installation
+At your project directory, do either one of the following.
+
+- From npm/yarn:
+  ```shell
+  $ npm install --save js-x509-utils // npm
+  $ yarn add js-x509-utils // yarn
+  ```
+- From GitHub:
+  ```shell
+  $ git clone https://github.com/junkurihara/js-x509-utils.git
+  ```
+
+Then you should import the package as follows.
+```shell
+import x509 from 'js-x509-utils'; // for npm
+import x509 from 'js-x509-utils/dist/index.js'; // for github
+```
+  
+# Usage
+This library always uses JWK-formatted keys ([RFC7517](https://tools.ietf.org/html/rfc7517)) to do any operations. If you utilize keys of other format, like PEM, please use [`js-crypto-key-utils`](https://github.com/junkurihara/js-crypto-key-utils) to convert them to JWK.
+
+
+## Create X.509 from JWK-formatted public key
+```javascript
+const publicJwk = {kty: 'EC', crv: 'P-256', x: '...', y: '...'}; // public key to be signed
+const privateJwk = {ktyp: 'EC', crv: 'P-256', x: '...', y: '...', d: '...'}; // private key
+
+const name = { // this is optional
+      countryName: 'JP',
+      stateOrProvinceName: 'Tokyo',
+      localityName: 'Chiyoda',
+      organizationName: 'example',
+      organizationalUnitName: 'Research',
+      commonName: 'example.com'
+    };
+
+// sign
+x509.fromJwk(
+  publicJwk,
+  privateJwk,
+  'pem',
+  {
+    signature: 'ecdsa-with-sha256', // signature algorithm
+    days: 365, // expired in days
+    issuer: name, // issuer
+    subject: name // assume that issuer = subject, i.e., self-signed certificate
+  },
+  'pem' // output signature is in PEM. DER-encoded signature is available with 'der'.
+).then( (cert) => {
+  // now you get the certificate in PEM string
+});
+```
+
+## Extract JWK from X.509 certificate
+```javascript
+const crtsample = '-----BEGIN CERTIFICATE-----...'; 
+const jwkey = x509.toJwk(crtsample, 'pem');
+// now you get JWK public key from PEM-formatted certificate     
+```
+
+## Extract signature and message body from X.509 certificate
+```javascript
+const crtsample = '-----BEGIN CERTIFICATE-----...';
+const parsed = x509.parse(crtsample, 'pem');
+// now you get parsed object from PEM-formatted certificate
+// {tbsCertificate, signatureValue, hash, signatureAlgorithm}
+```
+
+# Note
+At this point, this library supports only certificate signed with ECDSA using the following curve for elliptic curve cryptography.
+- P-256 (secp256r1)
+- P-384 (secp384r1)
+- P-521 (secp521r1)
+- P-256K (secp256k1)
+
+# License
+Licensed under the MIT license, see `LICENSE` file.
