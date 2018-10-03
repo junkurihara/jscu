@@ -7,7 +7,37 @@ var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefau
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.default = exports.jscu = void 0;
+Object.defineProperty(exports, "aes", {
+  enumerable: true,
+  get: function get() {
+    return _index.default;
+  }
+});
+Object.defineProperty(exports, "random", {
+  enumerable: true,
+  get: function get() {
+    return _index2.default;
+  }
+});
+Object.defineProperty(exports, "hash", {
+  enumerable: true,
+  get: function get() {
+    return _index3.default;
+  }
+});
+Object.defineProperty(exports, "hmac", {
+  enumerable: true,
+  get: function get() {
+    return _index4.default;
+  }
+});
+Object.defineProperty(exports, "hkdf", {
+  enumerable: true,
+  get: function get() {
+    return _index5.default;
+  }
+});
+exports.pkc = exports.keyUtil = exports.default = void 0;
 
 var _index = _interopRequireDefault(require("js-crypto-aes/dist/index.js"));
 
@@ -21,7 +51,11 @@ var _index5 = _interopRequireDefault(require("js-crypto-hkdf/dist/index.js"));
 
 var keyUtil = _interopRequireWildcard(require("./keyutil.js"));
 
+exports.keyUtil = keyUtil;
+
 var pkc = _interopRequireWildcard(require("./pkc.js"));
+
+exports.pkc = pkc;
 
 /**
  * index.js
@@ -49,7 +83,7 @@ var pkc = _interopRequireWildcard(require("./pkc.js"));
  *  |-- hmac
  *  |-- hkdf
  */
-var jscu = {
+var _default = {
   keyUtil: keyUtil,
   pkc: pkc,
   aes: _index.default,
@@ -58,6 +92,4 @@ var jscu = {
   hmac: _index4.default,
   hkdf: _index5.default
 };
-exports.jscu = jscu;
-var _default = jscu;
 exports.default = _default;
