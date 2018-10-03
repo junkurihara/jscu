@@ -1,9 +1,45 @@
 /**
- * util.mjs
+ * index.js
+ * Structure of API
+ * --- keyUtil (key utilities for EC and RSA public keys)
+ *  |    |-- jwk
+ *  |    |    |-- to
+ *  |    |    |-- from
+ *  |    |    |-- getThumbprint
+ *  |    |-- x509 // TODO RSA
+ *  |         |-- toJwk
+ *  |         |-- fromJwk
+ *  |         |-- parse (verify)
+ *  |
+ *  |-- pkc (public key crypto, EC and RSA) // TODO: RSA and encrypt/decrypt with ECDH standard procedure
+ *  |    |-- generateKey
+ *  |    |-- encrypt
+ *  |    |-- decrypt
+ *  |    |-- sign
+ *  |    |-- verify
+ *  |
+ *  |-- aes
+ *  |-- random
+ *  |-- hash
+ *  |-- hmac
+ *  |-- hkdf
  */
 
-import * as crypto from './crypto/index.js';
+import aes from 'js-crypto-aes/dist/index.js';
+import random from 'js-crypto-random/dist/index.js';
+import hash from 'js-crypto-hash/dist/index.js';
+import hmac from 'js-crypto-hmac/dist/index.js';
+import hkdf from 'js-crypto-hkdf/dist/index.js';
 
+import * as keyUtil from './keyutil.js';
+import * as pkc from './pkc.js';
 
-export default { crypto };
-export { crypto }; // workaround
+export default {
+  keyUtil,
+  pkc,
+  aes,
+  random,
+  hash,
+  hmac,
+  hkdf
+};

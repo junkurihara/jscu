@@ -15,7 +15,7 @@ describe('Hash generation test', () => {
 
   it('Hash should be generated for each hash algorithms', async () => {
     await Promise.all(hashes.map( async (hash) => {
-      const d = await jscu.crypto.hash.compute(msg, hash);
+      const d = await jscu.hash.compute(msg, hash);
       expect(d).to.be.a('Uint8Array');
       const len = parseInt(hash.slice(4,7), 10)/8;
       expect(d, `failed at ${hash}`).to.be.length(len);

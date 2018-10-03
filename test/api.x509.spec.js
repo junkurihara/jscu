@@ -20,14 +20,12 @@ const crtsample = '-----BEGIN CERTIFICATE-----\n' +
   '-----END CERTIFICATE-----';
 
 describe('Generated JWK public key should be successfully converted to X509 PEM certificate and vice versa', () => {
-  const getKeyParam = (elem) => ({keyType: 'EC', namedCurve: elem});
   let keySet = [];
   let msg;
   before( async () => {
 
     keySet = await Promise.all(curves.map( async (crv) => {
-      const param = getKeyParam(crv);
-      return await jscu.crypto.generateKeyPair(param);
+      return await jscu.pkc.generateKey('EC', {namedCurve: crv});
     }));
     msg = new Uint8Array(32);
     for(let i = 0; i < 32; i++) msg[i] = 0xFF & i;
@@ -47,9 +45,9 @@ describe('Generated JWK public key should be successfully converted to X509 PEM 
     let result = true;
     await Promise.all(
       keySet.map( async (kp) => sigopt.map( async (so) => {
-        const x509c = await jscu.crypto.x509.fromJwk(
-          kp.publicKey.key,
-          kp.privateKey.key,
+        const x509c = await jscu.keyUtil.x509.fromJwk(
+          kp.publicKey,
+          kp.privateKey,
           'pem',
           {
             signature: so,
@@ -59,8 +57,8 @@ describe('Generated JWK public key should be successfully converted to X509 PEM 
           }
         );
         console.log(x509c);
-        const parsed = await jscu.crypto.x509.parse(x509c, 'pem');
-        const re = await jscu.crypto.verify(parsed.tbsCertificate, parsed.signatureValue, kp.publicKey.key, {name: parsed.hash}, 'der');
+        const parsed = await jscu.keyUtil.x509.parse(x509c, 'pem');
+        const re = await jscu.pkc.verify(parsed.tbsCertificate, parsed.signatureValue, kp.publicKey, parsed.hash, 'der');
         console.log('verification result: ' + re);
         expect(re).to.be.true;
         result = re && result;
@@ -71,10 +69,10 @@ describe('Generated JWK public key should be successfully converted to X509 PEM 
   });
 
   it('Transform X509 Self Signed PEM to JWK, and verify it', async () => {
-    const jwkey = await jscu.crypto.x509.toJwk(crtsample, 'pem');
+    const jwkey = await jscu.keyUtil.x509.toJwk(crtsample, 'pem');
 
-    const parsed = await jscu.crypto.x509.parse(crtsample, 'pem');
-    const re = await jscu.crypto.verify(parsed.tbsCertificate, parsed.signatureValue, jwkey, {name: parsed.hash}, 'der');
+    const parsed = await jscu.keyUtil.x509.parse(crtsample, 'pem');
+    const re = await jscu.pkc.verify(parsed.tbsCertificate, parsed.signatureValue, jwkey, parsed.hash, 'der');
     console.log(jwkey);
     console.log(re);
     expect(re).to.be.true;

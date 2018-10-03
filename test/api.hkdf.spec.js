@@ -17,7 +17,7 @@ describe('HKDF test', () => {
   it('HKDF is done with automatic salt generation', async function () {
     this.timeout(20000);
     await Promise.all(hashes.map( async (hash) => {
-      const d = await jscu.crypto.hkdf.compute(msg, hash, length, '', null);
+      const d = await jscu.hkdf.compute(msg, hash, length, '', null);
       expect(d.key).to.be.a('Uint8Array');
       expect(d.salt).to.be.a('Uint8Array');
       expect(d.key.byteLength, `failed at ${hash}`).to.be.equal(length);
@@ -27,12 +27,12 @@ describe('HKDF test', () => {
   it('When the same salt is given, the same hash is obtained with HKDF', async function () {
     this.timeout(20000);
     await Promise.all(hashes.map( async (hash) => {
-      const d = await jscu.crypto.hkdf.compute(msg, hash, length, '', null);
+      const d = await jscu.hkdf.compute(msg, hash, length, '', null);
       expect(d.key).to.be.a('Uint8Array');
       expect(d.salt).to.be.a('Uint8Array');
       expect(d.key.byteLength, `failed at ${hash}`).to.be.equal(length);
 
-      const dash = await jscu.crypto.hkdf.compute(msg, hash, length, '', d.salt);
+      const dash = await jscu.hkdf.compute(msg, hash, length, '', d.salt);
       expect(dash.key).to.be.a('Uint8Array');
       expect(dash.salt).to.be.a('Uint8Array');
       expect(dash.key.toString() === d.key.toString(), `failed at ${hash}`).to.be.true;
@@ -47,7 +47,7 @@ describe('HKDF test', () => {
   it('When the fixed salt is given, the mac is always fixed', async function () {
     this.timeout(20000);
     await Promise.all(hashes.map( async (hash) => {
-      const d = await jscu.crypto.hkdf.compute(msg, hash, length, '', msg);
+      const d = await jscu.hkdf.compute(msg, hash, length, '', msg);
       expect(d.key).to.be.a('Uint8Array');
       expect(d.salt).to.be.a('Uint8Array');
       expect(d.key.toString() === fixedMACs[hash]).to.be.true;
