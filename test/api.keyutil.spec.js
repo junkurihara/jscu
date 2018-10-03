@@ -1,4 +1,4 @@
-import jscu from '../src/index.mjs';
+import jscu from '../src/index.js';
 import jseu from 'js-encoding-utils';
 
 let crypto;
