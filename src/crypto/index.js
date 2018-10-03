@@ -2,9 +2,9 @@
  * util.mjs
  */
 
-import {sign, verify, generateKeyPair, encrypt, decrypt } from './crypto.mjs';
-import * as keyutil from './keyutil.mjs';
-import util from './util.mjs';
+import {sign, verify, generateKeyPair, encrypt, decrypt } from './crypto.js';
+import * as keyutil from './keyutil.js';
+import util from './util.js';
 
 const x509 = util.x509;
 const hash = util.hash;

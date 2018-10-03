@@ -4,7 +4,7 @@
   "description": "JavaScript cryptographic utilities for OpenSSL-WebCrypto compatibility including PEM/X509-JWK converter.",
   "main": "dist/jscu.bundle.js",
   "scripts": {
-    "test": "./node_modules/.bin/mocha --require @babel/register --recursive $(find test -name '*.spec.mjs')",
+    "test": "./node_modules/.bin/mocha --require @babel/register --recursive $(find test -name '*.spec.js')",
     "karma": "./node_modules/.bin/karma start",
     "babel": "NODE_ENV=production ./node_modules/.bin/babel src -d dist/ --keep-file-extension",
     "build": "rm -rf dist/* && NODE_ENV=production ./node_modules/.bin/babel src -d dist/ --keep-file-extension && ./node_modules/.bin/webpack --mode production --optimize-minimize"

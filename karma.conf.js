@@ -35,7 +35,7 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
-      'test/**/*.spec.mjs'
+      'test/**/*.spec.js'
     ],
 
 
@@ -47,8 +47,8 @@ module.exports = function(config) {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
-      './src/**/*.mjs': ['coverage'],
-      './test/**/*.spec.mjs': ['webpack']
+      './src/**/*.js': ['coverage'],
+      './test/**/*.spec.js': ['webpack']
     },
     // TODO Merge with webpack.config.js
     webpack: getWebpackConfig(),

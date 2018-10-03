@@ -2,7 +2,7 @@
  * crypto.mjs
  */
 
-import params from './params.mjs';
+import params from './params.js';
 import ec from 'js-crypto-ec/dist/index.js';
 import hkdf from 'js-crypto-hkdf/dist/index.js';
 import aes from 'js-crypto-aes/dist/index.js';

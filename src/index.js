@@ -2,7 +2,7 @@
  * util.mjs
  */
 
-import * as crypto from './crypto/index.mjs';
+import * as crypto from './crypto/index.js';
 
 
 export default { crypto };
