@@ -7,7 +7,7 @@ var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefau
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.default = void 0;
+exports.default = exports.jscu = void 0;
 
 var _index = _interopRequireDefault(require("js-crypto-aes/dist/index.js"));
 
@@ -49,7 +49,7 @@ var pkc = _interopRequireWildcard(require("./pkc.js"));
  *  |-- hmac
  *  |-- hkdf
  */
-var _default = {
+var jscu = {
   keyUtil: keyUtil,
   pkc: pkc,
   aes: _index.default,
@@ -58,4 +58,6 @@ var _default = {
   hmac: _index4.default,
   hkdf: _index5.default
 };
+exports.jscu = jscu;
+var _default = jscu;
 exports.default = _default;

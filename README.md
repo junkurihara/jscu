@@ -144,7 +144,7 @@ jscu.pkc.generateKey(  // key generation
 ```
 Note that AES and HKDF are independently available from `jscu.aes` and `jscu.hkdf` as well as `random` and `hash`. Also note that the HKDF employed in this library is the one specified in RFC5869 (https://tools.ietf.org/html/rfc5869). 
 
-### Converting between Json Web Key (JWK) and SPKI-formatted (public key) or PKCS8-formatted (private key) PEM/DER
+## Converting between Json Web Key (JWK) and SPKI-formatted (public key) or PKCS8-formatted (private key) PEM/DER
 We shall explain the conversion using an example of elliptic curve cryptography keys. First let an elliptic curve crypto public key is given in the form of JWK ([RFC7517](https://tools.ietf.org/html/rfc7517)) as follows:
 ```javascript
 const publicJwk = {kty: 'EC', crv: 'P-256', x: '...', y: '...'};

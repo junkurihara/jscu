@@ -34,7 +34,7 @@ import hkdf from 'js-crypto-hkdf/dist/index.js';
 import * as keyUtil from './keyutil.js';
 import * as pkc from './pkc.js';
 
-export default {
+export const jscu = {
   keyUtil,
   pkc,
   aes,
@@ -43,3 +43,5 @@ export default {
   hmac,
   hkdf
 };
+
+export default jscu;
