@@ -41,7 +41,7 @@ describe('RSA cryptography test', () => {
     const em = await oaep.emeOaepEncode(msg, new Uint8Array([]), 256, 'SHA-256');
     // console.log(em);
     const msgPrime = await oaep.emeOaepDecode(em, new Uint8Array([]), 256, 'SHA-256');
-    console.log(msg.toString() === msgPrime.toString());
+    expect(msg.toString() === msgPrime.toString()).to.be.true;
   });
 
   it('Message is successfully signed and verified with generated JWK pairs', async function () {
@@ -78,6 +78,7 @@ describe('RSA cryptography test', () => {
     const webEnc = 'd8ehCiJyQjqjrWnKSNBJ+5Q7SS+5Xdv+Bevcn+3xYX4zMMsY2BCDux75rvexiUcIZphXf3HRNsrL340wlGhg0sNKGBaFR1Nv2D3Ta5FyEnuDbSxl6hItF6pvZ628c0DW5/YTfPE1xJLZwE+8bHAgjJO3eob5vU7/h8X9tZtf37FUfPIMLDWNc4v7E2uynrzV0xHpg6J7QZbwvJmz9uShEVraR0pkR86MPvNnRw8y2iB+xAK5V+CqZLT6I5+rZuWWxaI5+9BypeR2JmNXogrqg88/JiKy1N/TdwJ2ZJ8inu1VW97soJbLmtNPH2Ur5Dd+9dZSNKhdNQwS0QLXZn3C6A==';
     const webSig = 'CHoyzFCHWBPv6cXPplD8P0IRIO/683lfMMcMYmyukkotegyNnP+BtwID3e7f41tRe7sxUXJtb/MjUkDtxv08T2dBTAgNJtk/LLDvNVJ0AJ7MwATQpojzY1xoyEOnRhrDsYjYI+ITYDMLFbvAng2x8hf5mNrR+GoAZLxsBFtq+4n4av7FFmPMpwpFJ/R6arQky3OIt6/dm3d5jQQ6kTPSHKb3gVrutsXUUrSosXQiMDz0Qu6T2bdwKHWX5zO9P00AYwgpoLaWV+vHXQNEyyxLA/VgB2C8obpTNNJF5rqcuVp9KNGmffV43UnzWZX0YAB5JSIc+9JXKqj71JO3Q7AjTA==\n';
     const nodeEnc = 'oryyTFEC/BEgCjML93pibShvvQws120JQ41jFFhY8qm2ceGfknkBXmZYuafsCk2tUGO82mYoS0vGRd22jcQ35Bz5AcnBRlCSk90GUUPYvoRe3ED6k8rzYsi7JkMRWbXOSaI2UBx6cxWHS6ooY/XYsjubz7D+sV6okQkBbGpVCOhw0biBI6QYw54YaMryW3yxSKIoq56Z6mWNMmSTbY1DC9l6ckDn0XDePdZs/SQox1g35OmBNnALRn92Nltg6Bw1wuV/FKNsosiwdwZW7VoQqpvHORDsBBIVG++tIx/T2E5D1tddGOt0vqEWuEA3zn6x/FmKSeLzO6KGaD1xzoivTA==';
+    const nodeSig = 'c9vdu4tmstRJEk1fLLLqU/r6cNZ9Tp74Zw2VsJxNvoAEFP/BXkwq27drupqajvxj+QKxP7ggs83Oi/cppmqAFghXMU1OJRRdMIbcn9O8RBZ0SJkY/LHy8NUrNvJ3AY8EjL3zqH1X0YaQltnKs9xgne4p+DpL45fQlFz8BJML+Tw1bIS59uZ87RNIEcAytiwH6VXb/HLJdLZD40OWfG2lD4g5oobZz/Gdd1ncAFuFcl0ut7SZu/wltp8DCXeQ6zl4lUG7YS3+RG0Iigq45pBYhq2Hrag+t0YQwTQQRGhKEjFlr8cKIdUaTSDgEwNcRf25cSVSJrrFepaKswM8QDkpVw=='
     const decrypted = await rsa.decrypt(jseu.encoder.decodeBase64(webEnc), rsaSmaple['2048'].privateKey.jwk, 'SHA-256');
     console.log(decrypted.toString() === msg.toString());
     expect(decrypted.toString() === msg.toString()).to.be.true;
@@ -88,6 +89,9 @@ describe('RSA cryptography test', () => {
     const decryptedNode = await rsa.decrypt(jseu.encoder.decodeBase64(nodeEnc), rsaSmaple['2048'].privateKey.jwk, 'SHA-256');
     console.log(decryptedNode.toString() === msg.toString());
     expect(decryptedNode.toString() === msg.toString()).to.be.true;
+    const validNode = await rsa.verify(msg, jseu.encoder.decodeBase64(nodeSig), rsaSmaple['2048'].publicKey.jwk, 'SHA-256');
+    console.log(validNode);
+    expect(validNode).to.be.true;
   });
 
   // it('Message is successfully signed and verified with generated JWK pairs with DER signature', async function () {
