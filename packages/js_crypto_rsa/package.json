@@ -1,7 +1,7 @@
 {
   "name": "js-crypto-rsa",
   "version": "0.0.1",
-  "description": "",
+  "description": "Universal Module for RSA Cryptography (RSA-OAEP and RSASSA-PSS/PKCS1-V1_5) in JavaScript",
   "main": "dist/jscrsa.js",
   "scripts": {
     "test": "./node_modules/.bin/mocha --require @babel/register --recursive $(find test -name '*.spec.js')",
