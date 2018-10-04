@@ -7,8 +7,9 @@ import keyutil from 'js-crypto-key-utils/dist/index.js';
 import jseu from 'js-encoding-utils';
 import * as oaep from './oaep.js';
 
+// TODO: Currently not implemented in Node.js. Will be available from Node.js v10.12.0.
 export function generateKey(modulusLength = 2048, publicExponent = new Uint8Array([0x01, 0x00, 0x01]), nodeCrypto){
-  throw new Error('CurrentlyKeyGenInNodeIsUnsupported');
+  throw new Error('CurrentlyNodeKeyGenIsUnsupported');
 }
 
 export function sign(msg, privateJwk, hash = 'SHA-256', algorithm = {name: 'RSA-PSS', saltLength: 192}, nodeCrypto) {

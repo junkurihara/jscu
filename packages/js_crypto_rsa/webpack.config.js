@@ -33,14 +33,14 @@ const getBabelWebOpt = () => {
 const webConfig = {
   target: 'web',
   entry: {
-    lib: ['./src/index.js'],
+    jscrsa: ['./src/index.js'],
   },
   output: {
     filename: '[name].bundle.js',
     chunkFilename: '[name].js',
     path: path.resolve(__dirname, 'dist'),
     publicPath: path.resolve(__dirname, 'dist'),
-    library: 'lib',
+    library: 'jscrsa',
     libraryTarget: 'umd',
     globalObject: 'this' // for node js import
   },
@@ -67,7 +67,7 @@ const webConfig = {
     new webpack.optimize.MinChunkSizePlugin({minChunkSize: 1000})
   ],
   externals: {
-    crypto: true
+    'crypto': true
   },
   node: {
     fs: 'empty'

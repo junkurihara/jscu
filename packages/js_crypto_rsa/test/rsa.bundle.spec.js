@@ -1,4 +1,4 @@
-import rsa from '../src/index.js';
+import rsa from '../dist/jscrsa.bundle.js';
 import rsaSmaple from './rsa_sample.js';
 import * as oaep from '../src/oaep.js';
 import jseu from 'js-encoding-utils';

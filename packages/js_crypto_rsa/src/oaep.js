@@ -8,6 +8,37 @@ import random from 'js-crypto-random/dist/index.js';
 
 // RFC3447 https://tools.ietf.org/html/rfc3447
 /*
+      # Encryption
+      a. If the length of L is greater than the input limitation for the
+         hash function (2^61 - 1 octets for SHA-1), output "label too
+         long" and stop.
+
+      b. If mLen > k - 2hLen - 2, output "message too long" and stop.
+
+      # Decryption
+      a. If the length of L is greater than the input limitation for the
+         hash function (2^61 - 1 octets for SHA-1), output "decryption
+         error" and stop.
+
+      b. If the length of the ciphertext C is not k octets, output
+         "decryption error" and stop.
+
+      c. If k < 2hLen + 2, output "decryption error" and stop.
+ */
+export function checkLength(mode, {k, label, hash, mLen, cLen}){
+  if (mode === 'encrypt') {
+    if (label.length > (1 << params.hashes[hash].maxInput) - 1) throw new Error('LabelTooLong');
+    if (mLen > k - 2 * params.hashes[hash].hashSize - 2) throw new Error('MessageTooLong');
+  }
+  else if (mode === 'decrypt') {
+    if (label.length > (1 << params.hashes[hash].maxInput) - 1) throw new Error('DecryptionError');
+    if (cLen !== k || k < 2 * params.hashes[hash].hashSize + 2) throw new Error('DecryptionError');
+  }
+  else throw new Error('InvalidMode');
+}
+
+
+/*
       a. If the label L is not provided, let L be the empty string. Let
          lHash = Hash(L), an octet string of length hLen (see the note
          below).
@@ -37,12 +68,11 @@ import random from 'js-crypto-random/dist/index.js';
 
             EM = 0x00 || maskedSeed || maskedDB.
  */
-import jseu from 'js-encoding-utils';
 export async function emeOaepEncode(msg, label, k, hash='SHA-256'){
   const hashSize = params.hashes[hash].hashSize;
 
   let ps = new Uint8Array(k - msg.length - (2*hashSize) - 2);
-  ps = ps.map( (elem) => 0x00);
+  ps = ps.map( () => 0x00);
 
   const lHash = await jschash.compute(label, hash);
 

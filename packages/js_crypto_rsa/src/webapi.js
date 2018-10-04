@@ -3,9 +3,8 @@
  */
 
 export async function generateKey(modulusLength = 2048, publicExponent = new Uint8Array([0x01, 0x00, 0x01]), webCrypto){
-  // generate ecdsa key
+  // generate rsa key
   // hash is used for signing and verification. never be used for key generation
-
   const keys = await webCrypto.generateKey(
     { name: 'RSA-OAEP', modulusLength, publicExponent, hash: { name: 'SHA-256' } },
     true,
@@ -16,7 +15,7 @@ export async function generateKey(modulusLength = 2048, publicExponent = new Uin
   const publicKey = await webCrypto.exportKey('jwk', keys.publicKey);
   const privateKey = await webCrypto.exportKey('jwk', keys.privateKey);
 
-  // delete optional entries to export as general ecdsa/ecdh key
+  // delete optional entries to export as general rsa sign/encrypt key
   ['key_ops', 'alg', 'ext'].forEach((elem) => {
     delete publicKey[elem];
     delete privateKey[elem];
