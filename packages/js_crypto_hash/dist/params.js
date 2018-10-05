@@ -21,6 +21,11 @@ var _default = {
     'SHA-512': {
       nodeName: 'sha512',
       hashSize: 64
+    },
+    'SHA-1': {
+      nodeName: 'sha1',
+      hashSize: 20 // SHOULD NOT USE
+
     }
   }
 };

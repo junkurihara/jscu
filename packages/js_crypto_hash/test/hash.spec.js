@@ -1,11 +1,11 @@
 import hash from '../src/index.js';
-
+import params from '../src/params.js';
 import chai from 'chai';
 // const should = chai.should();
 const expect = chai.expect;
 
 
-const hashes = ['SHA-256', 'SHA-384', 'SHA-512'];
+const hashes = ['SHA-256', 'SHA-384', 'SHA-512', 'SHA-1'];
 describe('Hash generation test', () => {
   let msg;
   before( async () => {
@@ -15,10 +15,10 @@ describe('Hash generation test', () => {
 
   it('Hash should be generated for each hash algorithms', async () => {
     await Promise.all(hashes.map( async (alg) => {
-      const d = await hash.compute(msg, alg);
+      const d = await hash.compute(msg, alg).catch( (e) => console.error(e));
       console.log(d);
       expect(d).to.be.a('Uint8Array');
-      const len = parseInt(alg.slice(4,7), 10)/8;
+      const len = params.hashes[alg].hashSize;
       expect(d, `failed at ${alg}`).to.be.length(len);
     }));
   });
