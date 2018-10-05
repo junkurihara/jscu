@@ -1,6 +1,6 @@
 {
   "name": "js-crypto-ec",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Universal Module for Elliptic Curve Cryptography (ECDSA and ECDH) in JavaScript",
   "main": "dist/jscec.bundle.js",
   "scripts": {
