@@ -25,6 +25,11 @@ var _default = {
       nodeName: 'sha512',
       hashSize: 64,
       maxInput: 125
+    },
+    'SHA-1': {
+      nodeName: 'sha1',
+      hashSize: 20,
+      maxInput: 61
     }
   }
 };

@@ -62,7 +62,7 @@ function _generateKey() {
 
           case 11:
             privateKey = _context.sent;
-            // delete optional entries to export as general ecdsa/ecdh key
+            // delete optional entries to export as general rsa sign/encrypt key
             ['key_ops', 'alg', 'ext'].forEach(function (elem) {
               delete publicKey[elem];
               delete privateKey[elem];
