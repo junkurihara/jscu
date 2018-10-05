@@ -42,7 +42,11 @@ var _default = {
     //, hashSize: 48},
     'SHA-512': {
       nodeName: 'sha512'
-    } //, hashSize: 64}
+    },
+    //, hashSize: 64}
+    'SHA-1': {
+      nodeName: 'sha1'
+    } //, hashSize: 20},
 
   }
 };
