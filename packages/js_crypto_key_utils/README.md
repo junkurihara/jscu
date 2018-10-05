@@ -81,7 +81,7 @@ const privateAsn = keyutils.fromJwkTo(
     compact: false // if true, compressed form of keys are obtained
   });
 ```
-Note that public keys are encoded to the form of `SubjectPublicKeyInfo` (SPKI) defined as a part of X.509 public key certificate ([RFC5280](https://tools.ietf.org/html/rfc5280)). The detailed encoding rule for elliptic cryptographic keys is given in [RFC5480](https://tools.ietf.org/html/rfc5480). On the other hand, private keys are encoded to hte form of `PrivateKeyInfo` defined in PKCS#8 ([RFC5208](https://tools.ietf.org/html/rfc5208)). The detailed encoding rule for elliptic keys is given in [RFC5915](https://tools.ietf.org/html/rfc5915) as well as SPKI.
+Note that public keys are encoded to the form of `SubjectPublicKeyInfo` (SPKI) defined as a part of X.509 public key certificate ([RFC5280](https://tools.ietf.org/html/rfc5280)). The detailed encoding rule for elliptic cryptographic keys is given in [RFC5480](https://tools.ietf.org/html/rfc5480). On the other hand, private keys are encoded to hte form of `PrivateKeyInfo` defined in PKCS#8 ([RFC5958](https://tools.ietf.org/html/rfc5958)). The detailed encoding rule for elliptic keys is given in [RFC5915](https://tools.ietf.org/html/rfc5915) as well as SPKI.
 
 This library also re-convert keys in PEM/DER to JWK as follows.
 ```javascript
