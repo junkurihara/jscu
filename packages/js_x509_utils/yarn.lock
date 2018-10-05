@@ -3224,17 +3224,17 @@ istanbul@^0.4.0:
     which "^1.1.1"
     wordwrap "^1.0.0"
 
-js-crypto-ec@^0.2.0:
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/js-crypto-ec/-/js-crypto-ec-0.2.0.tgz#2129b74a94d590960ed70505ee112d9e0f297b1d"
-  integrity sha512-bEkDLTP7oDTWm2K2Y1Ax1sDprnlW3tekQDwMLX6xsZqgWUc7vEZ4kESIk1QkWUXE+g9OVW4FfdzPZNDKB5nS5w==
+js-crypto-ec@^0.2.2:
+  version "0.2.2"
+  resolved "https://registry.yarnpkg.com/js-crypto-ec/-/js-crypto-ec-0.2.2.tgz#422618d4ac847da84487b91a17c143ae1af31993"
+  integrity sha512-rDJTtzkr4i3ShyAIxslKqq/NCXP2isx5DmMIm+qi3nJtnBYPFKDXBymDjuCNDtR/B38mNC7G1IoJm1GZY+l+2w==
   dependencies:
     "@babel/plugin-transform-regenerator" "^7.0.0"
     "@babel/runtime" "^7.1.2"
     asn1.js "^5.0.1"
     buffer "^5.2.1"
     elliptic "^6.4.1"
-    js-crypto-hash "^0.1.2"
+    js-crypto-hash "^0.1.3"
     js-crypto-key-utils "^0.1.0"
     js-crypto-random "^0.1.2"
     js-encoding-utils "^0.2.6"
@@ -3243,6 +3243,14 @@ js-crypto-hash@^0.1.2:
   version "0.1.2"
   resolved "https://registry.yarnpkg.com/js-crypto-hash/-/js-crypto-hash-0.1.2.tgz#dce0d4e41f420f7bef8f940daeb7c4403592fc81"
   integrity sha512-vjHKaC3Fwp60YFB/QzwkAE34ggmRkBrZ7Ap1ERSWeTvICdnxO93wE1iXfF8BxkXJWvMvAMSb4Xf/0Yz+sVpmyA==
+  dependencies:
+    "@babel/plugin-transform-regenerator" "7.0.0"
+    "@babel/runtime" "7.1.2"
+
+js-crypto-hash@^0.1.3:
+  version "0.1.3"
+  resolved "https://registry.yarnpkg.com/js-crypto-hash/-/js-crypto-hash-0.1.3.tgz#cb6b485be443f71f8bdb56c58401aa5dd9d7af0d"
+  integrity sha512-M34ZUChNdYl93XhjUaAG/evIF0SuTbrxmmOUJrLXPN+5seEd+A5Mr/R3F+/rjsb7JmgOaESrbxDSk5wOC3alJA==
   dependencies:
     "@babel/plugin-transform-regenerator" "7.0.0"
     "@babel/runtime" "7.1.2"
@@ -3267,6 +3275,18 @@ js-crypto-random@^0.1.2:
   dependencies:
     "@babel/plugin-transform-regenerator" "^7.0.0"
     "@babel/runtime" "^7.1.2"
+
+js-crypto-rsa@^0.1.1:
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/js-crypto-rsa/-/js-crypto-rsa-0.1.1.tgz#c3bfd842e736778d38f714c17d2b6b4c51176c55"
+  integrity sha512-OWN9AEI2e+owS0MnCbtiZPuIK1yVyC/nrkCb2qa2+4SkRPUB8WBiABNzHgD1uvG5NDYQ8gxJl9+ztduRm5k0jQ==
+  dependencies:
+    "@babel/plugin-transform-regenerator" "^7.0.0"
+    "@babel/runtime" "^7.1.2"
+    js-crypto-hash "^0.1.3"
+    js-crypto-key-utils "^0.1.0"
+    js-crypto-random "^0.1.2"
+    js-encoding-utils "^0.2.6"
 
 js-encoding-utils@^0.2.6:
   version "0.2.6"

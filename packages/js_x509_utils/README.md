@@ -31,6 +31,7 @@ This library always uses JWK-formatted keys ([RFC7517](https://tools.ietf.org/ht
 
 
 ## Create X.509 from JWK-formatted public key
+### ECDSA
 ```javascript
 const publicJwk = {kty: 'EC', crv: 'P-256', x: '...', y: '...'}; // public key to be signed
 const privateJwk = {ktyp: 'EC', crv: 'P-256', x: '...', y: '...', d: '...'}; // private key
@@ -61,6 +62,69 @@ x509.fromJwk(
 });
 ```
 
+### RSA-PSS
+```javascript
+const publicJwk = {kty: 'RSA', n: '...', e: '...'}; // public key to be signed
+const privateJwk = {ktyp: 'RSA', n: '...', e: '...', d: '...', p: '...', q: '...', ...}; // private key
+
+const name = {
+  countryName: 'JP',
+  stateOrProvinceName: 'Tokyo',
+  localityName: 'Chiyoda',
+  organizationName: 'example',
+  organizationalUnitName: 'Research',
+  commonName: 'example.com'
+};
+
+x509.fromJwk(
+  keyutil.toJwkFrom('pem', sample_crt.rsa.publicKey, 'public'),
+  keyutil.toJwkFrom('pem', sample_crt.rsa.privateKey, 'private'),
+  'pem',
+  {
+    signature: 'rsassaPss',
+    saltLength: 32, // if unspecified, 20 will be applied as default value
+    hash: 'SHA-256', // if unspecified, 'SHA-1' will be applied as default value (but I do not not recommend SHA-1)
+    days: 365,
+    issuer: name,
+    subject: name
+  }
+).then( (crt) => {
+  // now you get a certificate
+});
+```
+
+### RSASSA-PKCS1-v1_5
+```javascript
+const publicJwk = {kty: 'RSA', n: '...', e: '...'}; // public key to be signed
+const privateJwk = {ktyp: 'RSA', n: '...', e: '...', d: '...', p: '...', q: '...', ...}; // private key
+
+const name = {
+  countryName: 'JP',
+  stateOrProvinceName: 'Tokyo',
+  localityName: 'Chiyoda',
+  organizationName: 'example',
+  organizationalUnitName: 'Research',
+  commonName: 'example.com'
+};
+
+x509.fromJwk(
+  keyutil.toJwkFrom('pem', sample_crt.rsa.publicKey, 'public'),
+  keyutil.toJwkFrom('pem', sample_crt.rsa.privateKey, 'private'),
+  'pem',
+  {
+    signature: 'sha256WithRSAEncryption',
+    days: 365,
+    issuer: name,
+    subject: name
+  }
+).then( (crt) => {
+  // now you get a certificate
+});
+```
+
+### RSASSA-PKCS1-V1_5
+
+
 ## Extract JWK from X.509 certificate
 ```javascript
 const crtsample = '-----BEGIN CERTIFICATE-----...'; 
@@ -73,7 +137,7 @@ const jwkey = x509.toJwk(crtsample, 'pem');
 const crtsample = '-----BEGIN CERTIFICATE-----...';
 const parsed = x509.parse(crtsample, 'pem');
 // now you get parsed object from PEM-formatted certificate
-// {tbsCertificate, signatureValue, hash, signatureAlgorithm}
+// {tbsCertificate, signatureValue, signatureAlgorithm}
 ```
 
 # Note

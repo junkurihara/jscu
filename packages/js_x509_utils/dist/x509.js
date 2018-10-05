@@ -17,6 +17,8 @@ var _asyncToGenerator2 = _interopRequireDefault(require("@babel/runtime/helpers/
 
 var _params = _interopRequireDefault(require("./params.js"));
 
+var rsa = _interopRequireWildcard(require("./rsa.js"));
+
 var ecdsa = _interopRequireWildcard(require("./ec.js"));
 
 var _bn = _interopRequireDefault(require("bn.js"));
@@ -91,23 +93,33 @@ function _fromJwk() {
             };
             if (typeof options.subject === 'undefined') options.subject = {
               organizationName: 'Self'
-            }; ///////////////////////////////
+            }; // default params for RSA-PSS
+
+            if (typeof options.saltLength === 'undefined' && options.signature === 'rsassaPss') options.saltLength = 20;
+            if (typeof options.hash === 'undefined' && options.signature === 'rsassaPss') options.hash = 'SHA-1';
+            if (typeof options.explicit === 'undefined' && options.signature === 'rsassaPss') options.explicit = true; ///////////////////////////////
             // elements of TBSCertificate
             ///////////////////////////////
 
             version = 0; // default, TODO: other versions?
             // random serial numbers
 
-            _context.next = 9;
+            _context.next = 12;
             return _index.default.getRandomBytes(20);
 
-          case 9:
+          case 12:
             rand = _context.sent;
             // max 20 octets
-            serialNumber = new _bn.default(rand);
+            serialNumber = new _bn.default(rand); // TODO: throw exception if private jwk keytype doesn't match signatureAlgorithm
+
             signature = {
               algorithm: _params.default.signatureAlgorithms[options.signature].oid
             };
+
+            if (options.signature === 'rsassaPss') {
+              signature.parameters = rsa.encodeRsassaPssParams(options);
+            } else signature.parameters = Buffer.from(_params.default.ans1null);
+
             issuer = {
               type: 'rdnSequence',
               value: setRDNSequence(options.issuer)
@@ -148,30 +160,36 @@ function _fromJwk() {
             encodedTbsCertificate = _asn.default.TBSCertificate.encode(tbsCertificate, 'der');
 
             if (!(privateJwk.kty === 'EC')) {
-              _context.next = 27;
-              break;
-            }
-
-            _context.next = 24;
-            return ecdsa.getAsn1Signature(encodedTbsCertificate, privateJwk, options.signature);
-
-          case 24:
-            signatureValue = _context.sent;
-            _context.next = 32;
-            break;
-
-          case 27:
-            if (!(privateJwk.kty === 'RSA')) {
               _context.next = 31;
               break;
             }
 
-            throw new Error('RSAUnsupported');
+            _context.next = 28;
+            return ecdsa.getAsn1Signature(encodedTbsCertificate, privateJwk, options.signature);
+
+          case 28:
+            signatureValue = _context.sent;
+            _context.next = 38;
+            break;
 
           case 31:
+            if (!(privateJwk.kty === 'RSA')) {
+              _context.next = 37;
+              break;
+            }
+
+            _context.next = 34;
+            return rsa.getSignature(encodedTbsCertificate, privateJwk, options.signature, options.hash, options.saltLength);
+
+          case 34:
+            signatureValue = _context.sent;
+            _context.next = 38;
+            break;
+
+          case 37:
             throw new Error('UnsupportedKeyType');
 
-          case 32:
+          case 38:
             // construct Certificate
             certBin = _asn.default.Certificate.encode({
               tbsCertificate: tbsCertificate,
@@ -180,24 +198,24 @@ function _fromJwk() {
             }, 'der');
 
             if (!(format === 'pem')) {
-              _context.next = 37;
+              _context.next = 43;
               break;
             }
 
             return _context.abrupt("return", _jsEncodingUtils.default.formatter.binToPem(certBin, 'certificate'));
 
-          case 37:
+          case 43:
             if (!(format === 'der')) {
-              _context.next = 41;
+              _context.next = 47;
               break;
             }
 
             return _context.abrupt("return", certBin);
 
-          case 41:
+          case 47:
             throw new Error('InvalidFormatSpecification');
 
-          case 42:
+          case 48:
           case "end":
             return _context.stop();
         }
@@ -224,7 +242,7 @@ function toJwk(certX509) {
  * Parse X.509 certificate and return DER-encoded TBSCertificate and DER encoded signature
  * @param certX509
  * @param format
- * @return {{tbsCertificate: *, signatureValue: *, signatureAlgorithm: *, hash: *}}
+ * @return {{tbsCertificate: *, signatureValue: *, signatureAlgorithm: *}}
  */
 
 
@@ -238,20 +256,24 @@ function parse(certX509) {
 
 
   var sigOid = decoded.signatureAlgorithm.algorithm;
+  var sigParam = decoded.signatureAlgorithm.parameters;
   var filter = Object.keys(_params.default.signatureAlgorithms).filter(function (name) {
     return _params.default.signatureAlgorithms[name].oid.toString() === sigOid.toString();
   });
   if (filter.length <= 0) throw new Error('UnsupportedSignatureAlgorithm');
-  var signatureAlgorithm = filter[0];
-  var hash = _params.default.signatureAlgorithms[signatureAlgorithm].hash;
+  var signatureAlgorithm = {
+    algorithm: filter[0]
+  };
+  if (filter[0] === 'rsassaPss') signatureAlgorithm.parameters = rsa.decodeRsassaPssParams(sigParam);else signatureAlgorithm.parameters = {
+    hash: _params.default.signatureAlgorithms[signatureAlgorithm.algorithm].hash
+  };
 
   var binTBSCertificate = _asn.default.TBSCertificate.encode(decoded.tbsCertificate, 'der');
 
   return {
     tbsCertificate: new Uint8Array(binTBSCertificate),
     signatureValue: new Uint8Array(decoded.signature.data),
-    signatureAlgorithm: signatureAlgorithm,
-    hash: hash
+    signatureAlgorithm: signatureAlgorithm
   };
 }
 /**

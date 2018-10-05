@@ -3,6 +3,7 @@
  */
 
 import params from './params.js';
+import * as rsa from './rsa.js';
 import * as ecdsa from './ec.js';
 import BN from 'bn.js';
 import rfc5280 from 'asn1.js-rfc5280';
@@ -28,6 +29,11 @@ export async function fromJwk(publicJwk, privateJwk, format = 'pem', options = {
   if (typeof options.issuer === 'undefined') options.issuer = {organizationName: 'Self'};
   if (typeof options.subject === 'undefined') options.subject = {organizationName: 'Self'};
 
+  // default params for RSA-PSS
+  if (typeof options.saltLength === 'undefined' && options.signature === 'rsassaPss') options.saltLength = 20;
+  if (typeof options.hash === 'undefined' && options.signature === 'rsassaPss') options.hash = 'SHA-1';
+  if (typeof options.explicit === 'undefined' && options.signature === 'rsassaPss') options.explicit = true;
+
   ///////////////////////////////
   // elements of TBSCertificate
   ///////////////////////////////
@@ -38,7 +44,11 @@ export async function fromJwk(publicJwk, privateJwk, format = 'pem', options = {
   const rand = await random.getRandomBytes(20); // max 20 octets
   const serialNumber = new BN(rand);
 
-  const signature = {algorithm: params.signatureAlgorithms[options.signature].oid};
+  // TODO: throw exception if private jwk keytype doesn't match signatureAlgorithm
+  const signature = { algorithm: params.signatureAlgorithms[options.signature].oid };
+  if (options.signature === 'rsassaPss') {
+    signature.parameters = rsa.encodeRsassaPssParams(options);
+  } else signature.parameters = Buffer.from(params.ans1null);
 
   const issuer = {type: 'rdnSequence', value: setRDNSequence(options.issuer)};
 
@@ -64,7 +74,9 @@ export async function fromJwk(publicJwk, privateJwk, format = 'pem', options = {
     signatureValue = await ecdsa.getAsn1Signature(encodedTbsCertificate, privateJwk, options.signature);
   } else if (privateJwk.kty === 'RSA') {
     // TODO implement RSA
-    throw new Error('RSAUnsupported');
+    signatureValue = await rsa.getSignature(
+      encodedTbsCertificate, privateJwk, options.signature, options.hash, options.saltLength
+    );
   } else throw new Error ('UnsupportedKeyType');
 
   // construct Certificate
@@ -97,7 +109,6 @@ export function toJwk(certX509, format = 'pem'){
 
   const decoded = rfc5280.Certificate.decode(binKeyBuffer, 'der'); // decode binary x509-formatted public key to parsed object
   const binSpki = rfc5280.SubjectPublicKeyInfo.encode(decoded.tbsCertificate.subjectPublicKeyInfo, 'der');
-
   return keyutil.toJwkFrom('der', binSpki, 'public');
 }
 
@@ -106,7 +117,7 @@ export function toJwk(certX509, format = 'pem'){
  * Parse X.509 certificate and return DER-encoded TBSCertificate and DER encoded signature
  * @param certX509
  * @param format
- * @return {{tbsCertificate: *, signatureValue: *, signatureAlgorithm: *, hash: *}}
+ * @return {{tbsCertificate: *, signatureValue: *, signatureAlgorithm: *}}
  */
 export function parse(certX509, format = 'pem'){
 
@@ -119,20 +130,23 @@ export function parse(certX509, format = 'pem'){
 
   const decoded = rfc5280.Certificate.decode(binKeyBuffer, 'der'); // decode binary x509-formatted public key to parsed object
   const sigOid = decoded.signatureAlgorithm.algorithm;
+  const sigParam = decoded.signatureAlgorithm.parameters;
+
   const filter = Object.keys(params.signatureAlgorithms).filter(
     (name) => params.signatureAlgorithms[name].oid.toString() === sigOid.toString()
   );
   if(filter.length <= 0) throw new Error('UnsupportedSignatureAlgorithm');
-  const signatureAlgorithm = filter[0];
-  const hash = params.signatureAlgorithms[signatureAlgorithm].hash;
+  const signatureAlgorithm = {algorithm: filter[0]};
+
+  if (filter[0] === 'rsassaPss') signatureAlgorithm.parameters = rsa.decodeRsassaPssParams(sigParam);
+  else signatureAlgorithm.parameters = { hash: params.signatureAlgorithms[signatureAlgorithm.algorithm].hash };
 
   const binTBSCertificate = rfc5280.TBSCertificate.encode(decoded.tbsCertificate, 'der');
 
   return {
     tbsCertificate: new Uint8Array(binTBSCertificate),
     signatureValue: new Uint8Array(decoded.signature.data),
-    signatureAlgorithm,
-    hash
+    signatureAlgorithm
   };
 }
 

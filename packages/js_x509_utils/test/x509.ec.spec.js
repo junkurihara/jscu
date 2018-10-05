@@ -1,4 +1,4 @@
-import x509 from '../dist/x509.bundle.js';
+import x509 from '../src/index.js';
 import ec from 'js-crypto-ec/dist/index.js';
 
 import chai from 'chai';
@@ -6,7 +6,7 @@ import chai from 'chai';
 const expect = chai.expect;
 
 const curves = ['P-256', 'P-384', 'P-521', 'P-256K'];
-const sigopt = ['ecdsa-with-sha256', 'ecdsa-with-sha384', 'ecdsa-with-sha512'];
+const sigopt = ['ecdsa-with-sha256', 'ecdsa-with-sha384', 'ecdsa-with-sha512', 'ecdsa-with-sha1'];
 const crtsample = '-----BEGIN CERTIFICATE-----\n' +
   'MIIBxjCCAWwCCQCEZlhfc33wtzAKBggqhkjOPQQDAjBrMQswCQYDVQQGEwJKUDEO\n' +
   'MAwGA1UECAwFVG9reW8xEDAOBgNVBAcMB0NoaXlvZGExFjAUBgNVBAoMDVNlbGYg\n' +
@@ -58,7 +58,8 @@ describe('Generated JWK EC public key should be successfully converted to X509 P
             }
           );
           const parsed = await x509.parse(crt, 'pem');
-          const re = await ec.verify(parsed.tbsCertificate, parsed.signatureValue, kp.publicKey, parsed.hash, 'der');
+          // console.log(parsed.signatureAlgorithm);
+          const re = await ec.verify(parsed.tbsCertificate, parsed.signatureValue, kp.publicKey, parsed.signatureAlgorithm.parameters.hash, 'der');
           expect(re).to.be.true;
           result = re && result;
         }));
@@ -73,7 +74,7 @@ describe('Generated JWK EC public key should be successfully converted to X509 P
     const jwkey = x509.toJwk(crtsample, 'pem');
 
     const parsed = x509.parse(crtsample, 'pem');
-    const re = await ec.verify(parsed.tbsCertificate, parsed.signatureValue, jwkey, parsed.hash, 'der');
+    const re = await ec.verify(parsed.tbsCertificate, parsed.signatureValue, jwkey, parsed.signatureAlgorithm.parameters.hash, 'der');
     console.log(re);
     expect(re).to.be.true;
   });
