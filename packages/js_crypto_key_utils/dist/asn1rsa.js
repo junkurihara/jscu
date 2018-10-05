@@ -45,7 +45,8 @@ function fromJwk(jwk, type) {
     decoded.algorithm = algorithm;
   } else if (type === 'private') {
     // PKCS8
-    decoded.version = 0;
+    decoded.version = 0; // no public key presents for v2 (0)
+
     decoded.privateKeyAlgorithm = algorithm;
     decoded.privateKey = RSAPrivateKey.encode({
       version: 0,

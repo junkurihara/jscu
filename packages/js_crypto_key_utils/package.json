@@ -36,6 +36,7 @@
     "rfc5208",
     "rfc5480",
     "rfc5915",
+    "rfc5958",
     "rfc7638"
   ],
   "devDependencies": {

@@ -48,7 +48,7 @@ function fromJwk(jwkey, _ref) {
     decoded = asn1rsa.fromJwk(jwkey, type);
   }
 
-  var binKey = type === 'public' ? SubjectPublicKeyInfo.encode(decoded, 'der') : PrivateKeyInfo.encode(decoded, 'der');
+  var binKey = type === 'public' ? SubjectPublicKeyInfo.encode(decoded, 'der') : OneAsymmetricKey.encode(decoded, 'der');
   binKey = new Uint8Array(binKey);
   return format === 'pem' ? _jsEncodingUtils.default.formatter.binToPem(binKey, type) : binKey;
 }
@@ -67,7 +67,7 @@ function toJwk(key, _ref2) {
   // Peel the pem strings
   var binKey = format === 'pem' ? _jsEncodingUtils.default.formatter.pemToBin(key, type) : key; // decode binary spki/pkcs8-formatted key to parsed object
 
-  var decoded = type === 'public' ? SubjectPublicKeyInfo.decode(Buffer.from(binKey), 'der') : PrivateKeyInfo.decode(Buffer.from(binKey), 'der');
+  var decoded = type === 'public' ? SubjectPublicKeyInfo.decode(Buffer.from(binKey), 'der') : OneAsymmetricKey.decode(Buffer.from(binKey), 'der');
   var keyTypes = (0, _params.getAlgorithmFromOid)(type === 'public' ? decoded.algorithm.algorithm : decoded.privateKeyAlgorithm.algorithm, _params.default.publicKeyAlgorithms);
   if (keyTypes.length < 1) throw new Error('UnsupportedKey');
 
@@ -87,11 +87,12 @@ var AlgorithmIdentifier = _asn.default.define('AlgorithmIdentifier', function ()
 
 var SubjectPublicKeyInfo = _asn.default.define('SubjectPublicKeyInfo', function () {
   this.seq().obj(this.key('algorithm').use(AlgorithmIdentifier), this.key('subjectPublicKey').bitstr());
-}); // https://tools.ietf.org/html/rfc5208
+}); // RFC5958 https://tools.ietf.org/html/rfc5958
+// ( old version PrivateKeyInfo https://tools.ietf.org/html/rfc5208 )
 
 
-var PrivateKeyInfo = _asn.default.define('PrivateKeyInfo', function () {
-  this.seq().obj(this.key('version').use(Version), this.key('privateKeyAlgorithm').use(AlgorithmIdentifier), this.key('privateKey').octstr(), this.key('attributes').optional().any());
+var OneAsymmetricKey = _asn.default.define('OneAsymmetricKey', function () {
+  this.seq().obj(this.key('version').use(Version), this.key('privateKeyAlgorithm').use(AlgorithmIdentifier), this.key('privateKey').octstr(), this.key('attributes').implicit(0).optional().any(), this.key('publicKey').implicit(1).optional().bitstr());
 });
 
 var Version = _asn.default.define('Version', function () {

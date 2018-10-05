@@ -27,7 +27,7 @@ export function fromJwk(jwkey, {type, format, compact=false}){
     decoded = asn1rsa.fromJwk(jwkey, type);
   }
 
-  let binKey = (type === 'public') ? SubjectPublicKeyInfo.encode(decoded, 'der') : PrivateKeyInfo.encode(decoded, 'der');
+  let binKey = (type === 'public') ? SubjectPublicKeyInfo.encode(decoded, 'der') : OneAsymmetricKey.encode(decoded, 'der');
   binKey = new Uint8Array(binKey);
 
   return (format === 'pem') ? jseu.formatter.binToPem(binKey, type) : binKey;
@@ -47,7 +47,7 @@ export function toJwk(key, {type, format}){
   // decode binary spki/pkcs8-formatted key to parsed object
   const decoded = (type === 'public')
     ? SubjectPublicKeyInfo.decode(Buffer.from(binKey), 'der')
-    : PrivateKeyInfo.decode(Buffer.from(binKey), 'der');
+    : OneAsymmetricKey.decode(Buffer.from(binKey), 'der');
   const keyTypes = getAlgorithmFromOid(
     (type === 'public') ? decoded.algorithm.algorithm : decoded.privateKeyAlgorithm.algorithm,
     params.publicKeyAlgorithms
@@ -81,13 +81,15 @@ const SubjectPublicKeyInfo = asn.define('SubjectPublicKeyInfo', function() {
   );
 });
 
-// https://tools.ietf.org/html/rfc5208
-const PrivateKeyInfo = asn.define('PrivateKeyInfo', function() {
+// RFC5958 https://tools.ietf.org/html/rfc5958
+// ( old version PrivateKeyInfo https://tools.ietf.org/html/rfc5208 )
+const OneAsymmetricKey = asn.define('OneAsymmetricKey', function() {
   this.seq().obj(
     this.key('version').use(Version),
     this.key('privateKeyAlgorithm').use(AlgorithmIdentifier),
     this.key('privateKey').octstr(),
-    this.key('attributes').optional().any()
+    this.key('attributes').implicit(0).optional().any(),
+    this.key('publicKey').implicit(1).optional().bitstr()
   );
 });
 
