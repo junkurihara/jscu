@@ -31,4 +31,15 @@ describe('Key generation test via exported api', () => {
     await keyAssert(curve).catch( (e) => { err = e; });
     expect(err).to.be.a('error');
   });
+
+  if (typeof window !== 'undefined'){ // todo node unsupported this.
+    it('RSA Key Generation should be done successfully', async () => {
+      let result = true;
+      const keys = await Promise.all([2048, 4096].map( async (nLen) => {
+        return await jscu.pkc.generateKey('RSA', {modulusLength: nLen});
+      })).catch( (e) => {result = false; });
+      console.log(keys);
+      expect(result).to.be.true;
+    });
+  }
 });

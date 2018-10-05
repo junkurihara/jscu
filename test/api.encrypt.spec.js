@@ -1,4 +1,5 @@
 import jscu from '../src/index.js';
+import rsaSample from './rsa_sample.js';
 
 import chai from 'chai';
 // const should = chai.should();
@@ -17,7 +18,7 @@ describe('encryption test', () => {
     for(let i = 0; i < 32; i++) msg[i] = 0xFF & i;
   });
 
-  it('Encrypted message is successfully generated and decrypted', async () => {
+  it('ECDH: Encrypted message is successfully generated and decrypted', async () => {
     for (let i = 0; i < curves.length; i++) {
       for (let j = 0; j < hashes.length; j++) {
         let options = {
@@ -43,6 +44,20 @@ describe('encryption test', () => {
         expect(msg.toString() === decrypted.toString()).to.be.true;
       }
     }
+  });
+
+  it('RSA-OAEP: Encrypted message is successfully generated and decrypted', async () => {
+    const results = await Promise.all(Object.keys(rsaSample).map( async (kp) => {
+      let result = true;
+      const encrypted = await jscu.pkc.encrypt(msg, rsaSample[kp].publicKey.jwk, {hash: 'SHA-256'}).catch( (e) => {console.error(e); result = false;});
+      // console.log(jseu.encoder.encodeBase64(encrypted));
+      const decrypted = await jscu.pkc.decrypt(encrypted, rsaSample[kp].privateKey.jwk, {hash: 'SHA-256'}).catch( (e) => {result = false;});
+
+      expect(result).to.be.true;
+      return (decrypted.toString() === msg.toString());
+    }));
+    console.log(results);
+    expect(results.every( (r) => r)).to.be.true;
   });
 });
 

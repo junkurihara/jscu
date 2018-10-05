@@ -58,7 +58,7 @@ describe('Generated JWK public key should be successfully converted to X509 PEM 
         );
         console.log(x509c);
         const parsed = await jscu.keyUtil.x509.parse(x509c, 'pem');
-        const re = await jscu.pkc.verify(parsed.tbsCertificate, parsed.signatureValue, kp.publicKey, parsed.hash, 'der');
+        const re = await jscu.pkc.verify(parsed.tbsCertificate, parsed.signatureValue, kp.publicKey, parsed.signatureAlgorithm.parameters.hash, {format: 'der'});
         console.log('verification result: ' + re);
         expect(re).to.be.true;
         result = re && result;
@@ -72,7 +72,7 @@ describe('Generated JWK public key should be successfully converted to X509 PEM 
     const jwkey = await jscu.keyUtil.x509.toJwk(crtsample, 'pem');
 
     const parsed = await jscu.keyUtil.x509.parse(crtsample, 'pem');
-    const re = await jscu.pkc.verify(parsed.tbsCertificate, parsed.signatureValue, jwkey, parsed.hash, 'der');
+    const re = await jscu.pkc.verify(parsed.tbsCertificate, parsed.signatureValue, jwkey, parsed.signatureAlgorithm.parameters.hash, {format: 'der'});
     console.log(jwkey);
     console.log(re);
     expect(re).to.be.true;

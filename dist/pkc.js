@@ -19,9 +19,7 @@ var _asyncToGenerator2 = _interopRequireDefault(require("@babel/runtime/helpers/
 
 var _index = _interopRequireDefault(require("js-crypto-ec/dist/index.js"));
 
-var _index2 = _interopRequireDefault(require("js-crypto-hkdf/dist/index.js"));
-
-var _index3 = _interopRequireDefault(require("js-crypto-aes/dist/index.js"));
+var _index2 = _interopRequireDefault(require("js-crypto-rsa/dist/index"));
 
 var pkcec = _interopRequireWildcard(require("./pkcec.js"));
 
@@ -45,7 +43,7 @@ function generateKey() {
  * @param privkey
  * @param msg
  * @param hash
- * @param format
+ * @param options
  * @return {Promise<ArrayBuffer>}
  */
 
@@ -76,30 +74,35 @@ function _generateKey() {
 
           case 6:
             kp = _context.sent;
-            _context.next = 17;
+            _context.next = 18;
             break;
 
           case 9:
             if (!(keyType === 'RSA')) {
-              _context.next = 16;
+              _context.next = 17;
               break;
             }
 
             if (typeof options.modulusLength === 'undefined') options.modulusLength = 2048;
             if (typeof options.publicExponent === 'undefined') options.publicExponent = new Uint8Array([0x01, 0x00, 0x01]);
-            if (typeof options.hash === 'undefined') options.hash = 'SHA-256';
-            throw new Error('RSAIsUnsupported');
+            _context.next = 14;
+            return _index2.default.generateKey(options.modulusLength, options.publicExponent);
 
-          case 16:
-            throw new Error('UnsupportedKeyType');
+          case 14:
+            kp = _context.sent;
+            _context.next = 18;
+            break;
 
           case 17:
+            throw new Error('UnsupportedKeyType');
+
+          case 18:
             return _context.abrupt("return", {
               publicKey: kp.publicKey,
               privateKey: kp.privateKey
             });
 
-          case 18:
+          case 19:
           case "end":
             return _context.stop();
         }
@@ -118,7 +121,7 @@ function sign(_x, _x2) {
  * @param sig
  * @param pubkey
  * @param hash
- * @param format
+ * @param options
  * @return {Promise<boolean>}
  */
 
@@ -128,7 +131,7 @@ function _sign() {
   /*#__PURE__*/
   _regenerator.default.mark(function _callee2(msg, privkey) {
     var hash,
-        format,
+        options,
         signature,
         _args2 = arguments;
     return _regenerator.default.wrap(function _callee2$(_context2) {
@@ -136,36 +139,45 @@ function _sign() {
         switch (_context2.prev = _context2.next) {
           case 0:
             hash = _args2.length > 2 && _args2[2] !== undefined ? _args2[2] : 'SHA-256';
-            format = _args2.length > 3 && _args2[3] !== undefined ? _args2[3] : 'raw';
+            options = _args2.length > 3 && _args2[3] !== undefined ? _args2[3] : {};
 
             if (!(privkey.kty === 'EC')) {
-              _context2.next = 8;
+              _context2.next = 9;
               break;
             }
 
-            _context2.next = 5;
-            return _index.default.sign(msg, privkey, hash, format);
+            if (typeof options.format === 'undefined') options.format = 'raw';
+            _context2.next = 6;
+            return _index.default.sign(msg, privkey, hash, options.format);
 
-          case 5:
+          case 6:
             signature = _context2.sent;
-            _context2.next = 13;
+            _context2.next = 18;
             break;
 
-          case 8:
+          case 9:
             if (!(privkey.kty === 'RSA')) {
-              _context2.next = 12;
+              _context2.next = 17;
               break;
             }
 
-            throw new Error('RSAIsUnsupported');
-
-          case 12:
-            throw new Error('UnsupportedKeyType');
-
-          case 13:
-            return _context2.abrupt("return", signature);
+            if (typeof options.name === 'undefined') options.name = 'RSA-PSS';
+            if (typeof options.saltLength === 'undefined') options.saltLength = _params.default.hashes[hash].hashSize;
+            _context2.next = 14;
+            return _index2.default.sign(msg, privkey, hash, options);
 
           case 14:
+            signature = _context2.sent;
+            _context2.next = 18;
+            break;
+
+          case 17:
+            throw new Error('UnsupportedKeyType');
+
+          case 18:
+            return _context2.abrupt("return", signature);
+
+          case 19:
           case "end":
             return _context2.stop();
         }
@@ -193,7 +205,7 @@ function _verify() {
   /*#__PURE__*/
   _regenerator.default.mark(function _callee3(msg, sig, pubkey) {
     var hash,
-        format,
+        options,
         valid,
         _args3 = arguments;
     return _regenerator.default.wrap(function _callee3$(_context3) {
@@ -201,36 +213,45 @@ function _verify() {
         switch (_context3.prev = _context3.next) {
           case 0:
             hash = _args3.length > 3 && _args3[3] !== undefined ? _args3[3] : 'SHA-256';
-            format = _args3.length > 4 && _args3[4] !== undefined ? _args3[4] : 'raw';
+            options = _args3.length > 4 && _args3[4] !== undefined ? _args3[4] : {};
 
             if (!(pubkey.kty === 'EC')) {
-              _context3.next = 8;
+              _context3.next = 9;
               break;
             }
 
-            _context3.next = 5;
-            return _index.default.verify(msg, sig, pubkey, hash, format);
+            if (typeof options.format === 'undefined') options.format = 'raw';
+            _context3.next = 6;
+            return _index.default.verify(msg, sig, pubkey, hash, options.format);
 
-          case 5:
+          case 6:
             valid = _context3.sent;
-            _context3.next = 13;
+            _context3.next = 18;
             break;
 
-          case 8:
+          case 9:
             if (!(pubkey.kty === 'RSA')) {
-              _context3.next = 12;
+              _context3.next = 17;
               break;
             }
 
-            throw new Error('RSAIsUnsupported');
-
-          case 12:
-            throw new Error('UnsupportedKeyType');
-
-          case 13:
-            return _context3.abrupt("return", valid);
+            if (typeof options.name === 'undefined') options.name = 'RSA-PSS';
+            if (typeof options.saltLength === 'undefined') options.saltLength = _params.default.hashes[hash].hashSize;
+            _context3.next = 14;
+            return _index2.default.verify(msg, sig, pubkey, hash, options);
 
           case 14:
+            valid = _context3.sent;
+            _context3.next = 18;
+            break;
+
+          case 17:
+            throw new Error('UnsupportedKeyType');
+
+          case 18:
+            return _context3.abrupt("return", valid);
+
+          case 19:
           case "end":
             return _context3.stop();
         }
@@ -285,24 +306,32 @@ function _encrypt() {
 
           case 7:
             ciphertext = _context4.sent;
-            _context4.next = 15;
+            _context4.next = 19;
             break;
 
           case 10:
             if (!(publicKey.kty === 'RSA')) {
-              _context4.next = 14;
+              _context4.next = 18;
               break;
             }
 
-            throw new Error('RSAIsUnsupported');
-
-          case 14:
-            throw new Error('UnsupportedKeyType');
+            if (typeof options.hash !== 'undefined') options.hash = 'SHA-256';
+            if (typeof options.label !== 'undefined') options.label = new Uint8Array([]);
+            _context4.next = 15;
+            return _index2.default.encrypt(msg, publicKey, options.hash, options.label);
 
           case 15:
+            ciphertext = _context4.sent;
+            _context4.next = 19;
+            break;
+
+          case 18:
+            throw new Error('UnsupportedKeyType');
+
+          case 19:
             return _context4.abrupt("return", ciphertext);
 
-          case 16:
+          case 20:
           case "end":
             return _context4.stop();
         }
@@ -347,24 +376,32 @@ function _decrypt() {
 
           case 6:
             msg = _context5.sent;
-            _context5.next = 14;
+            _context5.next = 18;
             break;
 
           case 9:
             if (!(privateKey.kty === 'RSA')) {
-              _context5.next = 13;
+              _context5.next = 17;
               break;
             }
 
-            throw new Error('RSAIsUnsupported');
-
-          case 13:
-            throw new Error('UnsupportedKeyType');
+            if (typeof options.hash !== 'undefined') options.hash = 'SHA-256';
+            if (typeof options.label !== 'undefined') options.label = new Uint8Array([]);
+            _context5.next = 14;
+            return _index2.default.decrypt(data, privateKey, options.hash, options.label);
 
           case 14:
+            msg = _context5.sent;
+            _context5.next = 18;
+            break;
+
+          case 17:
+            throw new Error('UnsupportedKeyType');
+
+          case 18:
             return _context5.abrupt("return", msg);
 
-          case 15:
+          case 19:
           case "end":
             return _context5.stop();
         }

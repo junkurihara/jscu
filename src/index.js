@@ -6,12 +6,12 @@
  *  |    |    |-- to
  *  |    |    |-- from
  *  |    |    |-- getThumbprint
- *  |    |-- x509 // TODO RSA
+ *  |    |-- x509 // TODO verify self-signed certificate in single line
  *  |         |-- toJwk
  *  |         |-- fromJwk
  *  |         |-- parse (verify)
  *  |
- *  |-- pkc (public key crypto, EC and RSA) // TODO: RSA and encrypt/decrypt with ECDH standard procedure
+ *  |-- pkc (public key crypto, EC and RSA) // TODO: RSA key generation and encrypt/decrypt with ECDH standard procedure
  *  |    |-- generateKey
  *  |    |-- encrypt
  *  |    |-- decrypt

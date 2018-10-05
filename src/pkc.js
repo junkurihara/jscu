@@ -2,11 +2,8 @@
  * pkc.js
  */
 
-
 import ec from 'js-crypto-ec/dist/index.js';
-import hkdf from 'js-crypto-hkdf/dist/index.js';
-import aes from 'js-crypto-aes/dist/index.js';
-
+import rsa from 'js-crypto-rsa/dist/index';
 import * as pkcec from './pkcec.js';
 import params from './params.js';
 
@@ -25,8 +22,7 @@ export async function generateKey(keyType = 'EC', options = {}){
   else if (keyType === 'RSA') {
     if(typeof options.modulusLength === 'undefined') options.modulusLength = 2048;
     if(typeof options.publicExponent === 'undefined') options.publicExponent = new Uint8Array([0x01, 0x00, 0x01]);
-    if(typeof options.hash === 'undefined') options.hash = 'SHA-256';
-    throw new Error('RSAIsUnsupported');
+    kp = await rsa.generateKey(options.modulusLength, options.publicExponent);
   }
   else throw new Error('UnsupportedKeyType');
 
@@ -40,16 +36,19 @@ export async function generateKey(keyType = 'EC', options = {}){
  * @param privkey
  * @param msg
  * @param hash
- * @param format
+ * @param options
  * @return {Promise<ArrayBuffer>}
  */
-export async function sign(msg, privkey, hash = 'SHA-256', format = 'raw'){
+export async function sign(msg, privkey, hash = 'SHA-256', options = {}){
   let signature;
   if (privkey.kty === 'EC'){
-    signature = await ec.sign(msg, privkey, hash, format);
+    if (typeof options.format === 'undefined') options.format = 'raw';
+    signature = await ec.sign(msg, privkey, hash, options.format);
   }
   else if (privkey.kty === 'RSA') {
-    throw new Error('RSAIsUnsupported');
+    if(typeof options.name === 'undefined') options.name = 'RSA-PSS';
+    if(typeof options.saltLength === 'undefined') options.saltLength = params.hashes[hash].hashSize;
+    signature = await rsa.sign(msg, privkey, hash, options);
   }
   else throw new Error('UnsupportedKeyType');
 
@@ -62,16 +61,19 @@ export async function sign(msg, privkey, hash = 'SHA-256', format = 'raw'){
  * @param sig
  * @param pubkey
  * @param hash
- * @param format
+ * @param options
  * @return {Promise<boolean>}
  */
-export async function verify(msg, sig, pubkey, hash = 'SHA-256', format = 'raw'){
+export async function verify(msg, sig, pubkey, hash = 'SHA-256', options = {}){
   let valid;
   if (pubkey.kty === 'EC'){
-    valid = await ec.verify(msg, sig, pubkey, hash, format);
+    if (typeof options.format === 'undefined') options.format = 'raw';
+    valid = await ec.verify(msg, sig, pubkey, hash, options.format);
   }
   else if (pubkey.kty === 'RSA') {
-    throw new Error('RSAIsUnsupported');
+    if(typeof options.name === 'undefined') options.name = 'RSA-PSS';
+    if(typeof options.saltLength === 'undefined') options.saltLength = params.hashes[hash].hashSize;
+    valid = await rsa.verify(msg, sig, pubkey, hash, options);
   }
   else throw new Error('UnsupportedKeyType');
 
@@ -96,7 +98,9 @@ export async function encrypt(msg, publicKey, options = {}){
     ciphertext = await pkcec.encrypt(msg, publicKey, options);
   }
   else if (publicKey.kty === 'RSA') {
-    throw new Error('RSAIsUnsupported');
+    if(typeof options.hash !== 'undefined') options.hash = 'SHA-256';
+    if(typeof options.label !== 'undefined') options.label = new Uint8Array([]);
+    ciphertext = await rsa.encrypt(msg, publicKey, options.hash, options.label);
   }
   else throw new Error('UnsupportedKeyType');
 
@@ -120,7 +124,9 @@ export async function decrypt(data, privateKey, options = {}){
     msg = await pkcec.decrypt(data, privateKey, options);
   }
   else if (privateKey.kty === 'RSA') {
-    throw new Error('RSAIsUnsupported');
+    if(typeof options.hash !== 'undefined') options.hash = 'SHA-256';
+    if(typeof options.label !== 'undefined') options.label = new Uint8Array([]);
+    msg = await rsa.decrypt(data, privateKey, options.hash, options.label);
   }
   else throw new Error('UnsupportedKeyType');
 

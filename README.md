@@ -9,11 +9,13 @@ This library is being developed to provide unified (and specific) cryptographic 
 
 Firstly, this library provides following functions that works in most modern browsers and Node.js.
 - ECDSA signing, verification, key generation (P-256/P-384/P-521/P-256K)
-- Encryption using ECDH and HKDF. 
+- RSA-PSS/RSASSA-PKCS1-v1_5 signing, verification, key generation.
+- Encryption using ECDH and HKDF.
+- Encryption using RSA-OAEP. 
 - Public/private key format conversion between JWK and PEM/DER (SPKI for public/PKCS8 for private)
 - Generation of JWK Thumbprint
 - Generation of X.509 public key certificate from JWK and extraction of JWK public key from X.509 public key certificate.
-Additionally, this library provides random, hash, HMAC and HKDF functions. 
+Additionally, this library provides random, hash, aes, HMAC and HKDF functions. 
 
 # Module structure
 The module structure of this library can be illustrated as follows.
@@ -79,7 +81,7 @@ At your project directory, do either one of the following.
 Then you should import the package as follows.
 ```javascript
 import jscu from 'js-crypto-utils'; // for npm
-import jscu from 'js-crypto-utils/dist/index.js'; // for npm and for github
+import jscu from 'js-crypto-utils/dist/index.js'; // for npm/github
 ```
 
 # Usage
@@ -101,13 +103,30 @@ jscu.pkc.generateKey(  // key generation
 });
 ```
 
+```javascript
+// case of RSA
+jscu.pkc.generateKey(  // key generation
+  'RSA', // RSA key pair
+  {modulusLength: 2048}
+)
+.then( async (keyPair) => { // get a key pair in JWK
+  const msg = new Uint8Array(32);
+  for(let i = 0; i < 32; i++) msg[i] = 0xFF & i;
+  
+  // case of RSA-PSS
+  // RSASSA-PKCS1-v1_5 is supported as well. see test files.
+  const sig = await jscu.pkc.sign(msg, keyPair.privateKey, 'SHA-256', {name: 'RSA-PSS', saltLength: 32}); // uint8array
+  const result = await jscu.pkc.verify(msg, sig, keyPair.publicKey, 'SHA-256', {name: 'RSA-PSS', saltLength: 32}); // true or false
+});
+```
+
 ## Encryption and decryption through ECDH with AES-GCM of 256 bits key and SHA-256 based HKDF
 ```javascript
 const msg = new Uint8Array(32);
 for(let i = 0; i < 32; i++) msg[i] = 0xFF & i;
 
 const remotePublicKey = {...}; // destination's publicKey in JWK
-const remotePrivateKey = {...}; // destination's publicKey in JWK
+const remotePrivateKey = {...}; // destination's privateKey in JWK
 
 jscu.pkc.generateKey(  // key generation
   'EC', // ECDSA or ECDH key pair
@@ -143,6 +162,30 @@ jscu.pkc.generateKey(  // key generation
 });
 ```
 Note that AES and HKDF are independently available from `jscu.aes` and `jscu.hkdf` as well as `random` and `hash`. Also note that the HKDF employed in this library is the one specified in RFC5869 (https://tools.ietf.org/html/rfc5869). 
+
+
+## RSA-OAEP encryption and decryption
+```javascript
+const msg = new Uint8Array(32);
+for(let i = 0; i < 32; i++) msg[i] = 0xFF & i;
+
+const publicKey = {...}; // publicKey in JWK
+const privateKey = {...}; // privateKey in JWK
+
+jscu.pkc.encrypt(
+  msg,
+  publicKey,
+  {hash: 'SHA-256'} // for OAEP
+).then( (encrypted) => {
+ // now you get the encrypted message
+ return jscu.pkc.decrypt(
+   encrypted, 
+   privateKey,
+   {hash: 'SHA-256'}); // for OAEP
+}).then( (decrypted) => {
+  // now you get the decrypted message
+})
+```
 
 ## Converting between Json Web Key (JWK) and SPKI-formatted (public key) or PKCS8-formatted (private key) PEM/DER
 We shall explain the conversion using an example of elliptic curve cryptography keys. First let an elliptic curve crypto public key is given in the form of JWK ([RFC7517](https://tools.ietf.org/html/rfc7517)) as follows:
@@ -201,6 +244,7 @@ jscu.keyUtil.x509.fromJwk(
   // now you get the certificate in PEM string
 });
 ```
+For `signature`, `rsassaPss` (RSA-PSS) and `sha*WithRSAEncryption` (RSASSA-PKCS1-v1_5) are available as well. When `rsassaPss` is specified, `saltLength` and `hash` are required as its params. 
 
 ## Extract JWK from X.509 certificate
 ```javascript
@@ -216,12 +260,19 @@ One of the listed APIs/libraries is automatically chosen and leveraged for each 
   * WebCrypto API for browsers
   * NodeCrypto for Node.js 
   * [elliptic](https://github.com/indutny/elliptic) for browsers
-- AES: (may not work in IE)
+- RSA-PSS, RSASSA-PKCS1-v1_5, RSA-OAEP (may not work in IE)
   * WebCrypto API for browsers
   * NodeCrypto for Node.js
 - Key format conversion:
   * WebCrypto API for browsers
   * [asn1.js](https://github.com/indutny/asn1.js) for browsers and Node.js
+- X.509 generation from JWK, and extraction of JWK from X.509 (may not work in IE due to RSA)
+  * WebCrypto API for browsers
+  * NodeCrypto for Node.js
+  * [elliptic](https://github.com/indutny/elliptic) for browsers
+- AES: (may not work in IE)
+  * WebCrypto API for browsers
+  * NodeCrypto for Node.js
 - Random, hash, HKDF, HMAC, JWK Thumbprint:
   * WebCrypto API for browsers
   * MsCrypto for IE
