@@ -4,13 +4,16 @@
 
 import params from './params.js';
 
-export function encrypt(msg, key, {name = 'AES-GCM', iv, tagLength}, nodeCrypto){
+export function encrypt(msg, key, {name = 'AES-GCM', iv, additionalData, tagLength}, nodeCrypto){
   let alg = params.ciphers[name].nodePrefix;
   alg = `${alg}-${(key.byteLength*8).toString()}-`;
   alg = alg + params.ciphers[name].nodeSuffix;
 
   let cipher;
-  if(name === 'AES-GCM') cipher = nodeCrypto.createCipheriv(alg, key, iv, {authTagLength: tagLength});
+  if(name === 'AES-GCM'){
+    cipher = nodeCrypto.createCipheriv(alg, key, iv, {authTagLength: tagLength});
+    cipher.setAAD(additionalData);
+  }
 
   const body = new Uint8Array(cipher.update(msg));
   const final = new Uint8Array(cipher.final());
@@ -27,7 +30,7 @@ export function encrypt(msg, key, {name = 'AES-GCM', iv, tagLength}, nodeCrypto)
 }
 
 
-export function decrypt(data, key, {name='AES-GCM', iv, tagLength}, nodeCrypto) {
+export function decrypt(data, key, {name='AES-GCM', iv, additionalData, tagLength}, nodeCrypto) {
   let alg = params.ciphers[name].nodePrefix;
   alg = `${alg}-${(key.byteLength*8).toString()}-`;
   alg = alg + params.ciphers[name].nodeSuffix;
@@ -36,6 +39,7 @@ export function decrypt(data, key, {name='AES-GCM', iv, tagLength}, nodeCrypto) 
   let body;
   if(name === 'AES-GCM'){
     decipher = nodeCrypto.createDecipheriv(alg, key, iv, {authTagLength: tagLength});
+    decipher.setAAD(additionalData);
     body = data.slice(0, data.length - tagLength);
     const tag = data.slice(data.length - tagLength);
     decipher.setAuthTag(tag);

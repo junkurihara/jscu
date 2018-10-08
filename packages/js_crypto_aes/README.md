@@ -32,7 +32,8 @@ import aes from 'js-crypto-aes/dist/index.js'; // for github
 const msg = ...; // arbitrary length of message in Uint8Array
 const key = ...; // 16 bytes or 32 bytes key in Uint8Array
 const iv = ...; // 12 bytes IV in Uint8Array for AES-GCM mode
-aes.encrypt(msg, key, {name: 'AES-GCM', iv, tagLength: 16}).then( (encrypted) => {
+const additionalData = ...; // optional AAD
+aes.encrypt(msg, key, {name: 'AES-GCM', iv, additionalData, tagLength: 16}).then( (encrypted) => {
   // now you get an Uint8Array of encrypted message
 });
 ```
@@ -42,7 +43,8 @@ aes.encrypt(msg, key, {name: 'AES-GCM', iv, tagLength: 16}).then( (encrypted) =>
 const data = ...; // encryted message in Uint8Array
 const key = ...; // 16 bytes or 32 bytes key in Uint8Array
 const iv = ...; // 12 bytes IV in Uint8Array for AES-GCM mode that is exactly same as the one used in encryption
-aes.decrypt(data, key, {name: 'AES-GCM', iv, tagLength: 16}).then( (decrypted) => {
+const additionalData = ...; // optional AAD
+aes.decrypt(data, key, {name: 'AES-GCM', iv, additionalData, tagLength: 16}).then( (decrypted) => {
   // now you get an Uint8Array of decrypted message
 });
 ```
@@ -51,7 +53,6 @@ aes.decrypt(data, key, {name: 'AES-GCM', iv, tagLength: 16}).then( (decrypted) =
 At this point, this module has the following limitations:
 - Supports only AES-GCM mode
 - Supports 128 bits and 256 bits keys in Chrome (192 bits key works in Node.js)
-- May not work in legacy IE11
 
 # License
 Licensed under the MIT license, see `LICENSE` file.

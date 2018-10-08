@@ -26,7 +26,18 @@ describe('Encryption and Decryption with AES Test', () => {
     }));
   });
 
-  it('Ciphertext alternation can be detected in AES-GCM', async () => {
+  it('Encrypt and decrypt with AES-GCM succeeds correctly with AAD', async () => {
+    await Promise.all( keyLength.map( async (keyLen) => {
+      const key = await random.getRandomBytes(keyLen);
+      const additionalData = await random.getRandomBytes(32);
+      const encrypted = await aes.encrypt(msg, key, {name: 'AES-GCM', iv, additionalData, tagLength: 16});
+      const decrypted = await aes.decrypt(encrypted, key, {name: 'AES-GCM', iv, additionalData, tagLength: 16});
+      expect(msg.toString() === decrypted.toString()).to.be.true;
+    }));
+  });
+
+  it('Ciphertext alternation can be detected in AES-GCM', async function () {
+    this.timeout(2000);
     const key = await random.getRandomBytes(32);
     const encrypted = await aes.encrypt(msg, key, {name: 'AES-GCM', iv});
     encrypted[0] = 0xFF;

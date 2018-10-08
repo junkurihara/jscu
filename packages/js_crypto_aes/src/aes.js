@@ -32,30 +32,30 @@ function assertAlgorithms({name, iv, tagLength}){
  * @param key
  * @param name
  * @param iv
+ * @param additionalData
+ * @param tagLength
  * @return {Promise<Uint8Array>}
  */
-export async function encrypt(msg, key, {name = 'AES-GCM', iv, tagLength}){
+export async function encrypt(msg, key, {name = 'AES-GCM', iv, additionalData=new Uint8Array([]), tagLength}){
   // assertion and sanitizing
   if(!(msg instanceof Uint8Array) || !(key instanceof Uint8Array)) throw new Error('InvalidArguments');
   assertAlgorithms({name, iv, tagLength});
   if(params.ciphers[name].tagLength && !tagLength) tagLength = params.ciphers[name].tagLength;
 
-
-  const webCrypto = await util.getWebCrypto(); // web crypto api
+  const webCrypto = await util.getWebCryptoAll(); // web crypto api
   const nodeCrypto = await util.getNodeCrypto(); // node crypto
-
 
   let native = true;
   let data;
-  if (typeof webCrypto !== 'undefined' && typeof webCrypto.importKey === 'function' && typeof webCrypto.encrypt === 'function') {// for web API
-    data = await webapi.encrypt(msg, key, {name, iv, tagLength}, webCrypto)
+  if (typeof webCrypto !== 'undefined' && typeof webCrypto.importKey === 'function' && typeof webCrypto.encrypt === 'function') {// for web API including IE...
+    data = await webapi.encrypt(msg, key, {name, iv, additionalData, tagLength}, webCrypto)
       .catch(() => {
         native = false;
       });
   }
   else if (typeof nodeCrypto !== 'undefined' ) { // for node
     try{
-      data = nodeapi.encrypt(msg, key, {name, iv, tagLength}, nodeCrypto);
+      data = nodeapi.encrypt(msg, key, {name, iv, additionalData, tagLength}, nodeCrypto);
     } catch(e) {
       native = false;
     }
@@ -78,29 +78,31 @@ export async function encrypt(msg, key, {name = 'AES-GCM', iv, tagLength}){
  * @param key
  * @param name
  * @param iv
+ * @param additionalData
+ * @param tagLength
  * @return {Promise<Uint8Array>}
  */
-export async function decrypt(data, key, {name='AES-GCM', iv, tagLength}){
+export async function decrypt(data, key, {name='AES-GCM', iv, additionalData=new Uint8Array([]), tagLength}){
   // assertion and sanitizing
   if(!(data instanceof Uint8Array) || !(key instanceof Uint8Array)) throw new Error('InvalidArguments');
   assertAlgorithms({name, iv, tagLength});
   if(params.ciphers[name].tagLength && !tagLength) tagLength = params.ciphers[name].tagLength;
 
-  const webCrypto = await util.getWebCrypto(); // web crypto api
+  const webCrypto = await util.getWebCryptoAll(); // web crypto api
   const nodeCrypto = await util.getNodeCrypto(); // node crypto
 
   let native = true;
   let errMsg;
   let msg;
   if (typeof webCrypto !== 'undefined' && typeof webCrypto.importKey === 'function' && typeof webCrypto.encrypt === 'function') {
-    msg = await webapi.decrypt(data, key, {name, iv, tagLength}, webCrypto).catch((e) => {
+    msg = await webapi.decrypt(data, key, {name, iv, additionalData, tagLength}, webCrypto).catch((e) => {
       native = false;
       errMsg = e.message;
     });
   }
   else if (typeof nodeCrypto !== 'undefined'){
     try{
-      msg = nodeapi.decrypt(data, key, {name, iv, tagLength}, nodeCrypto);
+      msg = nodeapi.decrypt(data, key, {name, iv, additionalData, tagLength}, nodeCrypto);
     } catch(e) {
       native = false;
       errMsg = e.message;

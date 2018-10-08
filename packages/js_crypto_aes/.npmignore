@@ -12,3 +12,4 @@ webpack.config.js
 .git/
 .gitignore
 .circleci/
+.dist/test.bundle.js
