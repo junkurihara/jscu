@@ -3397,10 +3397,10 @@ istanbul@^0.4.0:
     which "^1.1.1"
     wordwrap "^1.0.0"
 
-js-crypto-hmac@^0.1.2:
-  version "0.1.2"
-  resolved "https://registry.yarnpkg.com/js-crypto-hmac/-/js-crypto-hmac-0.1.2.tgz#d7a5510bc6bb04a2fed8310cce1c161304c7ced3"
-  integrity sha512-U/+udP+J6zqgzZ450Wv3WB7Pfbum3febD6WVcchIlL2JwXrhKI8/WlU8ipuZAf/h1UnZMVnJIN887Zy1MqT9Vw==
+js-crypto-hmac@^0.1.3:
+  version "0.1.3"
+  resolved "https://registry.yarnpkg.com/js-crypto-hmac/-/js-crypto-hmac-0.1.3.tgz#b4c4b7c291d8cee4eef5d72158ef593bd2f2b44f"
+  integrity sha512-ppZjE2ypt5YTUXKRdWAjxDGye9HtNzwBmmstiKB/lJoaV0jEfSCQgY6CavQ4UUTQ+IwkAwBj55NlUMTYG6d1pA==
   dependencies:
     "@babel/plugin-transform-regenerator" "7.0.0"
     "@babel/runtime" "7.1.2"

@@ -26,7 +26,10 @@ export async function compute(master, hash = 'SHA-256', length = 32, info = '', 
   let key;
   if(!salt) salt = await random.getRandomBytes(length);
 
-  if (typeof webCrypto !== 'undefined' && typeof webCrypto.importKey === 'function' && typeof webCrypto.deriveBits === 'function') {
+  if (typeof webCrypto !== 'undefined'
+    && typeof webCrypto.importKey === 'function'
+    && typeof webCrypto.deriveBits === 'function'
+    && typeof window.msCrypto === 'undefined') {
     try { // modern browsers supporting HKDF
       const masterObj = await webCrypto.subtle.importKey('raw', master, {name: 'HKDF'}, false, ['deriveKey', 'deriveBits']);
       key = await webCrypto.subtle.deriveBits({
@@ -37,11 +40,11 @@ export async function compute(master, hash = 'SHA-256', length = 32, info = '', 
       }, masterObj, length * 8);
       key = new Uint8Array(key);
     }
-    catch (e) { // TODO for edge
+    catch (e) { // fall back to pure js implementation
       key = await rfc5869(master, salt, hash, info, length);
     }
   }
-  else {
+  else { // node and IE
     key = await rfc5869(master, salt, hash, info, length);
   }
 
