@@ -3,6 +3,8 @@
  */
 
 import * as util from './util.js';
+import * as nodeapi from './nodeapi.js';
+import * as webapi from './webapi.js';
 import params from './params.js';
 
 /**
@@ -42,36 +44,28 @@ export async function encrypt(msg, key, {name = 'AES-GCM', iv, tagLength}){
   const webCrypto = await util.getWebCrypto(); // web crypto api
   const nodeCrypto = await util.getNodeCrypto(); // node crypto
 
+
+  let native = true;
   let data;
-  if (typeof webCrypto !== 'undefined' && typeof webCrypto.importKey === 'function' && typeof webCrypto.encrypt === 'function') {
-    let alg;
-    if(name === 'AES-GCM') alg = { name, iv, tagLength: tagLength * 8};
-
-    const sessionKeyObj = await webCrypto.importKey('raw', key, alg, false, ['encrypt', 'decrypt']);
-    data = await webCrypto.encrypt(alg, sessionKeyObj, msg);
-    data = new Uint8Array(data);
+  if (typeof webCrypto !== 'undefined' && typeof webCrypto.importKey === 'function' && typeof webCrypto.encrypt === 'function') {// for web API
+    data = await webapi.encrypt(msg, key, {name, iv, tagLength}, webCrypto)
+      .catch(() => {
+        native = false;
+      });
   }
-  else if (typeof nodeCrypto !== 'undefined'){
-    let alg = params.ciphers[name].nodePrefix;
-    alg = `${alg}-${(key.byteLength*8).toString()}-`;
-    alg = alg + params.ciphers[name].nodeSuffix;
+  else if (typeof nodeCrypto !== 'undefined' ) { // for node
+    try{
+      data = nodeapi.encrypt(msg, key, {name, iv, tagLength}, nodeCrypto);
+    } catch(e) {
+      native = false;
+    }
+  } else native = false;
 
-    let cipher;
-    if(name === 'AES-GCM') cipher = nodeCrypto.createCipheriv(alg, key, iv, {authTagLength: tagLength});
-
-    const body = new Uint8Array(cipher.update(msg));
-    const final = new Uint8Array(cipher.final());
-
-    let tag = new Uint8Array([]);
-    if(name === 'AES-GCM') tag = new Uint8Array(cipher.getAuthTag());
-
-    data = new Uint8Array(body.length + final.length + tag.length);
-    data.set(body);
-    data.set(final, body.length);
-    data.set(tag, body.length + final.length);
-  }
-  else{
+  if (native === false){ // fallback to native implementation
     throw new Error('UnsupportedEnvironment');
+    // try{
+    //   keyPair = await purejs.generateKey(namedCurve);
+    // } catch (e) {throw new Error('UnsupportedEnvironment');}
   }
 
   return data;
@@ -95,43 +89,30 @@ export async function decrypt(data, key, {name='AES-GCM', iv, tagLength}){
   const webCrypto = await util.getWebCrypto(); // web crypto api
   const nodeCrypto = await util.getNodeCrypto(); // node crypto
 
+  let native = true;
+  let errMsg;
   let msg;
   if (typeof webCrypto !== 'undefined' && typeof webCrypto.importKey === 'function' && typeof webCrypto.encrypt === 'function') {
-
-    let alg;
-    if(name === 'AES-GCM') alg = { name, iv, tagLength: tagLength * 8};
-
-    const sessionKeyObj = await webCrypto.importKey('raw', key, alg, false, ['encrypt', 'decrypt']);
-    msg = await webCrypto.decrypt(alg, sessionKeyObj, data).catch(() => {throw new Error('DecryptionFailure');});
-    msg = new Uint8Array(msg);
+    msg = await webapi.decrypt(data, key, {name, iv, tagLength}, webCrypto).catch((e) => {
+      native = false;
+      errMsg = e.message;
+    });
   }
   else if (typeof nodeCrypto !== 'undefined'){
-    let alg = params.ciphers[name].nodePrefix;
-    alg = `${alg}-${(key.byteLength*8).toString()}-`;
-    alg = alg + params.ciphers[name].nodeSuffix;
-
-    let decipher;
-    let body;
-    if(name === 'AES-GCM'){
-      decipher = nodeCrypto.createDecipheriv(alg, key, iv, {authTagLength: tagLength});
-      body = data.slice(0, data.length - tagLength);
-      const tag = data.slice(data.length - tagLength);
-      decipher.setAuthTag(tag);
-    }
-
-    const decryptedBody = decipher.update(body);
-    let final;
     try{
-      final = decipher.final();
-    } catch (e) {
-      throw new Error('DecryptionFailure');
+      msg = nodeapi.decrypt(data, key, {name, iv, tagLength}, nodeCrypto);
+    } catch(e) {
+      native = false;
+      errMsg = e.message;
     }
-    msg = new Uint8Array(final.length + decryptedBody.length);
-    msg.set(decryptedBody);
-    msg.set(final, decryptedBody.length);
   }
-  else {
-    throw new Error('UnsupportedEnvironment');
+
+  if (native === false){ // fallback to native implementation
+    if(errMsg) throw new Error(errMsg);
+    else throw new Error('UnsupportedEnvironment');
+    // try{
+    //   keyPair = await purejs.generateKey(namedCurve);
+    // } catch (e) {throw new Error('UnsupportedEnvironment');}
   }
 
   return msg;
