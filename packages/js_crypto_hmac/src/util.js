@@ -14,10 +14,3 @@ export function getNodeCrypto(){
   if(typeof window !== 'undefined') return undefined;
   else return require('crypto');
 }
-
-// export function getMsCrypto(){
-//   if (typeof window === 'undefined') return undefined;
-//   else {
-//     if (window.msCrypto) return window.msCrypto.subtle;
-//   }
-// }

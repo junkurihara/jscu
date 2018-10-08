@@ -138,17 +138,21 @@ function _compute() {
           case 28:
             // function definitions
             msImportKey = function msImportKey(type, key, alg, ext, use) {
-              return new Promise(function (resolve) {
+              return new Promise(function (resolve, reject) {
                 var op = webCrypto.importKey(type, key, alg, ext, use);
 
                 op.oncomplete = function (evt) {
                   resolve(evt.target.result);
                 };
+
+                op.onerror = function () {
+                  reject('KeyImportingFailed');
+                };
               });
             };
 
             msHmac = function msHmac(hash, k, d) {
-              return new Promise(function (resolve) {
+              return new Promise(function (resolve, reject) {
                 var op = webCrypto.sign({
                   name: 'HMAC',
                   hash: {
@@ -158,6 +162,10 @@ function _compute() {
 
                 op.oncomplete = function (evt) {
                   resolve(new Uint8Array(evt.target.result));
+                };
+
+                op.onerror = function () {
+                  reject('ComputingHMACFailed');
                 };
               });
             };

@@ -37,13 +37,15 @@ export async function compute(key, data, hash = 'SHA-256'){
       if (hash === 'SHA-512') throw new Error('HMAC-SHA512UnsupportedInIE');
 
       // function definitions
-      const msImportKey = (type, key, alg, ext, use) => new Promise ( (resolve) => {
+      const msImportKey = (type, key, alg, ext, use) => new Promise ( (resolve, reject) => {
         const op = webCrypto.importKey(type, key, alg, ext, use);
         op.oncomplete = (evt) => { resolve(evt.target.result); };
+        op.onerror = () => { reject('KeyImportingFailed'); };
       });
-      const msHmac = (hash, k, d) => new Promise ( (resolve) => {
+      const msHmac = (hash, k, d) => new Promise ( (resolve, reject) => {
         const op = webCrypto.sign({name: 'HMAC', hash: {name: hash}}, k, d);
         op.oncomplete = (evt) => { resolve(new Uint8Array(evt.target.result)); };
+        op.onerror = () => { reject('ComputingHMACFailed'); };
       });
 
       const keyObj = await msImportKey('raw', key, {name: 'HMAC', hash: {name: hash}}, false, ['sign', 'verify']);
