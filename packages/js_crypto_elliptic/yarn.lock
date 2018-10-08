@@ -546,6 +546,14 @@
     "@babel/helper-regex" "^7.0.0"
     regexpu-core "^4.1.3"
 
+"@babel/polyfill@^7.0.0":
+  version "7.0.0"
+  resolved "https://registry.yarnpkg.com/@babel/polyfill/-/polyfill-7.0.0.tgz#c8ff65c9ec3be6a1ba10113ebd40e8750fb90bff"
+  integrity sha512-dnrMRkyyr74CRelJwvgnnSUDh2ge2NCTyHVwpOdvRMHtJUyxLtMAfhBN3s64pY41zdw0kgiLPh6S20eb1NcX6Q==
+  dependencies:
+    core-js "^2.5.7"
+    regenerator-runtime "^0.11.1"
+
 "@babel/preset-env@7.1.0":
   version "7.1.0"
   resolved "https://registry.yarnpkg.com/@babel/preset-env/-/preset-env-7.1.0.tgz#e67ea5b0441cfeab1d6f41e9b5c79798800e8d11"
@@ -3209,14 +3217,6 @@ istanbul@^0.4.0:
     which "^1.1.1"
     wordwrap "^1.0.0"
 
-js-crypto-hash@^0.1.2:
-  version "0.1.2"
-  resolved "https://registry.yarnpkg.com/js-crypto-hash/-/js-crypto-hash-0.1.2.tgz#dce0d4e41f420f7bef8f940daeb7c4403592fc81"
-  integrity sha512-vjHKaC3Fwp60YFB/QzwkAE34ggmRkBrZ7Ap1ERSWeTvICdnxO93wE1iXfF8BxkXJWvMvAMSb4Xf/0Yz+sVpmyA==
-  dependencies:
-    "@babel/plugin-transform-regenerator" "7.0.0"
-    "@babel/runtime" "7.1.2"
-
 js-crypto-hash@^0.1.3:
   version "0.1.3"
   resolved "https://registry.yarnpkg.com/js-crypto-hash/-/js-crypto-hash-0.1.3.tgz#cb6b485be443f71f8bdb56c58401aa5dd9d7af0d"
@@ -3225,17 +3225,25 @@ js-crypto-hash@^0.1.3:
     "@babel/plugin-transform-regenerator" "7.0.0"
     "@babel/runtime" "7.1.2"
 
-js-crypto-key-utils@^0.1.0:
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/js-crypto-key-utils/-/js-crypto-key-utils-0.1.0.tgz#365f87fcba8bcf52a14acb7b650ba8412ab8722d"
-  integrity sha512-aEvLYNqMkfCNla8UgqVQKNpxl0TkKMMYFtOEWx2PcrfPbZ9BOrqOJW5P4toc28VM+fJRvROqVAc8K96HjCK4nQ==
+js-crypto-hash@^0.1.5:
+  version "0.1.5"
+  resolved "https://registry.yarnpkg.com/js-crypto-hash/-/js-crypto-hash-0.1.5.tgz#3b87e1f80d524dafc4507ccf2065a472a584bb70"
+  integrity sha512-7f8fBBVLaQxqG0soxg/EEpeydjVQUaWNCfjSwQmFEfP0Q5A7ziF3Z7C5Mbye/xFiFKZ+qGKIU68yKf4sx+vfPg==
+  dependencies:
+    "@babel/plugin-transform-regenerator" "7.0.0"
+    "@babel/runtime" "7.1.2"
+
+js-crypto-key-utils@^0.1.3:
+  version "0.1.3"
+  resolved "https://registry.yarnpkg.com/js-crypto-key-utils/-/js-crypto-key-utils-0.1.3.tgz#f9aab60024e0402dd9ab2ee8bd56f4c011875f8e"
+  integrity sha512-QuuWYhYQZTvOXAGE3TSVaPp2T+JZZTGVT1rx6SnYWwVwV1JD35UlqgdR2QhZ31zxI8oiNFYWEI/3e1VHa1zoyQ==
   dependencies:
     "@babel/plugin-transform-regenerator" "7.0.0"
     "@babel/runtime" "7.1.2"
     asn1.js "^5.0.1"
     buffer "^5.2.1"
     elliptic "^6.4.1"
-    js-crypto-hash "^0.1.2"
+    js-crypto-hash "^0.1.3"
     js-encoding-utils "^0.2.6"
 
 js-crypto-random@^0.1.2:
@@ -4582,7 +4590,7 @@ regenerate@^1.4.0:
   resolved "https://registry.yarnpkg.com/regenerate/-/regenerate-1.4.0.tgz#4a856ec4b56e4077c557589cae85e7a4c8869a11"
   integrity sha512-1G6jJVDWrt0rK99kBjvEtziZNCICAuvIPkSiUFIQxVP06RCVpq3dmDo2oi6ABpYaDYaTRr67BEhL8r1wgEZZKg==
 
-regenerator-runtime@^0.11.0:
+regenerator-runtime@^0.11.0, regenerator-runtime@^0.11.1:
   version "0.11.1"
   resolved "https://registry.yarnpkg.com/regenerator-runtime/-/regenerator-runtime-0.11.1.tgz#be05ad7f9bf7d22e056f9726cee5017fbf19e2e9"
   integrity sha512-MguG95oij0fC3QV3URf4V2SDYGJhJnJGqvIIgdECeODCT98wSWDAJ94SSuVpYQUoTcGUIL6L4yNB7j1DFFHSBg==
