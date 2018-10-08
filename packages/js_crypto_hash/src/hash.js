@@ -20,7 +20,7 @@ export async function compute(msg, hash = 'SHA-256') {
   const msCrypto = util.getMsCrypto();
 
   let msgHash;
-  if (typeof webCrypto !== 'undefined' && typeof webCrypto.digest === 'function') {
+  if (typeof webCrypto !== 'undefined' && typeof webCrypto.digest === 'function' && typeof msCrypto === 'undefined') {
     msgHash = await webCrypto.digest(hash, msg); // for modern browsers
   }
   else if (typeof nodeCrypto !== 'undefined' ){ // for node

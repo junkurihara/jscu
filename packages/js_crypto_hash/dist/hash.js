@@ -70,7 +70,7 @@ function _compute() {
             nodeCrypto = util.getNodeCrypto();
             msCrypto = util.getMsCrypto();
 
-            if (!(typeof webCrypto !== 'undefined' && typeof webCrypto.digest === 'function')) {
+            if (!(typeof webCrypto !== 'undefined' && typeof webCrypto.digest === 'function' && typeof msCrypto === 'undefined')) {
               _context.next = 14;
               break;
             }

@@ -17,7 +17,7 @@ describe('Hash generation test', () => {
     await Promise.all(hashes.map( async (alg) => {
       const d = await hash.compute(msg, alg).catch( (e) => console.error(e));
       console.log(d);
-      expect(d).to.be.a('Uint8Array');
+      expect(d, `failed at ${alg}`).to.be.a('Uint8Array');
       const len = params.hashes[alg].hashSize;
       expect(d, `failed at ${alg}`).to.be.length(len);
     }));
