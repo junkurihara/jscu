@@ -6,7 +6,7 @@ import chai from 'chai';
 const expect = chai.expect;
 
 
-const hashes = ['SHA-256', 'SHA-384', 'SHA-512'];
+let hashes = ['SHA-256', 'SHA-384', 'SHA-512'];
 describe('HMAC test', () => {
   let msg;
   before( async () => {
@@ -16,6 +16,7 @@ describe('HMAC test', () => {
 
   it('HMAC successfully generates unique MAC for unique key', async function () {
     this.timeout(20000);
+    if(typeof window !== 'undefined' && typeof window.msCrypto !== 'undefined') hashes = ['SHA-256', 'SHA-384']; // SHA-512 doesn't work in IE
     await Promise.all(hashes.map( async (hash) => {
       const keya = await random.getRandomBytes(32);
       const keyb = await random.getRandomBytes(32);
@@ -29,6 +30,7 @@ describe('HMAC test', () => {
 
   it('If msg is overwritten, it can be detected via MAC', async function () {
     this.timeout(20000);
+    if(typeof window !== 'undefined' && typeof window.msCrypto !== 'undefined') hashes = ['SHA-256', 'SHA-384']; // SHA-512 doesn't work in IE
     await Promise.all(hashes.map( async (hash) => {
       const key = await random.getRandomBytes(32);
       const d = await hmac.compute(key, msg, hash);

@@ -49,16 +49,15 @@ function _compute() {
     var hash,
         webCrypto,
         nodeCrypto,
-        msCrypto,
         keyObj,
         mac,
         _keyObj,
         _mac,
-        f,
         msImportKey,
         msHmac,
         _keyObj2,
         rawPrk,
+        f,
         _args = arguments;
 
     return _regenerator.default.wrap(function _callee$(_context) {
@@ -66,13 +65,17 @@ function _compute() {
         switch (_context.prev = _context.next) {
           case 0:
             hash = _args.length > 2 && _args[2] !== undefined ? _args[2] : 'SHA-256';
-            webCrypto = util.getWebCrypto(); // web crypto api
+            webCrypto = util.getWebCryptoAll(); // web crypto api
 
             nodeCrypto = util.getNodeCrypto(); // node crypto
-
-            msCrypto = util.getMsCrypto(); // ms crypto
+            // const msCrypto = util.getMsCrypto(); // ms crypto
 
             if (!(typeof webCrypto !== 'undefined' && typeof webCrypto.importKey === 'function' && typeof webCrypto.sign === 'function')) {
+              _context.next = 39;
+              break;
+            }
+
+            if (!(typeof window.msCrypto === 'undefined')) {
               _context.next = 26;
               break;
             }
@@ -121,30 +124,22 @@ function _compute() {
             return _context.abrupt("return", new Uint8Array(_mac));
 
           case 24:
-            _context.next = 44;
+            _context.next = 37;
             break;
 
           case 26:
-            if (!(typeof nodeCrypto !== 'undefined')) {
-              _context.next = 31;
+            if (!(hash === 'SHA-512')) {
+              _context.next = 28;
               break;
             }
 
-            // for node
-            f = nodeCrypto.createHmac(_params.default.hashes[hash].nodeName, key);
-            return _context.abrupt("return", new Uint8Array(f.update(data).digest()));
+            throw new Error('HMAC-SHA512UnsupportedInIE');
 
-          case 31:
-            if (!(typeof msCrypto !== 'undefined' && typeof msCrypto.importKey === 'function' && typeof msCrypto.sign === 'function')) {
-              _context.next = 43;
-              break;
-            }
-
-            // for legacy ie 11
+          case 28:
             // function definitions
             msImportKey = function msImportKey(type, key, alg, ext, use) {
               return new Promise(function (resolve) {
-                var op = msCrypto.importKey(type, key, alg, ext, use);
+                var op = webCrypto.importKey(type, key, alg, ext, use);
 
                 op.oncomplete = function (evt) {
                   resolve(evt.target.result);
@@ -154,7 +149,7 @@ function _compute() {
 
             msHmac = function msHmac(hash, k, d) {
               return new Promise(function (resolve) {
-                var op = msCrypto.sign({
+                var op = webCrypto.sign({
                   name: 'HMAC',
                   hash: {
                     name: hash
@@ -167,7 +162,7 @@ function _compute() {
               });
             };
 
-            _context.next = 36;
+            _context.next = 32;
             return msImportKey('raw', key, {
               name: 'HMAC',
               hash: {
@@ -175,19 +170,33 @@ function _compute() {
               }
             }, false, ['sign', 'verify']);
 
-          case 36:
+          case 32:
             _keyObj2 = _context.sent;
-            _context.next = 39;
+            _context.next = 35;
             return msHmac(hash, _keyObj2, data);
 
-          case 39:
+          case 35:
             rawPrk = _context.sent;
             return _context.abrupt("return", new Uint8Array(rawPrk));
 
-          case 43:
-            throw new Error('UnsupportedEnvironment');
+          case 37:
+            _context.next = 45;
+            break;
+
+          case 39:
+            if (!(typeof nodeCrypto !== 'undefined')) {
+              _context.next = 44;
+              break;
+            }
+
+            // for node
+            f = nodeCrypto.createHmac(_params.default.hashes[hash].nodeName, key);
+            return _context.abrupt("return", new Uint8Array(f.update(data).digest()));
 
           case 44:
+            throw new Error('UnsupportedEnvironment');
+
+          case 45:
           case "end":
             return _context.stop();
         }

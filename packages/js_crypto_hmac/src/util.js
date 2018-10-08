@@ -2,10 +2,11 @@
  * util.js
  */
 
-export function getWebCrypto () {
+export function getWebCryptoAll () {
   if (typeof window === 'undefined') return undefined;
   else {
-    if (window.crypto) return window.crypto.subtle;
+    if (window.msCrypto) return window.msCrypto.subtle;
+    else if (window.crypto) return window.crypto.subtle;
   }
 }
 
@@ -14,10 +15,9 @@ export function getNodeCrypto(){
   else return require('crypto');
 }
 
-export function getMsCrypto(){
-  if (typeof window === 'undefined') return undefined;
-  else {
-    if (window.crypto) return undefined;
-    if (window.msCrypto) return window.msCrypto.subtle;
-  }
-}
+// export function getMsCrypto(){
+//   if (typeof window === 'undefined') return undefined;
+//   else {
+//     if (window.msCrypto) return window.msCrypto.subtle;
+//   }
+// }
