@@ -256,11 +256,11 @@ const jwkey = jscu.keyUtil.x509.toJwk(crtsample, 'pem');
 # Notes
 One of the listed APIs/libraries is automatically chosen and leveraged for each implemented function, and unified interfaces are provided for browsers and Node.js.
 
-- ECDSA and ECDH (may not work in IE due to AES):
+- ECDSA and ECDH:
   * WebCrypto API for browsers
   * NodeCrypto for Node.js 
   * [elliptic](https://github.com/indutny/elliptic) for browsers
-- RSA-PSS, RSASSA-PKCS1-v1_5, RSA-OAEP (may not work in IE)
+- RSA-PSS, RSASSA-PKCS1-v1_5, RSA-OAEP (RSA-PSSS does not work in IE and Edge)
   * WebCrypto API for browsers
   * NodeCrypto for Node.js
 - Key format conversion:
@@ -273,7 +273,7 @@ One of the listed APIs/libraries is automatically chosen and leveraged for each 
 - AES: (may not work in IE)
   * WebCrypto API for browsers
   * NodeCrypto for Node.js
-- Random, hash, HKDF, HMAC, JWK Thumbprint:
+- Random, hash, HKDF, HMAC, JWK Thumbprint (SHA-512/SHA-1 does not work in IE, SHA-1 doesn't in Edge)
   * WebCrypto API for browsers
   * MsCrypto for IE
   * NodeCrypto for Node.js
