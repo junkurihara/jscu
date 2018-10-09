@@ -28,7 +28,7 @@ export async function encrypt(
     throw new Error('UnsupportedSessionKeyAlgorithm');
   }
 
-  const data = await aes.encrypt(msg, sessionKeySalt.key, {name: encrypt, iv});
+  const data = await aes.encrypt(msg, sessionKeySalt.key, {name: encrypt, iv}); // no specification of tagLength and additionalData
 
   return {data, salt: sessionKeySalt.salt, iv};
 }
@@ -43,7 +43,7 @@ export async function decrypt(
 
   let msg;
   if(Object.keys(params.ciphers).indexOf(encrypt) >= 0){
-    msg = await aes.decrypt(data, sessionKeySalt.key, {name: encrypt, iv});
+    msg = await aes.decrypt(data, sessionKeySalt.key, {name: encrypt, iv}); // no specification of tagLength and additionalData
   }
   else throw new Error('UnsupportedSessionKeyAlgorithm');
 
