@@ -141,6 +141,21 @@ const parsed = x509.parse(crtsample, 'pem');
 ```
 
 # Note
+## Limitations
+Due to the lack of native implementations of some primitive algorithms, the following signing algorithms do not work in legacy IE11.
+- ECDSA: `ecdsa-with-sha1` and `ecdsa-with-sha512`
+- RSASSA-PKCS-v1_5: `Sha1WithRsaEncryption` and `Sha512WithRsaEncryption`
+- RSA-PSS: All
+
+Also the followings are not supported in Edge.
+- ECDSA: `ecdsa-with-sha1`
+- RSASSA-PKCS-v1_5: `Sha1WithRsaEncryption`
+- RSA-PSS: All
+
+**Note that referring to RFC, `Sha1WithRsaEncryption` is the default algorithm when empty params for RSA-SSA-PKCS-v1_5, and hence MS environment does not support such existing certificates. Hence we strongly recommend to use other modern browsers.** 
+
+
+## ECDSA
 At this point, this library supports only certificate signed with ECDSA using the following curve for elliptic curve cryptography.
 - P-256 (secp256r1)
 - P-384 (secp384r1)

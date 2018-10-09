@@ -8,7 +8,7 @@ import sample_crt from './sample_crt';
 // const should = chai.should();
 const expect = chai.expect;
 
-const hashes = ['SHA-256', 'SHA-384', 'SHA-512', 'SHA-1'];
+const hashes = ['SHA-256', 'SHA-384', 'SHA-512'];//, 'SHA-1'];
 const pkcs1s = [ 'sha256WithRSAEncryption', 'sha384WithRSAEncryption', 'sha512WithRSAEncryption']; // RSASSA-PKCS1-v1_5
 const constantSaltLen = 32;
 

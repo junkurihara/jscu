@@ -23,8 +23,8 @@ const crtsample = '-----BEGIN CERTIFICATE-----\n' +
 describe('Generated JWK EC public key should be successfully converted to X509 PEM certificate and vice versa', () => {
   let keySet = [];
   let msg;
-  before(async () => {
-
+  before(async function () {
+    this.timeout(20000);
     keySet = await Promise.all(curves.map(async (crv) => {
       return await ec.generateKey(crv);
     }));
@@ -32,7 +32,8 @@ describe('Generated JWK EC public key should be successfully converted to X509 P
     for (let i = 0; i < 32; i++) msg[i] = 0xFF & i;
   });
 
-  it('Transform JWKs to X509 PEMs as self certs and verify generated ones', async () => {
+  it('Transform JWKs to X509 PEMs as self certs and verify generated ones', async function () {
+    this.timeout(20000);
     const name = {
       countryName: 'JP',
       stateOrProvinceName: 'Tokyo',
@@ -46,21 +47,24 @@ describe('Generated JWK EC public key should be successfully converted to X509 P
       keySet.map( async (kp) => {
         let result = true;
         await Promise.all(sigopt.map(async (so) => {
-          const crt = await x509.fromJwk(
-            kp.publicKey,
-            kp.privateKey,
-            'pem',
-            {
-              signature: so,
-              days: 365,
-              issuer: name,
-              subject: name
-            }
-          );
-          const parsed = await x509.parse(crt, 'pem');
-          // console.log(parsed.signatureAlgorithm);
-          const re = await ec.verify(parsed.tbsCertificate, parsed.signatureValue, kp.publicKey, parsed.signatureAlgorithm.parameters.hash, 'der');
-          expect(re).to.be.true;
+          let re;
+          try {
+            const crt = await x509.fromJwk(
+              kp.publicKey,
+              kp.privateKey,
+              'pem',
+              {
+                signature: so,
+                days: 365,
+                issuer: name,
+                subject: name
+              }
+            );
+            const parsed = await x509.parse(crt, 'pem');
+            // console.log(parsed.signatureAlgorithm);
+            re = await ec.verify(parsed.tbsCertificate, parsed.signatureValue, kp.publicKey, parsed.signatureAlgorithm.parameters.hash, 'der');
+          } catch (e) { re = false; }
+          expect(re, `failed at ${so}`).to.be.true;
           result = re && result;
         }));
         return result;
@@ -70,7 +74,8 @@ describe('Generated JWK EC public key should be successfully converted to X509 P
     expect(array.every( (x) => x)).to.be.true;
   });
 
-  it('Transform X509 Self Signed PEM to JWK, and verify it', async () => {
+  it('Transform X509 Self Signed PEM to JWK, and verify it', async function () {
+    this.timeout(20000);
     const jwkey = x509.toJwk(crtsample, 'pem');
 
     const parsed = x509.parse(crtsample, 'pem');

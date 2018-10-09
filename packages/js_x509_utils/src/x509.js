@@ -73,7 +73,6 @@ export async function fromJwk(publicJwk, privateJwk, format = 'pem', options = {
   if (privateJwk.kty === 'EC'){
     signatureValue = await ecdsa.getAsn1Signature(encodedTbsCertificate, privateJwk, options.signature);
   } else if (privateJwk.kty === 'RSA') {
-    // TODO implement RSA
     signatureValue = await rsa.getSignature(
       encodedTbsCertificate, privateJwk, options.signature, options.hash, options.saltLength
     );

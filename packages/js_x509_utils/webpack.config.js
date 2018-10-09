@@ -79,7 +79,8 @@ module.exports = (env, argv) => {
   if (argv.mode === 'development'){
     config.devtool = 'inline-source-map'; // add inline source map
     Object.assign(config.entry, {
-      'test': ['./test/formatter.spec.js']
+      'ec': ['./test/x509.ec.spec.js'],
+      'rsa': ['./test/x509.rsa.spec.js']
     });
   }
   // else if(argv.mode === 'production'){
