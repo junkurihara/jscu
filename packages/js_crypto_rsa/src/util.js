@@ -2,9 +2,10 @@
  * util.js
  */
 
-export function getWebCrypto () {
+export function getWebCryptoAll () {
   if (typeof window === 'undefined') return undefined;
   else {
+    if (window.msCrypto) return window.msCrypto.subtle;
     if (window.crypto) return window.crypto.subtle;
   }
 }

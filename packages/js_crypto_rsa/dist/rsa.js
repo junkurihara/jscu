@@ -71,7 +71,7 @@ function _generateKey() {
           case 0:
             modulusLength = _args.length > 0 && _args[0] !== undefined ? _args[0] : 2048;
             publicExponent = _args.length > 1 && _args[1] !== undefined ? _args[1] : new Uint8Array([0x01, 0x00, 0x01]);
-            webCrypto = util.getWebCrypto(); // web crypto api
+            webCrypto = util.getWebCryptoAll(); // web crypto api
 
             nodeCrypto = util.getNodeCrypto(); // implementation on node.js
 
@@ -200,7 +200,7 @@ function _sign() {
               });
             }
 
-            webCrypto = util.getWebCrypto(); // web crypto api
+            webCrypto = util.getWebCryptoAll(); // web crypto api
 
             nodeCrypto = util.getNodeCrypto(); // implementation on node.js
 
@@ -335,7 +335,7 @@ function _verify() {
               });
             }
 
-            webCrypto = util.getWebCrypto(); // web crypto api
+            webCrypto = util.getWebCryptoAll(); // web crypto api
 
             nodeCrypto = util.getNodeCrypto(); // implementation on node.js
 
@@ -456,7 +456,7 @@ function _encrypt() {
               hash: hash,
               mLen: msg.length
             });
-            webCrypto = util.getWebCrypto(); // web crypto api
+            webCrypto = util.getWebCryptoAll(); // web crypto api
 
             nodeCrypto = util.getNodeCrypto(); // implementation on node.js
 
@@ -568,7 +568,7 @@ function _decrypt() {
               hash: hash,
               cLen: data.length
             });
-            webCrypto = util.getWebCrypto(); // web crypto api
+            webCrypto = util.getWebCryptoAll(); // web crypto api
 
             nodeCrypto = util.getNodeCrypto(); // implementation on node.js
 

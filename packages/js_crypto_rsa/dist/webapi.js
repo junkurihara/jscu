@@ -15,6 +15,8 @@ var _regenerator = _interopRequireDefault(require("@babel/runtime/regenerator"))
 
 var _asyncToGenerator2 = _interopRequireDefault(require("@babel/runtime/helpers/asyncToGenerator"));
 
+var _jsEncodingUtils = _interopRequireDefault(require("js-encoding-utils"));
+
 /**
  * webapi.js
  */
@@ -29,10 +31,13 @@ function _generateKey() {
     var modulusLength,
         publicExponent,
         webCrypto,
-        keys,
         publicKey,
         privateKey,
+        alg,
+        keys,
+        _keys,
         _args = arguments;
+
     return _regenerator.default.wrap(function _callee$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
@@ -40,28 +45,56 @@ function _generateKey() {
             modulusLength = _args.length > 0 && _args[0] !== undefined ? _args[0] : 2048;
             publicExponent = _args.length > 1 && _args[1] !== undefined ? _args[1] : new Uint8Array([0x01, 0x00, 0x01]);
             webCrypto = _args.length > 2 ? _args[2] : undefined;
-            _context.next = 5;
-            return webCrypto.generateKey({
+            alg = {
               name: 'RSA-OAEP',
               modulusLength: modulusLength,
               publicExponent: publicExponent,
               hash: {
                 name: 'SHA-256'
               }
-            }, true, ['encrypt', 'decrypt']);
+            };
 
-          case 5:
+            if (!(typeof window.msCrypto === 'undefined')) {
+              _context.next = 16;
+              break;
+            }
+
+            _context.next = 7;
+            return webCrypto.generateKey(alg, true, ['encrypt', 'decrypt']);
+
+          case 7:
             keys = _context.sent;
-            _context.next = 8;
+            _context.next = 10;
             return webCrypto.exportKey('jwk', keys.publicKey);
 
-          case 8:
+          case 10:
             publicKey = _context.sent;
-            _context.next = 11;
+            _context.next = 13;
             return webCrypto.exportKey('jwk', keys.privateKey);
 
-          case 11:
+          case 13:
             privateKey = _context.sent;
+            _context.next = 25;
+            break;
+
+          case 16:
+            _context.next = 18;
+            return msGenerateKey(alg, true, ['encrypt', 'decrypt'], webCrypto);
+
+          case 18:
+            _keys = _context.sent;
+            _context.next = 21;
+            return msExportKey('jwk', _keys.publicKey, webCrypto);
+
+          case 21:
+            publicKey = _context.sent;
+            _context.next = 24;
+            return msExportKey('jwk', _keys.privateKey, webCrypto);
+
+          case 24:
+            privateKey = _context.sent;
+
+          case 25:
             // delete optional entries to export as general rsa sign/encrypt key
             ['key_ops', 'alg', 'ext'].forEach(function (elem) {
               delete publicKey[elem];
@@ -72,7 +105,7 @@ function _generateKey() {
               privateKey: privateKey
             });
 
-          case 14:
+          case 27:
           case "end":
             return _context.stop();
         }
@@ -94,9 +127,11 @@ function _sign() {
         algorithm,
         webCrypto,
         algo,
-        key,
         signature,
+        key,
+        _key,
         _args2 = arguments;
+
     return _regenerator.default.wrap(function _callee2$(_context2) {
       while (1) {
         switch (_context2.prev = _context2.next) {
@@ -114,19 +149,49 @@ function _sign() {
               },
               saltLength: algorithm.saltLength
             };
-            _context2.next = 6;
+
+            if (!(typeof window.msCrypto === 'undefined')) {
+              _context2.next = 13;
+              break;
+            }
+
+            _context2.next = 7;
             return webCrypto.importKey('jwk', privateJwk, algo, false, ['sign']);
 
-          case 6:
+          case 7:
             key = _context2.sent;
-            _context2.next = 9;
+            _context2.next = 10;
             return webCrypto.sign(algo, key, msg);
 
-          case 9:
+          case 10:
             signature = _context2.sent;
+            _context2.next = 21;
+            break;
+
+          case 13:
+            if (!(algorithm.name === 'RSA-PSS')) {
+              _context2.next = 15;
+              break;
+            }
+
+            throw new Error('IE does not support RSA-PSS. Use RSASSA-PKCS1-v1_5.');
+
+          case 15:
+            _context2.next = 17;
+            return msImportKey('jwk', privateJwk, algo, false, ['sign'], webCrypto);
+
+          case 17:
+            _key = _context2.sent;
+            _context2.next = 20;
+            return msSign(algo, _key, msg, webCrypto);
+
+          case 20:
+            signature = _context2.sent;
+
+          case 21:
             return _context2.abrupt("return", new Uint8Array(signature));
 
-          case 11:
+          case 22:
           case "end":
             return _context2.stop();
         }
@@ -148,8 +213,11 @@ function _verify() {
         algorithm,
         webCrypto,
         algo,
+        valid,
         key,
+        _key2,
         _args3 = arguments;
+
     return _regenerator.default.wrap(function _callee3$(_context3) {
       while (1) {
         switch (_context3.prev = _context3.next) {
@@ -167,18 +235,49 @@ function _verify() {
               },
               saltLength: algorithm.saltLength
             };
-            _context3.next = 6;
+
+            if (!(typeof window.msCrypto === 'undefined')) {
+              _context3.next = 13;
+              break;
+            }
+
+            _context3.next = 7;
             return webCrypto.importKey('jwk', publicJwk, algo, false, ['verify']);
 
-          case 6:
+          case 7:
             key = _context3.sent;
-            _context3.next = 9;
+            _context3.next = 10;
             return webCrypto.verify(algo, key, signature, msg);
 
-          case 9:
-            return _context3.abrupt("return", _context3.sent);
-
           case 10:
+            valid = _context3.sent;
+            _context3.next = 21;
+            break;
+
+          case 13:
+            if (!(algorithm.name === 'RSA-PSS')) {
+              _context3.next = 15;
+              break;
+            }
+
+            throw new Error('IE does not support RSA-PSS. Use RSASSA-PKCS1-v1_5.');
+
+          case 15:
+            _context3.next = 17;
+            return msImportKey('jwk', publicJwk, algo, false, ['verify'], webCrypto);
+
+          case 17:
+            _key2 = _context3.sent;
+            _context3.next = 20;
+            return msVerify(algo, _key2, signature, msg, webCrypto);
+
+          case 20:
+            valid = _context3.sent;
+
+          case 21:
+            return _context3.abrupt("return", valid);
+
+          case 22:
           case "end":
             return _context3.stop();
         }
@@ -200,9 +299,11 @@ function _encrypt() {
         label,
         webCrypto,
         algo,
-        key,
         encrypted,
+        key,
+        _key3,
         _args4 = arguments;
+
     return _regenerator.default.wrap(function _callee4$(_context4) {
       while (1) {
         switch (_context4.prev = _context4.next) {
@@ -217,19 +318,49 @@ function _encrypt() {
               },
               label: label
             };
-            _context4.next = 6;
+
+            if (!(typeof window.msCrypto === 'undefined')) {
+              _context4.next = 13;
+              break;
+            }
+
+            _context4.next = 7;
             return webCrypto.importKey('jwk', publicJwk, algo, false, ['encrypt']);
 
-          case 6:
+          case 7:
             key = _context4.sent;
-            _context4.next = 9;
+            _context4.next = 10;
             return webCrypto.encrypt(algo, key, msg);
 
-          case 9:
+          case 10:
             encrypted = _context4.sent;
+            _context4.next = 21;
+            break;
+
+          case 13:
+            if (!(label.toString() !== new Uint8Array().toString())) {
+              _context4.next = 15;
+              break;
+            }
+
+            throw new Error('IE does not support RSA-OAEP label.');
+
+          case 15:
+            _context4.next = 17;
+            return msImportKey('jwk', publicJwk, algo, false, ['encrypt'], webCrypto);
+
+          case 17:
+            _key3 = _context4.sent;
+            _context4.next = 20;
+            return msEncrypt(algo, _key3, msg, webCrypto);
+
+          case 20:
+            encrypted = _context4.sent;
+
+          case 21:
             return _context4.abrupt("return", new Uint8Array(encrypted));
 
-          case 11:
+          case 22:
           case "end":
             return _context4.stop();
         }
@@ -241,7 +372,8 @@ function _encrypt() {
 
 function decrypt(_x8, _x9) {
   return _decrypt.apply(this, arguments);
-}
+} // function definitions for IE
+
 
 function _decrypt() {
   _decrypt = (0, _asyncToGenerator2.default)(
@@ -251,9 +383,11 @@ function _decrypt() {
         label,
         webCrypto,
         algo,
-        key,
         decrypted,
+        key,
+        _key4,
         _args5 = arguments;
+
     return _regenerator.default.wrap(function _callee5$(_context5) {
       while (1) {
         switch (_context5.prev = _context5.next) {
@@ -268,19 +402,49 @@ function _decrypt() {
               },
               label: label
             };
-            _context5.next = 6;
+
+            if (!(typeof window.msCrypto === 'undefined')) {
+              _context5.next = 13;
+              break;
+            }
+
+            _context5.next = 7;
             return webCrypto.importKey('jwk', privateJwk, algo, false, ['decrypt']);
 
-          case 6:
+          case 7:
             key = _context5.sent;
-            _context5.next = 9;
+            _context5.next = 10;
             return webCrypto.decrypt(algo, key, msg);
 
-          case 9:
+          case 10:
             decrypted = _context5.sent;
+            _context5.next = 21;
+            break;
+
+          case 13:
+            if (!(label.toString() !== new Uint8Array().toString())) {
+              _context5.next = 15;
+              break;
+            }
+
+            throw new Error('IE does not support RSA-OAEP label.');
+
+          case 15:
+            _context5.next = 17;
+            return msImportKey('jwk', privateJwk, algo, false, ['decrypt'], webCrypto);
+
+          case 17:
+            _key4 = _context5.sent;
+            _context5.next = 20;
+            return msDecrypt(algo, _key4, msg, webCrypto);
+
+          case 20:
+            decrypted = _context5.sent;
+
+          case 21:
             return _context5.abrupt("return", new Uint8Array(decrypted));
 
-          case 11:
+          case 22:
           case "end":
             return _context5.stop();
         }
@@ -289,3 +453,119 @@ function _decrypt() {
   }));
   return _decrypt.apply(this, arguments);
 }
+
+var msGenerateKey = function msGenerateKey(alg, ext, use, webCrypto) {
+  return new Promise(function (resolve, reject) {
+    var op = webCrypto.generateKey(alg, ext, use);
+
+    op.oncomplete = function (evt) {
+      resolve(evt.target.result);
+    };
+
+    op.onerror = function () {
+      reject('KeyGenerationFailed');
+    };
+  });
+};
+
+var msImportKey = function msImportKey(type, key, alg, ext, use, webCrypto) {
+  return new Promise(function (resolve, reject) {
+    var inputKey = key;
+
+    if (type === 'jwk') {
+      inputKey = JSON.stringify(key);
+      inputKey = _jsEncodingUtils.default.encoder.stringToArrayBuffer(inputKey);
+    }
+
+    var op = webCrypto.importKey(type, inputKey, alg, ext, use);
+
+    op.oncomplete = function (evt) {
+      resolve(evt.target.result);
+    };
+
+    op.onerror = function () {
+      reject('KeyImportingFailed');
+    };
+  });
+};
+
+var msExportKey = function msExportKey(type, key, webCrypto) {
+  return new Promise(function (resolve, reject) {
+    var op = webCrypto.exportKey(type, key);
+
+    op.oncomplete = function (evt) {
+      var output = evt.target.result;
+
+      if (type === 'jwk') {
+        output = _jsEncodingUtils.default.encoder.arrayBufferToString(new Uint8Array(output));
+        output = JSON.parse(output);
+      }
+
+      resolve(output);
+    };
+
+    op.onerror = function () {
+      reject('KeyExportingFailed');
+    };
+  });
+};
+
+var msEncrypt = function msEncrypt(alg, key, msg, webCrypto) {
+  return new Promise(function (resolve, reject) {
+    delete alg.label; // if exists, the MSCrypto doesn't work...wtf
+
+    var op = webCrypto.encrypt(alg, key, msg);
+
+    op.oncomplete = function (evt) {
+      resolve(evt.target.result);
+    };
+
+    op.onerror = function () {
+      reject('EncryptionFailure');
+    };
+  });
+};
+
+var msDecrypt = function msDecrypt(alg, key, data, webCrypto) {
+  return new Promise(function (resolve, reject) {
+    delete alg.label; // if exists, the MSCrypto doesn't work...wtf
+
+    var op = webCrypto.decrypt(alg, key, data);
+
+    op.oncomplete = function (evt) {
+      resolve(evt.target.result);
+    };
+
+    op.onerror = function () {
+      reject('DecryptionFailure');
+    };
+  });
+};
+
+var msSign = function msSign(alg, key, msg, webCrypto) {
+  return new Promise(function (resolve, reject) {
+    var op = webCrypto.sign(alg, key, msg);
+
+    op.oncomplete = function (evt) {
+      resolve(evt.target.result);
+    };
+
+    op.onerror = function () {
+      reject('SigningFailed');
+    };
+  });
+};
+
+var msVerify = function msVerify(alg, key, sig, msg, webCrypto) {
+  return new Promise(function (resolve, reject) {
+    var op = webCrypto.verify(alg, key, sig, msg);
+
+    op.oncomplete = function (evt) {
+      resolve(evt.target.result);
+    };
+
+    op.onerror = function () {
+      reject('VerificationFailed');
+    };
+  });
+};

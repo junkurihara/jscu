@@ -17,7 +17,7 @@ import jseu from 'js-encoding-utils';
  * @return {Promise<void>}
  */
 export async function generateKey(modulusLength = 2048, publicExponent = new Uint8Array([0x01, 0x00, 0x01])){
-  const webCrypto = util.getWebCrypto(); // web crypto api
+  const webCrypto = util.getWebCryptoAll(); // web crypto api
   const nodeCrypto = util.getNodeCrypto(); // implementation on node.js
 
   let native = true;
@@ -66,7 +66,7 @@ export async function sign(msg, privateJwk, hash = 'SHA-256', algorithm) {
     checkPssLength('sign', {k: jseu.encoder.decodeBase64Url(privateJwk.n).length, hash, saltLength: algorithm.saltLength});
   }
 
-  const webCrypto = util.getWebCrypto(); // web crypto api
+  const webCrypto = util.getWebCryptoAll(); // web crypto api
   const nodeCrypto = util.getNodeCrypto(); // implementation on node.js
 
   let native = true;
@@ -117,7 +117,7 @@ export async function verify(msg, signature, publicJwk, hash = 'SHA-256', algori
     checkPssLength('verify', {k: jseu.encoder.decodeBase64Url(publicJwk.n).length, hash, saltLength: algorithm.saltLength});
   }
 
-  const webCrypto = util.getWebCrypto(); // web crypto api
+  const webCrypto = util.getWebCryptoAll(); // web crypto api
   const nodeCrypto = util.getNodeCrypto(); // implementation on node.js
 
   let native = true;
@@ -161,7 +161,7 @@ export async function encrypt(msg, publicJwk, hash = 'SHA-256', label = new Uint
   if (publicJwk.kty !== 'RSA') throw new Error('InvalidJwkRsaKey');
   checkOaepLength('encrypt', {k: jseu.encoder.decodeBase64Url(publicJwk.n).length, label, hash, mLen: msg.length});
 
-  const webCrypto = util.getWebCrypto(); // web crypto api
+  const webCrypto = util.getWebCryptoAll(); // web crypto api
   const nodeCrypto = util.getNodeCrypto(); // implementation on node.js
 
   let native = true;
@@ -202,7 +202,7 @@ export async function decrypt(data, privateJwk, hash = 'SHA-256', label = new Ui
   if (privateJwk.kty !== 'RSA') throw new Error('InvalidJwkRsaKey');
   checkOaepLength('decrypt', {k: jseu.encoder.decodeBase64Url(privateJwk.n).length, label, hash, cLen: data.length});
 
-  const webCrypto = util.getWebCrypto(); // web crypto api
+  const webCrypto = util.getWebCryptoAll(); // web crypto api
   const nodeCrypto = util.getNodeCrypto(); // implementation on node.js
 
   let native = true;

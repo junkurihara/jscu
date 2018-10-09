@@ -3,14 +3,15 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.getWebCrypto = getWebCrypto;
+exports.getWebCryptoAll = getWebCryptoAll;
 exports.getNodeCrypto = getNodeCrypto;
 
 /**
  * util.js
  */
-function getWebCrypto() {
+function getWebCryptoAll() {
   if (typeof window === 'undefined') return undefined;else {
+    if (window.msCrypto) return window.msCrypto.subtle;
     if (window.crypto) return window.crypto.subtle;
   }
 }

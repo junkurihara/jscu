@@ -1,6 +1,6 @@
 import rsa from '../src/index.js';
 import rsaSmaple from './rsa_sample.js';
-import * as oaep from '../src/oaep.js';
+// import * as oaep from '../src/oaep.js';
 import jseu from 'js-encoding-utils';
 import chai from 'chai';
 // const should = chai.should();
@@ -34,43 +34,6 @@ describe('RSA cryptography test', () => {
     });
   }
 
-  it('OAEP', async () => {
-    const em = await oaep.emeOaepEncode(msg, new Uint8Array([]), 256, 'SHA-256');
-    // console.log(em);
-    const msgPrime = await oaep.emeOaepDecode(em, new Uint8Array([]), 256, 'SHA-256');
-    expect(msg.toString() === msgPrime.toString()).to.be.true;
-  });
-
-  it('RSA-PSS: Message is successfully signed and verified with generated JWK pairs', async function () {
-    this.timeout(5000);
-    const results = await Promise.all(Object.keys(rsaSmaple).map( async (kp) => {
-      let result = true;
-      const sign = await rsa.sign(msg, rsaSmaple[kp].privateKey.jwk, 'SHA-256').catch( (e) => {result = false;});
-      // console.log(jseu.encoder.encodeBase64(sign));
-      const valid = await rsa.verify(msg, sign, rsaSmaple[kp].publicKey.jwk, 'SHA-256').catch( (e) => {result = false;});
-      expect(result).to.be.true;
-
-      return valid;
-    }));
-    console.log(results);
-    expect(results.every( (r) => r)).to.be.true;
-  });
-
-  it('RSASSA-PKCS1-v1_5: Message is successfully signed and verified with generated JWK pairs', async function () {
-    this.timeout(5000);
-    const results = await Promise.all(Object.keys(rsaSmaple).map( async (kp) => {
-      let result = true;
-      const sign = await rsa.sign(msg, rsaSmaple[kp].privateKey.jwk, 'SHA-256', {name: 'RSASSA-PKCS1-v1_5'}).catch( (e) => {result = false;});
-      // console.log(jseu.encoder.encodeBase64(sign));
-      const valid = await rsa.verify(msg, sign, rsaSmaple[kp].publicKey.jwk, 'SHA-256', {name: 'RSASSA-PKCS1-v1_5'}).catch( (e) => {result = false;});
-      expect(result).to.be.true;
-
-      return valid;
-    }));
-    console.log(results);
-    expect(results.every( (r) => r)).to.be.true;
-  });
-
   it('Message is successfully encrypted and encrypted', async function () {
     this.timeout(5000);
     const results = await Promise.all(Object.keys(rsaSmaple).map( async (kp) => {
@@ -86,6 +49,52 @@ describe('RSA cryptography test', () => {
     expect(results.every( (r) => r)).to.be.true;
   });
 
+  // it('OAEP', async function (){
+  //   this.timeout(50000);
+  //   const em = await oaep.emeOaepEncode(msg, new Uint8Array([]), 256, 'SHA-256');
+  //   // console.log(em);
+  //   const msgPrime = await oaep.emeOaepDecode(em, new Uint8Array([]), 256, 'SHA-256');
+  //   expect(msg.toString() === msgPrime.toString()).to.be.true;
+  // });
+
+  it('RSASSA-PKCS1-v1_5: Message is successfully signed and verified with generated JWK pairs', async function () {
+    this.timeout(5000);
+    const results = await Promise.all(Object.keys(rsaSmaple).map( async (kp) => {
+      let result = true;
+      const sign = await rsa.sign(msg, rsaSmaple[kp].privateKey.jwk, 'SHA-256', {name: 'RSASSA-PKCS1-v1_5'}).catch( (e) => {result = false; console.error(e);});
+      // console.log(sign);
+      // console.log(jseu.encoder.encodeBase64(sign));
+      const valid = await rsa.verify(msg, sign, rsaSmaple[kp].publicKey.jwk, 'SHA-256', {name: 'RSASSA-PKCS1-v1_5'}).catch( (e) => {result = false;});
+      expect(result).to.be.true;
+
+      return valid;
+    }));
+    console.log(results);
+    expect(results.every( (r) => r)).to.be.true;
+  });
+
+  if(typeof window === 'undefined' || (typeof window !== 'undefined' && typeof window.msCrypto === 'undefined')) {
+    it('RSA-PSS: Message is successfully signed and verified with generated JWK pairs', async function () {
+      this.timeout(5000);
+      const results = await Promise.all(Object.keys(rsaSmaple).map(async (kp) => {
+        let result = true;
+        const sign = await rsa.sign(msg, rsaSmaple[kp].privateKey.jwk, 'SHA-256').catch((e) => {
+          result = false;
+        });
+        // console.log(jseu.encoder.encodeBase64(sign));
+        const valid = await rsa.verify(msg, sign, rsaSmaple[kp].publicKey.jwk, 'SHA-256').catch((e) => {
+          result = false;
+        });
+        expect(result).to.be.true;
+
+        return valid;
+      }));
+      console.log(results);
+      expect(results.every((r) => r)).to.be.true;
+    });
+  }
+
+
   it('Compatibility test', async () => {
     const webEnc = 'd8ehCiJyQjqjrWnKSNBJ+5Q7SS+5Xdv+Bevcn+3xYX4zMMsY2BCDux75rvexiUcIZphXf3HRNsrL340wlGhg0sNKGBaFR1Nv2D3Ta5FyEnuDbSxl6hItF6pvZ628c0DW5/YTfPE1xJLZwE+8bHAgjJO3eob5vU7/h8X9tZtf37FUfPIMLDWNc4v7E2uynrzV0xHpg6J7QZbwvJmz9uShEVraR0pkR86MPvNnRw8y2iB+xAK5V+CqZLT6I5+rZuWWxaI5+9BypeR2JmNXogrqg88/JiKy1N/TdwJ2ZJ8inu1VW97soJbLmtNPH2Ur5Dd+9dZSNKhdNQwS0QLXZn3C6A==';
     const webSig = 'CHoyzFCHWBPv6cXPplD8P0IRIO/683lfMMcMYmyukkotegyNnP+BtwID3e7f41tRe7sxUXJtb/MjUkDtxv08T2dBTAgNJtk/LLDvNVJ0AJ7MwATQpojzY1xoyEOnRhrDsYjYI+ITYDMLFbvAng2x8hf5mNrR+GoAZLxsBFtq+4n4av7FFmPMpwpFJ/R6arQky3OIt6/dm3d5jQQ6kTPSHKb3gVrutsXUUrSosXQiMDz0Qu6T2bdwKHWX5zO9P00AYwgpoLaWV+vHXQNEyyxLA/VgB2C8obpTNNJF5rqcuVp9KNGmffV43UnzWZX0YAB5JSIc+9JXKqj71JO3Q7AjTA==\n';
@@ -97,9 +106,15 @@ describe('RSA cryptography test', () => {
     const decrypted = await rsa.decrypt(jseu.encoder.decodeBase64(webEnc), rsaSmaple['2048'].privateKey.jwk, 'SHA-256');
     console.log(decrypted.toString() === msg.toString());
     expect(decrypted.toString() === msg.toString()).to.be.true;
-    const valid = await rsa.verify(msg, jseu.encoder.decodeBase64(webSig), rsaSmaple['2048'].publicKey.jwk, 'SHA-256', {name: 'RSA-PSS', saltLength: 192});
-    console.log(valid);
-    expect(valid).to.be.true;
+
+    if(typeof window === 'undefined' || (typeof window !== 'undefined' && typeof window.msCrypto === 'undefined')) {
+      const valid = await rsa.verify(msg, jseu.encoder.decodeBase64(webSig), rsaSmaple['2048'].publicKey.jwk, 'SHA-256', {
+        name: 'RSA-PSS',
+        saltLength: 192
+      });
+      console.log(valid);
+      expect(valid).to.be.true;
+    }
     const validP = await rsa.verify(msg, jseu.encoder.decodeBase64(webSigPKCS1V15), rsaSmaple['2048'].publicKey.jwk, 'SHA-256', {name: 'RSASSA-PKCS1-v1_5'});
     console.log(validP);
     expect(validP).to.be.true;
@@ -107,9 +122,16 @@ describe('RSA cryptography test', () => {
     const decryptedNode = await rsa.decrypt(jseu.encoder.decodeBase64(nodeEnc), rsaSmaple['2048'].privateKey.jwk, 'SHA-256');
     console.log(decryptedNode.toString() === msg.toString());
     expect(decryptedNode.toString() === msg.toString()).to.be.true;
-    const validNode = await rsa.verify(msg, jseu.encoder.decodeBase64(nodeSig), rsaSmaple['2048'].publicKey.jwk, 'SHA-256', {name: 'RSA-PSS', saltLength: 192});
-    console.log(validNode);
-    expect(validNode).to.be.true;
+
+    if(typeof window === 'undefined' || (typeof window !== 'undefined' && typeof window.msCrypto === 'undefined')) {
+      const validNode = await rsa.verify(msg, jseu.encoder.decodeBase64(nodeSig), rsaSmaple['2048'].publicKey.jwk, 'SHA-256', {
+        name: 'RSA-PSS',
+        saltLength: 192
+      });
+      console.log(validNode);
+      expect(validNode).to.be.true;
+    }
+
     const validNodeP = await rsa.verify(msg, jseu.encoder.decodeBase64(nodeSigPKCS1V15), rsaSmaple['2048'].publicKey.jwk, 'SHA-256', {name: 'RSASSA-PKCS1-v1_5'});
     console.log(validNodeP);
     expect(validNodeP).to.be.true;
