@@ -1,6 +1,6 @@
 {
   "name": "js-crypto-rsa",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Universal Module for RSA Cryptography (RSA-OAEP and RSASSA-PSS/PKCS1-V1_5) in JavaScript",
   "main": "dist/jscrsa.js",
   "scripts": {
