@@ -17,7 +17,8 @@ const curves = ['P-256', 'P-384', 'P-521'];
 describe('EC Key conversion from/to JWK test.', () => {
   
   let ECKeySet = [];
-  before(async () => {
+  before(async function (){
+    this.timeout(20000);
     ECKeySet = await Promise.all(curves.map(async (crv) => {
       return await ec.generateKey(crv);
     }));

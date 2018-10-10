@@ -5,9 +5,10 @@
 import * as asn1ec from './asn1ec.js';
 import * as asn1rsa from './asn1rsa.js';
 import params, {getAlgorithmFromOid} from './params.js';
-import asn from 'asn1.js';
 import jseu from 'js-encoding-utils';
 import BufferMod from 'buffer';
+import {OneAsymmetricKey, SubjectPublicKeyInfo, PrivateKeyStructure} from './asn1def.js';
+import {decryptEncryptedPrivateKeyInfo} from './rfc8081.js';
 const Buffer = BufferMod.Buffer;
 
 /**
@@ -45,9 +46,14 @@ export function toJwk(key, {type, format}){
   const binKey = (format === 'pem') ? jseu.formatter.pemToBin(key, type) : key;
 
   // decode binary spki/pkcs8-formatted key to parsed object
-  const decoded = (type === 'public')
-    ? SubjectPublicKeyInfo.decode(Buffer.from(binKey), 'der')
-    : OneAsymmetricKey.decode(Buffer.from(binKey), 'der');
+  let decoded;
+  if (type === 'public') decoded = SubjectPublicKeyInfo.decode(Buffer.from(binKey), 'der');
+  else {
+    decoded = PrivateKeyStructure.decode(Buffer.from(binKey), 'der');
+    if(decoded.type === 'encryptedPrivateKeyInfo') decoded = decryptEncryptedPrivateKeyInfo(decoded.value);
+    else if (decoded.type === 'oneAsymmetricKey') decoded = decoded.value;
+  }
+
   const keyTypes = getAlgorithmFromOid(
     (type === 'public') ? decoded.algorithm.algorithm : decoded.privateKeyAlgorithm.algorithm,
     params.publicKeyAlgorithms
@@ -64,35 +70,3 @@ export function toJwk(key, {type, format}){
 }
 
 
-///////
-// https://tools.ietf.org/html/rfc5280
-const AlgorithmIdentifier = asn.define('AlgorithmIdentifier', function() {
-  this.seq().obj(
-    this.key('algorithm').objid(),
-    this.key('parameters').optional().any()
-  );
-});
-
-// https://tools.ietf.org/html/rfc5280
-const SubjectPublicKeyInfo = asn.define('SubjectPublicKeyInfo', function() {
-  this.seq().obj(
-    this.key('algorithm').use(AlgorithmIdentifier),
-    this.key('subjectPublicKey').bitstr()
-  );
-});
-
-// RFC5958 https://tools.ietf.org/html/rfc5958
-// ( old version PrivateKeyInfo https://tools.ietf.org/html/rfc5208 )
-const OneAsymmetricKey = asn.define('OneAsymmetricKey', function() {
-  this.seq().obj(
-    this.key('version').use(Version),
-    this.key('privateKeyAlgorithm').use(AlgorithmIdentifier),
-    this.key('privateKey').octstr(),
-    this.key('attributes').implicit(0).optional().any(),
-    this.key('publicKey').implicit(1).optional().bitstr()
-  );
-});
-
-const Version = asn.define('Version', function() {
-  this.int();
-});

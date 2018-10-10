@@ -15,6 +15,30 @@ export default {
   publicKeyAlgorithms: {
     'EC': {oid: [1, 2, 840, 10045, 2, 1]},
     'RSA': {oid: [1, 2, 840, 113549, 1, 1, 1]}
+  },
+
+  passwordBasedEncryptionSchemes: {
+    // PBES1
+    'pbeWithMD5AndDES-CBC': {oid: [1, 2, 840, 113549, 1, 5, 3 ]},
+    'pbeWithSHA1AndDES-CBC': {oid: [1, 2, 840, 113549, 1, 5, 10 ]},
+
+    // PBES2
+    'pbes2': {oid:  [ 1, 2, 840, 113549, 1, 5, 13 ]}
+  },
+
+  keyDerivationFunctions: {
+    'pbkdf2': {oid: [ 1, 2, 840, 113549, 1, 5, 12 ]}
+  },
+
+  pbkdf2Prfs: {
+    'hmacWithSHA1': {oid: [1, 2, 840, 113549, 2, 7]},
+    'hmacWithSHA256': {oid: [1, 2, 840, 113549, 2, 9]},
+    'hmacWithSHA384': {oid: [1, 2, 840, 113549, 2, 10]},
+    'hmacWithSHA512': {oid: [1, 2, 840, 113549, 2, 11]}
+  },
+
+  encryptionSchemes: {
+    'des-ede3-cbc': {oid: [ 1, 2, 840, 113549, 3, 7 ]}
   }
 };
 
