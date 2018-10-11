@@ -5,8 +5,10 @@ import chai from 'chai';
 // const should = chai.should();
 const expect = chai.expect;
 
+import jseu from 'js-encoding-utils';
 
-let hashes = ['SHA-256', 'SHA-384', 'SHA-512'];
+
+const hashes = ['SHA-256', 'SHA-384', 'SHA-512', 'MD5', 'SHA-1'];
 describe('HMAC test', () => {
   let msg;
   before( async () => {
@@ -16,32 +18,35 @@ describe('HMAC test', () => {
 
   it('HMAC successfully generates unique MAC for unique key', async function () {
     this.timeout(20000);
-    if(typeof window !== 'undefined' && typeof window.msCrypto !== 'undefined') hashes = ['SHA-256', 'SHA-384']; // SHA-512 doesn't work in IE
-    await Promise.all(hashes.map( async (hash) => {
+    const array = await Promise.all(hashes.map( async (hash) => {
       const keya = await random.getRandomBytes(32);
       const keyb = await random.getRandomBytes(32);
       const da = await hmac.compute(keya, msg, hash);
       const db = await hmac.compute(keyb, msg, hash);
       expect(da).to.be.a('Uint8Array');
       expect(db).to.be.a('Uint8Array');
-      expect(da.toString() === db.toString(), `failed at ${hash}`).to.be.false;
+      return da.toString() !== db.toString();
     }));
+    console.log(array);
+    expect(array.every((a) => (a === true))).to.be.true;
   });
 
   it('If msg is overwritten, it can be detected via MAC', async function () {
     this.timeout(20000);
-    if(typeof window !== 'undefined' && typeof window.msCrypto !== 'undefined') hashes = ['SHA-256', 'SHA-384']; // SHA-512 doesn't work in IE
-    await Promise.all(hashes.map( async (hash) => {
-      const key = await random.getRandomBytes(32);
-      const d = await hmac.compute(key, msg, hash);
-      const success = await hmac.verify(key, msg, d, hash);
-      expect(success, `failed at ${hash}`).to.be.true;
+    const key = await random.getRandomBytes(32);
+    const newMsg = new Uint8Array(msg);
+    newMsg[1] = 0xFF&0x33;
 
-      const newmsg = Object.assign({}, {x: msg}).x;
-      newmsg[1] = 0x33;
-      const fail = await hmac.verify(key, newmsg, d, hash);
-      expect(fail, `failed at ${hash}`).to.be.false;
-    }));
+    const origArray = await Promise.all(hashes.map( async (hash) => jseu.encoder.encodeBase64(await hmac.compute(key, msg, hash))));
+    const altArray = await Promise.all(hashes.map( async (hash) => jseu.encoder.encodeBase64(await hmac.compute(key, newMsg, hash))));
+
+    const array = origArray.map( (orig, idx) => orig !== altArray[idx]);
+    console.log(array);
+    console.log(origArray);
+    console.log(altArray);
+
+    expect(array.every( (x) => x)).to.be.true;
+
   });
 });
 

@@ -38,6 +38,7 @@
     "chai": "^4.2.0",
     "eslint": "5.6.1",
     "js-crypto-random": "^0.1.2",
+    "js-encoding-utils": "^0.2.6",
     "karma": "3.0.0",
     "karma-chrome-launcher": "^2.2.0",
     "karma-cli": "^1.0.1",
@@ -52,6 +53,7 @@
   },
   "dependencies": {
     "@babel/plugin-transform-regenerator": "7.0.0",
-    "@babel/runtime": "7.1.2"
+    "@babel/runtime": "7.1.2",
+    "js-crypto-hash": "^0.2.0"
   }
 }

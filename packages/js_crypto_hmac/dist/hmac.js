@@ -18,6 +18,8 @@ var _params = _interopRequireDefault(require("./params.js"));
 
 var util = _interopRequireWildcard(require("./util.js"));
 
+var _index = _interopRequireDefault(require("js-crypto-hash/dist/index.js"));
+
 /**
  * hmac.js
  */
@@ -31,15 +33,7 @@ var util = _interopRequireWildcard(require("./util.js"));
  */
 function compute(_x, _x2) {
   return _compute.apply(this, arguments);
-}
-/**
- * Verify HMAC
- * @param key
- * @param data
- * @param mac
- * @param hash
- * @return {Promise<boolean>}
- */
+} // RFC 2104 https://tools.ietf.org/html/rfc2104
 
 
 function _compute() {
@@ -49,13 +43,12 @@ function _compute() {
     var hash,
         webCrypto,
         nodeCrypto,
+        native,
         keyObj,
         mac,
-        _keyObj,
-        _mac,
         msImportKey,
         msHmac,
-        _keyObj2,
+        _keyObj,
         rawPrk,
         f,
         _args = arguments;
@@ -70,18 +63,20 @@ function _compute() {
             nodeCrypto = util.getNodeCrypto(); // node crypto
             // const msCrypto = util.getMsCrypto(); // ms crypto
 
+            native = true;
+
             if (!(typeof webCrypto !== 'undefined' && typeof webCrypto.importKey === 'function' && typeof webCrypto.sign === 'function')) {
-              _context.next = 39;
+              _context.next = 38;
               break;
             }
 
             if (!(typeof window.msCrypto === 'undefined')) {
-              _context.next = 26;
+              _context.next = 21;
               break;
             }
 
-            _context.prev = 5;
-            _context.next = 8;
+            _context.prev = 6;
+            _context.next = 9;
             return webCrypto.importKey('raw', key, {
               name: 'HMAC',
               hash: {
@@ -89,53 +84,32 @@ function _compute() {
               }
             }, false, ['sign', 'verify']);
 
-          case 8:
+          case 9:
             keyObj = _context.sent;
-            _context.next = 11;
-            return webCrypto.sign('HMAC', keyObj, data);
-
-          case 11:
-            mac = _context.sent;
-            return _context.abrupt("return", new Uint8Array(mac));
-
-          case 15:
-            _context.prev = 15;
-            _context.t0 = _context["catch"](5);
-            _context.next = 19;
-            return webCrypto.importKey('raw', key, {
-              name: 'HMAC',
-              hash: {
-                name: hash
-              }
-            }, false, ['sign', 'verify']);
-
-          case 19:
-            _keyObj = _context.sent;
-            _context.next = 22;
+            _context.next = 12;
             return webCrypto.sign({
               name: 'HMAC',
               hash: {
                 name: hash
               }
-            }, _keyObj, data);
+            }, keyObj, data);
 
-          case 22:
-            _mac = _context.sent;
-            return _context.abrupt("return", new Uint8Array(_mac));
+          case 12:
+            mac = _context.sent;
+            return _context.abrupt("return", new Uint8Array(mac));
 
-          case 24:
-            _context.next = 37;
+          case 16:
+            _context.prev = 16;
+            _context.t0 = _context["catch"](6);
+            native = false;
+
+          case 19:
+            _context.next = 36;
             break;
 
-          case 26:
-            if (!(hash === 'SHA-512')) {
-              _context.next = 28;
-              break;
-            }
+          case 21:
+            _context.prev = 21;
 
-            throw new Error('HMAC-SHA512UnsupportedInIE');
-
-          case 28:
             // function definitions
             msImportKey = function msImportKey(type, key, alg, ext, use) {
               return new Promise(function (resolve, reject) {
@@ -170,7 +144,7 @@ function _compute() {
               });
             };
 
-            _context.next = 32;
+            _context.next = 26;
             return msImportKey('raw', key, {
               name: 'HMAC',
               hash: {
@@ -178,80 +152,195 @@ function _compute() {
               }
             }, false, ['sign', 'verify']);
 
-          case 32:
-            _keyObj2 = _context.sent;
-            _context.next = 35;
-            return msHmac(hash, _keyObj2, data);
+          case 26:
+            _keyObj = _context.sent;
+            _context.next = 29;
+            return msHmac(hash, _keyObj, data);
 
-          case 35:
+          case 29:
             rawPrk = _context.sent;
             return _context.abrupt("return", new Uint8Array(rawPrk));
 
-          case 37:
-            _context.next = 45;
+          case 33:
+            _context.prev = 33;
+            _context.t1 = _context["catch"](21);
+            native = false;
+
+          case 36:
+            _context.next = 50;
             break;
 
-          case 39:
+          case 38:
             if (!(typeof nodeCrypto !== 'undefined')) {
-              _context.next = 44;
+              _context.next = 49;
               break;
             }
 
-            // for node
+            _context.prev = 39;
             f = nodeCrypto.createHmac(_params.default.hashes[hash].nodeName, key);
             return _context.abrupt("return", new Uint8Array(f.update(data).digest()));
 
           case 44:
-            throw new Error('UnsupportedEnvironment');
+            _context.prev = 44;
+            _context.t2 = _context["catch"](39);
+            native = false;
 
-          case 45:
+          case 47:
+            _context.next = 50;
+            break;
+
+          case 49:
+            native = false;
+
+          case 50:
+            if (native) {
+              _context.next = 60;
+              break;
+            }
+
+            _context.prev = 51;
+            _context.next = 54;
+            return purejs(key, data, hash);
+
+          case 54:
+            return _context.abrupt("return", _context.sent);
+
+          case 57:
+            _context.prev = 57;
+            _context.t3 = _context["catch"](51);
+            throw new Error('UnsupportedEnvironments');
+
+          case 60:
           case "end":
             return _context.stop();
         }
       }
-    }, _callee, this, [[5, 15]]);
+    }, _callee, this, [[6, 16], [21, 33], [39, 44], [51, 57]]);
   }));
   return _compute.apply(this, arguments);
 }
 
-function verify(_x3, _x4, _x5) {
+function purejs(_x3, _x4) {
+  return _purejs.apply(this, arguments);
+}
+/**
+ * Verify HMAC
+ * @param key
+ * @param data
+ * @param mac
+ * @param hash
+ * @return {Promise<boolean>}
+ */
+
+
+function _purejs() {
+  _purejs = (0, _asyncToGenerator2.default)(
+  /*#__PURE__*/
+  _regenerator.default.mark(function _callee2(key, data) {
+    var hash,
+        B,
+        L,
+        K,
+        KxorIpad,
+        KxorOpad,
+        inner,
+        hashedInner,
+        outer,
+        _args2 = arguments;
+    return _regenerator.default.wrap(function _callee2$(_context2) {
+      while (1) {
+        switch (_context2.prev = _context2.next) {
+          case 0:
+            hash = _args2.length > 2 && _args2[2] !== undefined ? _args2[2] : 'SHA-256';
+            B = _params.default.hashes[hash].blockSize;
+            L = _params.default.hashes[hash].hashSize;
+
+            if (!(key.length > B)) {
+              _context2.next = 7;
+              break;
+            }
+
+            _context2.next = 6;
+            return _index.default.compute(key, hash);
+
+          case 6:
+            key = _context2.sent;
+
+          case 7:
+            K = new Uint8Array(B); // first the array is initialized with 0x00
+
+            K.set(key);
+            KxorIpad = K.map(function (k) {
+              return 0xFF & (0x36 ^ k);
+            });
+            KxorOpad = K.map(function (k) {
+              return 0xFF & (0x5c ^ k);
+            });
+            inner = new Uint8Array(B + data.length);
+            inner.set(KxorIpad);
+            inner.set(data, B);
+            _context2.next = 16;
+            return _index.default.compute(inner, hash);
+
+          case 16:
+            hashedInner = _context2.sent;
+            outer = new Uint8Array(B + L);
+            outer.set(KxorOpad);
+            outer.set(hashedInner, B);
+            _context2.next = 22;
+            return _index.default.compute(outer, hash);
+
+          case 22:
+            return _context2.abrupt("return", _context2.sent);
+
+          case 23:
+          case "end":
+            return _context2.stop();
+        }
+      }
+    }, _callee2, this);
+  }));
+  return _purejs.apply(this, arguments);
+}
+
+function verify(_x5, _x6, _x7) {
   return _verify.apply(this, arguments);
 }
 
 function _verify() {
   _verify = (0, _asyncToGenerator2.default)(
   /*#__PURE__*/
-  _regenerator.default.mark(function _callee2(key, data, mac) {
+  _regenerator.default.mark(function _callee3(key, data, mac) {
     var hash,
         newMac,
-        _args2 = arguments;
-    return _regenerator.default.wrap(function _callee2$(_context2) {
+        _args3 = arguments;
+    return _regenerator.default.wrap(function _callee3$(_context3) {
       while (1) {
-        switch (_context2.prev = _context2.next) {
+        switch (_context3.prev = _context3.next) {
           case 0:
-            hash = _args2.length > 3 && _args2[3] !== undefined ? _args2[3] : 'SHA-256';
+            hash = _args3.length > 3 && _args3[3] !== undefined ? _args3[3] : 'SHA-256';
 
             if (mac instanceof Uint8Array) {
-              _context2.next = 3;
+              _context3.next = 3;
               break;
             }
 
             throw new Error('InvalidInputMac');
 
           case 3:
-            _context2.next = 5;
+            _context3.next = 5;
             return compute(key, data, hash);
 
           case 5:
-            newMac = _context2.sent;
-            return _context2.abrupt("return", mac.toString() === newMac.toString());
+            newMac = _context3.sent;
+            return _context3.abrupt("return", mac.toString() === newMac.toString());
 
           case 7:
           case "end":
-            return _context2.stop();
+            return _context3.stop();
         }
       }
-    }, _callee2, this);
+    }, _callee3, this);
   }));
   return _verify.apply(this, arguments);
 }

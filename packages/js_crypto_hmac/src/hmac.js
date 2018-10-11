@@ -4,6 +4,7 @@
 
 import params from './params.js';
 import * as util from './util.js';
+import jschash from 'js-crypto-hash/dist/index.js';
 
 
 /**
@@ -18,48 +19,77 @@ export async function compute(key, data, hash = 'SHA-256'){
   const nodeCrypto = util.getNodeCrypto(); // node crypto
   // const msCrypto = util.getMsCrypto(); // ms crypto
 
+  let native = true;
   if (typeof webCrypto !== 'undefined' && typeof webCrypto.importKey === 'function' && typeof webCrypto.sign === 'function') {
     if (typeof window.msCrypto === 'undefined'){
-      // standard web api
-      try { // modern browsers supporting HMAC
-        const keyObj = await webCrypto.importKey('raw', key, {name: 'HMAC', hash: {name: hash}}, false, ['sign', 'verify']);
-        const mac = await webCrypto.sign('HMAC', keyObj, data);
-        return new Uint8Array(mac);
-      }
-      catch (e) { // For Edge
-        const keyObj = await webCrypto.importKey('raw', key, {name: 'HMAC', hash: {name: hash}}, false, ['sign', 'verify']);
+      try {
+        // standard web api / modern browsers supporting HMAC
+        const keyObj = await webCrypto.importKey('raw', key, { name: 'HMAC', hash: {name: hash} }, false, ['sign', 'verify']);
         const mac = await webCrypto.sign({name: 'HMAC', hash: {name: hash}}, keyObj, data);
         return new Uint8Array(mac);
-      }
+      } catch (e) { native = false; }
     }
     else {
-      // ms crypto
-      if (hash === 'SHA-512') throw new Error('HMAC-SHA512UnsupportedInIE');
-
+      try{
       // function definitions
-      const msImportKey = (type, key, alg, ext, use) => new Promise ( (resolve, reject) => {
-        const op = webCrypto.importKey(type, key, alg, ext, use);
-        op.oncomplete = (evt) => { resolve(evt.target.result); };
-        op.onerror = () => { reject('KeyImportingFailed'); };
-      });
-      const msHmac = (hash, k, d) => new Promise ( (resolve, reject) => {
-        const op = webCrypto.sign({name: 'HMAC', hash: {name: hash}}, k, d);
-        op.oncomplete = (evt) => { resolve(new Uint8Array(evt.target.result)); };
-        op.onerror = () => { reject('ComputingHMACFailed'); };
-      });
+        const msImportKey = (type, key, alg, ext, use) => new Promise ( (resolve, reject) => {
+          const op = webCrypto.importKey(type, key, alg, ext, use);
+          op.oncomplete = (evt) => { resolve(evt.target.result); };
+          op.onerror = () => { reject('KeyImportingFailed'); };
+        });
+        const msHmac = (hash, k, d) => new Promise ( (resolve, reject) => {
+          const op = webCrypto.sign({name: 'HMAC', hash: {name: hash}}, k, d);
+          op.oncomplete = (evt) => { resolve(new Uint8Array(evt.target.result)); };
+          op.onerror = () => { reject('ComputingHMACFailed'); };
+        });
 
-      const keyObj = await msImportKey('raw', key, {name: 'HMAC', hash: {name: hash}}, false, ['sign', 'verify']);
-      const rawPrk = await msHmac(hash, keyObj, data);
-      return new Uint8Array(rawPrk);
+        const keyObj = await msImportKey('raw', key, {name: 'HMAC', hash: {name: hash}}, false, ['sign', 'verify']);
+        const rawPrk = await msHmac(hash, keyObj, data);
+        return new Uint8Array(rawPrk);
+      } catch (e) { native = false; }
     }
   }
   else if (typeof nodeCrypto !== 'undefined'){ // for node
-    const f = nodeCrypto.createHmac(params.hashes[hash].nodeName, key);
-    return new Uint8Array(f.update(data).digest());
+    try {
+      const f = nodeCrypto.createHmac(params.hashes[hash].nodeName, key);
+      return new Uint8Array(f.update(data).digest());
+    } catch (e) { native = false; }
   }
-  else {
-    throw new Error('UnsupportedEnvironment');
+  else native = false;
+
+  if (!native){
+    try {
+      return await purejs(key, data, hash);
+    } catch (e) {
+      throw new Error('UnsupportedEnvironments');
+    }
   }
+}
+
+
+// RFC 2104 https://tools.ietf.org/html/rfc2104
+async function purejs(key, data, hash = 'SHA-256'){
+  const B = params.hashes[hash].blockSize;
+  const L = params.hashes[hash].hashSize;
+
+  if(key.length > B) key = await jschash.compute(key, hash);
+
+  const K = new Uint8Array(B); // first the array is initialized with 0x00
+  K.set(key);
+
+  const KxorIpad = K.map( (k) => 0xFF & (0x36 ^ k));
+  const KxorOpad = K.map( (k) => 0xFF & (0x5c ^ k));
+
+  const inner = new Uint8Array(B + data.length);
+  inner.set(KxorIpad);
+  inner.set(data, B);
+  const hashedInner = await jschash.compute(inner, hash);
+
+  const outer = new Uint8Array(B + L);
+  outer.set(KxorOpad);
+  outer.set(hashedInner, B);
+
+  return await jschash.compute(outer, hash);
 }
 
 /**

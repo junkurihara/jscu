@@ -48,8 +48,5 @@ hmac.verify(key, msg, mac, hash).then( (result) => {
 });
 ```
 
-# Note
-**In legacy IE11, HMAC-SHA512 doesn't work due to the lack of native implementation.**
-
 # License
 Licensed under the MIT license, see `LICENSE` file.
