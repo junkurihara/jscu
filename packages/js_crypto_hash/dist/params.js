@@ -24,7 +24,12 @@ var _default = {
     },
     'SHA-1': {
       nodeName: 'sha1',
-      hashSize: 20 // SHOULD NOT USE
+      hashSize: 20
+    },
+    // SHOULD NOT USE
+    'MD5': {
+      nodeName: 'md5',
+      hashSize: 16 // SHOULD NOT USE
 
     }
   }

@@ -17,6 +17,10 @@ var util = _interopRequireWildcard(require("./util.js"));
 
 var _params = _interopRequireDefault(require("./params.js"));
 
+var _md = _interopRequireDefault(require("md5"));
+
+var _sha = _interopRequireDefault(require("sha.js"));
+
 /**
  * hash.js
  */
@@ -40,6 +44,7 @@ function _compute() {
         nodeCrypto,
         msCrypto,
         msgHash,
+        native,
         alg,
         hashFunc,
         msdigest,
@@ -69,37 +74,45 @@ function _compute() {
             webCrypto = util.getWebCrypto();
             nodeCrypto = util.getNodeCrypto();
             msCrypto = util.getMsCrypto();
+            native = true;
 
             if (!(typeof webCrypto !== 'undefined' && typeof webCrypto.digest === 'function' && typeof msCrypto === 'undefined')) {
-              _context.next = 14;
+              _context.next = 15;
               break;
             }
 
-            _context.next = 11;
-            return webCrypto.digest(hash, msg);
+            _context.next = 12;
+            return webCrypto.digest(hash, msg).catch(function () {
+              return native = false;
+            });
 
-          case 11:
+          case 12:
             msgHash = _context.sent;
-            _context.next = 29;
+            _context.next = 27;
             break;
 
-          case 14:
+          case 15:
             if (!(typeof nodeCrypto !== 'undefined')) {
-              _context.next = 21;
+              _context.next = 19;
               break;
             }
 
             // for node
-            alg = _params.default.hashes[hash].nodeName;
-            hashFunc = nodeCrypto.createHash(alg);
-            hashFunc.update(msg);
-            msgHash = hashFunc.digest();
-            _context.next = 29;
+            try {
+              alg = _params.default.hashes[hash].nodeName;
+              hashFunc = nodeCrypto.createHash(alg);
+              hashFunc.update(msg);
+              msgHash = hashFunc.digest();
+            } catch (e) {
+              native = false;
+            }
+
+            _context.next = 27;
             break;
 
-          case 21:
+          case 19:
             if (!(typeof msCrypto !== 'undefined' && typeof msCrypto.digest === 'function')) {
-              _context.next = 28;
+              _context.next = 26;
               break;
             }
 
@@ -119,26 +132,58 @@ function _compute() {
               });
             };
 
-            _context.next = 25;
-            return msdigest(hash, msg);
+            _context.next = 23;
+            return msdigest(hash, msg).catch(function (e) {
+              return native = false;
+            });
 
-          case 25:
+          case 23:
             msgHash = _context.sent;
-            _context.next = 29;
+            _context.next = 27;
             break;
 
-          case 28:
+          case 26:
+            native = false;
+
+          case 27:
+            if (native) {
+              _context.next = 35;
+              break;
+            }
+
+            _context.prev = 28;
+            msgHash = purejs(hash, msg);
+            _context.next = 35;
+            break;
+
+          case 32:
+            _context.prev = 32;
+            _context.t0 = _context["catch"](28);
             throw new Error('UnsupportedEnvironment');
 
-          case 29:
+          case 35:
             return _context.abrupt("return", new Uint8Array(msgHash));
 
-          case 30:
+          case 36:
           case "end":
             return _context.stop();
         }
       }
-    }, _callee, this);
+    }, _callee, this, [[28, 32]]);
   }));
   return _compute.apply(this, arguments);
+}
+
+function purejs(hash, msg) {
+  var h;
+
+  if (hash === 'MD5') {
+    h = (0, _md.default)(Array.from(msg), {
+      asBytes: true
+    });
+  } else if (Object.keys(_params.default.hashes).indexOf(hash) >= 0) {
+    h = (0, _sha.default)(_params.default.hashes[hash].nodeName).update(msg).digest();
+  } else throw new Error('UnsupportedHashInPureJs');
+
+  return new Uint8Array(h);
 }

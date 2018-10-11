@@ -4,6 +4,8 @@
 
 import * as util from './util.js';
 import params from './params.js';
+import md5 from 'md5';
+import sha from 'sha.js';
 
 /**
  * Compute Hash
@@ -20,14 +22,17 @@ export async function compute(msg, hash = 'SHA-256') {
   const msCrypto = util.getMsCrypto();
 
   let msgHash;
+  let native = true;
   if (typeof webCrypto !== 'undefined' && typeof webCrypto.digest === 'function' && typeof msCrypto === 'undefined') {
-    msgHash = await webCrypto.digest(hash, msg); // for modern browsers
+    msgHash = await webCrypto.digest(hash, msg).catch( () => native = false); // for modern browsers
   }
   else if (typeof nodeCrypto !== 'undefined' ){ // for node
-    const alg = params.hashes[hash].nodeName;
-    const hashFunc = nodeCrypto.createHash(alg);
-    hashFunc.update(msg);
-    msgHash = hashFunc.digest();
+    try {
+      const alg = params.hashes[hash].nodeName;
+      const hashFunc = nodeCrypto.createHash(alg);
+      hashFunc.update(msg);
+      msgHash = hashFunc.digest();
+    } catch (e) { native = false; }
   }
   else if (typeof msCrypto !== 'undefined' && typeof msCrypto.digest === 'function') { // for legacy ie 11
     // WTF IE!!!
@@ -41,9 +46,30 @@ export async function compute(msg, hash = 'SHA-256') {
       };
     });
 
-    msgHash = await msdigest(hash, msg);
-  } else {
-    throw new Error('UnsupportedEnvironment');
+    msgHash = await msdigest(hash, msg).catch( (e) => native = false);
+  } else native = false;
+
+  if (!native){
+    try {
+      msgHash = purejs(hash, msg);
+    }
+    catch(e){
+      throw new Error('UnsupportedEnvironment');
+    }
   }
+
   return new Uint8Array(msgHash);
+}
+
+function purejs(hash, msg){
+  let h;
+  if(hash === 'MD5'){
+    h = md5(Array.from(msg), {asBytes: true});
+  }
+  else if (Object.keys(params.hashes).indexOf(hash) >= 0){
+    h = sha(params.hashes[hash].nodeName).update(msg).digest();
+  }
+  else throw new Error('UnsupportedHashInPureJs');
+
+  return new Uint8Array(h);
 }
