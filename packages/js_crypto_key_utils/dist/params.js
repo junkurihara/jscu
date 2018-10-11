@@ -4,7 +4,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.getAlgorithmFromOid = getAlgorithmFromOid;
-exports.default = void 0;
+exports.getAlgorithmFromOidStrict = exports.default = void 0;
 
 /**
  * params.js
@@ -41,6 +41,71 @@ var _default = {
     'RSA': {
       oid: [1, 2, 840, 113549, 1, 1, 1]
     }
+  },
+  passwordBasedEncryptionSchemes: {
+    // PBES1
+    'pbeWithMD5AndDES-CBC': {
+      oid: [1, 2, 840, 113549, 1, 5, 3],
+      hash: 'MD5',
+      encrypt: 'DES-CBC'
+    },
+    'pbeWithSHA1AndDES-CBC': {
+      oid: [1, 2, 840, 113549, 1, 5, 10],
+      hash: 'SHA-1',
+      encrypt: 'DES-CBC'
+    },
+    // PBES2
+    'pbes2': {
+      oid: [1, 2, 840, 113549, 1, 5, 13]
+    }
+  },
+  keyDerivationFunctions: {
+    'pbkdf2': {
+      oid: [1, 2, 840, 113549, 1, 5, 12]
+    }
+  },
+  pbkdf2Prfs: {
+    'hmacWithSHA1': {
+      oid: [1, 2, 840, 113549, 2, 7],
+      hash: 'SHA-1'
+    },
+    'hmacWithSHA256': {
+      oid: [1, 2, 840, 113549, 2, 9],
+      hash: 'SHA-256'
+    },
+    'hmacWithSHA384': {
+      oid: [1, 2, 840, 113549, 2, 10],
+      hash: 'SHA-384'
+    },
+    'hmacWithSHA512': {
+      oid: [1, 2, 840, 113549, 2, 11],
+      hash: 'SHA-512'
+    }
+  },
+  encryptionSchemes: {
+    'des-ede3-cbc': {
+      oid: [1, 2, 840, 113549, 3, 7],
+      keyLength: 24
+    }
+  },
+  hashes: {
+    'SHA-256': {
+      hashSize: 32
+    },
+    'SHA-384': {
+      hashSize: 48
+    },
+    'SHA-512': {
+      hashSize: 64
+    },
+    'SHA-1': {
+      hashSize: 20
+    },
+    // SHOULD NOT USE
+    'MD5': {
+      hashSize: 16 // SHOULD NOT USE
+
+    }
   }
 };
 exports.default = _default;
@@ -50,3 +115,11 @@ function getAlgorithmFromOid(oid, oidDict) {
     return oidDict[k].oid.toString() === oid.toString();
   });
 }
+
+var getAlgorithmFromOidStrict = function getAlgorithmFromOidStrict(oid, dict) {
+  var array = getAlgorithmFromOid(oid, dict);
+  if (array.length === 0) throw new Error('UnsupportedAlgorithm');
+  return array[0];
+};
+
+exports.getAlgorithmFromOidStrict = getAlgorithmFromOidStrict;

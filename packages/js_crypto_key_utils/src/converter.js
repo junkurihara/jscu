@@ -20,7 +20,7 @@ import * as octenc from './octenc.js';
   * For EC JWK with output = 'oct' : options.format = 'binary' or 'string'
  * @return {Uint8Array}
  */
-export function fromJwkTo(output = 'pem', jwkey, type, options={}){
+export async function fromJwkTo(output = 'pem', jwkey, type, options={}){
   // assertion
   if (['pem', 'der', 'oct'].indexOf(output) < 0) throw new Error('InvalidOutputForm');
   if (type !== 'public' && type !== 'private') throw new Error('InvalidKeyType');
@@ -30,6 +30,7 @@ export function fromJwkTo(output = 'pem', jwkey, type, options={}){
   // default values
   if (jwkey.key === 'EC' && typeof options.compact !== 'boolean') options.compact = false;
   if (output === 'oct' && options.format !== 'string') options.format = 'binary';
+  if ((output === 'der' || output === 'pem') && typeof options.passphrase === 'undefined') options.passphrase = '';
 
   // In the case of PEM/DER
   if (output === 'der' || output === 'pem') {
@@ -46,14 +47,13 @@ export function fromJwkTo(output = 'pem', jwkey, type, options={}){
 
 /**
  * Convert ASN.1 encoded (for RSA and EC) or octet formed (for EC) keys to JWK.
+ * @param input
  * @param key
  * @param type
- * @param encode
- * @param format
- * @param namedCurve
+ * @param options
  * @return {*}
  */
-export function toJwkFrom(input, key, type, options={}){
+export async function toJwkFrom(input, key, type, options={}){
   // assertion
   if (['pem', 'der', 'oct'].indexOf(input) < 0) throw new Error('InvalidInputForm');
   if (type !== 'public' && type !== 'private') throw new Error('InvalidKeyType');
@@ -61,11 +61,11 @@ export function toJwkFrom(input, key, type, options={}){
 
   // default values
   if (input === 'oct' && options.format !== 'string') options.format = 'binary';
-
+  if ((input === 'der' || input === 'pem') && typeof options.passphrase === 'undefined') options.passphrase = '';
 
   // In the case of PEM
   if (input === 'der' || input === 'pem') {
-    return asn1enc.toJwk(key, {type, format: input});
+    return await asn1enc.toJwk(key, {type, format: input, passphrase: options.passphrase});
   }
   // In the case of Oct
   else if (input === 'oct') {

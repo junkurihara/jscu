@@ -80,12 +80,12 @@ describe('RSA Key conversion from/to JWK test.', () => {
   });
 
   it('pbes1 test', async () => {
-    const jwkpriv = keyutils.toJwkFrom('pem', pbes1, 'private');
+    const jwkpriv = await keyutils.toJwkFrom('pem', pbes1, 'private', {passphrase: 'kddilabs'});
     console.log(jwkpriv);
   });
 
   it('pbes2 test', async () => {
-    const jwkpriv = keyutils.toJwkFrom('pem', pbes2, 'private');
+    const jwkpriv = await keyutils.toJwkFrom('pem', pbes2, 'private', {passphrase: 'kddilabs'});
     console.log(jwkpriv);
   });
 

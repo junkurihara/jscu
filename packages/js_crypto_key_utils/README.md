@@ -51,12 +51,12 @@ const privateOct = keyutils.fromJwkTo(
 Also keys in the octet form can be re-converted to JWK as
 ```javascript
 const namedCurve = 'P-256'; // octet form includes no information about curve. so it must be externally given.
-const publicJwkR = keyutils.toJwkFrom(
+const publicJwkR = await keyutils.toJwkFrom(
   'oct', publicOct, 'public', {
     format: 'string',  // input octet key is in string form
     namedCurve
   });
-const privateJwkR = keyutils.toJwkFrom(
+const privateJwkR = await keyutils.toJwkFrom(
   'oct', privateOct, 'private', {
     format: 'binary', // input octet key is in binary form  
     namedCurve
@@ -66,14 +66,14 @@ const privateJwkR = keyutils.toJwkFrom(
 ### Converting between Json Web Key (JWK) and SPKI-formatted (public key) or PKCS8-formatted (private key) PEM/DER
 The given JWKs can be converted to the PEM/DER formatted keys in the following procedure.
 ```javascript
-const publicAsn = keyutils.fromJwkTo(
+const publicAsn = await keyutils.fromJwkTo(
   'pem', // output format is in string PEM
   publicJwk,
   'public',
   {
     compact: false // if true, compressed form of keys are obtained
   });
-const privateAsn = keyutils.fromJwkTo(
+const privateAsn = await keyutils.fromJwkTo(
   'der', // output format is in binary DER in Uint8Array
   privateJwk,
   'private',
@@ -85,12 +85,12 @@ Note that public keys are encoded to the form of `SubjectPublicKeyInfo` (SPKI) d
 
 This library also re-convert keys in PEM/DER to JWK as follows.
 ```javascript
-const publicJwkR = keyutils.toJwkFrom(
+const publicJwkR = await keyutils.toJwkFrom(
   'pem', // input key is in PEM format
   publicASN,
   'public'
   );
-const privateJwkR = keyutils.toJwkFrom(
+const privateJwkR = await keyutils.toJwkFrom(
   'der', // input key is in DER format 
   privateASN,
   'private'
@@ -105,12 +105,12 @@ const publicJwk = {kty: 'RSA', n: '...', e: '...'};
 const privateJwk = {kty: 'RSA', n: '...', e: '...', d: '...', p: '...', q: '...', dp: '...', dq: '...', qi: '...'};
 
 // convert keys to PEM/DER
-const publicASN = keyutils.fromJwkTo('pem', publicJwk, 'public'); // to DER
-const privateASN = keyutils.fromJwkTo('der', privateJwk, 'private'); // to PEM
+const publicASN = await keyutils.fromJwkTo('pem', publicJwk, 'public'); // to DER
+const privateASN = await keyutils.fromJwkTo('der', privateJwk, 'private'); // to PEM
 
 // re-converted from PEM/DER to JWK
-const publicJwkR = keyutils.toJwkFrom('pem', publicASN, 'public'); // from PEM
-const privateJwkR = keyutils.toJwkFrom('der', privateASN, 'private'); // from der
+const publicJwkR = await keyutils.toJwkFrom('pem', publicASN, 'public'); // from PEM
+const privateJwkR = await keyutils.toJwkFrom('der', privateASN, 'private'); // from der
 ```
 Please refer to [RFC3447](https://tools.ietf.org/html/rfc3447) for the detailed encoding rule of RSA public and private keys. 
 

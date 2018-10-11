@@ -39,9 +39,10 @@ export function fromJwk(jwkey, {type, format, compact=false}){
  * @param key
  * @param type
  * @param format
+ * @param passphrase
  * @return {*|void}
  */
-export function toJwk(key, {type, format}){
+export async function toJwk(key, {type, format, passphrase}){
   // Peel the pem strings
   const binKey = (format === 'pem') ? jseu.formatter.pemToBin(key, type) : key;
 
@@ -50,7 +51,7 @@ export function toJwk(key, {type, format}){
   if (type === 'public') decoded = SubjectPublicKeyInfo.decode(Buffer.from(binKey), 'der');
   else {
     decoded = PrivateKeyStructure.decode(Buffer.from(binKey), 'der');
-    if(decoded.type === 'encryptedPrivateKeyInfo') decoded = decryptEncryptedPrivateKeyInfo(decoded.value);
+    if(decoded.type === 'encryptedPrivateKeyInfo') decoded = await decryptEncryptedPrivateKeyInfo(decoded.value, passphrase);
     else if (decoded.type === 'oneAsymmetricKey') decoded = decoded.value;
   }
 

@@ -1,8 +1,8 @@
 "use strict";
 
-var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
-
 var _interopRequireWildcard = require("@babel/runtime/helpers/interopRequireWildcard");
+
+var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
 
 Object.defineProperty(exports, "__esModule", {
   value: true
@@ -10,17 +10,23 @@ Object.defineProperty(exports, "__esModule", {
 exports.fromJwk = fromJwk;
 exports.toJwk = toJwk;
 
+var _regenerator = _interopRequireDefault(require("@babel/runtime/regenerator"));
+
+var _asyncToGenerator2 = _interopRequireDefault(require("@babel/runtime/helpers/asyncToGenerator"));
+
 var asn1ec = _interopRequireWildcard(require("./asn1ec.js"));
 
 var asn1rsa = _interopRequireWildcard(require("./asn1rsa.js"));
 
 var _params = _interopRequireWildcard(require("./params.js"));
 
-var _asn = _interopRequireDefault(require("asn1.js"));
-
 var _jsEncodingUtils = _interopRequireDefault(require("js-encoding-utils"));
 
 var _buffer = _interopRequireDefault(require("buffer"));
+
+var _asn1def = require("./asn1def.js");
+
+var _rfc = require("./rfc8081.js");
 
 /**
  * asn1enc.js
@@ -48,7 +54,7 @@ function fromJwk(jwkey, _ref) {
     decoded = asn1rsa.fromJwk(jwkey, type);
   }
 
-  var binKey = type === 'public' ? SubjectPublicKeyInfo.encode(decoded, 'der') : OneAsymmetricKey.encode(decoded, 'der');
+  var binKey = type === 'public' ? _asn1def.SubjectPublicKeyInfo.encode(decoded, 'der') : _asn1def.OneAsymmetricKey.encode(decoded, 'der');
   binKey = new Uint8Array(binKey);
   return format === 'pem' ? _jsEncodingUtils.default.formatter.binToPem(binKey, type) : binKey;
 }
@@ -57,44 +63,91 @@ function fromJwk(jwkey, _ref) {
  * @param key
  * @param type
  * @param format
+ * @param passphrase
  * @return {*|void}
  */
 
 
-function toJwk(key, _ref2) {
-  var type = _ref2.type,
-      format = _ref2.format;
-  // Peel the pem strings
-  var binKey = format === 'pem' ? _jsEncodingUtils.default.formatter.pemToBin(key, type) : key; // decode binary spki/pkcs8-formatted key to parsed object
+function toJwk(_x, _x2) {
+  return _toJwk.apply(this, arguments);
+}
 
-  var decoded = type === 'public' ? SubjectPublicKeyInfo.decode(Buffer.from(binKey), 'der') : OneAsymmetricKey.decode(Buffer.from(binKey), 'der');
-  var keyTypes = (0, _params.getAlgorithmFromOid)(type === 'public' ? decoded.algorithm.algorithm : decoded.privateKeyAlgorithm.algorithm, _params.default.publicKeyAlgorithms);
-  if (keyTypes.length < 1) throw new Error('UnsupportedKey');
+function _toJwk() {
+  _toJwk = (0, _asyncToGenerator2.default)(
+  /*#__PURE__*/
+  _regenerator.default.mark(function _callee(key, _ref2) {
+    var type, format, passphrase, binKey, decoded, keyTypes;
+    return _regenerator.default.wrap(function _callee$(_context) {
+      while (1) {
+        switch (_context.prev = _context.next) {
+          case 0:
+            type = _ref2.type, format = _ref2.format, passphrase = _ref2.passphrase;
+            // Peel the pem strings
+            binKey = format === 'pem' ? _jsEncodingUtils.default.formatter.pemToBin(key, type) : key; // decode binary spki/pkcs8-formatted key to parsed object
 
-  if (keyTypes[0] === 'EC') {
-    return asn1ec.toJWK(decoded, type);
-  } else if (keyTypes[0] === 'RSA') {
-    return asn1rsa.toJwk(decoded, type);
-  } else throw new Error('InvalidKeyType');
-} ///////
-// https://tools.ietf.org/html/rfc5280
+            if (!(type === 'public')) {
+              _context.next = 6;
+              break;
+            }
 
+            decoded = _asn1def.SubjectPublicKeyInfo.decode(Buffer.from(binKey), 'der');
+            _context.next = 14;
+            break;
 
-var AlgorithmIdentifier = _asn.default.define('AlgorithmIdentifier', function () {
-  this.seq().obj(this.key('algorithm').objid(), this.key('parameters').optional().any());
-}); // https://tools.ietf.org/html/rfc5280
+          case 6:
+            decoded = _asn1def.PrivateKeyStructure.decode(Buffer.from(binKey), 'der');
 
+            if (!(decoded.type === 'encryptedPrivateKeyInfo')) {
+              _context.next = 13;
+              break;
+            }
 
-var SubjectPublicKeyInfo = _asn.default.define('SubjectPublicKeyInfo', function () {
-  this.seq().obj(this.key('algorithm').use(AlgorithmIdentifier), this.key('subjectPublicKey').bitstr());
-}); // RFC5958 https://tools.ietf.org/html/rfc5958
-// ( old version PrivateKeyInfo https://tools.ietf.org/html/rfc5208 )
+            _context.next = 10;
+            return (0, _rfc.decryptEncryptedPrivateKeyInfo)(decoded.value, passphrase);
 
+          case 10:
+            decoded = _context.sent;
+            _context.next = 14;
+            break;
 
-var OneAsymmetricKey = _asn.default.define('OneAsymmetricKey', function () {
-  this.seq().obj(this.key('version').use(Version), this.key('privateKeyAlgorithm').use(AlgorithmIdentifier), this.key('privateKey').octstr(), this.key('attributes').implicit(0).optional().any(), this.key('publicKey').implicit(1).optional().bitstr());
-});
+          case 13:
+            if (decoded.type === 'oneAsymmetricKey') decoded = decoded.value;
 
-var Version = _asn.default.define('Version', function () {
-  this.int();
-});
+          case 14:
+            keyTypes = (0, _params.getAlgorithmFromOid)(type === 'public' ? decoded.algorithm.algorithm : decoded.privateKeyAlgorithm.algorithm, _params.default.publicKeyAlgorithms);
+
+            if (!(keyTypes.length < 1)) {
+              _context.next = 17;
+              break;
+            }
+
+            throw new Error('UnsupportedKey');
+
+          case 17:
+            if (!(keyTypes[0] === 'EC')) {
+              _context.next = 21;
+              break;
+            }
+
+            return _context.abrupt("return", asn1ec.toJWK(decoded, type));
+
+          case 21:
+            if (!(keyTypes[0] === 'RSA')) {
+              _context.next = 25;
+              break;
+            }
+
+            return _context.abrupt("return", asn1rsa.toJwk(decoded, type));
+
+          case 25:
+            throw new Error('InvalidKeyType');
+
+          case 26:
+          case "end":
+            return _context.stop();
+        }
+      }
+    }, _callee, this);
+  }));
+  return _toJwk.apply(this, arguments);
+}
