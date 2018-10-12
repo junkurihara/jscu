@@ -3227,6 +3227,14 @@ istanbul@^0.4.0:
     which "^1.1.1"
     wordwrap "^1.0.0"
 
+js-crypto-aes@^0.3.0:
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/js-crypto-aes/-/js-crypto-aes-0.3.0.tgz#54f11d0b2fff946b8067566845de9005a299b9ee"
+  integrity sha512-Tz++doIUCkybKOQRC6bVkYXx2EETNAJwejNuhMYOs+6xnM9sqHr7WBh2kZUyhHwwbSqr5pLhgoTb1quGAXOFfg==
+  dependencies:
+    "@babel/plugin-transform-regenerator" "7.0.0"
+    "@babel/runtime" "7.1.2"
+
 js-crypto-ec@^0.2.3:
   version "0.2.3"
   resolved "https://registry.yarnpkg.com/js-crypto-ec/-/js-crypto-ec-0.2.3.tgz#4cda82404ee8e10030c55d48ecfe7ab1d8963871"
@@ -5589,13 +5597,6 @@ util@^0.10.3:
   version "0.10.4"
   resolved "https://registry.yarnpkg.com/util/-/util-0.10.4.tgz#3aa0125bfe668a4672de58857d3ace27ecb76901"
   integrity sha512-0Pm9hTQ3se5ll1XihRic3FDIku70C+iHUdT/W926rSgHV5QgXsYbKZN8MSC3tJtSkhuROzvsQjAaFENRXr+19A==
-  dependencies:
-    inherits "2.0.3"
-
-util@^0.11.0:
-  version "0.11.0"
-  resolved "https://registry.yarnpkg.com/util/-/util-0.11.0.tgz#c5f391beb244103d799b21077a926fef8769e1fb"
-  integrity sha512-5n12uMzKCjvB2HPFHnbQSjaqAa98L5iIXmHrZCLavuZVe0qe/SJGbDGWlpaHk5lnBkWRDO+dRu1/PgmUYKPPTw==
   dependencies:
     inherits "2.0.3"
 

@@ -85,6 +85,15 @@ export const PBKDF2Params = asn.define('PBKDF2Params', function(){
 export const PBES2ESParams = {
   'des-ede3-cbc': asn.define('DesEde3CbcParams', function(){
     this.octstr();
+  }),
+  'aes128-cbc': asn.define('Aes128CbcParams', function(){
+    this.octstr();
+  }),
+  'aes192-cbc': asn.define('Aes192CbcParams', function(){
+    this.octstr();
+  }),
+  'aes256-cbc': asn.define('Aes256CbcParams', function(){
+    this.octstr();
   })
 };
 

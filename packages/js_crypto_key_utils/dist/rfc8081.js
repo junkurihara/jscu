@@ -26,24 +26,23 @@ var _asn = _interopRequireDefault(require("asn1.js"));
 
 var _jsEncodingUtils = _interopRequireDefault(require("js-encoding-utils"));
 
-var _index = _interopRequireDefault(require("js-crypto-hash/dist/index.js"));
+var _index = _interopRequireDefault(require("js-crypto-aes/dist/index.js"));
 
-var _index2 = _interopRequireDefault(require("js-crypto-hmac/dist/index.js"));
+var _index2 = _interopRequireDefault(require("js-crypto-hash/dist/index.js"));
 
-var _index3 = _interopRequireDefault(require("js-crypto-random/dist/index.js"));
+var _index3 = _interopRequireDefault(require("js-crypto-hmac/dist/index.js"));
 
-var _asn1def2 = require("./asn1def");
+var _index4 = _interopRequireDefault(require("js-crypto-random/dist/index.js"));
 
 /**
  * rfc8081
  */
 var Buffer = _buffer.default.Buffer;
-var BN = _asn.default.bignum;
+var BN = _asn.default.bignum; ///////////////////////////////////////////////////////////////////
 
 function encryptEncryptedPrivateKeyInfo(_x, _x2) {
   return _encryptEncryptedPrivateKeyInfo.apply(this, arguments);
-} ///////////////////////////////////////////////////////////////////
-
+}
 
 function _encryptEncryptedPrivateKeyInfo() {
   _encryptEncryptedPrivateKeyInfo = (0, _asyncToGenerator2.default)(
@@ -68,7 +67,7 @@ function _encryptEncryptedPrivateKeyInfo() {
               break;
             }
 
-            if (typeof options.cipher === 'undefined') options.cipher = 'des-ede3-cbc';
+            if (typeof options.cipher === 'undefined') options.cipher = 'aes256-cbc';
             if (typeof options.prf === 'undefined') options.prf = 'hmacWithSHA256';
             kdfAlgorithm = 'pbkdf2'; // TODO: currently only pbkdf2 is available
 
@@ -91,7 +90,7 @@ function _encryptEncryptedPrivateKeyInfo() {
             encryptedPBES1 = _context.sent;
             encryptedPBES1.encryptionAlgorithm.algorithm = _params.default.passwordBasedEncryptionSchemes[encryptedPBES1.encryptionAlgorithm.algorithm].oid;
             encryptedPBES1.encryptionAlgorithm.parameters = _asn1def.PBEParameter.encode(encryptedPBES1.encryptionAlgorithm.parameters, 'der');
-            return _context.abrupt("return", _asn1def2.EncryptedPrivateKeyInfo.encode(encryptedPBES1, 'der'));
+            return _context.abrupt("return", _asn1def.EncryptedPrivateKeyInfo.encode(encryptedPBES1, 'der'));
 
           case 21:
           case "end":
@@ -111,42 +110,45 @@ function decryptEncryptedPrivateKeyInfo(_x3, _x4) {
 function _decryptEncryptedPrivateKeyInfo() {
   _decryptEncryptedPrivateKeyInfo = (0, _asyncToGenerator2.default)(
   /*#__PURE__*/
-  _regenerator.default.mark(function _callee2(decoded, passphrase) {
-    var encryptionAlgorithm;
+  _regenerator.default.mark(function _callee2(epki, passphrase) {
+    var decoded;
     return _regenerator.default.wrap(function _callee2$(_context2) {
       while (1) {
         switch (_context2.prev = _context2.next) {
           case 0:
-            // encryptionAlgorithm.algorithm
-            encryptionAlgorithm = (0, _params.getAlgorithmFromOidStrict)(decoded.encryptionAlgorithm.algorithm, _params.default.passwordBasedEncryptionSchemes);
-            decoded.encryptionAlgorithm.algorithm = encryptionAlgorithm;
+            decoded = {}; // encryptionAlgorithm.algorithm
 
-            if (encryptionAlgorithm === 'pbes2') {
-              decoded = decodePBES2(decoded);
+            decoded.encryptionAlgorithm = {
+              algorithm: (0, _params.getAlgorithmFromOidStrict)(epki.encryptionAlgorithm.algorithm, _params.default.passwordBasedEncryptionSchemes)
+            };
+
+            if (decoded.encryptionAlgorithm.algorithm === 'pbes2') {
+              decoded.encryptionAlgorithm.parameters = decodePBES2(epki.encryptionAlgorithm.parameters);
             } else {
-              decoded.encryptionAlgorithm.parameters = _asn1def.PBEParameter.decode(decoded.encryptionAlgorithm.parameters, 'der');
-            } // decrypt
+              decoded.encryptionAlgorithm.parameters = _asn1def.PBEParameter.decode(epki.encryptionAlgorithm.parameters, 'der');
+            }
 
+            decoded.encryptedData = epki.encryptedData; // decrypt
 
             if (!(decoded.encryptionAlgorithm.algorithm === 'pbes2')) {
-              _context2.next = 9;
+              _context2.next = 10;
               break;
             }
 
-            _context2.next = 6;
+            _context2.next = 7;
             return decryptPBES2(decoded, passphrase);
 
-          case 6:
+          case 7:
             return _context2.abrupt("return", _context2.sent);
 
-          case 9:
-            _context2.next = 11;
+          case 10:
+            _context2.next = 12;
             return decryptPBES1(decoded, passphrase);
 
-          case 11:
+          case 12:
             return _context2.abrupt("return", _context2.sent);
 
-          case 12:
+          case 13:
           case "end":
             return _context2.stop();
         }
@@ -157,19 +159,20 @@ function _decryptEncryptedPrivateKeyInfo() {
 }
 
 function encodePBES2(decoded) {
-  // algorithm
-  var algorithmOid = _params.default.passwordBasedEncryptionSchemes[decoded.encryptionAlgorithm.algorithm].oid;
-  decoded.encryptionAlgorithm.algorithm = algorithmOid; // kdf
+  var epki = {
+    encryptionAlgorithm: {}
+  }; // algorithm
+
+  epki.encryptionAlgorithm.algorithm = _params.default.passwordBasedEncryptionSchemes[decoded.encryptionAlgorithm.algorithm].oid; // kdf
 
   var kdf = decoded.encryptionAlgorithm.parameters.keyDerivationFunc;
 
   if (kdf.algorithm === 'pbkdf2') {
-    kdf.algorithm = _params.default.keyDerivationFunctions[kdf.algorithm].oid;
     kdf.parameters.prf.algorithm = _params.default.pbkdf2Prfs[kdf.parameters.prf.algorithm].oid;
     kdf.parameters = _asn1def.PBKDF2Params.encode(kdf.parameters, 'der');
   } else throw new Error('UnsupportedKDF');
 
-  decoded.encryptionAlgorithm.parameters.keyDerivationFunc = kdf; // encryptionScheme
+  kdf.algorithm = _params.default.keyDerivationFunctions[kdf.algorithm].oid; // encryptionScheme
 
   var eS = decoded.encryptionAlgorithm.parameters.encryptionScheme;
 
@@ -177,38 +180,63 @@ function encodePBES2(decoded) {
     eS.parameters = _asn1def.PBES2ESParams[eS.algorithm].encode(eS.parameters, 'der');
   } else throw new Error('UnsupportedCipher');
 
-  eS.algorithm = _params.default.encryptionSchemes[eS.algorithm].oid;
-  decoded.encryptionAlgorithm.parameters.encryptionScheme = eS;
-  decoded.encryptionAlgorithm.parameters = _asn1def.PBES2Params.encode(decoded.encryptionAlgorithm.parameters, 'der');
-  return _asn1def2.EncryptedPrivateKeyInfo.encode(decoded, 'der');
+  eS.algorithm = _params.default.encryptionSchemes[eS.algorithm].oid; // params
+
+  epki.encryptionAlgorithm.parameters = _asn1def.PBES2Params.encode({
+    keyDerivationFunc: kdf,
+    encryptionScheme: eS
+  }, 'der'); // encoded data
+
+  epki.encryptedData = decoded.encryptedData;
+  return _asn1def.EncryptedPrivateKeyInfo.encode(epki, 'der');
 }
 
-function decodePBES2(decoded) {
-  var pbes2Params = _asn1def.PBES2Params.decode(decoded.encryptionAlgorithm.parameters, 'der'); // keyDerivationFunc
+function decodePBES2(rawParams) {
+  var pbes2Params = _asn1def.PBES2Params.decode(rawParams, 'der'); // keyDerivationFunc
 
 
   var kdfAlgorithm = (0, _params.getAlgorithmFromOidStrict)(pbes2Params.keyDerivationFunc.algorithm, _params.default.keyDerivationFunctions);
-  pbes2Params.keyDerivationFunc.algorithm = kdfAlgorithm;
+  var iterationCount;
+  var salt;
+  var prf;
 
   if (kdfAlgorithm === 'pbkdf2') {
     var pbkdf2Params = _asn1def.PBKDF2Params.decode(pbes2Params.keyDerivationFunc.parameters, 'der');
 
-    var pbkdf2Prf = (0, _params.getAlgorithmFromOidStrict)(pbkdf2Params.prf.algorithm, _params.default.pbkdf2Prfs);
-    pbkdf2Params.prf.algorithm = pbkdf2Prf;
-    pbes2Params.keyDerivationFunc.parameters = pbkdf2Params;
+    prf = {
+      algorithm: (0, _params.getAlgorithmFromOidStrict)(pbkdf2Params.prf.algorithm, _params.default.pbkdf2Prfs),
+      parameters: pbkdf2Params.prf.parameters
+    };
+    iterationCount = pbkdf2Params.iterationCount;
+    salt = {
+      type: pbkdf2Params.salt.type,
+      value: pbkdf2Params.salt.value
+    };
   } else throw new Error('UnsupportedKDF'); //encryptionScheme
 
 
   var encryptionScheme = (0, _params.getAlgorithmFromOidStrict)(pbes2Params.encryptionScheme.algorithm, _params.default.encryptionSchemes);
-  pbes2Params.encryptionScheme.algorithm = encryptionScheme;
+  var encryptionParams;
 
   if (Object.keys(_asn1def.PBES2ESParams).indexOf(encryptionScheme) >= 0) {
-    pbes2Params.encryptionScheme.parameters = _asn1def.PBES2ESParams[encryptionScheme].decode(pbes2Params.encryptionScheme.parameters, 'der');
+    encryptionParams = _asn1def.PBES2ESParams[encryptionScheme].decode(pbes2Params.encryptionScheme.parameters, 'der');
   } else throw new Error('UnsupportedCipher'); // TODO: Other Encryption Scheme
 
 
-  decoded.encryptionAlgorithm.parameters = pbes2Params;
-  return decoded;
+  return {
+    keyDerivationFunc: {
+      algorithm: kdfAlgorithm,
+      parameters: {
+        salt: salt,
+        iterationCount: iterationCount,
+        prf: prf
+      }
+    },
+    encryptionScheme: {
+      algorithm: encryptionScheme,
+      parameters: encryptionParams
+    }
+  };
 } //////////////////////
 // PBES2 RFC8081 Section 6.2.1
 
@@ -231,7 +259,7 @@ function _encryptPBES() {
             // kdf
             pBuffer = _jsEncodingUtils.default.encoder.stringToArrayBuffer(passphrase);
             _context3.next = 3;
-            return _index3.default.getRandomBytes(_params.default.keyDerivationFunctions[kdfAlgorithm].defaultSaltLen);
+            return _index4.default.getRandomBytes(_params.default.keyDerivationFunctions[kdfAlgorithm].defaultSaltLen);
 
           case 3:
             salt = _context3.sent;
@@ -262,7 +290,7 @@ function _encryptPBES() {
 
             _context3.t0 = Buffer;
             _context3.next = 16;
-            return _index3.default.getRandomBytes(_params.default.encryptionSchemes[cipher].ivLength);
+            return _index4.default.getRandomBytes(_params.default.encryptionSchemes[cipher].ivLength);
 
           case 16:
             _context3.t1 = _context3.sent;
@@ -274,13 +302,38 @@ function _encryptPBES() {
               iv: iv
             });
             encryptedData = Buffer.from(ct.update(binKey).concat(ct.final()));
-            _context3.next = 24;
+            _context3.next = 36;
             break;
 
           case 23:
+            if (!(cipher === 'aes128-cbc' || cipher === 'aes192-cbc' || cipher === 'aes256-cbc')) {
+              _context3.next = 35;
+              break;
+            }
+
+            _context3.next = 26;
+            return _index4.default.getRandomBytes(_params.default.encryptionSchemes[cipher].ivLength);
+
+          case 26:
+            iv = _context3.sent;
+            _context3.t2 = Buffer;
+            _context3.next = 30;
+            return _index.default.encrypt(new Uint8Array(binKey), key, {
+              name: 'AES-CBC',
+              iv: iv
+            });
+
+          case 30:
+            _context3.t3 = _context3.sent;
+            encryptedData = _context3.t2.from.call(_context3.t2, _context3.t3);
+            iv = Buffer.from(iv);
+            _context3.next = 36;
+            break;
+
+          case 35:
             throw new Error('UnsupportedCipher');
 
-          case 24:
+          case 36:
             return _context3.abrupt("return", {
               encryptedData: encryptedData,
               encryptionAlgorithm: {
@@ -308,7 +361,7 @@ function _encryptPBES() {
               }
             });
 
-          case 25:
+          case 37:
           case "end":
             return _context3.stop();
         }
@@ -326,7 +379,8 @@ function _decryptPBES() {
   _decryptPBES = (0, _asyncToGenerator2.default)(
   /*#__PURE__*/
   _regenerator.default.mark(function _callee4(decoded, passphrase) {
-    var kdf, eS, keyLength, key, pBuffer, salt, iterationCount, prf, out, iv, CBC, pt;
+    var kdf, eS, keyLength, key, pBuffer, salt, iterationCount, prf, out, iv, CBC, pt, _iv;
+
     return _regenerator.default.wrap(function _callee4$(_context4) {
       while (1) {
         switch (_context4.prev = _context4.next) {
@@ -379,16 +433,36 @@ function _decryptPBES() {
               iv: iv
             });
             out = Buffer.from(pt.update(decoded.encryptedData).concat(pt.final()));
-            _context4.next = 24;
+            _context4.next = 33;
             break;
 
           case 23:
+            if (!(eS.algorithm === 'aes128-cbc' || eS.algorithm === 'aes192-cbc' || eS.algorithm === 'aes256-cbc')) {
+              _context4.next = 32;
+              break;
+            }
+
+            _iv = new Uint8Array(eS.parameters);
+            _context4.t0 = Buffer;
+            _context4.next = 28;
+            return _index.default.decrypt(new Uint8Array(decoded.encryptedData), key, {
+              name: 'AES-CBC',
+              iv: _iv
+            });
+
+          case 28:
+            _context4.t1 = _context4.sent;
+            out = _context4.t0.from.call(_context4.t0, _context4.t1);
+            _context4.next = 33;
+            break;
+
+          case 32:
             throw new Error('UnsupportedEncryptionAlgorithm');
 
-          case 24:
+          case 33:
             return _context4.abrupt("return", _asn1def.OneAsymmetricKey.decode(out, 'der'));
 
-          case 25:
+          case 34:
           case "end":
             return _context4.stop();
         }
@@ -433,7 +507,7 @@ function _pbkdf() {
                         seed.set(s);
                         seed.set(nwbo(i + 1, 4), s.length);
                         _context5.next = 5;
-                        return _index2.default.compute(p, seed, hash);
+                        return _index3.default.compute(p, seed, hash);
 
                       case 5:
                         u = _context5.sent;
@@ -447,7 +521,7 @@ function _pbkdf() {
                         }
 
                         _context5.next = 11;
-                        return _index2.default.compute(p, u, hash);
+                        return _index3.default.compute(p, u, hash);
 
                       case 11:
                         u = _context5.sent;
@@ -536,7 +610,7 @@ function _encryptPBES2() {
             // pbkdf1
             pBuffer = _jsEncodingUtils.default.encoder.stringToArrayBuffer(passphrase);
             _context7.next = 3;
-            return _index3.default.getRandomBytes(8);
+            return _index4.default.getRandomBytes(8);
 
           case 3:
             salt = _context7.sent;
@@ -684,7 +758,7 @@ function _pbkdf2() {
             }
 
             _context9.next = 9;
-            return _index.default.compute(seed, hash);
+            return _index2.default.compute(seed, hash);
 
           case 9:
             seed = _context9.sent;

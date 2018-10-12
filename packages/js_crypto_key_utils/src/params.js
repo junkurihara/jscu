@@ -39,7 +39,9 @@ export default {
 
   encryptionSchemes: {
     'des-ede3-cbc': {oid: [ 1, 2, 840, 113549, 3, 7 ], keyLength: 24, ivLength: 8},
-    // 'aes128-cbc': {oid: [ 2, 16, 840, 1, 101, 3, 4, 1, 2 ], keyLength: 16, ivLength: 16} // todo
+    'aes128-cbc': {oid: [ 2, 16, 840, 1, 101, 3, 4, 1, 2 ], keyLength: 16, ivLength: 16},
+    'aes192-cbc': {oid: [ 2, 16, 840, 1, 101, 3, 4, 1, 22 ], keyLength: 24, ivLength: 16},
+    'aes256-cbc': {oid: [ 2, 16, 840, 1, 101, 3, 4, 1, 42 ], keyLength: 32, ivLength: 16}
   },
 
   hashes: {

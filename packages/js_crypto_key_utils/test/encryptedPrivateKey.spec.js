@@ -1,4 +1,5 @@
 import keyutils from '../src/index.js';
+import sample from './encrypted_sample.js';
 
 import chai from 'chai';
 // const should = chai.should();
@@ -11,109 +12,101 @@ function objectSort(obj){
   return map;
 }
 
+describe('RSA/EC Key conversion from/to JWK test.', () => {
+  const encOptionArray = [
+    {algorithm: 'pbes2'}, // = AES256 with hmachWithSHA256
+    {algorithm: 'pbes2', cipher: 'aes128-cbc', prf: 'hmacWithSHA256'},
+    // {algorithm: 'pbes2', cipher: 'aes192-cbc', prf: 'hmacWithSHA256'}, // not supported in Chrome
+    {algorithm: 'pbes2', cipher: 'aes256-cbc', prf: 'hmacWithSHA256'},
+    {algorithm: 'pbes2', cipher: 'des-ede3-cbc', prf: 'hmacWithSHA256'},
+    {algorithm: 'pbes2', cipher: 'des-ede3-cbc', prf: 'hmacWithSHA384'},
+    {algorithm: 'pbes2', cipher: 'des-ede3-cbc', prf: 'hmacWithSHA512'},
+    {algorithm: 'pbeWithMD5AndDES-CBC'},
+    {algorithm: 'pbeWithSHA1AndDES-CBC'}
+  ];
+  const rsaSample = sample.RSA;
+  const ecSample = sample.EC;
 
-const bits = ['2048', '4096'];
-describe('RSA Key conversion from/to JWK test.', () => {
-  const pbes1 = '-----BEGIN ENCRYPTED PRIVATE KEY-----\n' +
-    'MIIE6TAbBgkqhkiG9w0BBQMwDgQIuq8b8/g1edUCAggABIIEyHs38093DaQirJeu\n' +
-    'YKkCVg/juDuDYc0MYhfpEn4eUo2Y4WOZwxD6EQsdgl5KfL3jDAmsczYIrnz4U6+X\n' +
-    'hE4gmhiJu9IrgLYkKpJmtPOK96WH/ir0UrlKznJbRapmV7h+crfz2lqeNbOwDTXc\n' +
-    'Qyb5LkIX3PFnrZwGa4xtPbIBBkSdh5rTqcBoZ5ob8LSbHgFpnT39xXOw6mnyqZRN\n' +
-    'hvtHSJLmcVNarKfLtVk3gFRbrxd231jSN3r4q+gT9FApoQPlambPcIkrad9HIT6b\n' +
-    'IBzJ+E1LrV2tAPZp3WUZEGYt8fQAlydv5lTo03ciC/03yXfNIgF1FwRgXad9XcNM\n' +
-    'gHAoFJ8+om0yQjX2o7O+O+2MLHUobJzZUxo12449MTmSKFtBRfAdSeN5EzuouIfu\n' +
-    'or5x3tDQ92fhDxiVDbmyH6j9qpl6aICjVDBvacuUG0pvqWy3qTUTBhcEDEZXMdz2\n' +
-    'aF8Z6oLrm0MSU2SlR4C106eMVuOd21qQkMsP5W/pJySxU9Whjwf+aRmMKg4BS1WM\n' +
-    'u8FimLV06CDpEA/LpUjWjDHDHP3yNYG9VMe3pqlncA0m0aDgComhMqkLl76CfKeY\n' +
-    'aZk80ewWEWa+Wf8Ny6YUZxudwc5/5erEo7Pf+4h0VtxZci2gT35wHAbAtDu0Sw9F\n' +
-    'yIr/PxzmWbkaQdYTnIZPAq1yTylsp7nPK+ZnZtj5POUXMT1nr5GdtbewRVf+O/mT\n' +
-    'x6P161cvKxTQBcPpWRkj+RU/bM/Bpjo6CRRqoBktaKdyOBukhU28oBCR0IVNsUZJ\n' +
-    'FcEEm/3WWLEiWhaevrd1TP9RinAcIcTOIom0Fh9XrM6ysq1p+WiMMYRqufhI8qmw\n' +
-    'HJzE8d4obBwu2bHLORWIoEtCBEFSVzjtMrD6p4HpnzkBXMwURt/IWd5+p8DO2u0H\n' +
-    '8qK7o/lRg4vU21LjdxuYjJ5jq1p1bDcU7sgtosvYwFnN/IADRRtYIOIJfdXMprNf\n' +
-    'XAH++YGTOrmBpysVBWBj+amAZawdKL89Wt4DFKOnPcHtpN8hpWTH3fiRr19gttuE\n' +
-    'RUUV+6lywaMrNv69srFMPZyXiC5b3ywpkZvVqFyP348XT6WcdFqEfDn+vyUmNTTe\n' +
-    'ZtLLmvWHhdze8nWoII4iw5tdqGepAejG6FxLrEoK2E5YxhFxkWaaqanuynY3bEM4\n' +
-    'o19NWSkhQ9EvEkmVIHxjDV6zitRyn8VAbwe75KEdtjRXhucMNajH74x1rpp3ONJb\n' +
-    'Swgc3+GB0ReKuVV93qQ/qlEUzdGPEeoLL/zvYqRv/ZYM8Xege8t3GyHR5GLZiRys\n' +
-    'K1gEIuJpsat+iiVgPbnuuWo49tolv8A5W1tZHqCZp5cun9RCykHU/w/x3Gq7la3a\n' +
-    'Hc2NM+OQrSR0F9hYLXKAOg4KpFAP81MtSYplXX3221mVyYjAm1ky0mx8xPC3lXr2\n' +
-    '1FhSw1Hjs2wk02uh3+8FYAxDpWWHuYzJGWtL8DdWFYJEwr+onI10uY4eiYr0T1l0\n' +
-    'JofD/tzsbkYFvBV58xu4R4WdLNODIJ3tEn+EK2hKgdAPvnaHo/BZCg30RXu/nFDv\n' +
-    'lrir9q6p9WIo4Robi+PTJC/IGO3u9vPWmXWKt4mAG146OFCQBQ4cQUaUrliLjw67\n' +
-    '2j+o1v/O+PZCSdVODg==\n' +
-    '-----END ENCRYPTED PRIVATE KEY-----\n';
-  const pbes2 = '-----BEGIN ENCRYPTED PRIVATE KEY-----\n' +
-    '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\n' +
-    '2V0=\n' +
-    '-----END ENCRYPTED PRIVATE KEY-----\n';
   before(async () => {
   });
 
-  it('pbes1 test', async () => {
-    const isEncrypted = keyutils.isEncryptedPrivateKey(pbes1, 'pem');
-    console.log(isEncrypted);
-    expect(isEncrypted).to.be.true;
-    const jwkpriv = await keyutils.toJwkFrom('pem', pbes1, 'private', {passphrase: 'kddilabs'});
-    // console.log(jwkpriv);
+  it('RSA PBES1 and PBES2 PEM keys can be successfully converted and reconverted to/from JWK', async function (){
+    this.timeout(10000);
+    const array = await Promise.all(Object.keys(rsaSample).map( async (key) => {
+      const elem = await Promise.all(encOptionArray.map( async (encOptions) => {
+        let result = true;
+        const isEncrypted = keyutils.isEncryptedPrivateKey(rsaSample[key], 'pem');
+        result = result && isEncrypted;
+        const jwkpriv = await keyutils.toJwkFrom('pem', rsaSample[key], 'private', {passphrase: 'kddilabs'}).catch( () => {result = false;});
+        const pemPriv = await keyutils.fromJwkTo('pem', jwkpriv, 'private',
+          { passphrase: 'kddilabs',
+            encOptions }
+        ).catch( () => {result = false; });
+        // console.log(pemPriv);
 
-    const pemPriv = await keyutils.fromJwkTo(
-      'pem',
-      jwkpriv,
-      'private',
-      {
-        passphrase: 'kddilabs',
-        encOptions: {algorithm: 'pbeWithMD5AndDES-CBC'} // should not use
-      }
-    );
-    // console.log(pemPriv);
+        const jwkpriv2 = await keyutils.toJwkFrom('pem', pemPriv, 'private', {passphrase: 'kddilabs'}).catch( (e) => {result = false;});
+        return result && (objectSort(jwkpriv).toString() === objectSort(jwkpriv2).toString());
+      }));
+      console.log(elem);
+      return elem.every( (x) => x);
+    }));
+    expect(array.every( (x) => x)).to.be.true;
+
+    // AES256 encrypted key sample
+    // const test = '-----BEGIN ENCRYPTED PRIVATE KEY-----\n' +
+    //   'MIIFLTBXBgkqhkiG9w0BBQ0wSjApBgkqhkiG9w0BBQwwHAQI24WwHkKy4+0CAggA\n' +
+    //   'MAwGCCqGSIb3DQIJBQAwHQYJYIZIAWUDBAEqBBDHasukS1RwbDihH6StdYmnBIIE\n' +
+    //   '0A9gsWExWzLVV74rnE3PIKJuiophU6SxTpf5zNPaThM2vU7BqwIqNtGIpSMVEQbP\n' +
+    //   'UsbKt5OOgm4cWgLQ4mp6ZVj84kym2IOv+OYKKw5qKsDG2egcYCXG0RtSoRaBM8Us\n' +
+    //   'ju3j7lL0A4dEuiUqeun9m742HuQ+8VDZU4+4eO5V5AcaVvwex+tROqyhTsdDO8BB\n' +
+    //   'LPuCC05dt4pn7bn3pgBm0ZVUAF1FJLs/rncPhJnJDflpbDApsFaRWNpD3878F9L8\n' +
+    //   'BLKHZr/srJu1ajcM6E5avyzTvnpeRYqLMqanXqGy957yOg23NANcny20NHktkZJz\n' +
+    //   '/oqdWrjiXT4gPHAskx2KYPaVySOVa55tBGoqVovzCHFNuIjwamucg5ZWZY8C6sJC\n' +
+    //   '0ZaFAW9TV3Rs2GqxcL3LFx9zEgDWT+VJxQaNFXoXLz8ROYKh6QKAV7jgV4JOUYc6\n' +
+    //   'ow3gGUqkhEyIYDuKzZOWeZ1IMHltMUaRz7S+ygPxBvgnjthA1XU9JRv3QSNleLGz\n' +
+    //   'WcZBWDhNXLIKepefrBgvrYim3qdfK5H72FjYOx3Ir8K52dPB4BMqqz8JJjSRMfYM\n' +
+    //   'ak5abTy6znSnHHHYOrYQE47E9RTYqu2rMp3B75Xru2KUxoVFV49xXXEYNzCNwFg+\n' +
+    //   'PwE8gF04mEoqBiwFn40woVQUN8WpWFl3pzKai9HvIPYUOSpZrmPzE8Mu/SVpV//G\n' +
+    //   '3fkVwmOyCOs3Tg/tA5aKKjMbSXMJULhCbtxUwx2Kxn8K0PfrRk7+MmLOQlp9JDvN\n' +
+    //   'esrONUx/7R0SyuGkEYCQyEHzlURNrWG0ZQDlBOMIuItj2ikoNYvoNTctPsYIQdkr\n' +
+    //   'ZwHSJR0DvxCA4/Vso72tnTNrZS2CoNJfJVfE8VwtA0QX9jgkS1b8nkPk1tcrvYsw\n' +
+    //   '9uPYXDvmucQyKIKWomA9s27vDw0QqIwgMJ6vIWnaRDDXuIF4CpAOrwaW78ZHee1M\n' +
+    //   'fvBq571/NMJFemqh8KMLZfBzkj/JoUfxRbZmBfKs/JdRZ/W6OOO5NZLcGprslpJd\n' +
+    //   'u29LBMIx+cmgUZCjDtbKHDMeeG6ptSl4omLrcTE7+ZowOSUaTVxlRqweMqKNJmuc\n' +
+    //   'esfWhGEbppk+oPyXDzQ9ENIUcrKin5RJ8QKcxvpiWHxAqwzfXB9eqzUkAuDmQOel\n' +
+    //   'jbnigof4XL+KKnANoHHOgs47kKNJm2PzHOvxsKKiI4LIC2AMp2nGrpiMtyP/7uie\n' +
+    //   'tZ6Po5HffFSTjlYEE9jEfQ/tipIqyxvEEK+aPYdZ5P3vW2OI0CTcrXJxLlBVPaxB\n' +
+    //   'JVD4oMxKdIEIpmV0qnBtaD7aEF2lSIk0gYNnz+DKbXi12zmHNuJ77u6lbXN6lhlr\n' +
+    //   'lcPWHQq4btWKDPR79+0lyQiY0UmdwQOUaihvdU6mY07PmslnUbtj5XVDDNP22Qdz\n' +
+    //   '3jk9pGVlTcgPQqmcDVdMbHtT8khpIimriI186BvcbPOWI5H4UThyXTSisDPzEGQR\n' +
+    //   'F9Z9mNb6p71nqARRNcNIMlA7JJombnR4Ws1NDv5y9szp6WH/lkTDyWw3k9sjrx8a\n' +
+    //   'is2Ke0G4AAq0uP+ev5TMtnFZrLnGvt4KkWpJgibiIje+e3rya9jk+GH8qf2nldlj\n' +
+    //   'ywUZpixaRCAyxa2Bbjcm/lKsUfdMq8cgzRW51wTpFlMs\n' +
+    //   '-----END ENCRYPTED PRIVATE KEY-----';
+    // console.log(await keyutils.toJwkFrom('pem', test, 'private', {passphrase: 'kddilabs'}).catch( () => {result = false;}));
   });
 
-  it('pbes2 test', async () => {
-    const isEncrypted = keyutils.isEncryptedPrivateKey(pbes2, 'pem');
-    console.log(isEncrypted);
-    expect(isEncrypted).to.be.true;
-    const jwkpriv = await keyutils.toJwkFrom('pem', pbes2, 'private', {passphrase: 'kddilabs'});
-    // console.log(jwkpriv);
-    const pemPriv = await keyutils.fromJwkTo(
-      'pem',
-      jwkpriv,
-      'private',
-      {
-        passphrase: 'kddilabs',
-        encOptions: {
-          algorithm: 'pbes2', // default
-          cipher: 'des-ede3-cbc', // default
-          prf: 'hmacWithSHA256' // default
-        }
-      }
-    );
+
+  it('EC PBES1 and PBES2 PEM keys can be successfully converted and reconverted to/from JWK', async function() {
+    this.timeout(10000);
+    const array = await Promise.all(Object.keys(ecSample).map( async (key) => {
+      const elem = await Promise.all(encOptionArray.map( async (encOptions) => {
+        let result = true;
+        const isEncrypted = keyutils.isEncryptedPrivateKey(rsaSample[key], 'pem');
+        result = result && isEncrypted;
+        const jwkpriv = await keyutils.toJwkFrom('pem', rsaSample[key], 'private', {passphrase: 'kddilabs'}).catch( () => {result = false;});
+        const pemPriv = await keyutils.fromJwkTo('pem', jwkpriv, 'private',
+          { passphrase: 'kddilabs',
+            encOptions }
+        ).catch( () => {result = false;});
+
+        const jwkpriv2 = await keyutils.toJwkFrom('pem', pemPriv, 'private', {passphrase: 'kddilabs'}).catch( () => {result = false;});
+        return result && (objectSort(jwkpriv).toString() === objectSort(jwkpriv2).toString());
+      }));
+      console.log(elem);
+      return elem.every( (x) => x);
+    }));
+    expect(array.every( (x) => x)).to.be.true;
   });
 
 });

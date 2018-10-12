@@ -85,6 +85,15 @@ exports.PBKDF2Params = PBKDF2Params;
 var PBES2ESParams = {
   'des-ede3-cbc': _asn.default.define('DesEde3CbcParams', function () {
     this.octstr();
+  }),
+  'aes128-cbc': _asn.default.define('Aes128CbcParams', function () {
+    this.octstr();
+  }),
+  'aes192-cbc': _asn.default.define('Aes192CbcParams', function () {
+    this.octstr();
+  }),
+  'aes256-cbc': _asn.default.define('Aes256CbcParams', function () {
+    this.octstr();
   })
 }; ////////////////////////////////////////////////////////////////////////////////////
 // https://tools.ietf.org/html/rfc5280

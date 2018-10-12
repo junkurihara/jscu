@@ -5,7 +5,7 @@ Universal Module for Cryptographic Key Utilities in JavaScript
 > **WARNING**: At this time this solution should be considered suitable for research and experimentation, further code and security review is needed before utilization in a production application.
 
 # Introduction and Overview
-This library is designed to be 'universal' as a cryptographic key utilities, i.e., it works both on most browsers and on Node.js just by importing from npm/source code. This key utility library provides useful converters for EC/RSA keys in PEM/DER<->JWK, octet form of EC keys <-> JWK, and computation of JWK thumbprints.
+This library is designed to be 'universal' as a cryptographic key utilities, i.e., it works both on most browsers and on Node.js just by importing from npm/source code. This key utility library provides useful converters for EC/RSA keys in PEM/DER<->JWK, octet form of EC keys <-> JWK, and computation of JWK thumbprints. Especially for the conversion PEM/DER <->JWK, encryption and decryption of private key in DER/PEM are supported. 
 
 # Installation
 At your project directory, do either one of the following.
@@ -119,12 +119,15 @@ This library also supports the encryption on private key in PEM/DER. If you put 
 ```javascript
 const isEncrypted = keyutils.isEncryptedPrivateKey(privateKeyInPEM, 'pem'); // true or false
 
+// extract jwk from encrypted pem
 const jwkpriv = await keyutils.toJwkFrom('pem', pbes2, 'private', {passphrase: 'password'}); // decrypt and get jwk
+
+// generate encrypted pem from plaintext jwk
 const pemPriv = await keyutils.fromJwkTo('pem', jwkpriv, 'private', {
-  passphrase: 'kddilabs',
+  passphrase: 'password',
   encOptions: {
     algorithm: 'pbes2', // default. 'pbeWith...' is also available, i.e., pbes1.
-    cipher: 'des-ede3-cbc', // default. for encryption
+    cipher: 'aes256-cbc', // default. for encryption. 'aes128-cbc', 'aes192-cbc'(only node), 'des-ede3-cbc' are available as well.
     prf: 'hmacWithSHA256' // default. for key derivation
   }
 }); // encrypt and get pem

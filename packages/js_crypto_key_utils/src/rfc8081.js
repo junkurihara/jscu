@@ -3,18 +3,19 @@
  */
 
 import params, {getAlgorithmFromOidStrict} from './params.js';
-import {PBES2ESParams, PBEParameter, PBES2Params, PBKDF2Params, OneAsymmetricKey} from './asn1def.js';
+import {PBES2ESParams, PBEParameter, PBES2Params, PBKDF2Params, OneAsymmetricKey, EncryptedPrivateKeyInfo} from './asn1def.js';
 import des from 'des.js';
 import BufferMod from 'buffer';
 import asn from 'asn1.js';
 import jseu from 'js-encoding-utils';
+import jscaes from 'js-crypto-aes/dist/index.js';
 import jschash from 'js-crypto-hash/dist/index.js';
 import jschmac from 'js-crypto-hmac/dist/index.js';
 import jscrandom from 'js-crypto-random/dist/index.js';
-import {EncryptedPrivateKeyInfo} from './asn1def';
 const Buffer = BufferMod.Buffer;
 const BN = asn.bignum;
 
+///////////////////////////////////////////////////////////////////
 export async function encryptEncryptedPrivateKeyInfo(binKey, passphrase, options = {}){
   // default params
   if(typeof options.algorithm === 'undefined') options.algorithm = 'pbes2';
@@ -22,7 +23,7 @@ export async function encryptEncryptedPrivateKeyInfo(binKey, passphrase, options
 
 
   if (options.algorithm === 'pbes2') {
-    if(typeof options.cipher === 'undefined') options.cipher = 'des-ede3-cbc';
+    if(typeof options.cipher === 'undefined') options.cipher = 'aes256-cbc';
     if(typeof options.prf === 'undefined') options.prf = 'hmacWithSHA256';
     const kdfAlgorithm = 'pbkdf2'; // TODO: currently only pbkdf2 is available
 
@@ -35,29 +36,23 @@ export async function encryptEncryptedPrivateKeyInfo(binKey, passphrase, options
     encryptedPBES1.encryptionAlgorithm.parameters = PBEParameter.encode(encryptedPBES1.encryptionAlgorithm.parameters, 'der');
     return EncryptedPrivateKeyInfo.encode(encryptedPBES1, 'der');
   }
-
-  /**
-   * TODO: binKeyの暗号化にまず必要なのは、encryptionAlgorithm = 'pbes2'とか。
-   * TODO: encryptionAlgorithm = 'pbes2'のときは、
-   * TODO: keyDerivationFunc(pbkdf2一択), そのパラメータとして prf = 'hmacWithSHA1', iterationCount=2048。Saltは8バイト？(not default)
-   * TODO: encryptionScheme, そのパラメータとして'des-ede3-cbc'、ivがparameterに入ったりする。ivの長さはalgorithm次第。
-   * TODO: pbes1のときは、algorithm(pbeWith略)と、salt(8bytes固定)のみ。
-   */
-  // const util = require('util');
-  // console.log(util.inspect(encryptedPBES1,false,null));
 }
 
-///////////////////////////////////////////////////////////////////
-export async function decryptEncryptedPrivateKeyInfo(decoded, passphrase){
+export async function decryptEncryptedPrivateKeyInfo(epki, passphrase){
+  const decoded = {};
+
   // encryptionAlgorithm.algorithm
-  const encryptionAlgorithm = getAlgorithmFromOidStrict(decoded.encryptionAlgorithm.algorithm, params.passwordBasedEncryptionSchemes);
-  decoded.encryptionAlgorithm.algorithm = encryptionAlgorithm;
-  if (encryptionAlgorithm === 'pbes2') {
-    decoded = decodePBES2(decoded);
+  decoded.encryptionAlgorithm = {
+    algorithm: getAlgorithmFromOidStrict(epki.encryptionAlgorithm.algorithm, params.passwordBasedEncryptionSchemes)
+  };
+  if (decoded.encryptionAlgorithm.algorithm === 'pbes2') {
+    decoded.encryptionAlgorithm.parameters = decodePBES2(epki.encryptionAlgorithm.parameters);
   }
   else {
-    decoded.encryptionAlgorithm.parameters = PBEParameter.decode(decoded.encryptionAlgorithm.parameters, 'der');
+    decoded.encryptionAlgorithm.parameters = PBEParameter.decode(epki.encryptionAlgorithm.parameters, 'der');
   }
+
+  decoded.encryptedData = epki.encryptedData;
 
   // decrypt
   if(decoded.encryptionAlgorithm.algorithm === 'pbes2') {
@@ -68,19 +63,18 @@ export async function decryptEncryptedPrivateKeyInfo(decoded, passphrase){
 
 //////////////////////////////
 function encodePBES2(decoded){
+  const epki = { encryptionAlgorithm: {} };
+
   // algorithm
-  const algorithmOid = params.passwordBasedEncryptionSchemes[decoded.encryptionAlgorithm.algorithm].oid;
-  decoded.encryptionAlgorithm.algorithm = algorithmOid;
+  epki.encryptionAlgorithm.algorithm = params.passwordBasedEncryptionSchemes[decoded.encryptionAlgorithm.algorithm].oid;
 
   // kdf
   const kdf = decoded.encryptionAlgorithm.parameters.keyDerivationFunc;
   if(kdf.algorithm === 'pbkdf2') {
-    kdf.algorithm = params.keyDerivationFunctions[kdf.algorithm].oid;
     kdf.parameters.prf.algorithm = params.pbkdf2Prfs[kdf.parameters.prf.algorithm].oid;
     kdf.parameters = PBKDF2Params.encode(kdf.parameters, 'der');
   } else throw new Error('UnsupportedKDF');
-
-  decoded.encryptionAlgorithm.parameters.keyDerivationFunc = kdf;
+  kdf.algorithm = params.keyDerivationFunctions[kdf.algorithm].oid;
 
   // encryptionScheme
   const eS = decoded.encryptionAlgorithm.parameters.encryptionScheme;
@@ -89,40 +83,50 @@ function encodePBES2(decoded){
   } else throw new Error('UnsupportedCipher');
   eS.algorithm = params.encryptionSchemes[eS.algorithm].oid;
 
-  decoded.encryptionAlgorithm.parameters.encryptionScheme = eS;
+  // params
+  epki.encryptionAlgorithm.parameters = PBES2Params.encode({ keyDerivationFunc: kdf, encryptionScheme: eS }, 'der');
 
-  decoded.encryptionAlgorithm.parameters = PBES2Params.encode(decoded.encryptionAlgorithm.parameters, 'der');
-
-  return EncryptedPrivateKeyInfo.encode(decoded, 'der');
+  // encoded data
+  epki.encryptedData = decoded.encryptedData;
+  return EncryptedPrivateKeyInfo.encode(epki, 'der');
 }
 
-function decodePBES2(decoded){
-  const pbes2Params = PBES2Params.decode(decoded.encryptionAlgorithm.parameters, 'der');
+function decodePBES2(rawParams){
+  const pbes2Params = PBES2Params.decode(rawParams, 'der');
 
   // keyDerivationFunc
   const kdfAlgorithm = getAlgorithmFromOidStrict(pbes2Params.keyDerivationFunc.algorithm, params.keyDerivationFunctions);
-  pbes2Params.keyDerivationFunc.algorithm = kdfAlgorithm;
 
+  let iterationCount;
+  let salt;
+  let prf;
   if (kdfAlgorithm === 'pbkdf2') {
     const pbkdf2Params = PBKDF2Params.decode(pbes2Params.keyDerivationFunc.parameters, 'der');
-    const pbkdf2Prf = getAlgorithmFromOidStrict(pbkdf2Params.prf.algorithm, params.pbkdf2Prfs);
-    pbkdf2Params.prf.algorithm = pbkdf2Prf;
-
-    pbes2Params.keyDerivationFunc.parameters = pbkdf2Params;
+    prf = {
+      algorithm: getAlgorithmFromOidStrict(pbkdf2Params.prf.algorithm, params.pbkdf2Prfs),
+      parameters: pbkdf2Params.prf.parameters
+    };
+    iterationCount = pbkdf2Params.iterationCount;
+    salt = {type: pbkdf2Params.salt.type, value: pbkdf2Params.salt.value};
   } else throw new Error('UnsupportedKDF');
 
   //encryptionScheme
   const encryptionScheme = getAlgorithmFromOidStrict(pbes2Params.encryptionScheme.algorithm, params.encryptionSchemes);
-  pbes2Params.encryptionScheme.algorithm = encryptionScheme;
-
+  let encryptionParams;
   if(Object.keys(PBES2ESParams).indexOf(encryptionScheme) >= 0){
-    pbes2Params.encryptionScheme.parameters =
-      PBES2ESParams[encryptionScheme].decode(pbes2Params.encryptionScheme.parameters, 'der');
+    encryptionParams = PBES2ESParams[encryptionScheme].decode(pbes2Params.encryptionScheme.parameters, 'der');
   } else throw new Error('UnsupportedCipher'); // TODO: Other Encryption Scheme
 
-  decoded.encryptionAlgorithm.parameters = pbes2Params;
-
-  return decoded;
+  return {
+    keyDerivationFunc: {
+      algorithm: kdfAlgorithm,
+      parameters: { salt, iterationCount, prf }
+    },
+    encryptionScheme: {
+      algorithm: encryptionScheme,
+      parameters: encryptionParams
+    }
+  };
 }
 
 
@@ -149,6 +153,13 @@ async function encryptPBES2(binKey, passphrase, kdfAlgorithm, prf, iterationCoun
     const CBC = des.CBC.instantiate(des.EDE);
     const ct = CBC.create({ type: 'encrypt', key: Buffer.from(key), iv });
     encryptedData = Buffer.from(ct.update(binKey).concat(ct.final()));
+  }
+  else if (cipher === 'aes128-cbc' || cipher === 'aes192-cbc' || cipher === 'aes256-cbc'){
+    iv = await jscrandom.getRandomBytes(params.encryptionSchemes[cipher].ivLength);
+    encryptedData = Buffer.from( await jscaes.encrypt(
+      new Uint8Array(binKey), key, {name: 'AES-CBC', iv}
+    ));
+    iv = Buffer.from(iv);
   } else throw new Error('UnsupportedCipher');
 
   // structure
@@ -199,7 +210,12 @@ async function decryptPBES2(decoded, passphrase){
     const pt = CBC.create({ type: 'decrypt', key, iv });
     out = Buffer.from(pt.update(decoded.encryptedData).concat(pt.final()));
   }
-  else throw new Error('UnsupportedEncryptionAlgorithm');
+  else if (eS.algorithm === 'aes128-cbc' || eS.algorithm === 'aes192-cbc'|| eS.algorithm === 'aes256-cbc'){
+    const iv = new Uint8Array(eS.parameters);
+    out = Buffer.from( await jscaes.decrypt(
+      new Uint8Array(decoded.encryptedData), key, {name: 'AES-CBC', iv}
+    ));
+  } else throw new Error('UnsupportedEncryptionAlgorithm');
 
   return OneAsymmetricKey.decode(out, 'der');
 }
