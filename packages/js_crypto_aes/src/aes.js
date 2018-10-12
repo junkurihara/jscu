@@ -17,7 +17,7 @@ function assertAlgorithms({name, iv, tagLength}){
   if(Object.keys(params.ciphers).indexOf(name) < 0) throw new Error('UnsupportedAlgorithm');
   if(params.ciphers[name].ivLength){
     if(!(iv instanceof Uint8Array)) throw new Error('InvalidArguments');
-    if(iv.byteLength < 2 || iv.byteLength > 14) throw new Error('InvalidIVLength');
+    if(iv.byteLength < 2 || iv.byteLength > 16) throw new Error('InvalidIVLength');
     if(params.ciphers[name].staticIvLength && (params.ciphers[name].ivLength !== iv.byteLength)) throw new Error('InvalidIVLength');
   }
   if(params.ciphers[name].tagLength && tagLength){

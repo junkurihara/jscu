@@ -1,3 +1,21 @@
-"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.getWebCryptoAll=getWebCryptoAll,exports.getNodeCrypto=getNodeCrypto;/**
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.getWebCryptoAll = getWebCryptoAll;
+exports.getNodeCrypto = getNodeCrypto;
+
+/**
  * util.js
- */function getWebCryptoAll(){if("undefined"!=typeof window)return window.msCrypto?window.msCrypto.subtle:window.crypto?window.crypto.subtle:void 0}function getNodeCrypto(){return"undefined"==typeof window?require("crypto"):void 0}
+ */
+function getWebCryptoAll() {
+  if (typeof window === 'undefined') return undefined;else {
+    if (window.msCrypto) return window.msCrypto.subtle;
+    if (window.crypto) return window.crypto.subtle;
+  }
+}
+
+function getNodeCrypto() {
+  if (typeof window !== 'undefined') return undefined;else return require('crypto');
+}

@@ -34,7 +34,6 @@
     "babel-eslint": "10.0.1",
     "babel-loader": "8.0.4",
     "babel-plugin-istanbul": "5.1.0",
-    "babel-preset-minify": "^0.5.0",
     "chai": "^4.2.0",
     "eslint": "5.6.1",
     "js-crypto-random": "^0.1.2",

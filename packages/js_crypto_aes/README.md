@@ -49,9 +49,30 @@ aes.decrypt(data, key, {name: 'AES-GCM', iv, additionalData, tagLength: 16}).the
 });
 ```
 
+## Encryption in AES-CBC
+```javascript
+const msg = ...; // arbitrary length of message in Uint8Array
+const key = ...; // 16 bytes or 32 bytes key in Uint8Array
+const iv = ...; // 16 bytes IV in Uint8Array for AES-CBC mode
+aes.encrypt(msg, key, {name: 'AES-CBC', iv}).then( (encrypted) => {
+  // now you get an Uint8Array of encrypted message
+});
+```
+
+## Decryption in AES-CBC
+```javascript
+const data = ...; // encryted message in Uint8Array
+const key = ...; // 16 bytes or 32 bytes key in Uint8Array
+const iv = ...; // 16 bytes IV in Uint8Array for AES-CBC mode that is exactly same as the one used in encryption
+aes.decrypt(data, key, {name: 'AES-CBC', iv}).then( (decrypted) => {
+  // now you get an Uint8Array of decrypted message
+});
+```
+
+
 # Note
 At this point, this module has the following limitations:
-- Supports only AES-GCM mode
+- Supports only AES-GCM and AES-CBC modes
 - Supports 128 bits and 256 bits keys in Chrome (192 bits key works in Node.js)
 
 # License

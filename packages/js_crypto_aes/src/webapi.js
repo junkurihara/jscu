@@ -4,8 +4,15 @@
 
 export async function encrypt(msg, key, {name = 'AES-GCM', iv, additionalData, tagLength}, webCrypto) {
   let alg;
-  if(name === 'AES-GCM') {
-    alg = Object.assign({name, iv, tagLength: tagLength * 8}, (additionalData.length > 0) ? {additionalData} : {}) ;
+
+  switch(name){
+  case 'AES-GCM': {
+    alg = Object.assign({name, iv, tagLength: tagLength * 8}, (additionalData.length > 0) ? {additionalData} : {});
+    break;
+  }
+  case 'AES-CBC': alg = {name, iv};
+    break;
+  default: throw new Error('UnsupportedCipher');
   }
 
   if (typeof window.msCrypto === 'undefined') {
@@ -23,14 +30,20 @@ export async function encrypt(msg, key, {name = 'AES-GCM', iv, additionalData, t
       data.set(new Uint8Array(encryptedObj.ciphertext));
       data.set(new Uint8Array(encryptedObj.tag), encryptedObj.ciphertext.byteLength);
       return data;
-    }
+    } else return new Uint8Array(encryptedObj);
   }
 }
 
 export async function decrypt(data, key, {name='AES-GCM', iv, additionalData, tagLength}, webCrypto) {
   let alg;
-  if(name === 'AES-GCM') {
-    alg = Object.assign({name, iv, tagLength: tagLength * 8}, (additionalData.length > 0) ? {additionalData} : {}) ;
+  switch(name){
+  case 'AES-GCM': {
+    alg = Object.assign({name, iv, tagLength: tagLength * 8}, (additionalData.length > 0) ? {additionalData} : {});
+    break;
+  }
+  case 'AES-CBC': alg = {name, iv};
+    break;
+  default: throw new Error('UnsupportedCipher');
   }
 
   if (!window.msCrypto) {
@@ -47,6 +60,11 @@ export async function decrypt(data, key, {name='AES-GCM', iv, additionalData, ta
       const ciphertext = data.slice(0, data.length - tagLength);
       const tag = data.slice(data.length - tagLength, data.length);
       const msg = await msDecrypt(Object.assign(alg, {tag}), sessionKeyObj, ciphertext, webCrypto).catch(() => {
+        throw new Error('DecryptionFailure');
+      });
+      return new Uint8Array(msg);
+    } else{
+      const msg = await msDecrypt(alg, sessionKeyObj, data, webCrypto).catch(() => {
         throw new Error('DecryptionFailure');
       });
       return new Uint8Array(msg);

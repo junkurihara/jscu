@@ -10,9 +10,17 @@ export function encrypt(msg, key, {name = 'AES-GCM', iv, additionalData, tagLeng
   alg = alg + params.ciphers[name].nodeSuffix;
 
   let cipher;
-  if(name === 'AES-GCM'){
+  switch(name){
+  case 'AES-GCM': {
     cipher = nodeCrypto.createCipheriv(alg, key, iv, {authTagLength: tagLength});
     cipher.setAAD(additionalData);
+    break;
+  }
+  case 'AES-CBC': {
+    cipher = nodeCrypto.createCipheriv(alg, key, iv);
+    break;
+  }
+  default: throw new Error('UnsupportedCipher');
   }
 
   const body = new Uint8Array(cipher.update(msg));
@@ -37,12 +45,21 @@ export function decrypt(data, key, {name='AES-GCM', iv, additionalData, tagLengt
 
   let decipher;
   let body;
-  if(name === 'AES-GCM'){
+  switch(name){
+  case 'AES-GCM': {
     decipher = nodeCrypto.createDecipheriv(alg, key, iv, {authTagLength: tagLength});
     decipher.setAAD(additionalData);
     body = data.slice(0, data.length - tagLength);
     const tag = data.slice(data.length - tagLength);
     decipher.setAuthTag(tag);
+    break;
+  }
+  case 'AES-CBC': {
+    decipher = nodeCrypto.createDecipheriv(alg, key, iv);
+    body = data;
+    break;
+  }
+  default: throw new Error('UnsupportedCipher');
   }
 
   const decryptedBody = decipher.update(body);

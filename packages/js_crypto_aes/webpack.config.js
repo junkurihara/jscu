@@ -79,7 +79,8 @@ module.exports = (env, argv) => {
   if (argv.mode === 'development'){
     config.devtool = 'inline-source-map'; // add inline source map
     Object.assign(config.entry, {
-      'test': ['./test/aes.spec.js']
+      'gcm': ['./test/gcm.spec.js'],
+      'cbc': ['./test/cbc.spec.js']
     });
   }
   // else if(argv.mode === 'production'){

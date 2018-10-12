@@ -1,1 +1,29 @@
-"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),Object.defineProperty(exports,"encrypt",{enumerable:!0,get:function a(){return _aes.encrypt}}),Object.defineProperty(exports,"decrypt",{enumerable:!0,get:function a(){return _aes.decrypt}}),exports.default=void 0;var _aes=require("./aes.js"),_default={encrypt:_aes.encrypt,decrypt:_aes.decrypt};exports.default=_default;
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+Object.defineProperty(exports, "encrypt", {
+  enumerable: true,
+  get: function get() {
+    return _aes.encrypt;
+  }
+});
+Object.defineProperty(exports, "decrypt", {
+  enumerable: true,
+  get: function get() {
+    return _aes.decrypt;
+  }
+});
+exports.default = void 0;
+
+var _aes = require("./aes.js");
+
+/**
+ * index.js
+ */
+var _default = {
+  encrypt: _aes.encrypt,
+  decrypt: _aes.decrypt
+};
+exports.default = _default;
