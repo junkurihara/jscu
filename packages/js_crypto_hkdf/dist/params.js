@@ -1,3 +1,3 @@
 "use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=void 0;/**
  * params. js
- */var _default={hashes:{"SHA-256":{nodeName:"sha256",hashSize:32},"SHA-384":{nodeName:"sha384",hashSize:48},"SHA-512":{nodeName:"sha512",hashSize:64}}};exports.default=_default;
+ */var _default={hashes:{"SHA-256":{nodeName:"sha256",hashSize:32},"SHA-384":{nodeName:"sha384",hashSize:48},"SHA-512":{nodeName:"sha512",hashSize:64},"SHA-1":{nodeName:"sha1",hashSize:20},MD5:{nodeName:"md5",hashSize:16}}};exports.default=_default;

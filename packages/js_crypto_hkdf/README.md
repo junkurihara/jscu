@@ -50,8 +50,5 @@ hmac.compute(masterSecret, hash, length, info, salt).then( (derivedKey) => {
 });
 ``` 
 
-# Note
-**HKDF based on SHA-512 does not work on IE due to the legacy browser's implementation limitations.**
-
 # License
 Licensed under the MIT license, see `LICENSE` file.

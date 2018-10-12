@@ -53,7 +53,7 @@
   "dependencies": {
     "@babel/plugin-transform-regenerator": "7.0.0",
     "@babel/runtime": "7.1.2",
-    "js-crypto-hmac": "^0.1.4",
+    "js-crypto-hmac": "^0.2.0",
     "js-crypto-random": "^0.1.2"
   }
 }
