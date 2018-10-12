@@ -34,7 +34,10 @@ export async function fromJwkTo(output = 'pem', jwkey, type, options={}){
 
   // In the case of PEM/DER
   if (output === 'der' || output === 'pem') {
-    return asn1enc.fromJwk(jwkey, {type, format: output, compact: options.compact});
+    return await asn1enc.fromJwk(
+      jwkey,
+      {type, format: output, compact: options.compact, passphrase: options.passphrase, encOptions: options.encOptions }
+    );
   }
   // In the case of Oct
   else if (output === 'oct' && jwkey.kty === 'EC') {

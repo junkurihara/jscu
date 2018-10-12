@@ -27,7 +27,7 @@ export default {
   },
 
   keyDerivationFunctions: {
-    'pbkdf2': {oid: [ 1, 2, 840, 113549, 1, 5, 12 ]}
+    'pbkdf2': {oid: [ 1, 2, 840, 113549, 1, 5, 12 ], defaultSaltLen: 8}
   },
 
   pbkdf2Prfs: {
@@ -38,7 +38,8 @@ export default {
   },
 
   encryptionSchemes: {
-    'des-ede3-cbc': {oid: [ 1, 2, 840, 113549, 3, 7 ], keyLength: 24}
+    'des-ede3-cbc': {oid: [ 1, 2, 840, 113549, 3, 7 ], keyLength: 24, ivLength: 8},
+    // 'aes128-cbc': {oid: [ 2, 16, 840, 1, 101, 3, 4, 1, 2 ], keyLength: 16, ivLength: 16} // todo
   },
 
   hashes: {

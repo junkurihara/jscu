@@ -1,7 +1,4 @@
 import keyutils from '../src/index.js';
-import sampleRSA from './rsa_sample.js';
-
-import jseu from 'js-encoding-utils';
 
 import chai from 'chai';
 // const should = chai.should();
@@ -80,14 +77,43 @@ describe('RSA Key conversion from/to JWK test.', () => {
   });
 
   it('pbes1 test', async () => {
+    const isEncrypted = keyutils.isEncryptedPrivateKey(pbes1, 'pem');
+    console.log(isEncrypted);
+    expect(isEncrypted).to.be.true;
     const jwkpriv = await keyutils.toJwkFrom('pem', pbes1, 'private', {passphrase: 'kddilabs'});
-    console.log(jwkpriv);
+    // console.log(jwkpriv);
+
+    const pemPriv = await keyutils.fromJwkTo(
+      'pem',
+      jwkpriv,
+      'private',
+      {
+        passphrase: 'kddilabs',
+        encOptions: {algorithm: 'pbeWithMD5AndDES-CBC'} // should not use
+      }
+    );
+    // console.log(pemPriv);
   });
 
   it('pbes2 test', async () => {
+    const isEncrypted = keyutils.isEncryptedPrivateKey(pbes2, 'pem');
+    console.log(isEncrypted);
+    expect(isEncrypted).to.be.true;
     const jwkpriv = await keyutils.toJwkFrom('pem', pbes2, 'private', {passphrase: 'kddilabs'});
-    console.log(jwkpriv);
+    // console.log(jwkpriv);
+    const pemPriv = await keyutils.fromJwkTo(
+      'pem',
+      jwkpriv,
+      'private',
+      {
+        passphrase: 'kddilabs',
+        encOptions: {
+          algorithm: 'pbes2', // default
+          cipher: 'des-ede3-cbc', // default
+          prf: 'hmacWithSHA256' // default
+        }
+      }
+    );
   });
-
 
 });

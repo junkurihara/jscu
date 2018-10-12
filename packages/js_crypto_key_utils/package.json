@@ -37,7 +37,8 @@
     "rfc5480",
     "rfc5915",
     "rfc5958",
-    "rfc7638"
+    "rfc7638",
+    "rfc8018"
   ],
   "devDependencies": {
     "@babel/cli": "7.1.2",
@@ -74,6 +75,7 @@
     "elliptic": "^6.4.1",
     "js-crypto-hash": "^0.2.0",
     "js-crypto-hmac": "^0.2.0",
-    "js-encoding-utils": "^0.2.6"
+    "js-crypto-random": "^0.1.2",
+    "js-encoding-utils": "^0.2.7"
   }
 }

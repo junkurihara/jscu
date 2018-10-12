@@ -76,15 +76,17 @@ export const PBKDF2Params = asn.define('PBKDF2Params', function(){
     this.key('keyLength').int().optional(),
     this.key('prf').use(AlgorithmIdentifier).def({
       algorithm: [1, 2, 840, 113549, 2, 7], // hmacWithSHA1
-      paramters: Buffer.from([0x05, 0x00])
+      parameters: Buffer.from([0x05, 0x00])
     })
   );
 });
 
 ///////////////////////////////////////////////////////////////////////////////////////////
-export const DesEde3CbcParams = asn.define('DesEde3CbcParams', function(){
-  this.octstr();
-});
+export const PBES2ESParams = {
+  'des-ede3-cbc': asn.define('DesEde3CbcParams', function(){
+    this.octstr();
+  })
+};
 
 
 ////////////////////////////////////////////////////////////////////////////////////

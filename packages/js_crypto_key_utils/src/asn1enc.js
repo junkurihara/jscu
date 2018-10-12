@@ -8,7 +8,7 @@ import params, {getAlgorithmFromOid} from './params.js';
 import jseu from 'js-encoding-utils';
 import BufferMod from 'buffer';
 import {OneAsymmetricKey, SubjectPublicKeyInfo, PrivateKeyStructure} from './asn1def.js';
-import {decryptEncryptedPrivateKeyInfo} from './rfc8081.js';
+import {encryptEncryptedPrivateKeyInfo, decryptEncryptedPrivateKeyInfo} from './rfc8081.js';
 const Buffer = BufferMod.Buffer;
 
 /**
@@ -17,9 +17,11 @@ const Buffer = BufferMod.Buffer;
  * @param type {string} : 'public' or 'private'
  * @param format {string} : 'pem' or 'der'
  * @param compact {boolean} : 'true' or 'false' for EC public key compressed representation in der/pem
+ * @param passphrase
+ * @param encOptions
  * @return {Uint8Array}
  */
-export function fromJwk(jwkey, {type, format, compact=false}){
+export async function fromJwk(jwkey, {type, format, compact=false, passphrase = '', encOptions}){
   let decoded;
   if (jwkey.kty === 'EC') {
     decoded = asn1ec.fromJWK(jwkey, type, compact);
@@ -28,7 +30,17 @@ export function fromJwk(jwkey, {type, format, compact=false}){
     decoded = asn1rsa.fromJwk(jwkey, type);
   }
 
-  let binKey = (type === 'public') ? SubjectPublicKeyInfo.encode(decoded, 'der') : OneAsymmetricKey.encode(decoded, 'der');
+  let binKey;
+  if (type === 'public') {
+    binKey = SubjectPublicKeyInfo.encode(decoded, 'der');
+  }
+  else {
+    binKey = OneAsymmetricKey.encode(decoded, 'der');
+    if(passphrase.length > 0){
+      binKey = await encryptEncryptedPrivateKeyInfo(binKey, passphrase, encOptions);
+      type = 'encryptedPrivate';
+    }
+  }
   binKey = new Uint8Array(binKey);
 
   return (format === 'pem') ? jseu.formatter.binToPem(binKey, type) : binKey;

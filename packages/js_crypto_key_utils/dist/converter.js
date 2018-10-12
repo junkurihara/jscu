@@ -103,31 +103,38 @@ function _fromJwkTo() {
           case 12:
             // default values
             if (jwkey.key === 'EC' && typeof options.compact !== 'boolean') options.compact = false;
-            if (output === 'oct' && options.format !== 'string') options.format = 'binary'; // In the case of PEM/DER
+            if (output === 'oct' && options.format !== 'string') options.format = 'binary';
+            if ((output === 'der' || output === 'pem') && typeof options.passphrase === 'undefined') options.passphrase = ''; // In the case of PEM/DER
 
             if (!(output === 'der' || output === 'pem')) {
-              _context.next = 18;
+              _context.next = 21;
               break;
             }
 
-            return _context.abrupt("return", asn1enc.fromJwk(jwkey, {
+            _context.next = 18;
+            return asn1enc.fromJwk(jwkey, {
               type: type,
               format: output,
-              compact: options.compact
-            }));
+              compact: options.compact,
+              passphrase: options.passphrase,
+              encOptions: options.encOptions
+            });
 
           case 18:
+            return _context.abrupt("return", _context.sent);
+
+          case 21:
             if (!(output === 'oct' && jwkey.kty === 'EC')) {
-              _context.next = 22;
+              _context.next = 25;
               break;
             }
 
             return _context.abrupt("return", octenc.fromJwk(jwkey, type, options.format, options.compact));
 
-          case 22:
+          case 25:
             throw new Error('UnsupportedEnvironment');
 
-          case 23:
+          case 26:
           case "end":
             return _context.stop();
         }

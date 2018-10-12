@@ -114,6 +114,22 @@ const privateJwkR = await keyutils.toJwkFrom('der', privateASN, 'private'); // f
 ```
 Please refer to [RFC3447](https://tools.ietf.org/html/rfc3447) for the detailed encoding rule of RSA public and private keys. 
 
+## PKCS8 Encrypted Private Key
+This library also supports the encryption on private key in PEM/DER.
+```javascript
+const isEncrypted = keyutils.isEncryptedPrivateKey(privateKeyInPEM, 'pem'); // true or false
+
+const jwkpriv = await keyutils.toJwkFrom('pem', pbes2, 'private', {passphrase: 'password'}); // decrypt and get jwk
+const pemPriv = await keyutils.fromJwkTo('pem', jwkpriv, 'private', {
+  passphrase: 'kddilabs',
+  encOptions: {
+    algorithm: 'pbes2', // default. 'pbeWith...' is also available, i.e., pbes1.
+    cipher: 'des-ede3-cbc', // default. for encryption
+    prf: 'hmacWithSHA256' // default. for key derivation
+  }
+}); // encrypt and get pem
+```
+
 ## Compute JWK Thumbprint
 This library also provides an API to compute the JWK Thumbprint defined in [RFC7638](https://tools.ietf.org/html/rfc7638). The API can be invoked as follows.
 ```javascript

@@ -3306,6 +3306,14 @@ js-encoding-utils@^0.2.6:
     "@babel/plugin-transform-regenerator" "7.0.0"
     "@babel/runtime" "7.1.2"
 
+js-encoding-utils@^0.2.7:
+  version "0.2.7"
+  resolved "https://registry.yarnpkg.com/js-encoding-utils/-/js-encoding-utils-0.2.7.tgz#f7904f74410647af81d776c335322acce66667d7"
+  integrity sha512-UR2qNi6OvTLdVNKhBJ+zoKxrueRfHOvP4JqwnbxuElUY7IXVFnH5okimBmjYTkfW4yQ5leo8n5sgttrv47b9MQ==
+  dependencies:
+    "@babel/plugin-transform-regenerator" "7.0.0"
+    "@babel/runtime" "7.1.2"
+
 js-levenshtein@^1.1.3:
   version "1.1.3"
   resolved "https://registry.yarnpkg.com/js-levenshtein/-/js-levenshtein-1.1.3.tgz#3ef627df48ec8cf24bacf05c0f184ff30ef413c5"

@@ -21,11 +21,19 @@ Object.defineProperty(exports, "getJwkThumbprint", {
     return _thumbprint.getJwkThumbprint;
   }
 });
+Object.defineProperty(exports, "isEncryptedPrivateKey", {
+  enumerable: true,
+  get: function get() {
+    return _util.isEncryptedPrivateKey;
+  }
+});
 exports.default = void 0;
 
 var _converter = require("./converter.js");
 
 var _thumbprint = require("./thumbprint.js");
+
+var _util = require("./util.js");
 
 /**
  * index.js
@@ -33,6 +41,7 @@ var _thumbprint = require("./thumbprint.js");
 var _default = {
   fromJwkTo: _converter.fromJwkTo,
   toJwkFrom: _converter.toJwkFrom,
-  getJwkThumbprint: _thumbprint.getJwkThumbprint
+  getJwkThumbprint: _thumbprint.getJwkThumbprint,
+  isEncryptedPrivateKey: _util.isEncryptedPrivateKey
 };
 exports.default = _default;
