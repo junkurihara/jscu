@@ -115,7 +115,7 @@ const privateJwkR = await keyutils.toJwkFrom('der', privateASN, 'private'); // f
 Please refer to [RFC3447](https://tools.ietf.org/html/rfc3447) for the detailed encoding rule of RSA public and private keys. 
 
 ## PKCS8 Encrypted Private Key
-This library also supports the encryption on private key in PEM/DER.
+This library also supports the encryption on private key in PEM/DER. If you put passphrase in arg, the key is automatically decrypted and encrypted.
 ```javascript
 const isEncrypted = keyutils.isEncryptedPrivateKey(privateKeyInPEM, 'pem'); // true or false
 
