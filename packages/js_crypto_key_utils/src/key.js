@@ -8,8 +8,16 @@ import jseu from 'js-encoding-utils';
 import {getJwkType, getSec1KeyType, isAsn1Encrypted, isAsn1Public} from './util.js';
 
 
-// key class
+/**
+ * Key class
+ */
 export class Key {
+  /**
+   * @constructor
+   * @param format
+   * @param key
+   * @param options
+   */
   constructor(format, key, options={}){
     this._jwk = {};
     this._der = null;
@@ -29,6 +37,9 @@ export class Key {
     else throw new Error('UnsupportedType');
   }
 
+  ///////////////////////////////////////////////////////////
+  // private method handling instance variables
+  // all instance variables must be set via these methods
   _setJwk(jwkey){
     this._type = getJwkType(jwkey); // this also check key format
     this._jwk = jwkey;
@@ -73,16 +84,17 @@ export class Key {
       && typeof this._oct.namedCurve === 'string'
     );
   }
-
+  ///////////////////////////////////////////////////////////
+  // (pseudo) public methods allowed to be accessed from outside
   /**
-   * Wrapper of converter
+   * Wrapper of converter. Imported key must be basically decrypted except the case where the key is exported as-is.
    * @param format {string}: 'jwk', 'pem', 'der' or 'oct'
    * @param options {object}:
    * - options.type {'public'|'private}: (optional) [format = *]
    *     only for derivation of public key from private key.
    * - options.compact {boolean}: (optional) [format = 'der', 'pem' or 'oct', only for EC key]
    *     generate compressed EC public key.
-   * - options.encryptParams {object}: (optional) [format = 'der' or 'pem'] options to generate encrypted der/pem.
+   * - options.encryptParams {object}: (optional) [format = 'der' or 'pem'] options to generate encrypted der/pem private key.
    *     * encryptParams.passphrase {string}: (mandatory if encOption is specified).
    *          (re-)generate encrypted der/pem with the given passphrase
    *     * encryptParams.algorithm {string}: (optional) 'pbes2' (default), 'pbeWithMD5AndDES-CBC' or 'pbeWithSHA1AndDES'
@@ -90,39 +102,37 @@ export class Key {
    *         'hmacWithSHA256' (default), 'hmacWithSHA384', 'hmacWithSHA512' or 'hmacWithSHA1'
    *     * encryptParams.iterationCount {integer}: 2048 (default)
    *     * encryptParams.cipher {string}: 'aes256-cbc' (default), 'aes128-cbc' or 'des-ede3-cbc'
-   * @param passphrase {string}: (optional) [isEncrypted = true]
-   *     use passphrase to decrypt imported encrypted-pem/der key if isEncrypted = true
    * @return {Promise<*>}
    */
-  async export(format = 'jwk', options={}, passphrase){
+  async export(format = 'jwk', options={}){
     // global assertion
     if(['pem', 'der', 'jwk', 'oct'].indexOf(format) < 0) throw new Error('UnsupportedFormat');
 
     // return 'as is' without passphrase when nothing is given as 'options'
-    // only for the case to export der key from der key (considering encrypted key)
-    if((format === 'der' || format === 'pem')
-      && Object.keys(options).length === 0
-      && this._isEncrypted === true
-      && this._type === 'private'
-      && this._current.der){
+    // only for the case to export der key from der key (considering encrypted key). expect to be called from getter
+    if((format === 'der' || format === 'pem') && Object.keys(options).length === 0
+      && this._isEncrypted === true && this._type === 'private' && this._current.der)
+    {
       return (format === 'pem') ? jseu.formatter.binToPem(this._der, 'encryptedPrivate') : this._der;
     }
+    if(this._isEncrypted) throw new Error('DecryptionRequired');
 
     let jwkey;
     // first converted to jwk
     if(this._current.jwk){
       jwkey = this._jwk;
-    } else {
+    }
+    else {
+      // options.type is not specified here to import jwk
       if(this._current.oct) {
-        jwkey = await toJwkFrom('oct', this._oct.key, {namedCurve: this._oct.namedCurve}); // type is not specified here to import jwk
+        jwkey = await toJwkFrom('oct', this._oct.key, {namedCurve: this._oct.namedCurve});
       }
       else if(this._current.der){
-        if(this._isEncrypted && typeof passphrase !== 'string') throw new Error('StringPassphraseIsRequired');
-        jwkey = await toJwkFrom('der', this._der, {passphrase}); // type is not specified here to import jwk
+        jwkey = await toJwkFrom('der', this._der);
       }
       else throw new Error('InvalidStatus');
 
-      if(!this._isEncrypted) this._setJwk(jwkey); // store jwk if the exiting private key is not encrypted
+      this._setJwk(jwkey); // store jwk if the exiting private key is not encrypted
     }
 
     // then export as the key in intended format
@@ -146,14 +156,12 @@ export class Key {
   }
 
   /**
-   *
+   * Encrypt stored key and set the encrypted key to this instance.
    * @param passphrase
    * @return {Promise<boolean>}
    */
   async encrypt (passphrase){
     if(this._isEncrypted) throw new Error('AlreadyEncrypted');
-    // lazy encryption
-    await this.export('jwk');
     const options = {encryptParams: {passphrase}};
     this._setAsn1(await this.export('der', options), 'der');
 
@@ -161,13 +169,12 @@ export class Key {
   }
 
   /**
-   *
+   * Decrypted stored key and set the decrypted key in JWK to this instance.
    * @param passphrase
    * @return {Promise<boolean>}
    */
   async decrypt (passphrase){
     if(!this._isEncrypted) throw new Error('NotEncrypted');
-    // lazy decryption
     let jwkey;
     if(this._current.der && typeof passphrase === 'string'){
       jwkey = await toJwkFrom('der', this._der, {passphrase}); // type is not specified here to import jwk
@@ -178,7 +185,12 @@ export class Key {
     return true;
   }
 
+  async getJwkThumbprint(alg='SHA-256', output='binary'){
+    if(this._isEncrypted) throw new Error('DecryptionRequired');
+    return await getJwkThumbprint(await this.export('jwk'), alg, output);
+  }
 
+  // getters
   get isEncrypted(){
     return this._isEncrypted;
   }
@@ -187,7 +199,6 @@ export class Key {
     return this._type === 'private';
   }
 
-  // getters only when unencrypted
   get der(){
     return this.export('der');
   }
@@ -198,5 +209,9 @@ export class Key {
 
   get jwk(){
     return this.export('jwk');
+  }
+
+  get oct(){
+    return this.export('oct', {output: 'string'});
   }
 }
