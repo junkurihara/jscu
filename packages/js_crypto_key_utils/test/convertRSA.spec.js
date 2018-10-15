@@ -23,10 +23,10 @@ describe('RSA Key conversion from/to JWK test.', () => {
   it('JWK RSA should be successfully converted from PEM', async () => {
     const array = await Promise.all(bits.map( async (bitLen) => {
       // public key
-      const jwkpub = await keyutils.toJwkFrom('pem', sampleRSA[bitLen].publicKey.pem, 'public');
+      const jwkpub = await keyutils.toJwkFrom('pem', sampleRSA[bitLen].publicKey.pem);
 
       // private key
-      const jwkpri = await keyutils.toJwkFrom('pem', sampleRSA[bitLen].privateKey.pem, 'private');
+      const jwkpri = await keyutils.toJwkFrom('pem', sampleRSA[bitLen].privateKey.pem);
 
 
       return (JSON.stringify(objectSort(jwkpub)) === JSON.stringify(objectSort(sampleRSA[bitLen].publicKey.jwk)))
@@ -39,9 +39,9 @@ describe('RSA Key conversion from/to JWK test.', () => {
   it('PEM RSA should be successfully converted from JWK', async () => {
     const array = await Promise.all(bits.map( async (bitLen) => {
 
-      const pempub = await keyutils.fromJwkTo('pem', sampleRSA[bitLen].publicKey.jwk, 'public');
+      const pempub = await keyutils.fromJwkTo('pem', sampleRSA[bitLen].publicKey.jwk);
 
-      const pempri = await keyutils.fromJwkTo('pem', sampleRSA[bitLen].privateKey.jwk, 'private');
+      const pempri = await keyutils.fromJwkTo('pem', sampleRSA[bitLen].privateKey.jwk);
 
       return (pempub === sampleRSA[bitLen].publicKey.pem) && (pempri === sampleRSA[bitLen].privateKey.pem);
     }));
@@ -55,10 +55,10 @@ describe('RSA Key conversion from/to JWK test.', () => {
       const derpri = jseu.formatter.pemToBin(sampleRSA[bitLen].privateKey.pem);
 
       // public key
-      const jwkpub = await keyutils.toJwkFrom('der', derpub, 'public');
+      const jwkpub = await keyutils.toJwkFrom('der', derpub);
 
       // private key
-      const jwkpri = await keyutils.toJwkFrom('der', derpri, 'private');
+      const jwkpri = await keyutils.toJwkFrom('der', derpri);
 
 
       return (JSON.stringify(objectSort(jwkpub)) === JSON.stringify(objectSort(sampleRSA[bitLen].publicKey.jwk)))
@@ -71,9 +71,9 @@ describe('RSA Key conversion from/to JWK test.', () => {
   it('DER RSA should be successfully converted from JWK', async () => {
     const array = await Promise.all(bits.map( async (bitLen) => {
 
-      const pempub = await keyutils.fromJwkTo('pem', sampleRSA[bitLen].publicKey.jwk, 'public');
+      const pempub = await keyutils.fromJwkTo('pem', sampleRSA[bitLen].publicKey.jwk);
 
-      const pempri = await keyutils.fromJwkTo('pem', sampleRSA[bitLen].privateKey.jwk, 'private');
+      const pempri = await keyutils.fromJwkTo('pem', sampleRSA[bitLen].privateKey.jwk);
 
       const derpub = jseu.formatter.pemToBin(pempub);
       const derpri = jseu.formatter.pemToBin(pempri);

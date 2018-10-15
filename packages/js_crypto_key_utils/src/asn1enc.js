@@ -7,21 +7,26 @@ import * as asn1rsa from './asn1rsa.js';
 import params, {getAlgorithmFromOid} from './params.js';
 import jseu from 'js-encoding-utils';
 import BufferMod from 'buffer';
-import {OneAsymmetricKey, SubjectPublicKeyInfo, PrivateKeyStructure} from './asn1def.js';
+import {OneAsymmetricKey, SubjectPublicKeyInfo, KeyStructure} from './asn1def.js';
 import {encryptEncryptedPrivateKeyInfo, decryptEncryptedPrivateKeyInfo} from './rfc8081.js';
+import {getJwkType} from './util.js';
 const Buffer = BufferMod.Buffer;
 
 /**
  * Convert jwk to spki/pkcs8 in string or binary format.
  * @param jwkey
- * @param type {string} : 'public' or 'private'
+ * @param type {string} : 'public' or 'private' (optional)
  * @param format {string} : 'pem' or 'der'
  * @param compact {boolean} : 'true' or 'false' for EC public key compressed representation in der/pem
  * @param passphrase
  * @param encOptions
  * @return {Uint8Array}
  */
-export async function fromJwk(jwkey, {type, format, compact=false, passphrase = '', encOptions}){
+export async function fromJwk(jwkey, format, {type, compact=false, passphrase = '', encOptions}){
+  const orgType = getJwkType(jwkey);
+  if(typeof type === 'undefined') type = orgType;
+  if(orgType === 'public' && type === 'private') throw new Error('UnableToDerivePrivateKeyFromPublicKey');
+
   let decoded;
   if (jwkey.kty === 'EC') {
     decoded = asn1ec.fromJWK(jwkey, type, compact);
@@ -49,22 +54,30 @@ export async function fromJwk(jwkey, {type, format, compact=false, passphrase = 
 /**
  * Convert spki/pkcs8 key in string or binary format to jwk.
  * @param key
- * @param type
  * @param format
+ * @param type (optional)
  * @param passphrase
  * @return {*|void}
  */
-export async function toJwk(key, {type, format, passphrase}){
+export async function toJwk(key, format, {type, passphrase}){
   // Peel the pem strings
-  const binKey = (format === 'pem') ? jseu.formatter.pemToBin(key, type) : key;
+  const binKey = (format === 'pem') ? jseu.formatter.pemToBin(key) : key;
 
   // decode binary spki/pkcs8-formatted key to parsed object
   let decoded;
-  if (type === 'public') decoded = SubjectPublicKeyInfo.decode(Buffer.from(binKey), 'der');
+  try { decoded = KeyStructure.decode(Buffer.from(binKey), 'der'); }
+  catch (e) { throw new Error('FailedToDecodeKey'); }
+
+  if(decoded.type === 'subjectPublicKeyInfo'){
+    if(typeof type === 'undefined') type = 'public';
+    if(type === 'private') throw new Error('UnableToDerivePrivateKeyFromPublicKey');
+    decoded = decoded.value;
+  }
   else {
-    decoded = PrivateKeyStructure.decode(Buffer.from(binKey), 'der');
+    if(typeof type === 'undefined') type = 'private';
     if(decoded.type === 'encryptedPrivateKeyInfo') decoded = await decryptEncryptedPrivateKeyInfo(decoded.value, passphrase);
     else if (decoded.type === 'oneAsymmetricKey') decoded = decoded.value;
+    else throw new Error('UnsupportedKeyStructure');
   }
 
   const keyTypes = getAlgorithmFromOid(

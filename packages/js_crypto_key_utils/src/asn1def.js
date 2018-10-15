@@ -5,6 +5,14 @@
 import asn from 'asn1.js';
 
 ///////////////////////////////////////////////////////////////////////////////////////////
+export const KeyStructure = asn.define('KeyStructure', function (){
+  this.choice({
+    subjectPublicKeyInfo: this.use(SubjectPublicKeyInfo),
+    oneAsymmetricKey: this.use(OneAsymmetricKey),
+    encryptedPrivateKeyInfo: this.use(EncryptedPrivateKeyInfo)
+  });
+});
+
 // https://tools.ietf.org/html/rfc5280
 export const SubjectPublicKeyInfo = asn.define('SubjectPublicKeyInfo', function () {
   this.seq().obj(
@@ -16,12 +24,6 @@ export const SubjectPublicKeyInfo = asn.define('SubjectPublicKeyInfo', function 
 ///////////////////////////////////////////////////////////////////////////////////////////
 // ( old version PrivateKeyInfo https://tools.ietf.org/html/rfc5208 )
 // RFC5958 https://tools.ietf.org/html/rfc5958
-export const PrivateKeyStructure = asn.define('PrivateKeyStructure', function (){
-  this.choice({
-    oneAsymmetricKey: this.use(OneAsymmetricKey),
-    encryptedPrivateKeyInfo: this.use(EncryptedPrivateKeyInfo)
-  });
-});
 export const OneAsymmetricKey = asn.define('OneAsymmetricKey', function () {
   this.seq().obj(
     this.key('version').use(Version),

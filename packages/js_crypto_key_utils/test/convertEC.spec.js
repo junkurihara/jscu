@@ -26,12 +26,12 @@ describe('EC Key conversion from/to JWK test.', () => {
 
   it('JWK EC should be successfully converted to PEM and re-converted to JWK correctly', async () => {
     const array = await Promise.all(ECKeySet.map( async (key) => {
-      const pempub = await keyutils.fromJwkTo('pem', key.publicKey, 'public', {compact: false});
-      const pempri = await keyutils.fromJwkTo('pem', key.privateKey, 'private', {compact: false});
+      const pempub = await keyutils.fromJwkTo('pem', key.publicKey, {type: 'public', compact: false});
+      const pempri = await keyutils.fromJwkTo('pem', key.privateKey, {type: 'private', compact: false});
       // console.log(pempub);
       // console.log(pempri);
-      const jwkpub = await keyutils.toJwkFrom('pem', pempub, 'public');
-      const jwkpri = await keyutils.toJwkFrom('pem', pempri, 'private');
+      const jwkpub = await keyutils.toJwkFrom('pem', pempub, {type: 'public'});
+      const jwkpri = await keyutils.toJwkFrom('pem', pempri, {type: 'private'});
       delete key.publicKey.ext;
       delete key.privateKey.ext;
       delete key.publicKey.alg;
@@ -57,12 +57,12 @@ describe('EC Key conversion from/to JWK test.', () => {
   it('JWK EC should be successfully converted to PEM and re-converted to JWK correctly with public key compact form', async () => {
 
     const array = await Promise.all(ECKeySet.map( async (key) => {
-      const pempub = await keyutils.fromJwkTo('pem', key.publicKey, 'public', {compact: true});
-      const pempri = await keyutils.fromJwkTo('pem', key.privateKey, 'private', {compact: true});
+      const pempub = await keyutils.fromJwkTo('pem', key.publicKey, {compact: true});
+      const pempri = await keyutils.fromJwkTo('pem', key.privateKey, {compact: true});
       // console.log(pempub);
       // console.log(pempri);
-      const jwkpub = await keyutils.toJwkFrom('pem', pempub, 'public');
-      const jwkpri = await keyutils.toJwkFrom('pem', pempri, 'private');
+      const jwkpub = await keyutils.toJwkFrom('pem', pempub);
+      const jwkpri = await keyutils.toJwkFrom('pem', pempri);
       delete key.publicKey.ext;
       delete key.privateKey.ext;
       delete key.publicKey.alg;
@@ -80,11 +80,11 @@ describe('EC Key conversion from/to JWK test.', () => {
   it('JWK EC should be successfully converted to DER and re-converted to JWK correctly', async () => {
 
     const array = await Promise.all(ECKeySet.map( async (key) => {
-      const derpub = await keyutils.fromJwkTo('der', key.publicKey, 'public', {compact: false});
-      const derpri = await keyutils.fromJwkTo('der', key.privateKey, 'private', {compact: false});
+      const derpub = await keyutils.fromJwkTo('der', key.publicKey, {compact: false});
+      const derpri = await keyutils.fromJwkTo('der', key.privateKey, {compact: false});
 
-      const jwkpub = await keyutils.toJwkFrom('der', derpub, 'public');
-      const jwkpri = await keyutils.toJwkFrom('der', derpri, 'private');
+      const jwkpub = await keyutils.toJwkFrom('der', derpub);
+      const jwkpri = await keyutils.toJwkFrom('der', derpri);
       delete key.publicKey.ext;
       delete key.privateKey.ext;
       delete key.publicKey.alg;
@@ -100,11 +100,11 @@ describe('EC Key conversion from/to JWK test.', () => {
 
   it('JWK EC should be successfully converted to DER and re-converted to JWK correctly with public key compact form', async () => {
     const array = await Promise.all(ECKeySet.map( async (key) => {
-      const derpub = await keyutils.fromJwkTo('der', key.publicKey, 'public', {compact: true});
-      const derpri = await keyutils.fromJwkTo('der', key.privateKey, 'private', {compact: true});
+      const derpub = await keyutils.fromJwkTo('der', key.publicKey, {compact: true});
+      const derpri = await keyutils.fromJwkTo('der', key.privateKey, {compact: true});
 
-      const jwkpub = await keyutils.toJwkFrom('der', derpub, 'public');
-      const jwkpri = await keyutils.toJwkFrom('der', derpri, 'private');
+      const jwkpub = await keyutils.toJwkFrom('der', derpub);
+      const jwkpri = await keyutils.toJwkFrom('der', derpri);
       delete key.publicKey.ext;
       delete key.privateKey.ext;
       delete key.publicKey.alg;
@@ -121,12 +121,12 @@ describe('EC Key conversion from/to JWK test.', () => {
   it('JWK EC should be successfully converted to uncompressed-octet formed key and vice varsa', async () => {
     const array = await Promise.all(ECKeySet.map( async (key) => {
       const namedCurve = key.publicKey.crv;
-      const octpub = await keyutils.fromJwkTo('oct', key.publicKey, 'public', {format: 'string', compact: false});
-      const octpri = await keyutils.fromJwkTo('oct', key.privateKey, 'private', {format: 'string', compact: false});
+      const octpub = await keyutils.fromJwkTo('oct', key.publicKey, {compact: false});
+      const octpri = await keyutils.fromJwkTo('oct', key.privateKey, {compact: false});
       // console.log(octpub);
       // console.log(octpri);
-      const jwkpub = await keyutils.toJwkFrom('oct', octpub, 'public', {format: 'string', namedCurve });
-      const jwkpri = await keyutils.toJwkFrom('oct', octpri, 'private', {format: 'string', namedCurve });
+      const jwkpub = await keyutils.toJwkFrom('oct', octpub, {namedCurve});
+      const jwkpri = await keyutils.toJwkFrom('oct', octpri, {namedCurve});
       delete key.publicKey.ext;
       delete key.privateKey.ext;
       delete key.publicKey.alg;
@@ -143,12 +143,12 @@ describe('EC Key conversion from/to JWK test.', () => {
   it('JWK EC should be successfully converted to compact-octet formed key and vice varsa', async () => {
     const array = await Promise.all(ECKeySet.map( async (key) => {
       const namedCurve = key.publicKey.crv;
-      const octpub = await keyutils.fromJwkTo('oct', key.publicKey, 'public', {format: 'string', compact: true});
-      const octpri = await keyutils.fromJwkTo('oct', key.privateKey, 'private', {format: 'string', compact: true});
+      const octpub = await keyutils.fromJwkTo('oct', key.publicKey, {compact: true});
+      const octpri = await keyutils.fromJwkTo('oct', key.privateKey, {compact: true});
       // console.log(octpub);
       // console.log(octpri);
-      const jwkpub = await keyutils.toJwkFrom('oct', octpub, 'public', {format: 'string', namedCurve });
-      const jwkpri = await keyutils.toJwkFrom('oct', octpri, 'private', {format: 'string', namedCurve });
+      const jwkpub = await keyutils.toJwkFrom('oct', octpub, {namedCurve});
+      const jwkpri = await keyutils.toJwkFrom('oct', octpri, {namedCurve});
       delete key.publicKey.ext;
       delete key.privateKey.ext;
       delete key.publicKey.alg;

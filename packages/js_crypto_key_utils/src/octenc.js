@@ -5,6 +5,7 @@
 import params from './params.js';
 import jseu from 'js-encoding-utils';
 import elliptic from 'elliptic';
+import {getJwkType, getSec1KeyType} from './util.js';
 const Ec = elliptic.ec;
 
 
@@ -12,13 +13,17 @@ const Ec = elliptic.ec;
  * Convert JWK EC public/private keys to octet form
  * compressed form of ec public key: https://tools.ietf.org/html/rfc5480
  * @param jwkey
- * @param type
+ * @param type (optional)
  * @param outputFormat
  * @param compact
  * @return {*}
  */
-export function fromJwk(jwkey, type, outputFormat='binary', compact=false){
-  if (type !== 'public' && type !== 'private') throw new Error('InvalidType');
+export function fromJwk(jwkey, {type, outputFormat='binary', compact=false}){
+  // original key type
+  const orgType = getJwkType(jwkey);
+  if(typeof type === 'undefined') type = orgType;
+  if(orgType === 'public' && type === 'private') throw new Error('UnableToDerivePrivateKeyFromPublicKey');
+
   if(type === 'public'){
     const bufX = jseu.encoder.decodeBase64Url(jwkey.x);
     const bufY = jseu.encoder.decodeBase64Url(jwkey.y);
@@ -50,23 +55,29 @@ export function fromJwk(jwkey, type, outputFormat='binary', compact=false){
 /**
  * Convert Octet form of EC public/private keys to JWK
  * @param octkey
- * @param type
+ * @param type (optional)
  * @param namedCurve
- * @param inputFormat
  * @return {{kty: string, crv: *, x, y}}
  */
-export function toJwk(octkey, type, namedCurve, inputFormat='binary'){
-  if (type !== 'public' && type !== 'private') throw new Error('InvalidType');
+export function toJwk(octkey, namedCurve, {type}){
   if (Object.keys(params.namedCurves).indexOf(namedCurve) < 0) throw new Error('UnsupportedCurve');
 
-  const binKey = (inputFormat === 'string') ? jseu.encoder.hexStringToArrayBuffer(octkey): octkey;
+  // original key type and check the key structure
+  const orgType = getSec1KeyType(octkey, namedCurve);
+  if(typeof type === 'undefined') type = orgType;
+  if(orgType === 'public' && type === 'private') throw new Error('UnableToDerivePrivateKeyFromPublicKey');
 
+  // format conversion
+  const binKey = (typeof octkey === 'string') ? jseu.encoder.hexStringToArrayBuffer(octkey): octkey;
+
+  // instantiation
   const curve = params.namedCurves[namedCurve].indutnyName;
   const ec = new Ec(curve);
-  const ecKey = (type === 'public') ? ec.keyFromPublic(binKey): ec.keyFromPrivate(binKey);
 
-  const len = params.namedCurves[namedCurve].payloadSize;
+  // derive key object from binary key
+  const ecKey = (orgType === 'public') ? ec.keyFromPublic(binKey): ec.keyFromPrivate(binKey);
   const publicKey = new Uint8Array(ecKey.getPublic('array'));
+  const len = params.namedCurves[namedCurve].payloadSize;
 
   const bufX = publicKey.slice(1, len+1);
   const bufY = publicKey.slice(len+1, len*2+1);
@@ -90,8 +101,8 @@ export function toJwk(octkey, type, namedCurve, inputFormat='binary'){
 
 export function octKeyObjFromJwk(jwkey, type, compact=false){
   const octKeyObj = {};
-  octKeyObj.publicKey = fromJwk(jwkey, 'public', 'binary', compact);
-  if(jwkey.d && type === 'private') octKeyObj.privateKey = fromJwk(jwkey, 'private', 'binary', compact);
+  octKeyObj.publicKey = fromJwk(jwkey, {outputFormat: 'binary', type: 'public', compact});
+  if(jwkey.d && type === 'private') octKeyObj.privateKey = fromJwk(jwkey, {outputFormat: 'binary', type: 'private', compact});
 
   return octKeyObj;
 }
@@ -101,6 +112,6 @@ export function octKeyObjToJwk(octKeyObj, type, namedCurve) {
   if (Object.keys(params.namedCurves).indexOf(namedCurve) < 0) throw new Error('UnsupportedCurve');
 
   return (type === 'public')
-    ? toJwk(octKeyObj.publicKey, 'public', namedCurve, 'binary')
-    : toJwk(octKeyObj.privateKey, 'private', namedCurve, 'binary');
+    ? toJwk(octKeyObj.publicKey, namedCurve, {type: 'public'})
+    : toJwk(octKeyObj.privateKey, namedCurve, {type: 'private'});
 }
