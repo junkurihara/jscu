@@ -43,7 +43,7 @@ export async function fromJwkTo(output = 'pem', jwkey, options={}){
   else if (output === 'oct' && jwkey.kty === 'EC') {
     return octenc.fromJwk(jwkey, {type: options.type, outputFormat: options.format, compact: options.compact});
   }
-  else throw new Error('UnsupportedEnvironment');
+  else throw new Error('UnsupportedConversion');
 
 }
 
@@ -73,5 +73,5 @@ export async function toJwkFrom(input, key, options={}){
   else if (input === 'oct') {
     return octenc.toJwk(key, options.namedCurve, {type: options.type});
   }
-  else throw new Error('UnsupportedEnvironment');
+  else throw new Error('UnsupportedConversion');
 }
