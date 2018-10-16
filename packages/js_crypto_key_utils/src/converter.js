@@ -17,7 +17,7 @@ import * as octenc from './octenc.js';
  * @param options
   * For EC JWK : options.compact = true or false
   * For EC JWK with output = 'oct' : options.format = 'binary' or 'string'
-  * For both: type (optional) : 'public' or 'private' derived key type. from private key, public key can be derived.
+  * For both: outputPublic (optional) : boolean. derived key type. from private key, public key can be derived when true.
  * @return {Uint8Array}
  */
 export async function fromJwkTo(output = 'pem', jwkey, options={}){
@@ -25,7 +25,7 @@ export async function fromJwkTo(output = 'pem', jwkey, options={}){
   if (['pem', 'der', 'oct'].indexOf(output) < 0) throw new Error('InvalidOutputForm');
   if (typeof jwkey !== 'object') throw new Error('InvalidJWKAsObject');
   if (jwkey.kty !== 'EC' && jwkey.kty !== 'RSA') throw new Error('UnsupportedKeyType');
-  if (typeof options.type !== 'undefined' && options.type !== 'public' && options.type !== 'private') throw new Error('InvalidOutputKeyType');
+  if (typeof options.outputPublic !== 'undefined' && typeof options.outputPublic !== 'boolean') throw new Error('outputPublicMustBeBoolean');
 
   // default values
   if (jwkey.key === 'EC' && typeof options.compact !== 'boolean') options.compact = false;
@@ -36,12 +36,12 @@ export async function fromJwkTo(output = 'pem', jwkey, options={}){
   if (output === 'der' || output === 'pem') {
     return await asn1enc.fromJwk(
       jwkey, output,
-      {type: options.type, compact: options.compact, passphrase: options.passphrase, encOptions: options.encOptions }
+      {outputPublic: options.outputPublic, compact: options.compact, passphrase: options.passphrase, encOptions: options.encOptions }
     );
   }
   // In the case of Oct
   else if (output === 'oct' && jwkey.kty === 'EC') {
-    return octenc.fromJwk(jwkey, {type: options.type, outputFormat: options.format, compact: options.compact});
+    return octenc.fromJwk(jwkey, {outputPublic: options.outputPublic, outputFormat: options.format, compact: options.compact});
   }
   else throw new Error('UnsupportedConversion');
 
@@ -60,18 +60,18 @@ export async function toJwkFrom(input, key, options={}){
   // assertion
   if (['pem', 'der', 'oct'].indexOf(input) < 0) throw new Error('InvalidInputForm');
   if (input === 'oct' && !options.namedCurve ) throw new Error('InappropriateOptions');
-  if (typeof options.type !== 'undefined' && options.type !== 'public' && options.type !== 'private') throw new Error('InvalidOutputKeyType');
+  if (typeof options.outputPublic !== 'undefined' && typeof options.outputPublic !== 'boolean') throw new Error('outputPublicMustBeBoolean');
 
   // default values
   if ((input === 'der' || input === 'pem') && typeof options.passphrase === 'undefined') options.passphrase = '';
 
   // In the case of PEM
   if (input === 'der' || input === 'pem') {
-    return await asn1enc.toJwk(key, input, {type: options.type, passphrase: options.passphrase});
+    return await asn1enc.toJwk(key, input, {outputPublic: options.outputPublic, passphrase: options.passphrase});
   }
   // In the case of Oct
   else if (input === 'oct') {
-    return octenc.toJwk(key, options.namedCurve, {type: options.type});
+    return octenc.toJwk(key, options.namedCurve, {oubputPublic: options.outputPublic});
   }
   else throw new Error('UnsupportedConversion');
 }

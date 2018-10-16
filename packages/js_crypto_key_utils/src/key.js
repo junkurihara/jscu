@@ -7,7 +7,6 @@ import {getJwkThumbprint} from './thumbprint.js';
 import jseu from 'js-encoding-utils';
 import {getJwkType, getSec1KeyType, isAsn1Encrypted, isAsn1Public} from './util.js';
 
-
 /**
  * Key class
  */
@@ -28,10 +27,13 @@ export class Key {
       this._setJwk(key);
     }
     else if (format === 'der' || format === 'pem'){
+      if(format === 'der' && !(key instanceof Uint8Array)) throw new Error('DerKeyMustBeUint8Array');
+      if(format === 'pem' && (typeof key !== 'string')) throw new Error('PemKeyMustBeString');
       this._setAsn1(key, format);
     }
     else if (format === 'oct'){
-      if(typeof options.namedCurve === 'undefined') throw new Error('namedCurveMustBeSpecified');
+      if(typeof options.namedCurve !== 'string') throw new Error('namedCurveMustBeSpecified');
+      if(!(key instanceof Uint8Array)) throw new Error('OctetKeyMustBeUint8Array');
       this._setSec1(key, options.namedCurve);
     }
     else throw new Error('UnsupportedType');
@@ -90,8 +92,8 @@ export class Key {
    * Wrapper of converter. Imported key must be basically decrypted except the case where the key is exported as-is.
    * @param format {string}: 'jwk', 'pem', 'der' or 'oct'
    * @param options {object}:
-   * - options.type {'public'|'private}: (optional) [format = *]
-   *     only for derivation of public key from private key.
+   * - options.outputPublic {boolean}: (optional) [format = *]
+   *     derive public key from private key when options.outputPublic = true.
    * - options.compact {boolean}: (optional) [format = 'der', 'pem' or 'oct', only for EC key]
    *     generate compressed EC public key.
    * - options.encryptParams {object}: (optional) [format = 'der' or 'pem'] options to generate encrypted der/pem private key.
@@ -139,7 +141,7 @@ export class Key {
     if (format === 'der' || format === 'pem') {
       if(typeof options.encryptParams === 'undefined') options.encryptParams = {};
       return await fromJwkTo(format, jwkey, {
-        type: options.type,
+        outputPublic: options.outputPublic,
         compact: options.compact,
         passphrase: options.encryptParams.passphrase,
         encOptions: options.encryptParams
@@ -147,7 +149,7 @@ export class Key {
     }
     else if (format === 'oct') {
       return await fromJwkTo(format, jwkey, {
-        type: options.type,
+        outputPublic: options.outputPublic,
         format: options.output,
         compact: options.compact
       });
@@ -157,7 +159,7 @@ export class Key {
 
   /**
    * Encrypt stored key and set the encrypted key to this instance.
-   * @param passphrase
+   * @param passphrase {string}
    * @return {Promise<boolean>}
    */
   async encrypt (passphrase){
@@ -170,7 +172,7 @@ export class Key {
 
   /**
    * Decrypted stored key and set the decrypted key in JWK to this instance.
-   * @param passphrase
+   * @param passphrase {string}
    * @return {Promise<boolean>}
    */
   async decrypt (passphrase){
@@ -191,27 +193,15 @@ export class Key {
   }
 
   // getters
-  get isEncrypted(){
-    return this._isEncrypted;
-  }
+  get isEncrypted(){ return this._isEncrypted; }
 
-  get isPrivate(){
-    return this._type === 'private';
-  }
+  get isPrivate(){ return this._type === 'private'; }
 
-  get der(){
-    return this.export('der');
-  }
+  get der(){ return this.export('der'); }
 
-  get pem(){
-    return this.export('pem');
-  }
+  get pem(){ return this.export('pem'); }
 
-  get jwk(){
-    return this.export('jwk');
-  }
+  get jwk(){ return this.export('jwk'); }
 
-  get oct(){
-    return this.export('oct', {output: 'string'});
-  }
+  get oct(){ return this.export('oct', {output: 'string'});  }
 }

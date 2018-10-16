@@ -5,7 +5,7 @@ var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefau
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.PBES2ESParams = exports.PBKDF2Params = exports.PBES2Params = exports.PBEParameter = exports.EncryptedPrivateKeyInfo = exports.OneAsymmetricKey = exports.PrivateKeyStructure = exports.SubjectPublicKeyInfo = void 0;
+exports.PBES2ESParams = exports.PBKDF2Params = exports.PBES2Params = exports.PBEParameter = exports.EncryptedPrivateKeyInfo = exports.OneAsymmetricKey = exports.SubjectPublicKeyInfo = exports.KeyStructure = void 0;
 
 var _asn = _interopRequireDefault(require("asn1.js"));
 
@@ -13,7 +13,17 @@ var _asn = _interopRequireDefault(require("asn1.js"));
  * asn1def.js
  */
 ///////////////////////////////////////////////////////////////////////////////////////////
-// https://tools.ietf.org/html/rfc5280
+var KeyStructure = _asn.default.define('KeyStructure', function () {
+  this.choice({
+    subjectPublicKeyInfo: this.use(SubjectPublicKeyInfo),
+    oneAsymmetricKey: this.use(OneAsymmetricKey),
+    encryptedPrivateKeyInfo: this.use(EncryptedPrivateKeyInfo)
+  });
+}); // https://tools.ietf.org/html/rfc5280
+
+
+exports.KeyStructure = KeyStructure;
+
 var SubjectPublicKeyInfo = _asn.default.define('SubjectPublicKeyInfo', function () {
   this.seq().obj(this.key('algorithm').use(AlgorithmIdentifier), this.key('subjectPublicKey').bitstr());
 }); ///////////////////////////////////////////////////////////////////////////////////////////
@@ -22,15 +32,6 @@ var SubjectPublicKeyInfo = _asn.default.define('SubjectPublicKeyInfo', function 
 
 
 exports.SubjectPublicKeyInfo = SubjectPublicKeyInfo;
-
-var PrivateKeyStructure = _asn.default.define('PrivateKeyStructure', function () {
-  this.choice({
-    oneAsymmetricKey: this.use(OneAsymmetricKey),
-    encryptedPrivateKeyInfo: this.use(EncryptedPrivateKeyInfo)
-  });
-});
-
-exports.PrivateKeyStructure = PrivateKeyStructure;
 
 var OneAsymmetricKey = _asn.default.define('OneAsymmetricKey', function () {
   this.seq().obj(this.key('version').use(Version), this.key('privateKeyAlgorithm').use(AlgorithmIdentifier), this.key('privateKey').octstr(), this.key('attributes').implicit(0).optional().any(), this.key('publicKey').implicit(1).optional().bitstr());

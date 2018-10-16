@@ -1,6 +1,7 @@
 import {Key} from '../src/key.js';
 import sampleRSA from './rsa_sample.js';
 import ec from 'js-crypto-ec/dist/index.js';
+import jseu from 'js-encoding-utils';
 
 import chai from 'chai';
 // const should = chai.should();
@@ -25,63 +26,52 @@ describe('RSA/EC Key conversion from/to JWK test.', () => {
     }));
   });
 
-  it('EC Private Key Test', async function () {
+  it('EC: Derive public key to private key', async function () {
     this.timeout(4000);
     const array = await Promise.all(ECKeySet.map( async (key) => {
       const keyObj = new Key('jwk', key.privateKey);
+      expect(keyObj.isPrivate).to.be.true;
 
-      const pem = await keyObj.export('pem');
-      console.log(await keyObj.export('pem', {compact: true, type: 'public'}));  // export public from private
-      // console.log(pem);
+      const pubpemCompact = await keyObj.export('pem', {compact: true, outputPublic: true});  // export public from private
+      const koc = new Key('pem', pubpemCompact);
+      expect(koc.isPrivate).to.be.false;
+      const kocjwk = await koc.export('jwk');
 
-      const oct = await keyObj.export('oct', {coutput:'string'});
-      console.log(await keyObj.export('oct', {compact: true, output:'string', type: 'public'})); // export public from private
-      // console.log(oct);
+      const pubpem = await keyObj.export('pem', {compact: false, outputPublic: true});  // export public from private
+      const ko = new Key('pem', pubpem);
+      expect(ko.isPrivate).to.be.false;
+      const kojwk = await ko.export('jwk');
 
-      const encryptedPem = await keyObj.export('pem', {compact: true, encryptParams: {passphrase: 'password'}});
-      // console.log(encryptedPem);
+      expect(
+        JSON.stringify(objectSort(kocjwk)) === JSON.stringify(objectSort(key.publicKey))
+        && JSON.stringify(objectSort(kojwk)) === JSON.stringify(objectSort(key.publicKey))
+      ).to.be.true;
 
-      await keyObj.encrypt('password');
-      console.log(getKeyStatus(keyObj).isEncrypted);
-      console.log(await keyObj.pem);
-      await keyObj.decrypt('password');
-      console.log(getKeyStatus(keyObj).isEncrypted);
-      console.log(await keyObj.pem);
-      console.log(await keyObj.oct);
-      console.log(await keyObj.jwk);
-
+      const octpemCompact = await keyObj.export('oct', {compact: true, output:'string', outputPublic: true});
+      const ooc = new Key('oct', jseu.encoder.hexStringToArrayBuffer(octpemCompact), {namedCurve: key.publicKey.crv});
+      // console.log(getKeyStatus(ooc));
+      expect(ooc.isPrivate).to.be.false;
+      const oocjwk = await ooc.export('jwk');
 
 
-      // const pempub = await keyutils.fromJwkTo('pem', key.publicKey, {type: 'public', compact: false});
-      // const pempri = await keyutils.fromJwkTo('pem', key.privateKey, {type: 'private', compact: false});
-      // // console.log(pempub);
-      // // console.log(pempri);
-      // const jwkpub = await keyutils.toJwkFrom('pem', pempub, {type: 'public'});
-      // const jwkpri = await keyutils.toJwkFrom('pem', pempri, {type: 'private'});
-      // delete key.publicKey.ext;
-      // delete key.privateKey.ext;
-      // delete key.publicKey.alg;
-      // delete key.privateKey.alg;
-      // delete key.publicKey.key_ops;
-      // delete key.privateKey.key_ops;
-      // const res =  (JSON.stringify(objectSort(jwkpub)) === JSON.stringify(objectSort(key.publicKey)))
-      //   && (JSON.stringify(objectSort(jwkpri)) === JSON.stringify(objectSort(key.privateKey)));
-      // if (!res) {
-      //   console.log(objectSort(jwkpub));
-      //   console.log(objectSort(key.publicKey));
-      //   console.log(objectSort(jwkpri));
-      //   console.log(objectSort(key.privateKey));
-      //   // console.log(pempub);
-      //   // console.log(pempri);
-      // }
-      // return res;
+      const octpem = await keyObj.export('oct', {compact: false, output:'string', outputPublic: true}); // export public from private
+      const oo = new Key('oct', jseu.encoder.hexStringToArrayBuffer(octpem), {namedCurve: key.publicKey.crv});
+      expect(oo.isPrivate).to.be.false;
+      const oojwk = await oo.export('jwk');
+
+      expect(
+        JSON.stringify(objectSort(oocjwk)) === JSON.stringify(objectSort(key.publicKey))
+        && JSON.stringify(objectSort(oojwk)) === JSON.stringify(objectSort(key.publicKey))
+      ).to.be.true;
+
+
     }));
     // console.log(array);
     // expect(array.every( (elem) => elem)).to.be.true;
   });
 
 
-  it('RSA Private Key Test', async () => {
+  it('Status Change Test', async () => {
     const array = await Promise.all(bits.map( async (bitLen) => {
       const key = new Key('pem', sampleRSA[bitLen].privateKey.pem);
       let status = getKeyStatus(key);
@@ -109,7 +99,7 @@ describe('RSA/EC Key conversion from/to JWK test.', () => {
         && status.derLength > 0 && status.status.der
         && status.jwkKeyLength === 0 && !status.status.jwk
       ).to.be.true;
-      console.log(status);
+      // console.log(status);
 
       const asis = await key.export('pem');
       // console.log(asis);
@@ -122,9 +112,9 @@ describe('RSA/EC Key conversion from/to JWK test.', () => {
         && status.derLength === 0 && !status.status.der
         && status.jwkKeyLength === 9 && status.status.jwk
       ).to.be.true;
-      console.log(status);
+      // console.log(status);
 
-      console.log(await key.getJwkThumbprint('SHA-256', 'hex'));
+      // console.log(await key.getJwkThumbprint('SHA-256', 'hex'));
 
 
     }));

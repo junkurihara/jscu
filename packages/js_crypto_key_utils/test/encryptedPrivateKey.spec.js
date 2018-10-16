@@ -35,17 +35,28 @@ describe('RSA/EC Key conversion from/to JWK test.', () => {
     const array = await Promise.all(Object.keys(rsaSample).map( async (key) => {
       const elem = await Promise.all(encOptionArray.map( async (encOptions) => {
         let result = true;
-        const isEncrypted = keyutils.isAsn1Encrypted(rsaSample[key], 'pem');
-        result = result && isEncrypted;
-        const jwkpriv = await keyutils.toJwkFrom('pem', rsaSample[key], {passphrase: 'kddilabs'}).catch( () => {result = false;});
-        const pemPriv = await keyutils.fromJwkTo('pem', jwkpriv,
-          { passphrase: 'kddilabs',
-            encOptions }
-        ).catch( () => {result = false; });
-        // console.log(pemPriv);
+        const privateKey = new keyutils.Key('pem', rsaSample[key]);
+        result = result && privateKey.isEncrypted;
 
-        const jwkpriv2 = await keyutils.toJwkFrom('pem', pemPriv, {passphrase: 'kddilabs'}).catch( (e) => {result = false;});
-        return result && (objectSort(jwkpriv).toString() === objectSort(jwkpriv2).toString());
+        await privateKey.decrypt('kddilabs').catch( () => {result = false;});
+        result = result && !privateKey.isEncrypted;
+
+        const jwkpri = await privateKey.export('pem').catch( () => {result = false; });
+        const pempri = await privateKey.export(
+          'pem', {
+            encryptParams: Object.assign({ passphrase: 'kddilabs' }, encOptions)
+          }
+        ).catch( () => {result = false; });
+
+        const privateKey2 = new keyutils.Key('pem', pempri);
+        result = result && privateKey2.isEncrypted;
+        await privateKey2.decrypt('kddilabs').catch( () => {result = false;});
+        result = result && !privateKey2.isEncrypted;
+
+        const jwkpri2 = await privateKey2.export('pem').catch( () => {result = false;});
+
+
+        return result && (objectSort(jwkpri).toString() === objectSort(jwkpri2).toString());
       }));
       console.log(elem);
       return elem.every( (x) => x);
@@ -92,16 +103,28 @@ describe('RSA/EC Key conversion from/to JWK test.', () => {
     const array = await Promise.all(Object.keys(ecSample).map( async (key) => {
       const elem = await Promise.all(encOptionArray.map( async (encOptions) => {
         let result = true;
-        const isEncrypted = keyutils.isAsn1Encrypted(rsaSample[key], 'pem');
-        result = result && isEncrypted;
-        const jwkpriv = await keyutils.toJwkFrom('pem', rsaSample[key], {passphrase: 'kddilabs'}).catch( () => {result = false;});
-        const pemPriv = await keyutils.fromJwkTo('pem', jwkpriv,
-          { passphrase: 'kddilabs',
-            encOptions }
-        ).catch( () => {result = false;});
+        const privateKey = new keyutils.Key('pem', ecSample[key]);
+        result = result && privateKey.isEncrypted;
 
-        const jwkpriv2 = await keyutils.toJwkFrom('pem', pemPriv, {passphrase: 'kddilabs'}).catch( () => {result = false;});
-        return result && (objectSort(jwkpriv).toString() === objectSort(jwkpriv2).toString());
+        await privateKey.decrypt('kddilabs').catch( () => {result = false;});
+        result = result && !privateKey.isEncrypted;
+
+        const jwkpri = await privateKey.export('pem').catch( () => {result = false; });
+        const pempri = await privateKey.export(
+          'pem', {
+            encryptParams: Object.assign({ passphrase: 'kddilabs' }, encOptions)
+          }
+        ).catch( () => {result = false; });
+
+        const privateKey2 = new keyutils.Key('pem', pempri);
+        result = result && privateKey2.isEncrypted;
+        await privateKey2.decrypt('kddilabs').catch( () => {result = false;});
+        result = result && !privateKey2.isEncrypted;
+
+        const jwkpri2 = await privateKey2.export('pem').catch( () => {result = false;});
+
+
+        return result && (objectSort(jwkpri).toString() === objectSort(jwkpri2).toString());
       }));
       console.log(elem);
       return elem.every( (x) => x);

@@ -31,5 +31,6 @@ export async function getJwkThumbprint(jwkey, alg='SHA-256', output='binary'){
   const thumbPrintBuf = await hash.compute(uint8json, alg);
 
   if(output === 'hex') return jseu.encoder.arrayBufferToHexString(thumbPrintBuf);
+  else if(output === 'base64') return jseu.encoder.encodeBase64(thumbPrintBuf);
   else if (output === 'binary') return thumbPrintBuf;
 }
