@@ -1,6 +1,6 @@
 {
   "name": "js-crypto-key-utils",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Universal Module for Cryptographic Key Utilities in JavaScript, including PEM-JWK converters",
   "main": "dist/jsckeyutil.bundle.js",
   "scripts": {
