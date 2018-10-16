@@ -26,7 +26,7 @@ var _buffer = _interopRequireDefault(require("buffer"));
 
 var _asn1def = require("./asn1def.js");
 
-var _rfc = require("./rfc8081.js");
+var _rfc = require("./rfc8018.js");
 
 var _util = require("./util.js");
 

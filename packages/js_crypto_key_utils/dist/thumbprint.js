@@ -106,14 +106,22 @@ function _getJwkThumbprint() {
             return _context.abrupt("return", _jsEncodingUtils.default.encoder.arrayBufferToHexString(thumbPrintBuf));
 
           case 21:
+            if (!(output === 'base64')) {
+              _context.next = 25;
+              break;
+            }
+
+            return _context.abrupt("return", _jsEncodingUtils.default.encoder.encodeBase64(thumbPrintBuf));
+
+          case 25:
             if (!(output === 'binary')) {
-              _context.next = 23;
+              _context.next = 27;
               break;
             }
 
             return _context.abrupt("return", thumbPrintBuf);
 
-          case 23:
+          case 27:
           case "end":
             return _context.stop();
         }
