@@ -8,7 +8,7 @@ import params, {getAlgorithmFromOid} from './params.js';
 import jseu from 'js-encoding-utils';
 import BufferMod from 'buffer';
 import {OneAsymmetricKey, SubjectPublicKeyInfo, KeyStructure} from './asn1def.js';
-import {encryptEncryptedPrivateKeyInfo, decryptEncryptedPrivateKeyInfo} from './rfc8081.js';
+import {encryptEncryptedPrivateKeyInfo, decryptEncryptedPrivateKeyInfo} from './rfc8018.js';
 import {getJwkType} from './util.js';
 const Buffer = BufferMod.Buffer;
 

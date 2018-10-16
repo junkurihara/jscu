@@ -131,7 +131,7 @@ function decodePBES2(rawParams){
 
 
 //////////////////////
-// PBES2 RFC8081 Section 6.2.1
+// PBES2 RFC8018 Section 6.2.1
 async function encryptPBES2(binKey, passphrase, kdfAlgorithm, prf, iterationCount, cipher){
   // kdf
   const pBuffer = jseu.encoder.stringToArrayBuffer(passphrase);
@@ -183,7 +183,7 @@ async function encryptPBES2(binKey, passphrase, kdfAlgorithm, prf, iterationCoun
 }
 
 //////////////////////////////
-// PBES2 RFC8081 Section 6.2.2
+// PBES2 RFC8018 Section 6.2.2
 async function decryptPBES2(decoded, passphrase){
   const kdf = decoded.encryptionAlgorithm.parameters.keyDerivationFunc;
   const eS = decoded.encryptionAlgorithm.parameters.encryptionScheme;
@@ -265,7 +265,7 @@ function nwbo(num, len){
 }
 
 //////////////////////////////
-// PBES1 RFC8081 Section 6.1.1
+// PBES1 RFC8018 Section 6.1.1
 async function encryptPBES1(binKey, passphrase, algorithm, iterationCount){
   // pbkdf1
   const pBuffer = jseu.encoder.stringToArrayBuffer(passphrase);
@@ -299,7 +299,7 @@ async function encryptPBES1(binKey, passphrase, algorithm, iterationCount){
 }
 
 //////////////////////////////
-// PBES1 RFC8081 Section 6.1.2
+// PBES1 RFC8018 Section 6.1.2
 async function decryptPBES1(decoded, passphrase){
   // pbkdf1
   const pBuffer = jseu.encoder.stringToArrayBuffer(passphrase);
