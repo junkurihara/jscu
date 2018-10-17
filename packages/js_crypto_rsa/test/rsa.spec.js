@@ -16,23 +16,21 @@ describe('RSA cryptography test', () => {
     for(let i = 0; i < msgLen; i++) msg[i] = 0xFF & i;
   });
 
-  if(typeof window !== 'undefined') { // TODO: NODEjs currently doesn't work for key generation
-    it('JWK key pair is correctly generated', async function () {
-      this.timeout(500000);
-      const results = await Promise.all(modulusLength.map(async (n) => {
-        let result = true;
-        const key = await rsa.generateKey(n).catch((e) => {
-          result = false;
-        });
-        keys.push(key);
-        // console.log(key);
-        return result;
-      }));
-      console.log(results);
-      console.log(keys);
-      expect(results.every((r) => r)).to.be.true;
-    });
-  }
+  it('JWK key pair is correctly generated', async function () {
+    this.timeout(500000);
+    const results = await Promise.all(modulusLength.map(async (n) => {
+      let result = true;
+      const key = await rsa.generateKey(n).catch((e) => {
+        result = false;
+      });
+      keys.push(key);
+      // console.log(key);
+      return result;
+    }));
+    console.log(results);
+    console.log(keys);
+    expect(results.every((r) => r)).to.be.true;
+  });
 
   it('Message is successfully encrypted and encrypted', async function () {
     this.timeout(5000);

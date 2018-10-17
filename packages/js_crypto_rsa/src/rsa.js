@@ -32,7 +32,7 @@ export async function generateKey(modulusLength = 2048, publicExponent = new Uin
   }
   else if (typeof nodeCrypto !== 'undefined' ) { // for node
     try{
-      keyPair = nodeapi.generateKey(modulusLength, publicExponent, nodeCrypto);
+      keyPair = await nodeapi.generateKey(modulusLength, publicExponent, nodeCrypto);
     } catch(e) {
       errMsg = e.message;
       native = false;

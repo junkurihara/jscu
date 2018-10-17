@@ -92,37 +92,54 @@ function _generateKey() {
 
           case 9:
             keyPair = _context.sent;
-            _context.next = 13;
+            _context.next = 26;
             break;
 
           case 12:
-            if (typeof nodeCrypto !== 'undefined') {
-              // for node
-              try {
-                keyPair = nodeapi.generateKey(modulusLength, publicExponent, nodeCrypto);
-              } catch (e) {
-                errMsg = e.message;
-                native = false;
-              }
-            } else native = false;
+            if (!(typeof nodeCrypto !== 'undefined')) {
+              _context.next = 25;
+              break;
+            }
 
-          case 13:
+            _context.prev = 13;
+            _context.next = 16;
+            return nodeapi.generateKey(modulusLength, publicExponent, nodeCrypto);
+
+          case 16:
+            keyPair = _context.sent;
+            _context.next = 23;
+            break;
+
+          case 19:
+            _context.prev = 19;
+            _context.t0 = _context["catch"](13);
+            errMsg = _context.t0.message;
+            native = false;
+
+          case 23:
+            _context.next = 26;
+            break;
+
+          case 25:
+            native = false;
+
+          case 26:
             if (!(native === false)) {
-              _context.next = 15;
+              _context.next = 28;
               break;
             }
 
             throw new Error("UnsupportedEnvironment: ".concat(errMsg));
 
-          case 15:
+          case 28:
             return _context.abrupt("return", keyPair);
 
-          case 16:
+          case 29:
           case "end":
             return _context.stop();
         }
       }
-    }, _callee, this);
+    }, _callee, this, [[13, 19]]);
   }));
   return _generateKey.apply(this, arguments);
 }

@@ -6,10 +6,32 @@ import params from './params.js';
 import {Key} from 'js-crypto-key-utils/dist/index.js';
 import jseu from 'js-encoding-utils';
 import * as oaep from './oaep.js';
+import BN from 'bn.js';
 
 // TODO: Currently not implemented in Node.js. Will be available from Node.js v10.12.0.
-export function generateKey(modulusLength = 2048, publicExponent = new Uint8Array([0x01, 0x00, 0x01]), nodeCrypto){
-  throw new Error('CurrentlyNodeKeyGenIsUnsupported');
+export async function generateKey(modulusLength = 2048, publicExponent = new Uint8Array([0x01, 0x00, 0x01]), nodeCrypto){
+  const pe = new BN(publicExponent);
+  const options = {
+    modulusLength: (typeof modulusLength !== 'number') ? parseInt(modulusLength, 10) : modulusLength,
+    publicExponent: pe.toNumber(),
+    publicKeyEncoding: {type: 'spki', format: 'der'},
+    privateKeyEncoding: {type: 'pkcs8', format: 'der'}
+
+  };
+  const nodeKeyGen = () => new Promise( (resolve, reject) => {
+    nodeCrypto.generateKeyPair('rsa', options,
+      (err, publicKey, privateKey) => {
+        if (err) reject('KeyGenerationFailedNode');
+        else resolve({publicKey, privateKey});
+      });
+  });
+  const keyPairDer = await nodeKeyGen().catch( () => {throw new Error('KeyGenerationFailedNode');});
+  const publicObj = new Key('der', new Uint8Array(keyPairDer.publicKey));
+  const privateObj = new Key('der', new Uint8Array(keyPairDer.privateKey));
+  return {
+    publicKey: await publicObj.export('jwk'),
+    privateKey: await privateObj.export('jwk')
+  };
 }
 
 export async function sign(msg, privateJwk, hash = 'SHA-256', algorithm = {name: 'RSA-PSS', saltLength: 192}, nodeCrypto) {
