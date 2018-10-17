@@ -867,12 +867,12 @@ after@0.8.2:
   resolved "https://registry.yarnpkg.com/after/-/after-0.8.2.tgz#fedb394f9f0e02aa9768e702bda23b505fae7e1f"
   integrity sha1-/ts5T58OAqqXaOcCvaI7UF+ufh8=
 
-ajv-keywords@^3.0.0, ajv-keywords@^3.1.0:
+ajv-keywords@^3.1.0:
   version "3.2.0"
   resolved "https://registry.yarnpkg.com/ajv-keywords/-/ajv-keywords-3.2.0.tgz#e86b819c602cf8821ad637413698f1dec021847a"
   integrity sha1-6GuBnGAs+IIa1jdBNpjx3sAhhHo=
 
-ajv@^6.0.1, ajv@^6.1.0, ajv@^6.5.3:
+ajv@^6.1.0, ajv@^6.5.3:
   version "6.5.3"
   resolved "https://registry.yarnpkg.com/ajv/-/ajv-6.5.3.tgz#71a569d189ecf4f4f321224fecb166f071dd90f9"
   integrity sha512-LqZ9wY+fx3UMiiPd741yB2pj3hhil+hQc8taf4o2QGRFpWgZ2V5C8HA165DY9sS3fJwsk7uT7ZlFEyC3Ig3lLg==
@@ -1086,6 +1086,11 @@ babel-plugin-istanbul@5.1.0:
     find-up "^3.0.0"
     istanbul-lib-instrument "^3.0.0"
     test-exclude "^5.0.0"
+
+babel-plugin-transform-remove-console@^6.9.4:
+  version "6.9.4"
+  resolved "https://registry.yarnpkg.com/babel-plugin-transform-remove-console/-/babel-plugin-transform-remove-console-6.9.4.tgz#b980360c067384e24b357a588d807d3c83527780"
+  integrity sha1-uYA2DAZzhOJLNXpYjYB9PINSd4A=
 
 babel-runtime@^6.0.0:
   version "6.26.0"
@@ -1450,6 +1455,11 @@ chardet@^0.7.0:
   resolved "https://registry.yarnpkg.com/chardet/-/chardet-0.7.0.tgz#90094849f0937f2eedc2425d0d28a9e5f0cbad9e"
   integrity sha512-mT8iDcrh03qDGRRmoA2hmBJnxpllMR+0/0qlzjqZES6NdiWDcZkCNAk4rPFZ9Q85r27unkiNNg8ZOiwZXBHwcA==
 
+charenc@~0.0.1:
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/charenc/-/charenc-0.0.2.tgz#c0a1d2f3a7092e03774bfa83f14c0fc5790a8667"
+  integrity sha1-wKHS86cJLgN3S/qD8UwPxXkKhmc=
+
 check-error@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/check-error/-/check-error-1.0.2.tgz#574d312edd88bb5dd8912e9286dd6c0aed4aac82"
@@ -1740,6 +1750,11 @@ cross-spawn@^6.0.0, cross-spawn@^6.0.5:
     semver "^5.5.0"
     shebang-command "^1.2.0"
     which "^1.2.9"
+
+crypt@~0.0.1:
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/crypt/-/crypt-0.0.2.tgz#88d7ff7ec0dfb86f713dc87bbb42d044d3e6c41b"
+  integrity sha1-iNf/fsDfuG9xPch7u0LQRNPmxBs=
 
 crypto-browserify@^3.11.0:
   version "3.12.0"
@@ -2180,10 +2195,10 @@ eslint-visitor-keys@^1.0.0:
   resolved "https://registry.yarnpkg.com/eslint-visitor-keys/-/eslint-visitor-keys-1.0.0.tgz#3f3180fb2e291017716acb4c9d6d5b5c34a6a81d"
   integrity sha512-qzm/XxIbxm/FHyH341ZrbnMUpe+5Bocte9xkmFMzPMjRaZMcXww+MpBptFvtU+79L362nqiLhekCxCxDPaUMBQ==
 
-eslint@5.6.1:
-  version "5.6.1"
-  resolved "https://registry.yarnpkg.com/eslint/-/eslint-5.6.1.tgz#348134e32ccc09abb2df1bf282b3f6eed8c7b480"
-  integrity sha512-hgrDtGWz368b7Wqf+v1Z69O3ZebNR0+GA7PtDdbmuz4rInFVUV9uw7whjZEiWyLzCjVb5Rs5WRN1TAS6eo7AYA==
+eslint@5.7.0:
+  version "5.7.0"
+  resolved "https://registry.yarnpkg.com/eslint/-/eslint-5.7.0.tgz#55c326d6fb2ad45fcbd0ce17c3846f025d1d819c"
+  integrity sha512-zYCeFQahsxffGl87U2aJ7DPyH8CbWgxBC213Y8+TCanhUTf2gEvfq3EKpHmEcozTLyPmGe9LZdMAwC/CpJBM5A==
   dependencies:
     "@babel/code-frame" "^7.0.0"
     ajv "^6.5.3"
@@ -2216,12 +2231,12 @@ eslint@5.6.1:
     path-is-inside "^1.0.2"
     pluralize "^7.0.0"
     progress "^2.0.0"
-    regexpp "^2.0.0"
+    regexpp "^2.0.1"
     require-uncached "^1.0.3"
     semver "^5.5.1"
     strip-ansi "^4.0.0"
     strip-json-comments "^2.0.1"
-    table "^4.0.3"
+    table "^5.0.2"
     text-table "^0.2.0"
 
 espree@^4.0.0:
@@ -2961,7 +2976,7 @@ is-binary-path@^1.0.0:
   dependencies:
     binary-extensions "^1.0.0"
 
-is-buffer@^1.1.5:
+is-buffer@^1.1.5, is-buffer@~1.1.1:
   version "1.1.6"
   resolved "https://registry.yarnpkg.com/is-buffer/-/is-buffer-1.1.6.tgz#efaa2ea9daa0d7ab2ea13a97b2b8ad51fefbe8be"
   integrity sha512-NcdALwpXkTm5Zvvbk7owOUSvVvBKDgKP5/ewfXEznmQFfs4ZRmanOeKBTjRVjka3QFoN6XJ+9F3USqfHqTaU5w==
@@ -3217,34 +3232,49 @@ istanbul@^0.4.0:
     which "^1.1.1"
     wordwrap "^1.0.0"
 
-js-crypto-hash@^0.1.3:
-  version "0.1.3"
-  resolved "https://registry.yarnpkg.com/js-crypto-hash/-/js-crypto-hash-0.1.3.tgz#cb6b485be443f71f8bdb56c58401aa5dd9d7af0d"
-  integrity sha512-M34ZUChNdYl93XhjUaAG/evIF0SuTbrxmmOUJrLXPN+5seEd+A5Mr/R3F+/rjsb7JmgOaESrbxDSk5wOC3alJA==
+js-crypto-aes@^0.3.0:
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/js-crypto-aes/-/js-crypto-aes-0.3.0.tgz#54f11d0b2fff946b8067566845de9005a299b9ee"
+  integrity sha512-Tz++doIUCkybKOQRC6bVkYXx2EETNAJwejNuhMYOs+6xnM9sqHr7WBh2kZUyhHwwbSqr5pLhgoTb1quGAXOFfg==
   dependencies:
     "@babel/plugin-transform-regenerator" "7.0.0"
     "@babel/runtime" "7.1.2"
 
-js-crypto-hash@^0.1.5:
-  version "0.1.5"
-  resolved "https://registry.yarnpkg.com/js-crypto-hash/-/js-crypto-hash-0.1.5.tgz#3b87e1f80d524dafc4507ccf2065a472a584bb70"
-  integrity sha512-7f8fBBVLaQxqG0soxg/EEpeydjVQUaWNCfjSwQmFEfP0Q5A7ziF3Z7C5Mbye/xFiFKZ+qGKIU68yKf4sx+vfPg==
+js-crypto-hash@^0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/js-crypto-hash/-/js-crypto-hash-0.2.0.tgz#9d76c3ff5db817aef7ef6e2528ffcdcf9da11fa4"
+  integrity sha512-gIuc6qMIEyQLKfBZbzAwalU0TAg9topTkm5jdeKfJba7ROqk7via4OFuHv1pA8kC+xgK3hnKpO1F/7/xwzJ/5Q==
   dependencies:
     "@babel/plugin-transform-regenerator" "7.0.0"
     "@babel/runtime" "7.1.2"
+    md5 "^2.2.1"
+    sha.js "^2.4.11"
 
-js-crypto-key-utils@^0.1.3:
-  version "0.1.3"
-  resolved "https://registry.yarnpkg.com/js-crypto-key-utils/-/js-crypto-key-utils-0.1.3.tgz#f9aab60024e0402dd9ab2ee8bd56f4c011875f8e"
-  integrity sha512-QuuWYhYQZTvOXAGE3TSVaPp2T+JZZTGVT1rx6SnYWwVwV1JD35UlqgdR2QhZ31zxI8oiNFYWEI/3e1VHa1zoyQ==
+js-crypto-hmac@^0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/js-crypto-hmac/-/js-crypto-hmac-0.2.0.tgz#09dad4fd994f32ea629c12bda50267b27058e774"
+  integrity sha512-1i+Q9rAGnmKrgZhCwHmpYcGwAXn6Qts/CRIeDgckfShz3SqOAgTf4YCWDDiBEYY0TyZDlWayn9KBoW/cqm2yPQ==
+  dependencies:
+    "@babel/plugin-transform-regenerator" "7.0.0"
+    "@babel/runtime" "7.1.2"
+    js-crypto-hash "^0.2.0"
+
+js-crypto-key-utils@^0.4.1:
+  version "0.4.1"
+  resolved "https://registry.yarnpkg.com/js-crypto-key-utils/-/js-crypto-key-utils-0.4.1.tgz#795964e30ea67630230b4dfbd8a1cce59814ef73"
+  integrity sha512-F5w1ypGxM46GbJdiW/cWAVUpv2aOB8iJ9sz12Z7GB/USgrYDuECZoh/Z7AkFasi8v9rqV7p4U8cwiPA9yKBCcA==
   dependencies:
     "@babel/plugin-transform-regenerator" "7.0.0"
     "@babel/runtime" "7.1.2"
     asn1.js "^5.0.1"
     buffer "^5.2.1"
+    des.js "^1.0.0"
     elliptic "^6.4.1"
-    js-crypto-hash "^0.1.3"
-    js-encoding-utils "^0.2.6"
+    js-crypto-aes "^0.3.0"
+    js-crypto-hash "^0.2.0"
+    js-crypto-hmac "^0.2.0"
+    js-crypto-random "^0.1.2"
+    js-encoding-utils "^0.2.7"
 
 js-crypto-random@^0.1.2:
   version "0.1.2"
@@ -3254,10 +3284,10 @@ js-crypto-random@^0.1.2:
     "@babel/plugin-transform-regenerator" "^7.0.0"
     "@babel/runtime" "^7.1.2"
 
-js-encoding-utils@^0.2.6:
-  version "0.2.6"
-  resolved "https://registry.yarnpkg.com/js-encoding-utils/-/js-encoding-utils-0.2.6.tgz#81809f998333df2c4a94fed2c620b8975f6f9327"
-  integrity sha512-d7b0bVglC3sFUSRLTWlzF4hJL38v4hZm5h+k8oozXK+UXSkE1Ag8frEn5zEUMTybLDXhMZTqIiwVi8hn2snK+A==
+js-encoding-utils@^0.2.7:
+  version "0.2.7"
+  resolved "https://registry.yarnpkg.com/js-encoding-utils/-/js-encoding-utils-0.2.7.tgz#f7904f74410647af81d776c335322acce66667d7"
+  integrity sha512-UR2qNi6OvTLdVNKhBJ+zoKxrueRfHOvP4JqwnbxuElUY7IXVFnH5okimBmjYTkfW4yQ5leo8n5sgttrv47b9MQ==
   dependencies:
     "@babel/plugin-transform-regenerator" "7.0.0"
     "@babel/runtime" "7.1.2"
@@ -3589,6 +3619,15 @@ md5.js@^1.3.4:
   dependencies:
     hash-base "^3.0.0"
     inherits "^2.0.1"
+
+md5@^2.2.1:
+  version "2.2.1"
+  resolved "https://registry.yarnpkg.com/md5/-/md5-2.2.1.tgz#53ab38d5fe3c8891ba465329ea23fac0540126f9"
+  integrity sha1-U6s41f48iJG6RlMp6iP6wFQBJvk=
+  dependencies:
+    charenc "~0.0.1"
+    crypt "~0.0.1"
+    is-buffer "~1.1.1"
 
 media-typer@0.3.0:
   version "0.3.0"
@@ -4615,10 +4654,10 @@ regex-not@^1.0.0, regex-not@^1.0.2:
     extend-shallow "^3.0.2"
     safe-regex "^1.1.0"
 
-regexpp@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/regexpp/-/regexpp-2.0.0.tgz#b2a7534a85ca1b033bcf5ce9ff8e56d4e0755365"
-  integrity sha512-g2FAVtR8Uh8GO1Nv5wpxW7VFVwHcCEr4wyA8/MHiRkO8uHoR5ntAA8Uq3P1vvMTX/BeQiRVSpDGLd+Wn5HNOTA==
+regexpp@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/regexpp/-/regexpp-2.0.1.tgz#8d19d31cf632482b589049f8281f93dbcba4d07f"
+  integrity sha512-lv0M6+TkDVniA3aD1Eg0DVpfU/booSu7Eev3TDO/mZKHBfVjgCGTV4t4buppESEYDtkArYFOxTJWv6S5C+iaNw==
 
 regexpu-core@^4.1.3, regexpu-core@^4.2.0:
   version "4.2.0"
@@ -4857,9 +4896,9 @@ setprototypeof@1.1.0:
   resolved "https://registry.yarnpkg.com/setprototypeof/-/setprototypeof-1.1.0.tgz#d0bd85536887b6fe7c0d818cb962d9d91c54e656"
   integrity sha512-BvE/TwpZX4FXExxOxZyRGQQv651MSwmWKZGqvmPcRIjDqWub67kTKuIMx43cZZrS/cBBzwBcNDWoFxt2XEFIpQ==
 
-sha.js@^2.4.0, sha.js@^2.4.8:
+sha.js@^2.4.0, sha.js@^2.4.11, sha.js@^2.4.8:
   version "2.4.11"
-  resolved "http://registry.npmjs.org/sha.js/-/sha.js-2.4.11.tgz#37a5cf0b81ecbc6943de109ba2960d1b26584ae7"
+  resolved "https://registry.yarnpkg.com/sha.js/-/sha.js-2.4.11.tgz#37a5cf0b81ecbc6943de109ba2960d1b26584ae7"
   integrity sha512-QMEp5B7cftE7APOjk5Y6xgrbWu+WkLVQwk8JNjZ8nKRciZaByEW6MubieAiToS7+dwvrjGhH8jRXz3MVd0AYqQ==
   dependencies:
     inherits "^2.0.1"
@@ -5209,15 +5248,13 @@ supports-color@^5.3.0, supports-color@^5.5.0:
   dependencies:
     has-flag "^3.0.0"
 
-table@^4.0.3:
-  version "4.0.3"
-  resolved "http://registry.npmjs.org/table/-/table-4.0.3.tgz#00b5e2b602f1794b9acaf9ca908a76386a7813bc"
-  integrity sha512-S7rnFITmBH1EnyKcvxBh1LjYeQMmnZtCXSEbHcH6S0NoKit24ZuFO/T1vDcLdYsLQkM188PVVhQmzKIuThNkKg==
+table@^5.0.2:
+  version "5.1.0"
+  resolved "https://registry.yarnpkg.com/table/-/table-5.1.0.tgz#69a54644f6f01ad1628f8178715b408dc6bf11f7"
+  integrity sha512-e542in22ZLhD/fOIuXs/8yDZ9W61ltF8daM88rkRNtgTIct+vI2fTnAyu/Db2TCfEcI8i7mjZz6meLq0nW7TYg==
   dependencies:
-    ajv "^6.0.1"
-    ajv-keywords "^3.0.0"
-    chalk "^2.1.0"
-    lodash "^4.17.4"
+    ajv "^6.5.3"
+    lodash "^4.17.10"
     slice-ansi "1.0.0"
     string-width "^2.1.1"
 

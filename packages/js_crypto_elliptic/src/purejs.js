@@ -6,7 +6,7 @@ import params from './params.js';
 import * as asn1enc from './asn1enc.js';
 import random from 'js-crypto-random/dist/index.js';
 import jschash from 'js-crypto-hash/dist/index.js';
-import keyutil from 'js-crypto-key-utils/dist/index.js';
+import {Key} from 'js-crypto-key-utils/dist/index.js';
 import jseu from 'js-encoding-utils';
 import elliptic from 'elliptic';
 const Ec = elliptic.ec;
@@ -22,10 +22,16 @@ export async function generateKey(namedCurve){
   const len = params.namedCurves[namedCurve].payloadSize;
   const publicOct = new Uint8Array(ecKey.getPublic('array'));
   const privateOct = new Uint8Array(ecKey.getPrivate().toArray('be', len));
-  const publicKey = keyutil.toJwkFrom('oct', publicOct, 'public', {format: 'binary', namedCurve});
-  const privateKey = keyutil.toJwkFrom('oct', privateOct, 'private', {format: 'binary', namedCurve});
 
-  return {publicKey, privateKey};
+  const publicKey = new Key('oct', publicOct, {namedCurve});
+  if (publicKey.isPrivate) throw new Error('NotPublicKeyForECCKeyGenPureJS');
+  const publicJwk = await publicKey.export('jwk', {outputPublic: true});
+
+  const privateKey = new Key('oct', privateOct, {namedCurve});
+  if (!privateKey.isPrivate) throw new Error('NotPrivateKeyForECCKeyGenPureJS');
+  const privateJwk = await privateKey.export('jwk');
+
+  return {publicKey: publicJwk, privateKey: privateJwk};
 }
 
 export async function sign(msg, privateJwk, hash, signatureFormat) {
@@ -33,7 +39,10 @@ export async function sign(msg, privateJwk, hash, signatureFormat) {
   const curve = params.namedCurves[namedCurve].indutnyName;
   const ec = new Ec(curve);
 
-  const privateOct = keyutil.fromJwkTo('oct', privateJwk, 'private', {compact: false});
+  const privateKey = new Key('jwk', privateJwk);
+  if (!privateKey.isPrivate) throw new Error('NotPrivateKeyForECCSignPureJS');
+  const privateOct = await privateKey.export('oct');
+
   const ecKey = ec.keyFromPrivate(privateOct);
 
   // get hash
@@ -57,7 +66,10 @@ export async function verify(msg, signature, publicJwk, hash, signatureFormat){
   const curve = params.namedCurves[namedCurve].indutnyName;
   const ec = new Ec(curve);
 
-  const publicOct = keyutil.fromJwkTo('oct', publicJwk, 'public', {compact: false});
+  const publicKey = new Key('jwk', publicJwk);
+  if (publicKey.isPrivate) throw new Error('NotPublicKeyForECCVerifyPureJS');
+  const publicOct = await publicKey.export('oct', {compact: false, outputPublic: true});
+
   const ecKey = ec.keyFromPublic(publicOct);
 
   // parse signature
@@ -73,13 +85,19 @@ export async function verify(msg, signature, publicJwk, hash, signatureFormat){
   return await ecKey.verify(md, {s: sigS, r: sigR});
 }
 
-export function deriveSecret(publicJwk, privateJwk){
+export async function deriveSecret(publicJwk, privateJwk){
   const namedCurve = privateJwk.crv;
   const curve = params.namedCurves[namedCurve].indutnyName;
   const ec = new Ec(curve);
 
-  const privateOct = keyutil.fromJwkTo('oct', privateJwk, 'private', {compact: false});
-  const publicOct = keyutil.fromJwkTo('oct', publicJwk, 'public', {compact: false});
+  const priKeyObj = new Key('jwk', privateJwk);
+  if (!priKeyObj.isPrivate) throw new Error('NotPrivateKeyForECCSDeriveKeyPureJS');
+  const privateOct = await priKeyObj.export('oct');
+
+  const pubKeyObj = new Key('jwk', publicJwk);
+  if (pubKeyObj.isPrivate) throw new Error('NotPublicKeyForECCDeriveKeyPureJS');
+  const publicOct = await pubKeyObj.export('oct', {compact: false, outputPublic: true});
+
   const privateKey = ec.keyFromPrivate(privateOct);
   const publicKey = ec.keyFromPublic(publicOct);
 

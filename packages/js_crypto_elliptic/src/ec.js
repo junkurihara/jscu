@@ -17,17 +17,20 @@ export async function generateKey(namedCurve='P-256'){
   const nodeCrypto = util.getNodeCrypto(); // implementation on node.js
 
   let native = true;
+  let errMsg;
   let keyPair = {};
   if (typeof webCrypto !== 'undefined' && typeof webCrypto.generateKey === 'function' && typeof webCrypto.exportKey === 'function') { // for web API
     keyPair = await webapi.generateKey(namedCurve, webCrypto)
-      .catch(() => {
+      .catch((e) => {
+        errMsg = e.message;
         native = false;
       });
   }
   else if (typeof nodeCrypto !== 'undefined' ) { // for node
     try{
-      keyPair = nodeapi.generateKey(namedCurve, nodeCrypto);
+      keyPair = await nodeapi.generateKey(namedCurve, nodeCrypto);
     } catch(e) {
+      errMsg = e.message;
       native = false;
     }
   } else native = false;
@@ -35,7 +38,10 @@ export async function generateKey(namedCurve='P-256'){
   if (native === false){ // fallback to native implementation
     try{
       keyPair = await purejs.generateKey(namedCurve);
-    } catch (e) { throw new Error('UnsupportedEnvironment');}
+    } catch (e) {
+      errMsg = `${errMsg} => ${e.message}`;
+      throw new Error(`UnsupportedEnvironment: ${errMsg}`);
+    }
   }
 
   return keyPair;
@@ -58,17 +64,20 @@ export async function sign(msg, privateJwk, hash = 'SHA-256', signatureFormat='r
   const nodeCrypto = util.getNodeCrypto(); // implementation on node.js
 
   let native = true;
+  let errMsg;
   let signature;
   if (typeof webCrypto !== 'undefined' && typeof webCrypto.importKey === 'function' && typeof webCrypto.sign === 'function') { // for web API
     signature = await webapi.sign(msg, privateJwk, hash, signatureFormat, webCrypto)
-      .catch(() => {
+      .catch((e) => {
+        errMsg = e.message;
         native = false;
       });
   }
   else if (typeof nodeCrypto !== 'undefined' ) { // for node
     try {
-      signature = nodeapi.sign(msg, privateJwk, hash, signatureFormat, nodeCrypto);
+      signature = await nodeapi.sign(msg, privateJwk, hash, signatureFormat, nodeCrypto);
     } catch(e) {
+      errMsg = e.message;
       native = false;
     }
   } else native = false;
@@ -76,7 +85,10 @@ export async function sign(msg, privateJwk, hash = 'SHA-256', signatureFormat='r
   if (native === false){ // fallback to native implementation
     try{
       signature = await purejs.sign(msg, privateJwk, hash, signatureFormat);
-    } catch (e) { throw new Error('UnsupportedEnvironment');}
+    } catch (e) {
+      errMsg = `${errMsg} => ${e.message}`;
+      throw new Error(`UnsupportedEnvironment: ${errMsg}`);
+    }
   }
   return signature;
 }
@@ -99,17 +111,20 @@ export async function verify(msg, signature, publicJwk, hash = 'SHA-256', signat
   const nodeCrypto = util.getNodeCrypto(); // implementation on node.js
 
   let native = true;
+  let errMsg;
   let valid;
   if (typeof webCrypto !== 'undefined' && typeof webCrypto.importKey === 'function' && typeof webCrypto.verify === 'function') { // for web API
     valid = await webapi.verify(msg, signature, publicJwk, hash, signatureFormat, webCrypto)
-      .catch(() => {
+      .catch((e) => {
+        errMsg = e.message;
         native = false;
       });
   }
   else if (typeof nodeCrypto !== 'undefined' ) { // for node
     try {
-      valid = nodeapi.verify(msg, signature, publicJwk, hash, signatureFormat, nodeCrypto);
+      valid = await nodeapi.verify(msg, signature, publicJwk, hash, signatureFormat, nodeCrypto);
     } catch(e) {
+      errMsg = e.message;
       native = false;
     }
   } else native = false;
@@ -117,7 +132,10 @@ export async function verify(msg, signature, publicJwk, hash = 'SHA-256', signat
   if (native === false){ // fallback to native implementation
     try{
       valid = await purejs.verify(msg, signature, publicJwk, hash, signatureFormat);
-    } catch (e) { throw new Error('UnsupportedEnvironment');}
+    } catch (e) {
+      errMsg = `${errMsg} => ${e.message}`;
+      throw new Error(`UnsupportedEnvironment: ${errMsg}`);
+    }
   }
 
   return valid;
@@ -139,25 +157,31 @@ export async function deriveSecret(publicJwk, privateJwk){
   const nodeCrypto = util.getNodeCrypto(); // implementation on node.js
 
   let native = true;
+  let errMsg;
   let secret;
   if (typeof webCrypto !== 'undefined' && typeof webCrypto.importKey === 'function' && typeof webCrypto.deriveBits === 'function') { // for web API
     secret = await webapi.deriveSecret(publicJwk, privateJwk, webCrypto)
-      .catch(() => {
+      .catch((e) => {
+        errMsg = e.message;
         native = false;
       });
   }
   else if (typeof nodeCrypto !== 'undefined' ) { // for node
     try {
-      secret = nodeapi.deriveSecret(publicJwk, privateJwk, nodeCrypto);
+      secret = await nodeapi.deriveSecret(publicJwk, privateJwk, nodeCrypto);
     } catch(e) {
+      errMsg = e.message;
       native = false;
     }
   } else native = false;
 
   if (native === false){ // fallback to native implementation
     try{
-      secret = purejs.deriveSecret(publicJwk, privateJwk);
-    } catch (e) { throw new Error('UnsupportedEnvironment');}
+      secret = await purejs.deriveSecret(publicJwk, privateJwk);
+    } catch (e) {
+      errMsg = `${errMsg} => ${e.message}`;
+      throw new Error(`UnsupportedEnvironment: ${errMsg}`);
+    }
   }
 
   return secret;

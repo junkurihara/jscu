@@ -54,6 +54,7 @@ function _generateKey() {
         webCrypto,
         nodeCrypto,
         native,
+        errMsg,
         keyPair,
         _args = arguments;
     return _regenerator.default.wrap(function _callee$(_context) {
@@ -74,54 +75,74 @@ function _generateKey() {
             }
 
             _context.next = 8;
-            return webapi.generateKey(namedCurve, webCrypto).catch(function () {
+            return webapi.generateKey(namedCurve, webCrypto).catch(function (e) {
+              errMsg = e.message;
               native = false;
             });
 
           case 8:
             keyPair = _context.sent;
-            _context.next = 12;
+            _context.next = 25;
             break;
 
           case 11:
-            if (typeof nodeCrypto !== 'undefined') {
-              // for node
-              try {
-                keyPair = nodeapi.generateKey(namedCurve, nodeCrypto);
-              } catch (e) {
-                native = false;
-              }
-            } else native = false;
-
-          case 12:
-            if (!(native === false)) {
-              _context.next = 22;
+            if (!(typeof nodeCrypto !== 'undefined')) {
+              _context.next = 24;
               break;
             }
 
-            _context.prev = 13;
-            _context.next = 16;
-            return purejs.generateKey(namedCurve);
+            _context.prev = 12;
+            _context.next = 15;
+            return nodeapi.generateKey(namedCurve, nodeCrypto);
 
-          case 16:
+          case 15:
             keyPair = _context.sent;
             _context.next = 22;
             break;
 
-          case 19:
-            _context.prev = 19;
-            _context.t0 = _context["catch"](13);
-            throw new Error('UnsupportedEnvironment');
+          case 18:
+            _context.prev = 18;
+            _context.t0 = _context["catch"](12);
+            errMsg = _context.t0.message;
+            native = false;
 
           case 22:
+            _context.next = 25;
+            break;
+
+          case 24:
+            native = false;
+
+          case 25:
+            if (!(native === false)) {
+              _context.next = 36;
+              break;
+            }
+
+            _context.prev = 26;
+            _context.next = 29;
+            return purejs.generateKey(namedCurve);
+
+          case 29:
+            keyPair = _context.sent;
+            _context.next = 36;
+            break;
+
+          case 32:
+            _context.prev = 32;
+            _context.t1 = _context["catch"](26);
+            errMsg = "".concat(errMsg, " => ").concat(_context.t1.message);
+            throw new Error("UnsupportedEnvironment: ".concat(errMsg));
+
+          case 36:
             return _context.abrupt("return", keyPair);
 
-          case 23:
+          case 37:
           case "end":
             return _context.stop();
         }
       }
-    }, _callee, this, [[13, 19]]);
+    }, _callee, this, [[12, 18], [26, 32]]);
   }));
   return _generateKey.apply(this, arguments);
 }
@@ -149,6 +170,7 @@ function _sign() {
         webCrypto,
         nodeCrypto,
         native,
+        errMsg,
         signature,
         _args2 = arguments;
     return _regenerator.default.wrap(function _callee2$(_context2) {
@@ -178,54 +200,74 @@ function _sign() {
             }
 
             _context2.next = 10;
-            return webapi.sign(msg, privateJwk, hash, signatureFormat, webCrypto).catch(function () {
+            return webapi.sign(msg, privateJwk, hash, signatureFormat, webCrypto).catch(function (e) {
+              errMsg = e.message;
               native = false;
             });
 
           case 10:
             signature = _context2.sent;
-            _context2.next = 14;
+            _context2.next = 27;
             break;
 
           case 13:
-            if (typeof nodeCrypto !== 'undefined') {
-              // for node
-              try {
-                signature = nodeapi.sign(msg, privateJwk, hash, signatureFormat, nodeCrypto);
-              } catch (e) {
-                native = false;
-              }
-            } else native = false;
-
-          case 14:
-            if (!(native === false)) {
-              _context2.next = 24;
+            if (!(typeof nodeCrypto !== 'undefined')) {
+              _context2.next = 26;
               break;
             }
 
-            _context2.prev = 15;
-            _context2.next = 18;
-            return purejs.sign(msg, privateJwk, hash, signatureFormat);
+            _context2.prev = 14;
+            _context2.next = 17;
+            return nodeapi.sign(msg, privateJwk, hash, signatureFormat, nodeCrypto);
 
-          case 18:
+          case 17:
             signature = _context2.sent;
             _context2.next = 24;
             break;
 
-          case 21:
-            _context2.prev = 21;
-            _context2.t0 = _context2["catch"](15);
-            throw new Error('UnsupportedEnvironment');
+          case 20:
+            _context2.prev = 20;
+            _context2.t0 = _context2["catch"](14);
+            errMsg = _context2.t0.message;
+            native = false;
 
           case 24:
+            _context2.next = 27;
+            break;
+
+          case 26:
+            native = false;
+
+          case 27:
+            if (!(native === false)) {
+              _context2.next = 38;
+              break;
+            }
+
+            _context2.prev = 28;
+            _context2.next = 31;
+            return purejs.sign(msg, privateJwk, hash, signatureFormat);
+
+          case 31:
+            signature = _context2.sent;
+            _context2.next = 38;
+            break;
+
+          case 34:
+            _context2.prev = 34;
+            _context2.t1 = _context2["catch"](28);
+            errMsg = "".concat(errMsg, " => ").concat(_context2.t1.message);
+            throw new Error("UnsupportedEnvironment: ".concat(errMsg));
+
+          case 38:
             return _context2.abrupt("return", signature);
 
-          case 25:
+          case 39:
           case "end":
             return _context2.stop();
         }
       }
-    }, _callee2, this, [[15, 21]]);
+    }, _callee2, this, [[14, 20], [28, 34]]);
   }));
   return _sign.apply(this, arguments);
 }
@@ -252,6 +294,7 @@ function _verify() {
         webCrypto,
         nodeCrypto,
         native,
+        errMsg,
         valid,
         _args3 = arguments;
     return _regenerator.default.wrap(function _callee3$(_context3) {
@@ -281,54 +324,74 @@ function _verify() {
             }
 
             _context3.next = 10;
-            return webapi.verify(msg, signature, publicJwk, hash, signatureFormat, webCrypto).catch(function () {
+            return webapi.verify(msg, signature, publicJwk, hash, signatureFormat, webCrypto).catch(function (e) {
+              errMsg = e.message;
               native = false;
             });
 
           case 10:
             valid = _context3.sent;
-            _context3.next = 14;
+            _context3.next = 27;
             break;
 
           case 13:
-            if (typeof nodeCrypto !== 'undefined') {
-              // for node
-              try {
-                valid = nodeapi.verify(msg, signature, publicJwk, hash, signatureFormat, nodeCrypto);
-              } catch (e) {
-                native = false;
-              }
-            } else native = false;
-
-          case 14:
-            if (!(native === false)) {
-              _context3.next = 24;
+            if (!(typeof nodeCrypto !== 'undefined')) {
+              _context3.next = 26;
               break;
             }
 
-            _context3.prev = 15;
-            _context3.next = 18;
-            return purejs.verify(msg, signature, publicJwk, hash, signatureFormat);
+            _context3.prev = 14;
+            _context3.next = 17;
+            return nodeapi.verify(msg, signature, publicJwk, hash, signatureFormat, nodeCrypto);
 
-          case 18:
+          case 17:
             valid = _context3.sent;
             _context3.next = 24;
             break;
 
-          case 21:
-            _context3.prev = 21;
-            _context3.t0 = _context3["catch"](15);
-            throw new Error('UnsupportedEnvironment');
+          case 20:
+            _context3.prev = 20;
+            _context3.t0 = _context3["catch"](14);
+            errMsg = _context3.t0.message;
+            native = false;
 
           case 24:
+            _context3.next = 27;
+            break;
+
+          case 26:
+            native = false;
+
+          case 27:
+            if (!(native === false)) {
+              _context3.next = 38;
+              break;
+            }
+
+            _context3.prev = 28;
+            _context3.next = 31;
+            return purejs.verify(msg, signature, publicJwk, hash, signatureFormat);
+
+          case 31:
+            valid = _context3.sent;
+            _context3.next = 38;
+            break;
+
+          case 34:
+            _context3.prev = 34;
+            _context3.t1 = _context3["catch"](28);
+            errMsg = "".concat(errMsg, " => ").concat(_context3.t1.message);
+            throw new Error("UnsupportedEnvironment: ".concat(errMsg));
+
+          case 38:
             return _context3.abrupt("return", valid);
 
-          case 25:
+          case 39:
           case "end":
             return _context3.stop();
         }
       }
-    }, _callee3, this, [[15, 21]]);
+    }, _callee3, this, [[14, 20], [28, 34]]);
   }));
   return _verify.apply(this, arguments);
 }
@@ -341,7 +404,7 @@ function _deriveSecret() {
   _deriveSecret = (0, _asyncToGenerator2.default)(
   /*#__PURE__*/
   _regenerator.default.mark(function _callee4(publicJwk, privateJwk) {
-    var webCrypto, nodeCrypto, native, secret;
+    var webCrypto, nodeCrypto, native, errMsg, secret;
     return _regenerator.default.wrap(function _callee4$(_context4) {
       while (1) {
         switch (_context4.prev = _context4.next) {
@@ -366,50 +429,74 @@ function _deriveSecret() {
             }
 
             _context4.next = 8;
-            return webapi.deriveSecret(publicJwk, privateJwk, webCrypto).catch(function () {
+            return webapi.deriveSecret(publicJwk, privateJwk, webCrypto).catch(function (e) {
+              errMsg = e.message;
               native = false;
             });
 
           case 8:
             secret = _context4.sent;
-            _context4.next = 12;
+            _context4.next = 25;
             break;
 
           case 11:
-            if (typeof nodeCrypto !== 'undefined') {
-              // for node
-              try {
-                secret = nodeapi.deriveSecret(publicJwk, privateJwk, nodeCrypto);
-              } catch (e) {
-                native = false;
-              }
-            } else native = false;
-
-          case 12:
-            if (!(native === false)) {
-              _context4.next = 20;
+            if (!(typeof nodeCrypto !== 'undefined')) {
+              _context4.next = 24;
               break;
             }
 
-            _context4.prev = 13;
-            secret = purejs.deriveSecret(publicJwk, privateJwk);
-            _context4.next = 20;
+            _context4.prev = 12;
+            _context4.next = 15;
+            return nodeapi.deriveSecret(publicJwk, privateJwk, nodeCrypto);
+
+          case 15:
+            secret = _context4.sent;
+            _context4.next = 22;
             break;
 
-          case 17:
-            _context4.prev = 17;
-            _context4.t0 = _context4["catch"](13);
-            throw new Error('UnsupportedEnvironment');
+          case 18:
+            _context4.prev = 18;
+            _context4.t0 = _context4["catch"](12);
+            errMsg = _context4.t0.message;
+            native = false;
 
-          case 20:
+          case 22:
+            _context4.next = 25;
+            break;
+
+          case 24:
+            native = false;
+
+          case 25:
+            if (!(native === false)) {
+              _context4.next = 36;
+              break;
+            }
+
+            _context4.prev = 26;
+            _context4.next = 29;
+            return purejs.deriveSecret(publicJwk, privateJwk);
+
+          case 29:
+            secret = _context4.sent;
+            _context4.next = 36;
+            break;
+
+          case 32:
+            _context4.prev = 32;
+            _context4.t1 = _context4["catch"](26);
+            errMsg = "".concat(errMsg, " => ").concat(_context4.t1.message);
+            throw new Error("UnsupportedEnvironment: ".concat(errMsg));
+
+          case 36:
             return _context4.abrupt("return", secret);
 
-          case 21:
+          case 37:
           case "end":
             return _context4.stop();
         }
       }
-    }, _callee4, this, [[13, 17]]);
+    }, _callee4, this, [[12, 18], [26, 32]]);
   }));
   return _deriveSecret.apply(this, arguments);
 }

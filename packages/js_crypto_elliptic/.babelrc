@@ -22,5 +22,10 @@
         "regenerator": true
       }
     ]
-  ]
+  ],
+  "env": {
+    "production": {
+      "plugins": ["babel-plugin-transform-remove-console"]
+    }
+  }
 }
