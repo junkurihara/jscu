@@ -54,6 +54,6 @@
   "dependencies": {
     "@babel/plugin-transform-regenerator": "7.0.0",
     "@babel/runtime": "7.1.2",
-    "js-crypto-hash": "^0.2.0"
+    "js-crypto-hash": "^0.2.1"
   }
 }
