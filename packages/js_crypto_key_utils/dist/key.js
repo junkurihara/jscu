@@ -439,6 +439,50 @@ function () {
     }() // getters
 
   }, {
+    key: "keyType",
+    get: function get() {
+      var _this = this;
+
+      if (this._isEncrypted) throw new Error('DecryptionRequired');
+      return new Promise(
+      /*#__PURE__*/
+      function () {
+        var _ref = (0, _asyncToGenerator2.default)(
+        /*#__PURE__*/
+        _regenerator.default.mark(function _callee5(resolve, reject) {
+          var jwkey;
+          return _regenerator.default.wrap(function _callee5$(_context5) {
+            while (1) {
+              switch (_context5.prev = _context5.next) {
+                case 0:
+                  _context5.next = 2;
+                  return _this.export('jwk').catch(function (e) {
+                    reject(e);
+                  });
+
+                case 2:
+                  jwkey = _context5.sent;
+                  resolve(jwkey.kty);
+
+                case 4:
+                case "end":
+                  return _context5.stop();
+              }
+            }
+          }, _callee5, this);
+        }));
+
+        return function (_x3, _x4) {
+          return _ref.apply(this, arguments);
+        };
+      }());
+    }
+  }, {
+    key: "jwkThumbprint",
+    get: function get() {
+      return this.getJwkThumbprint();
+    }
+  }, {
     key: "isEncrypted",
     get: function get() {
       return this._isEncrypted;
