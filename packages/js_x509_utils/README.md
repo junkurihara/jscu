@@ -122,8 +122,6 @@ x509.fromJwk(
 });
 ```
 
-### RSASSA-PKCS1-V1_5
-
 
 ## Extract JWK from X.509 certificate
 ```javascript
