@@ -21,38 +21,36 @@ Additionally, this library provides random, hash, aes, HMAC and HKDF functions.
 The module structure of this library can be illustrated as follows.
 ```
 /**
+ * index.js
  * Structure of API
- * (root)
- *  |-- keyUtil (Key utilities for EC and RSA public keys)
- *  |    |-- jwk
- *  |    |    |-- to
- *  |    |    |-- from
- *  |    |    |-- getThumbprint
- *  |    |-- x509 // TODO RSA is not implemented yet
- *  |         |-- toJwk
- *  |         |-- fromJwk
- *  |         |-- parse (verify)
+ *  |-- Key (Key object handling EC and RSA public/private keys)
  *  |
- *  |-- pkc (public key crypto, EC and RSA) // TODO: RSA is not implemented yet
+ *  |-- pkc (public key crypto, EC and RSA)
  *  |    |-- generateKey
  *  |    |-- encrypt
  *  |    |-- decrypt
  *  |    |-- sign
  *  |    |-- verify
  *  |
- *  |-- aes // AES encryption
- *  |-- random // Random
- *  |-- hash // Hash funtion
- *  |-- hmac // HMAC
- *  |-- hkdf // HKDF
+ *  |-- x509
+ *  |    |-- toJwk
+ *  |    |-- fromJwk
+ *  |    |-- parse (to verify)
+ *  |
+ *  |-- aes
+ *  |-- random
+ *  |-- hash
+ *  |-- hmac
+ *  |-- hkdf
  */
 ```
 
 We should note that most of this library's functions are independently available through NPM and GitHub as modules. In other words, this library is being developed as an integrated wrapper of those independent modules. The independent modules are listed as follows:
 
+- `Key`: https://github.com/junkurihara/js-crypto-key-utils
 - `pkc` (EC): https://github.com/junkurihara/js-crypto-ec
-- `keyUtil.jwk`: https://github.com/junkurihara/js-crypto-key-utils
-- `keyUtil.x509`: https://github.com/junkurihara/js-x509-utils
+- `pkc` (RSA): https://github.com/junkurihara/js-crypto-rsa
+- `x509`: https://github.com/junkurihara/js-x509-utils
 - `aes`: https://github.com/junkurihara/js-crypto-aes
 - `random`: https://github.com/junkurihara/js-crypto-random
 - `hash`: https://github.com/junkurihara/js-crypto-hash
@@ -61,7 +59,7 @@ We should note that most of this library's functions are independently available
 
 Please refer to the above repos for further information.
 
-**NOTE**: If you would use only few modules and employ neither `keyUtil` nor `pkc`, we highly recommend use our independent modules since those independent ones are relatively small and this library would be overkill. 
+**NOTE**: If you would use only few modules and employ neither `Key` nor `pkc`, we highly recommend use our independent modules since those independent ones are relatively small and this library would be overkill. 
 
 
 # Installation
@@ -85,7 +83,7 @@ import jscu from 'js-crypto-utils/dist/index.js'; // for npm/github
 ```
 
 # Usage
-**NOTE:** This library always uses JWK-formatted keys ([RFC7517](https://tools.ietf.org/html/rfc7517)) to do any operations. If you have keys in another format, like PEM, please use `jscu.keyUtil.jwk.to` function at first to convert them to JWK.
+**NOTE:** This library always uses JWK-formatted keys ([RFC7517](https://tools.ietf.org/html/rfc7517)) to do any operations. If you have keys in another format, like PEM, please instantiate `jscu.Key` class with your key at first to convert them to JWK.
 
 ## Key generation, sign and verify
 ```javascript
@@ -195,10 +193,9 @@ const publicJwk = {kty: 'EC', crv: 'P-256', x: '...', y: '...'};
 
 Given JWKs can be converted to the PEM/DER formatted keys in the following procedure.
 ```javascript
-const publicAsn = jscu.keyUtil.jwk.to(
+const publicKeyObject = new jscu.Key('jwk', publicJwk);
+const publicAsn = await publicKeyObject.export(
   'pem', // output format is in string PEM, 'der' is also available
-  publicJwk,
-  'public', // for public key
   {
     compact: false // if true, compressed form of keys are obtained
   });
@@ -206,11 +203,8 @@ const publicAsn = jscu.keyUtil.jwk.to(
 
 This library also re-convert keys in PEM/DER to JWK as follows.
 ```javascript
-const publicJwkR = jscu.keyUti.jwk.from(
-  'pem', // input key is in PEM format
-  publicASN,
-  'public' // for public key
-  );
+const publicKeyObjectR = new jscu.Key('pem', publicASN);
+const publicJwkR = publicKeyObjectR.export('jwk');
 ```
 Note that JWK/DER/PEM-formatted RSA keys can be handled in the similar manner to the above. 
 
