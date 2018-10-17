@@ -122,6 +122,16 @@ describe('RSA/EC Key conversion from/to JWK test.', () => {
     // expect( array.every( (a) => a)).to.be.true;
   });
 
+  it('Misc', async () => {
+    const array = await Promise.all(ECKeySet.map( async (key) => {
+      const keyObj = new Key('jwk', key.privateKey);
+      const kty = await keyObj.keyType;
+      expect(kty === 'EC').to.be.true;
+
+      console.log(jseu.encoder.arrayBufferToHexString(await keyObj.jwkThumbprint));
+    }));
+  });
+
 });
 
 const getKeyStatus = (k) => {

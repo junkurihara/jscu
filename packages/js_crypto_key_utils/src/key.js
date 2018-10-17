@@ -193,6 +193,18 @@ export class Key {
   }
 
   // getters
+  get keyType(){
+    if(this._isEncrypted) throw new Error('DecryptionRequired');
+    return new Promise( async (resolve, reject) => {
+      const jwkey = await this.export('jwk').catch( (e) => {reject(e);});
+      resolve(jwkey.kty);
+    });
+  }
+
+  get jwkThumbprint(){
+    return this.getJwkThumbprint();
+  }
+
   get isEncrypted(){ return this._isEncrypted; }
 
   get isPrivate(){ return this._type === 'private'; }
