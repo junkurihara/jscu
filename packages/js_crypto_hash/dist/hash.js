@@ -19,7 +19,7 @@ var _params = _interopRequireDefault(require("./params.js"));
 
 var _md = _interopRequireDefault(require("md5"));
 
-var _sha = _interopRequireDefault(require("sha.js"));
+var _hash = _interopRequireDefault(require("hash.js"));
 
 /**
  * hash.js
@@ -44,6 +44,7 @@ function _compute() {
         nodeCrypto,
         msCrypto,
         msgHash,
+        errMsg,
         native,
         alg,
         hashFunc,
@@ -82,8 +83,9 @@ function _compute() {
             }
 
             _context.next = 12;
-            return webCrypto.digest(hash, msg).catch(function () {
-              return native = false;
+            return webCrypto.digest(hash, msg).catch(function (e) {
+              errMsg = e.message;
+              native = false;
             });
 
           case 12:
@@ -104,6 +106,7 @@ function _compute() {
               hashFunc.update(msg);
               msgHash = hashFunc.digest();
             } catch (e) {
+              errMsg = e.message;
               native = false;
             }
 
@@ -134,7 +137,8 @@ function _compute() {
 
             _context.next = 23;
             return msdigest(hash, msg).catch(function (e) {
-              return native = false;
+              errMsg = e.message;
+              native = false;
             });
 
           case 23:
@@ -147,24 +151,25 @@ function _compute() {
 
           case 27:
             if (native) {
-              _context.next = 35;
+              _context.next = 36;
               break;
             }
 
             _context.prev = 28;
             msgHash = purejs(hash, msg);
-            _context.next = 35;
+            _context.next = 36;
             break;
 
           case 32:
             _context.prev = 32;
             _context.t0 = _context["catch"](28);
-            throw new Error('UnsupportedEnvironment');
-
-          case 35:
-            return _context.abrupt("return", new Uint8Array(msgHash));
+            errMsg = "".concat(errMsg, " => ").concat(_context.t0.message);
+            throw new Error("UnsupportedEnvironment: ".concat(errMsg));
 
           case 36:
+            return _context.abrupt("return", new Uint8Array(msgHash));
+
+          case 37:
           case "end":
             return _context.stop();
         }
@@ -182,7 +187,7 @@ function purejs(hash, msg) {
       asBytes: true
     });
   } else if (Object.keys(_params.default.hashes).indexOf(hash) >= 0) {
-    h = (0, _sha.default)(_params.default.hashes[hash].nodeName).update(msg).digest();
+    h = _hash.default[_params.default.hashes[hash].nodeName]().update(msg).digest();
   } else throw new Error('UnsupportedHashInPureJs');
 
   return new Uint8Array(h);

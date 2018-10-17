@@ -5,7 +5,7 @@
 import * as util from './util.js';
 import params from './params.js';
 import md5 from 'md5';
-import sha from 'sha.js';
+import jsHash from 'hash.js';
 
 /**
  * Compute Hash
@@ -22,9 +22,13 @@ export async function compute(msg, hash = 'SHA-256') {
   const msCrypto = util.getMsCrypto();
 
   let msgHash;
+  let errMsg;
   let native = true;
   if (typeof webCrypto !== 'undefined' && typeof webCrypto.digest === 'function' && typeof msCrypto === 'undefined') {
-    msgHash = await webCrypto.digest(hash, msg).catch( () => native = false); // for modern browsers
+    msgHash = await webCrypto.digest(hash, msg).catch( (e) => {
+      errMsg = e.message;
+      native = false;
+    }); // for modern browsers
   }
   else if (typeof nodeCrypto !== 'undefined' ){ // for node
     try {
@@ -32,7 +36,10 @@ export async function compute(msg, hash = 'SHA-256') {
       const hashFunc = nodeCrypto.createHash(alg);
       hashFunc.update(msg);
       msgHash = hashFunc.digest();
-    } catch (e) { native = false; }
+    } catch (e) {
+      errMsg = e.message;
+      native = false;
+    }
   }
   else if (typeof msCrypto !== 'undefined' && typeof msCrypto.digest === 'function') { // for legacy ie 11
     // WTF IE!!!
@@ -46,7 +53,10 @@ export async function compute(msg, hash = 'SHA-256') {
       };
     });
 
-    msgHash = await msdigest(hash, msg).catch( (e) => native = false);
+    msgHash = await msdigest(hash, msg).catch( (e) => {
+      errMsg = e.message;
+      native = false;
+    });
   } else native = false;
 
   if (!native){
@@ -54,7 +64,8 @@ export async function compute(msg, hash = 'SHA-256') {
       msgHash = purejs(hash, msg);
     }
     catch(e){
-      throw new Error('UnsupportedEnvironment');
+      errMsg = `${errMsg} => ${e.message}`;
+      throw new Error(`UnsupportedEnvironment: ${errMsg}`);
     }
   }
 
@@ -67,7 +78,7 @@ function purejs(hash, msg){
     h = md5(Array.from(msg), {asBytes: true});
   }
   else if (Object.keys(params.hashes).indexOf(hash) >= 0){
-    h = sha(params.hashes[hash].nodeName).update(msg).digest();
+    h = jsHash[params.hashes[hash].nodeName]().update(msg).digest();
   }
   else throw new Error('UnsupportedHashInPureJs');
 
