@@ -2,7 +2,7 @@ import x509 from '../src/index.js';
 import sample from './sample_crt.js';
 
 import rsa from 'js-crypto-rsa/dist/index.js';
-import keyutil from 'js-crypto-key-utils/dist/index.js';
+import {Key} from 'js-crypto-key-utils/dist/index.js';
 import chai from 'chai';
 import sample_crt from './sample_crt';
 // const should = chai.should();
@@ -27,9 +27,11 @@ describe('RSA: Generated JWK public key should be successfully converted to X509
     };
 
     const results = await Promise.all(pkcs1s.map( async (signatureAlgorithm) => {
+      const publicObj = new Key('pem', sample_crt.rsa.publicKey);
+      const privateObj = new Key('pem', sample_crt.rsa.privateKey);
       const crt = await x509.fromJwk(
-        keyutil.toJwkFrom('pem', sample_crt.rsa.publicKey, 'public'),
-        keyutil.toJwkFrom('pem', sample_crt.rsa.privateKey, 'private'),
+        await publicObj.export('jwk'),
+        await privateObj.export('jwk'),
         'pem',
         {
           signature: signatureAlgorithm,
@@ -43,7 +45,7 @@ describe('RSA: Generated JWK public key should be successfully converted to X509
       const re = await rsa.verify(
         parsed.tbsCertificate,
         parsed.signatureValue,
-        keyutil.toJwkFrom('pem', sample_crt.rsa.publicKey, 'public'),
+        await publicObj.export('jwk'),
         parsed.signatureAlgorithm.parameters.hash,
         {name: 'RSASSA-PKCS1-v1_5'}
       );
@@ -63,10 +65,12 @@ describe('RSA: Generated JWK public key should be successfully converted to X509
       commonName: 'example.com'
     };
 
+    const publicObj = new Key('pem', sample_crt.rsa.publicKey);
+    const privateObj = new Key('pem', sample_crt.rsa.privateKey);
 
     const crt = await x509.fromJwk(
-      keyutil.toJwkFrom('pem', sample_crt.rsa.publicKey, 'public'),
-      keyutil.toJwkFrom('pem', sample_crt.rsa.privateKey, 'private'),
+      await publicObj.export('jwk'),
+      await privateObj.export('jwk'),
       'pem',
       {
         signature: 'rsassaPss',
@@ -79,7 +83,7 @@ describe('RSA: Generated JWK public key should be successfully converted to X509
     const re = await rsa.verify(
       parsed.tbsCertificate,
       parsed.signatureValue,
-      keyutil.toJwkFrom('pem', sample_crt.rsa.publicKey, 'public'),
+      await publicObj.export('jwk'),
       parsed.signatureAlgorithm.parameters.hash,
       {name: 'RSA-PSS', saltLength: parsed.signatureAlgorithm.parameters.saltLength}
     );
@@ -97,10 +101,13 @@ describe('RSA: Generated JWK public key should be successfully converted to X509
       commonName: 'example.com'
     };
 
+    const publicObj = new Key('pem', sample_crt.rsa.publicKey);
+    const privateObj = new Key('pem', sample_crt.rsa.privateKey);
+
     const results = await Promise.all(hashes.map( async (hash) => {
       const crt = await x509.fromJwk(
-        keyutil.toJwkFrom('pem', sample_crt.rsa.publicKey, 'public'),
-        keyutil.toJwkFrom('pem', sample_crt.rsa.privateKey, 'private'),
+        await publicObj.export('jwk'),
+        await privateObj.export('jwk'),
         'pem',
         {
           signature: 'rsassaPss',
@@ -116,7 +123,7 @@ describe('RSA: Generated JWK public key should be successfully converted to X509
       const re = await rsa.verify(
         parsed.tbsCertificate,
         parsed.signatureValue,
-        keyutil.toJwkFrom('pem', sample_crt.rsa.publicKey, 'public'),
+        await publicObj.export('jwk'),
         parsed.signatureAlgorithm.parameters.hash,
         {name: 'RSA-PSS', saltLength: parsed.signatureAlgorithm.parameters.saltLength}
       );
@@ -127,7 +134,7 @@ describe('RSA: Generated JWK public key should be successfully converted to X509
   });
 
   it('Transform X509 Self Signed RSASSA-PKCS1-v1_5 PEM to JWK, and verify it', async () => {
-    const jwkey = x509.toJwk(sample.rsa.certificatePKCS1v1_5, 'pem');
+    const jwkey = await x509.toJwk(sample.rsa.certificatePKCS1v1_5, 'pem');
     const parsed = x509.parse(sample.rsa.certificatePKCS1v1_5, 'pem');
     const re = await rsa.verify(
       parsed.tbsCertificate,
@@ -173,7 +180,8 @@ describe('RSA: Generated JWK public key should be successfully converted to X509
       'WI/N3LlBKLF5mvtDYg7sXx6ULR/xAKKkVeUTIgGMYq/s46ZMP11QrfRHx4zNAwP9\n' +
       'aARZeUz1X0/LM6LgaQvVIhZqbyB637eZhusOP3226TDn7hGx/UdS0UxSwfjrzS8=\n' +
       '-----END CERTIFICATE-----';
-    const jwkey = x509.toJwk(samplePss, 'pem');
+    const jwkey = await x509.toJwk(samplePss, 'pem');
+    console.log(jwkey);
     const parsed = x509.parse(samplePss, 'pem');
     const re = await rsa.verify(
       parsed.tbsCertificate,
@@ -217,7 +225,7 @@ describe('RSA: Generated JWK public key should be successfully converted to X509
       'M8J806yQWShmibcQWmmveHtN8s/69FUUIu6q1h0A8qxISj87CdC4XKvLRV6DSu4C\n' +
       '+b/CfhHaOR8lINDcVYg4j3VZU24nmPlWcH4yXO8gbnoMOLnf36/Ezw3wnVIV\n' +
       '-----END CERTIFICATE-----';
-    const jwkey = x509.toJwk(samplePss, 'pem');
+    const jwkey = await x509.toJwk(samplePss, 'pem');
     const parsed = x509.parse(samplePss, 'pem');
     const re = await rsa.verify(
       parsed.tbsCertificate,

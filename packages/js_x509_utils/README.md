@@ -77,8 +77,8 @@ const name = {
 };
 
 x509.fromJwk(
-  keyutil.toJwkFrom('pem', sample_crt.rsa.publicKey, 'public'),
-  keyutil.toJwkFrom('pem', sample_crt.rsa.privateKey, 'private'),
+  publicJwk,
+  privateJwk,
   'pem',
   {
     signature: 'rsassaPss',
@@ -108,8 +108,8 @@ const name = {
 };
 
 x509.fromJwk(
-  keyutil.toJwkFrom('pem', sample_crt.rsa.publicKey, 'public'),
-  keyutil.toJwkFrom('pem', sample_crt.rsa.privateKey, 'private'),
+  publicJwk,
+  privateJwk,
   'pem',
   {
     signature: 'sha256WithRSAEncryption',

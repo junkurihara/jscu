@@ -29,7 +29,7 @@ var _jsEncodingUtils = _interopRequireDefault(require("js-encoding-utils"));
 
 var _index = _interopRequireDefault(require("js-crypto-random/dist/index.js"));
 
-var _index2 = _interopRequireDefault(require("js-crypto-key-utils/dist/index.js"));
+var _index2 = require("js-crypto-key-utils/dist/index.js");
 
 var _buffer = _interopRequireDefault(require("buffer"));
 
@@ -71,6 +71,7 @@ function _fromJwk() {
         current,
         validity,
         subject,
+        publicObj,
         spkiDer,
         subjectPublicKeyInfo,
         tbsCertificate,
@@ -139,10 +140,18 @@ function _fromJwk() {
               type: 'rdnSequence',
               value: setRDNSequence(options.subject)
             };
-            spkiDer = Buffer.from(_index2.default.fromJwkTo('der', publicJwk, 'public', {
-              compact: false
-            })); // {compact: false} is active only for ecc keys
+            publicObj = new _index2.Key('jwk', publicJwk);
+            _context.t0 = Buffer;
+            _context.next = 24;
+            return publicObj.export('der', {
+              compact: false,
+              outputPublic: true
+            });
 
+          case 24:
+            _context.t1 = _context.sent;
+            spkiDer = _context.t0.from.call(_context.t0, _context.t1);
+            // {compact: false} is active only for ecc keys
             subjectPublicKeyInfo = _asn.default.SubjectPublicKeyInfo.decode(spkiDer, 'der'); // elements of Certificate
 
             tbsCertificate = {
@@ -160,36 +169,36 @@ function _fromJwk() {
             encodedTbsCertificate = _asn.default.TBSCertificate.encode(tbsCertificate, 'der');
 
             if (!(privateJwk.kty === 'EC')) {
-              _context.next = 31;
+              _context.next = 36;
               break;
             }
 
-            _context.next = 28;
+            _context.next = 33;
             return ecdsa.getAsn1Signature(encodedTbsCertificate, privateJwk, options.signature);
 
-          case 28:
+          case 33:
             signatureValue = _context.sent;
-            _context.next = 38;
+            _context.next = 43;
             break;
 
-          case 31:
+          case 36:
             if (!(privateJwk.kty === 'RSA')) {
-              _context.next = 37;
+              _context.next = 42;
               break;
             }
 
-            _context.next = 34;
+            _context.next = 39;
             return rsa.getSignature(encodedTbsCertificate, privateJwk, options.signature, options.hash, options.saltLength);
 
-          case 34:
+          case 39:
             signatureValue = _context.sent;
-            _context.next = 38;
+            _context.next = 43;
             break;
 
-          case 37:
+          case 42:
             throw new Error('UnsupportedKeyType');
 
-          case 38:
+          case 43:
             // construct Certificate
             certBin = _asn.default.Certificate.encode({
               tbsCertificate: tbsCertificate,
@@ -198,24 +207,24 @@ function _fromJwk() {
             }, 'der');
 
             if (!(format === 'pem')) {
-              _context.next = 43;
+              _context.next = 48;
               break;
             }
 
             return _context.abrupt("return", _jsEncodingUtils.default.formatter.binToPem(certBin, 'certificate'));
 
-          case 43:
+          case 48:
             if (!(format === 'der')) {
-              _context.next = 47;
+              _context.next = 52;
               break;
             }
 
             return _context.abrupt("return", certBin);
 
-          case 47:
+          case 52:
             throw new Error('InvalidFormatSpecification');
 
-          case 48:
+          case 53:
           case "end":
             return _context.stop();
         }
@@ -225,18 +234,8 @@ function _fromJwk() {
   return _fromJwk.apply(this, arguments);
 }
 
-function toJwk(certX509) {
-  var format = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'pem';
-  var x509bin;
-  if (format === 'pem') x509bin = _jsEncodingUtils.default.formatter.pemToBin(certX509);else if (format === 'der') x509bin = certX509;else throw new Error('InvalidFormatSpecification');
-  var binKeyBuffer = Buffer.from(x509bin); // This must be Buffer object to get decoded;
-
-  var decoded = _asn.default.Certificate.decode(binKeyBuffer, 'der'); // decode binary x509-formatted public key to parsed object
-
-
-  var binSpki = _asn.default.SubjectPublicKeyInfo.encode(decoded.tbsCertificate.subjectPublicKeyInfo, 'der');
-
-  return _index2.default.toJwkFrom('der', binSpki, 'public');
+function toJwk(_x3) {
+  return _toJwk.apply(this, arguments);
 }
 /**
  * Parse X.509 certificate and return DER-encoded TBSCertificate and DER encoded signature
@@ -245,6 +244,70 @@ function toJwk(certX509) {
  * @return {{tbsCertificate: *, signatureValue: *, signatureAlgorithm: *}}
  */
 
+
+function _toJwk() {
+  _toJwk = (0, _asyncToGenerator2.default)(
+  /*#__PURE__*/
+  _regenerator.default.mark(function _callee2(certX509) {
+    var format,
+        x509bin,
+        binKeyBuffer,
+        decoded,
+        binSpki,
+        publicObj,
+        _args2 = arguments;
+    return _regenerator.default.wrap(function _callee2$(_context2) {
+      while (1) {
+        switch (_context2.prev = _context2.next) {
+          case 0:
+            format = _args2.length > 1 && _args2[1] !== undefined ? _args2[1] : 'pem';
+
+            if (!(format === 'pem')) {
+              _context2.next = 5;
+              break;
+            }
+
+            x509bin = _jsEncodingUtils.default.formatter.pemToBin(certX509);
+            _context2.next = 10;
+            break;
+
+          case 5:
+            if (!(format === 'der')) {
+              _context2.next = 9;
+              break;
+            }
+
+            x509bin = certX509;
+            _context2.next = 10;
+            break;
+
+          case 9:
+            throw new Error('InvalidFormatSpecification');
+
+          case 10:
+            binKeyBuffer = Buffer.from(x509bin); // This must be Buffer object to get decoded;
+
+            decoded = _asn.default.Certificate.decode(binKeyBuffer, 'der'); // decode binary x509-formatted public key to parsed object
+
+            binSpki = _asn.default.SubjectPublicKeyInfo.encode(decoded.tbsCertificate.subjectPublicKeyInfo, 'der');
+            publicObj = new _index2.Key('der', binSpki);
+            _context2.next = 16;
+            return publicObj.export('jwk', {
+              outputPublic: true
+            });
+
+          case 16:
+            return _context2.abrupt("return", _context2.sent);
+
+          case 17:
+          case "end":
+            return _context2.stop();
+        }
+      }
+    }, _callee2, this);
+  }));
+  return _toJwk.apply(this, arguments);
+}
 
 function parse(certX509) {
   var format = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'pem';

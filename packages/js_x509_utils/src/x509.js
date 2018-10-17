@@ -9,7 +9,7 @@ import BN from 'bn.js';
 import rfc5280 from 'asn1.js-rfc5280';
 import jseu from 'js-encoding-utils';
 import random from 'js-crypto-random/dist/index.js';
-import keyutil from 'js-crypto-key-utils/dist/index.js';
+import {Key} from 'js-crypto-key-utils/dist/index.js';
 
 import BufferMod from 'buffer';
 const Buffer = BufferMod.Buffer;
@@ -60,7 +60,8 @@ export async function fromJwk(publicJwk, privateJwk, format = 'pem', options = {
 
   const subject = {type: 'rdnSequence', value: setRDNSequence(options.subject)};
 
-  const spkiDer = Buffer.from(keyutil.fromJwkTo('der', publicJwk, 'public', {compact: false})); // {compact: false} is active only for ecc keys
+  const publicObj = new Key('jwk', publicJwk);
+  const spkiDer = Buffer.from(await publicObj.export('der', {compact: false, outputPublic: true})); // {compact: false} is active only for ecc keys
   const subjectPublicKeyInfo = rfc5280.SubjectPublicKeyInfo.decode(spkiDer, 'der');
 
   // elements of Certificate
@@ -98,7 +99,7 @@ export async function fromJwk(publicJwk, privateJwk, format = 'pem', options = {
  * @param format
  * @return {Promise<void>}
  */
-export function toJwk(certX509, format = 'pem'){
+export async function toJwk(certX509, format = 'pem'){
   let x509bin;
   if (format === 'pem') x509bin = jseu.formatter.pemToBin(certX509);
   else if (format === 'der') x509bin = certX509;
@@ -108,7 +109,8 @@ export function toJwk(certX509, format = 'pem'){
 
   const decoded = rfc5280.Certificate.decode(binKeyBuffer, 'der'); // decode binary x509-formatted public key to parsed object
   const binSpki = rfc5280.SubjectPublicKeyInfo.encode(decoded.tbsCertificate.subjectPublicKeyInfo, 'der');
-  return keyutil.toJwkFrom('der', binSpki, 'public');
+  const publicObj = new Key('der', binSpki);
+  return await publicObj.export('jwk', {outputPublic: true});
 }
 
 

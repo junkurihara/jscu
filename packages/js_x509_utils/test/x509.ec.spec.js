@@ -76,7 +76,7 @@ describe('Generated JWK EC public key should be successfully converted to X509 P
 
   it('Transform X509 Self Signed PEM to JWK, and verify it', async function () {
     this.timeout(20000);
-    const jwkey = x509.toJwk(crtsample, 'pem');
+    const jwkey = await x509.toJwk(crtsample, 'pem');
 
     const parsed = x509.parse(crtsample, 'pem');
     const re = await ec.verify(parsed.tbsCertificate, parsed.signatureValue, jwkey, parsed.signatureAlgorithm.parameters.hash, 'der');
