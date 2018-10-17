@@ -3,7 +3,7 @@
  */
 
 import params from './params.js';
-import keyutil from 'js-crypto-key-utils/dist/index.js';
+import {Key} from 'js-crypto-key-utils/dist/index.js';
 import jseu from 'js-encoding-utils';
 import * as oaep from './oaep.js';
 
@@ -12,8 +12,10 @@ export function generateKey(modulusLength = 2048, publicExponent = new Uint8Arra
   throw new Error('CurrentlyNodeKeyGenIsUnsupported');
 }
 
-export function sign(msg, privateJwk, hash = 'SHA-256', algorithm = {name: 'RSA-PSS', saltLength: 192}, nodeCrypto) {
-  const privatePem = keyutil.fromJwkTo('pem', privateJwk, 'private', {compact: false});
+export async function sign(msg, privateJwk, hash = 'SHA-256', algorithm = {name: 'RSA-PSS', saltLength: 192}, nodeCrypto) {
+  const keyObj = new Key('jwk', privateJwk);
+  if(!keyObj.isPrivate) throw new Error('NotPrivateKeyForRSASign');
+  const privatePem = await keyObj.export('pem');
   const sign = nodeCrypto.createSign(params.hashes[hash].nodeName);
   sign.update(msg);
   const key = Object.assign(
@@ -24,8 +26,10 @@ export function sign(msg, privateJwk, hash = 'SHA-256', algorithm = {name: 'RSA-
   return new Uint8Array(sign.sign(key));
 }
 
-export function verify(msg, signature, publicJwk, hash = 'SHA-256', algorithm = {name: 'RSA-PSS', saltLength: 192}, nodeCrypto) {
-  const publicPem = keyutil.fromJwkTo('pem', publicJwk, 'public', {compact: false});
+export async function verify(msg, signature, publicJwk, hash = 'SHA-256', algorithm = {name: 'RSA-PSS', saltLength: 192}, nodeCrypto) {
+  const keyObj = new Key('jwk', publicJwk);
+  if(keyObj.isPrivate) throw new Error('NotPublicKeyForRSAVerify');
+  const publicPem = await keyObj.export('pem', {outputPublic: true});
   const verify = nodeCrypto.createVerify(params.hashes[hash].nodeName);
   verify.update(msg);
   const key = Object.assign(
@@ -38,7 +42,9 @@ export function verify(msg, signature, publicJwk, hash = 'SHA-256', algorithm = 
 
 
 export async function encrypt(msg, publicJwk, hash = 'SHA-256', label = new Uint8Array([]), nodeCrypto){
-  const publicPem = keyutil.fromJwkTo('pem', publicJwk, 'public', {compact: false});
+  const keyObj = new Key('jwk', publicJwk);
+  if(keyObj.isPrivate) throw new Error('NotPublicKeyForRSAEncrypt');
+  const publicPem = await keyObj.export('pem', {outputPublic: true});
 
   let encrypted;
   if(hash === 'SHA-1') {
@@ -52,7 +58,10 @@ export async function encrypt(msg, publicJwk, hash = 'SHA-256', label = new Uint
 }
 
 export async function decrypt(data, privateJwk, hash = 'SHA-256', label = new Uint8Array([]), nodeCrypto){
-  const privatePem = keyutil.fromJwkTo('pem', privateJwk, 'private', {compact: false});
+  const keyObj = new Key('jwk', privateJwk);
+  if(!keyObj.isPrivate) throw new Error('NotPrivateKeyForRSADecrypt');
+  const privatePem = await keyObj.export('pem');
+
   let decrypted;
   if(hash === 'SHA-1') {
     decrypted = nodeCrypto.privateDecrypt({key: privatePem, padding: nodeCrypto.constants.RSA_PKCS1_OAEP_PADDING}, data);

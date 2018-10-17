@@ -63,6 +63,7 @@ function _generateKey() {
         webCrypto,
         nodeCrypto,
         native,
+        errMsg,
         keyPair,
         _args = arguments;
     return _regenerator.default.wrap(function _callee$(_context) {
@@ -84,7 +85,8 @@ function _generateKey() {
             }
 
             _context.next = 9;
-            return webapi.generateKey(modulusLength, publicExponent, webCrypto).catch(function () {
+            return webapi.generateKey(modulusLength, publicExponent, webCrypto).catch(function (e) {
+              errMsg = e.message;
               native = false;
             });
 
@@ -99,6 +101,7 @@ function _generateKey() {
               try {
                 keyPair = nodeapi.generateKey(modulusLength, publicExponent, nodeCrypto);
               } catch (e) {
+                errMsg = e.message;
                 native = false;
               }
             } else native = false;
@@ -109,7 +112,7 @@ function _generateKey() {
               break;
             }
 
-            throw new Error('UnsupportedEnvironment');
+            throw new Error("UnsupportedEnvironment: ".concat(errMsg));
 
           case 15:
             return _context.abrupt("return", keyPair);
@@ -147,6 +150,7 @@ function _sign() {
         webCrypto,
         nodeCrypto,
         native,
+        errMsg,
         signature,
         _args2 = arguments;
     return _regenerator.default.wrap(function _callee2$(_context2) {
@@ -212,42 +216,61 @@ function _sign() {
             }
 
             _context2.next = 18;
-            return webapi.sign(msg, privateJwk, hash, algorithm, webCrypto).catch(function () {
+            return webapi.sign(msg, privateJwk, hash, algorithm, webCrypto).catch(function (e) {
+              errMsg = e.message;
               native = false;
             });
 
           case 18:
             signature = _context2.sent;
-            _context2.next = 22;
+            _context2.next = 35;
             break;
 
           case 21:
-            if (typeof nodeCrypto !== 'undefined') {
-              // for node
-              try {
-                signature = nodeapi.sign(msg, privateJwk, hash, algorithm, nodeCrypto);
-              } catch (e) {
-                native = false;
-              }
-            } else native = false;
-
-          case 22:
-            if (!(native === false)) {
-              _context2.next = 24;
+            if (!(typeof nodeCrypto !== 'undefined')) {
+              _context2.next = 34;
               break;
             }
 
-            throw new Error('UnsupportedEnvironment');
-
-          case 24:
-            return _context2.abrupt("return", signature);
+            _context2.prev = 22;
+            _context2.next = 25;
+            return nodeapi.sign(msg, privateJwk, hash, algorithm, nodeCrypto);
 
           case 25:
+            signature = _context2.sent;
+            _context2.next = 32;
+            break;
+
+          case 28:
+            _context2.prev = 28;
+            _context2.t0 = _context2["catch"](22);
+            errMsg = _context2.t0.message;
+            native = false;
+
+          case 32:
+            _context2.next = 35;
+            break;
+
+          case 34:
+            native = false;
+
+          case 35:
+            if (!(native === false)) {
+              _context2.next = 37;
+              break;
+            }
+
+            throw new Error("UnsupportedEnvironment: ".concat(errMsg));
+
+          case 37:
+            return _context2.abrupt("return", signature);
+
+          case 38:
           case "end":
             return _context2.stop();
         }
       }
-    }, _callee2, this);
+    }, _callee2, this, [[22, 28]]);
   }));
   return _sign.apply(this, arguments);
 }
@@ -274,6 +297,7 @@ function _verify() {
         webCrypto,
         nodeCrypto,
         native,
+        errMsg,
         valid,
         _args3 = arguments;
     return _regenerator.default.wrap(function _callee3$(_context3) {
@@ -347,42 +371,61 @@ function _verify() {
             }
 
             _context3.next = 20;
-            return webapi.verify(msg, signature, publicJwk, hash, algorithm, webCrypto).catch(function () {
+            return webapi.verify(msg, signature, publicJwk, hash, algorithm, webCrypto).catch(function (e) {
+              errMsg = e.message;
               native = false;
             });
 
           case 20:
             valid = _context3.sent;
-            _context3.next = 24;
+            _context3.next = 37;
             break;
 
           case 23:
-            if (typeof nodeCrypto !== 'undefined') {
-              // for node
-              try {
-                valid = nodeapi.verify(msg, signature, publicJwk, hash, algorithm, nodeCrypto);
-              } catch (e) {
-                native = false;
-              }
-            } else native = false;
-
-          case 24:
-            if (!(native === false)) {
-              _context3.next = 26;
+            if (!(typeof nodeCrypto !== 'undefined')) {
+              _context3.next = 36;
               break;
             }
 
-            throw new Error('UnsupportedEnvironment');
-
-          case 26:
-            return _context3.abrupt("return", valid);
+            _context3.prev = 24;
+            _context3.next = 27;
+            return nodeapi.verify(msg, signature, publicJwk, hash, algorithm, nodeCrypto);
 
           case 27:
+            valid = _context3.sent;
+            _context3.next = 34;
+            break;
+
+          case 30:
+            _context3.prev = 30;
+            _context3.t0 = _context3["catch"](24);
+            errMsg = _context3.t0.message;
+            native = false;
+
+          case 34:
+            _context3.next = 37;
+            break;
+
+          case 36:
+            native = false;
+
+          case 37:
+            if (!(native === false)) {
+              _context3.next = 39;
+              break;
+            }
+
+            throw new Error("UnsupportedEnvironment: ".concat(errMsg));
+
+          case 39:
+            return _context3.abrupt("return", valid);
+
+          case 40:
           case "end":
             return _context3.stop();
         }
       }
-    }, _callee3, this);
+    }, _callee3, this, [[24, 30]]);
   }));
   return _verify.apply(this, arguments);
 }
@@ -409,6 +452,7 @@ function _encrypt() {
         webCrypto,
         nodeCrypto,
         native,
+        errMsg,
         encrypted,
         _args4 = arguments;
     return _regenerator.default.wrap(function _callee4$(_context4) {
@@ -468,7 +512,8 @@ function _encrypt() {
             }
 
             _context4.next = 17;
-            return webapi.encrypt(msg, publicJwk, hash, label, webCrypto).catch(function () {
+            return webapi.encrypt(msg, publicJwk, hash, label, webCrypto).catch(function (e) {
+              errMsg = e.message;
               native = false;
             });
 
@@ -483,6 +528,7 @@ function _encrypt() {
               try {
                 encrypted = nodeapi.encrypt(msg, publicJwk, hash, label, nodeCrypto);
               } catch (e) {
+                errMsg = e.message;
                 native = false;
               }
             } else native = false;
@@ -493,7 +539,7 @@ function _encrypt() {
               break;
             }
 
-            throw new Error('UnsupportedEnvironment');
+            throw new Error("UnsupportedEnvironment: ".concat(errMsg));
 
           case 23:
             return _context4.abrupt("return", encrypted);
@@ -521,6 +567,7 @@ function _decrypt() {
         webCrypto,
         nodeCrypto,
         native,
+        errMsg,
         decrypted,
         _args5 = arguments;
     return _regenerator.default.wrap(function _callee5$(_context5) {
@@ -580,7 +627,8 @@ function _decrypt() {
             }
 
             _context5.next = 17;
-            return webapi.decrypt(data, privateJwk, hash, label, webCrypto).catch(function () {
+            return webapi.decrypt(data, privateJwk, hash, label, webCrypto).catch(function (e) {
+              errMsg = e.message;
               native = false;
             });
 
@@ -595,6 +643,7 @@ function _decrypt() {
               try {
                 decrypted = nodeapi.decrypt(data, privateJwk, hash, label, nodeCrypto);
               } catch (e) {
+                errMsg = e.message;
                 native = false;
               }
             } else native = false;
@@ -605,7 +654,7 @@ function _decrypt() {
               break;
             }
 
-            throw new Error('UnsupportedEnvironment');
+            throw new Error("UnsupportedEnvironment: ".concat(errMsg));
 
           case 23:
             return _context5.abrupt("return", decrypted);
