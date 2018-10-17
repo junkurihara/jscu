@@ -58,8 +58,8 @@
     "@babel/plugin-transform-regenerator": "^7.0.0",
     "@babel/runtime": "^7.1.2",
     "bn.js": "^4.11.8",
-    "js-crypto-hash": "^0.2.0",
-    "js-crypto-key-utils": "^0.4.1",
+    "js-crypto-hash": "^0.2.1",
+    "js-crypto-key-utils": "^0.4.4",
     "js-crypto-random": "^0.1.2",
     "js-encoding-utils": "^0.2.7"
   }

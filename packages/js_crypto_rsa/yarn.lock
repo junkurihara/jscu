@@ -2774,7 +2774,7 @@ hash-base@^3.0.0:
     inherits "^2.0.1"
     safe-buffer "^5.0.1"
 
-hash.js@^1.0.0, hash.js@^1.0.3:
+hash.js@^1.0.0, hash.js@^1.0.3, hash.js@^1.1.5:
   version "1.1.5"
   resolved "https://registry.yarnpkg.com/hash.js/-/hash.js-1.1.5.tgz#e38ab4b85dfb1e0c40fe9265c0e9b54854c23812"
   integrity sha512-eWI5HG9Np+eHV1KQhisXWwM+4EPPYe5dFX1UZZH7k/E3JzDEazVH+VGlZi6R94ZqImq+A3D1mCEtrFIfg/E7sA==
@@ -3240,29 +3240,29 @@ js-crypto-aes@^0.3.0:
     "@babel/plugin-transform-regenerator" "7.0.0"
     "@babel/runtime" "7.1.2"
 
-js-crypto-hash@^0.2.0:
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/js-crypto-hash/-/js-crypto-hash-0.2.0.tgz#9d76c3ff5db817aef7ef6e2528ffcdcf9da11fa4"
-  integrity sha512-gIuc6qMIEyQLKfBZbzAwalU0TAg9topTkm5jdeKfJba7ROqk7via4OFuHv1pA8kC+xgK3hnKpO1F/7/xwzJ/5Q==
+js-crypto-hash@^0.2.1:
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/js-crypto-hash/-/js-crypto-hash-0.2.1.tgz#ca7e52121740c127d04558fc3f85eeb52a54f064"
+  integrity sha512-Rl3Whx2XKZsmdwi5wa7UfxzaXll1OeEKaKwfIjd4TPJOzXRwufByrxzmhtzw7RrNNKwUBEkDgoWlv2vSm63voQ==
   dependencies:
     "@babel/plugin-transform-regenerator" "7.0.0"
     "@babel/runtime" "7.1.2"
+    hash.js "^1.1.5"
     md5 "^2.2.1"
-    sha.js "^2.4.11"
 
-js-crypto-hmac@^0.2.0:
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/js-crypto-hmac/-/js-crypto-hmac-0.2.0.tgz#09dad4fd994f32ea629c12bda50267b27058e774"
-  integrity sha512-1i+Q9rAGnmKrgZhCwHmpYcGwAXn6Qts/CRIeDgckfShz3SqOAgTf4YCWDDiBEYY0TyZDlWayn9KBoW/cqm2yPQ==
+js-crypto-hmac@^0.2.1:
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/js-crypto-hmac/-/js-crypto-hmac-0.2.1.tgz#ec152df6e4b354fe6fbf93ee0764a89ead9b63d0"
+  integrity sha512-xPmF5Z7AI/j0Ohtz4DdWSettdEjAAzqh1Kms1/zo04NqhmU8MXKOq2c5cki/S0ZbK9biLtLpiRKJlHhoZtdQyw==
   dependencies:
     "@babel/plugin-transform-regenerator" "7.0.0"
     "@babel/runtime" "7.1.2"
-    js-crypto-hash "^0.2.0"
+    js-crypto-hash "^0.2.1"
 
-js-crypto-key-utils@^0.4.1:
-  version "0.4.1"
-  resolved "https://registry.yarnpkg.com/js-crypto-key-utils/-/js-crypto-key-utils-0.4.1.tgz#795964e30ea67630230b4dfbd8a1cce59814ef73"
-  integrity sha512-F5w1ypGxM46GbJdiW/cWAVUpv2aOB8iJ9sz12Z7GB/USgrYDuECZoh/Z7AkFasi8v9rqV7p4U8cwiPA9yKBCcA==
+js-crypto-key-utils@^0.4.4:
+  version "0.4.4"
+  resolved "https://registry.yarnpkg.com/js-crypto-key-utils/-/js-crypto-key-utils-0.4.4.tgz#f45e11ca7ca8a746ed7611bcd3ffba06ebbee91a"
+  integrity sha512-GiTifKNyqxWtOPqHTfSazPFhbNHHW71tHa+Sr4P7A4fE/4734In9xy9xMSkZageL3LX9JMr8xywiH0L67Y/cSQ==
   dependencies:
     "@babel/plugin-transform-regenerator" "7.0.0"
     "@babel/runtime" "7.1.2"
@@ -3271,8 +3271,8 @@ js-crypto-key-utils@^0.4.1:
     des.js "^1.0.0"
     elliptic "^6.4.1"
     js-crypto-aes "^0.3.0"
-    js-crypto-hash "^0.2.0"
-    js-crypto-hmac "^0.2.0"
+    js-crypto-hash "^0.2.1"
+    js-crypto-hmac "^0.2.1"
     js-crypto-random "^0.1.2"
     js-encoding-utils "^0.2.7"
 
@@ -4896,7 +4896,7 @@ setprototypeof@1.1.0:
   resolved "https://registry.yarnpkg.com/setprototypeof/-/setprototypeof-1.1.0.tgz#d0bd85536887b6fe7c0d818cb962d9d91c54e656"
   integrity sha512-BvE/TwpZX4FXExxOxZyRGQQv651MSwmWKZGqvmPcRIjDqWub67kTKuIMx43cZZrS/cBBzwBcNDWoFxt2XEFIpQ==
 
-sha.js@^2.4.0, sha.js@^2.4.11, sha.js@^2.4.8:
+sha.js@^2.4.0, sha.js@^2.4.8:
   version "2.4.11"
   resolved "https://registry.yarnpkg.com/sha.js/-/sha.js-2.4.11.tgz#37a5cf0b81ecbc6943de109ba2960d1b26584ae7"
   integrity sha512-QMEp5B7cftE7APOjk5Y6xgrbWu+WkLVQwk8JNjZ8nKRciZaByEW6MubieAiToS7+dwvrjGhH8jRXz3MVd0AYqQ==
