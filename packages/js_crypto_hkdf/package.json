@@ -1,6 +1,6 @@
 {
   "name": "js-crypto-hkdf",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Universal Module for HKDF (Hash-based Key Derivation Function) in JavaScript",
   "main": "dist/jschkdf.bundle.js",
   "scripts": {
