@@ -39,7 +39,8 @@ describe('Generated JWK key should be successfully converted to PEM SPKI/PKCS8, 
         hashes.map( async (hash) => {
           const sig = await jscu.pkc.sign(msg, keySet[idx].privateKey, hash);
 
-          const pemPub = jscu.keyUtil.jwk.to('pem', keySet[idx].publicKey, 'public');
+          const pko = new jscu.Key('jwk', keySet[idx].publicKey);
+          const pemPub = await pko.export('pem');
           const binKey = jseu.formatter.pemToBin(pemPub);
           const key = await crypto.subtle.importKey('spki', binKey, {name: 'ECDSA', namedCurve: curve}, true, ['verify']);
           const result = await crypto.subtle.verify({name: 'ECDSA', namedCurve: curve, hash: { name: hash }}, key, sig, msg);
@@ -54,7 +55,8 @@ describe('Generated JWK key should be successfully converted to PEM SPKI/PKCS8, 
     await Promise.all(
       curves.map( async (curve, idx) => await Promise.all(
         hashes.map( async (hash) => {
-          const pemPriv = jscu.keyUtil.jwk.to('pem', keySet[idx].privateKey, 'private');
+          const pko = new jscu.Key('jwk', keySet[idx].privateKey);
+          const pemPriv = await pko.export('pem');
           const binKey = jseu.formatter.pemToBin(pemPriv);
           const key = await crypto.subtle.importKey('pkcs8', binKey, {name: 'ECDSA', namedCurve: curve}, false, ['sign']);
           const sig = await crypto.subtle.sign({name: 'ECDSA', namedCurve: curve, hash: { name: hash }}, key, msg);
@@ -88,8 +90,10 @@ describe('PEM SPKI/PKCS8 key should be successfully converted to usable JWK', ()
   it('JWK converted from PEM should successfully sign and verify messages', async () => {
     await Promise.all(
       hashes.map( async (hash) => {
-        const jwkPriv = jscu.keyUtil.jwk.from('pem', privOSSL, 'private');
-        const jwkPub = jscu.keyUtil.jwk.from('pem', pubOSSL, 'public');
+        const pubko = new jscu.Key('pem', pubOSSL);
+        const priko = new jscu.Key('pem', privOSSL);
+        const jwkPriv = await priko.export('jwk');
+        const jwkPub = await pubko.export('jwk');
 
         const sig = await jscu.pkc.sign(msg, jwkPriv, hash);
         const result = await jscu.pkc.verify(msg, sig, jwkPub, hash);

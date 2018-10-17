@@ -19,7 +19,7 @@ var _asyncToGenerator2 = _interopRequireDefault(require("@babel/runtime/helpers/
 
 var _index = _interopRequireDefault(require("js-crypto-ec/dist/index.js"));
 
-var _index2 = _interopRequireDefault(require("js-crypto-rsa/dist/index"));
+var _index2 = _interopRequireDefault(require("js-crypto-rsa/dist/index.js"));
 
 var pkcec = _interopRequireWildcard(require("./pkcec.js"));
 

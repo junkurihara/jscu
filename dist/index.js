@@ -37,7 +37,19 @@ Object.defineProperty(exports, "hkdf", {
     return _index5.default;
   }
 });
-exports.pkc = exports.keyUtil = exports.default = void 0;
+Object.defineProperty(exports, "x509", {
+  enumerable: true,
+  get: function get() {
+    return _index6.default;
+  }
+});
+Object.defineProperty(exports, "Key", {
+  enumerable: true,
+  get: function get() {
+    return _index7.Key;
+  }
+});
+exports.pkc = exports.default = void 0;
 
 var _index = _interopRequireDefault(require("js-crypto-aes/dist/index.js"));
 
@@ -49,9 +61,9 @@ var _index4 = _interopRequireDefault(require("js-crypto-hmac/dist/index.js"));
 
 var _index5 = _interopRequireDefault(require("js-crypto-hkdf/dist/index.js"));
 
-var keyUtil = _interopRequireWildcard(require("./keyutil.js"));
+var _index6 = _interopRequireDefault(require("js-x509-utils/dist/index.js"));
 
-exports.keyUtil = keyUtil;
+var _index7 = require("js-crypto-key-utils/dist/index.js");
 
 var pkc = _interopRequireWildcard(require("./pkc.js"));
 
@@ -60,22 +72,19 @@ exports.pkc = pkc;
 /**
  * index.js
  * Structure of API
- * --- keyUtil (key utilities for EC and RSA public keys)
- *  |    |-- jwk
- *  |    |    |-- to
- *  |    |    |-- from
- *  |    |    |-- getThumbprint
- *  |    |-- x509 // TODO verify self-signed certificate in single line
- *  |         |-- toJwk
- *  |         |-- fromJwk
- *  |         |-- parse (verify)
+ * ---- Key (Key object with methods handling EC and RSA public keys)
  *  |
- *  |-- pkc (public key crypto, EC and RSA) // TODO: RSA key generation and encrypt/decrypt with ECDH standard procedure
+ *  |-- pkc (public key crypto, EC and RSA) // TODO: Encrypt/decrypt with ECDH standardized procedure
  *  |    |-- generateKey
  *  |    |-- encrypt
  *  |    |-- decrypt
  *  |    |-- sign
  *  |    |-- verify
+ *  |
+ *  |-- x509 // TODO verify self-signed certificate in single line
+ *  |    |-- toJwk
+ *  |    |-- fromJwk
+ *  |    |-- parse (verify)
  *  |
  *  |-- aes
  *  |-- random
@@ -84,8 +93,9 @@ exports.pkc = pkc;
  *  |-- hkdf
  */
 var _default = {
-  keyUtil: keyUtil,
+  Key: _index7.Key,
   pkc: pkc,
+  x509: _index6.default,
   aes: _index.default,
   random: _index2.default,
   hash: _index3.default,

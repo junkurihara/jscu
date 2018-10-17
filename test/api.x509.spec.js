@@ -24,9 +24,7 @@ describe('Generated JWK public key should be successfully converted to X509 PEM 
   let msg;
   before( async () => {
 
-    keySet = await Promise.all(curves.map( async (crv) => {
-      return await jscu.pkc.generateKey('EC', {namedCurve: crv});
-    }));
+    keySet = await Promise.all(curves.map( async (crv) => await jscu.pkc.generateKey('EC', {namedCurve: crv})));
     msg = new Uint8Array(32);
     for(let i = 0; i < 32; i++) msg[i] = 0xFF & i;
   });
@@ -45,7 +43,7 @@ describe('Generated JWK public key should be successfully converted to X509 PEM 
     let result = true;
     await Promise.all(
       keySet.map( async (kp) => sigopt.map( async (so) => {
-        const x509c = await jscu.keyUtil.x509.fromJwk(
+        const x509c = await jscu.x509.fromJwk(
           kp.publicKey,
           kp.privateKey,
           'pem',
@@ -57,9 +55,9 @@ describe('Generated JWK public key should be successfully converted to X509 PEM 
           }
         );
         console.log(x509c);
-        const parsed = await jscu.keyUtil.x509.parse(x509c, 'pem');
+        const parsed = await jscu.x509.parse(x509c, 'pem');
         const re = await jscu.pkc.verify(parsed.tbsCertificate, parsed.signatureValue, kp.publicKey, parsed.signatureAlgorithm.parameters.hash, {format: 'der'});
-        console.log('verification result: ' + re);
+        console.log(`verification result: ${re}`);
         expect(re).to.be.true;
         result = re && result;
       }))
@@ -69,9 +67,9 @@ describe('Generated JWK public key should be successfully converted to X509 PEM 
   });
 
   it('Transform X509 Self Signed PEM to JWK, and verify it', async () => {
-    const jwkey = await jscu.keyUtil.x509.toJwk(crtsample, 'pem');
+    const jwkey = await jscu.x509.toJwk(crtsample, 'pem');
 
-    const parsed = await jscu.keyUtil.x509.parse(crtsample, 'pem');
+    const parsed = await jscu.x509.parse(crtsample, 'pem');
     const re = await jscu.pkc.verify(parsed.tbsCertificate, parsed.signatureValue, jwkey, parsed.signatureAlgorithm.parameters.hash, {format: 'der'});
     console.log(jwkey);
     console.log(re);

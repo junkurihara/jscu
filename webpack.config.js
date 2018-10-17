@@ -65,7 +65,8 @@ const webConfig = {
     new webpack.optimize.LimitChunkCountPlugin({
       maxChunks: 1
     }),
-    new webpack.optimize.MinChunkSizePlugin({minChunkSize: 1000})
+    new webpack.optimize.MinChunkSizePlugin({minChunkSize: 1000}),
+
   ],
   externals: {
     'crypto': true
@@ -79,6 +80,10 @@ module.exports = (env, argv) => {
   const config = webConfig;
   if (argv.mode === 'development'){
     config.devtool = 'inline-source-map'; // add inline source map
+    Object.assign(config.entry, {
+      'encrypt': ['./test/api.encrypt.spec.js'],
+      'sign': ['./test/api.sign.spec.js']
+    });
   }
   // else if(argv.mode === 'production'){
   // }

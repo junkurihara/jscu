@@ -3,7 +3,7 @@
  */
 
 import ec from 'js-crypto-ec/dist/index.js';
-import rsa from 'js-crypto-rsa/dist/index';
+import rsa from 'js-crypto-rsa/dist/index.js';
 import * as pkcec from './pkcec.js';
 import params from './params.js';
 
