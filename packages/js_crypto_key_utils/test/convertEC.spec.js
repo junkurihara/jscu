@@ -14,7 +14,7 @@ function objectSort(obj){
 
 function prune(jwk){
   delete jwk.ext;
-  delete jwk.alg;;
+  delete jwk.alg;
   delete jwk.key_ops;
   return jwk;
 }
