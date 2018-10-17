@@ -102,6 +102,8 @@ rsa.encrypt(
 # Note
 This library has the following limitations at this point.
 
+- Node.js must be >= v10.12.0 to generate RSA keys.
+
 - Some functions does not work in IE11. In particular, RSA-PSS scheme does not work due to lack of native implementation in IE, and the label for RSA-OAEP encryption cannot be employed since IE does not support it. This library heavily relies on the native (but standardized) implementation of RSA cryptographic modules in browsers and Node.js and it does not employ pure-JS RSA implementations for compatibility yet. Currently, we strongly recommend you to use this library in slightly modern environments, and, honestly, you should discard the IE ASAP.
 
 # License
