@@ -3,3 +3,6 @@ node_modules/
 obsolete/
 thumbs.db
 yarn-error.log
+.idea/
+.coverage/
+.vscode/
