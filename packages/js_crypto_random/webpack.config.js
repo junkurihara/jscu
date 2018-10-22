@@ -64,7 +64,13 @@ const webConfig = {
     new webpack.optimize.LimitChunkCountPlugin({
       maxChunks: 1
     }),
-    new webpack.optimize.MinChunkSizePlugin({minChunkSize: 1000})
+    new webpack.optimize.MinChunkSizePlugin({minChunkSize: 1000}),
+    new webpack.DefinePlugin({
+      'process.env': {
+        // NODE_ENV: JSON.stringify(process.env.NODE_ENV),
+        TEST_ENV: JSON.stringify(process.env.TEST_ENV),
+      }
+    })
   ],
   externals: {
     'crypto': true

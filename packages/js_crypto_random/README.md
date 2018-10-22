@@ -29,16 +29,14 @@ import random from 'js-crypto-random/dist/index.js'; // for github
 # Usage
 ## Generate random byte sequence
 ```javascript
-random.getRandomBytes(32).then( (rb) => {
-  // now you get an Uint8Array of 32 bytes filled with randomly generated values
-});
+// now you get an Uint8Array of 32 bytes filled with randomly generated values
+const randomBytes = random.getRandomBytes(32);
 ```
 
 ## Generate random ascii sequence
 ```javascript
-random.getRandomAsciiString(32)( (ra) => {
-  // now you get a string of 32 ASCII characters generated in a cryptographically random manner
-});
+// now you get a string of 32 ASCII characters generated in a cryptographically random manner
+const randomAscii = random.getRandomAsciiString(32);
 ```
 
 # License
