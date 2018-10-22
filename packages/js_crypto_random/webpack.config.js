@@ -102,6 +102,14 @@ module.exports = (env, argv) => {
       });
       config.entry = newEntry;
     }
+    else if(process.env.TEST_ENV === 'window'){
+      const newEntry = {};
+      Object.keys(config.entry).map( (key) => {
+        const newKey = `${key}.fromWindow`;
+        newEntry[newKey] = config.entry[key];
+      });
+      config.entry = newEntry;
+    }
   }
   return config;
 };

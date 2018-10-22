@@ -1,7 +1,22 @@
-const env = (process.env.TEST_ENV === 'bundle') ? 'From bundle': 'From source';
-const random = (process.env.TEST_ENV === 'bundle')
-  ? require('../dist/jscrandom.bundle.js')
-  : require('../src/index.js');
+let env;
+let random;
+if(process.env.TEST_ENV === 'bundle'){
+  env = 'From bundle';
+  random = require('../dist/jscrandom.bundle.js');
+}
+else if (process.env.TEST_ENV === 'window'){
+  env = 'From window';
+  if(typeof window !== 'undefined' && typeof window.jscrandom !== 'undefined'){
+    random = window.jscrandom;
+  }
+  else{
+    random = require('../src/index.js');
+  }
+}
+else {
+  env = 'From source';
+  random = require('../src/index.js');
+}
 
 import chai from 'chai';
 // const should = chai.should();

@@ -5,14 +5,20 @@
   "main": "dist/jscrandom.bundle.js",
   "scripts": {
     "test": "./node_modules/.bin/mocha --require @babel/register --recursive $(find test -name '*.spec.js')",
-    "karma": "./node_modules/.bin/karma start",
-    "html": "npm run html:source && npm run html:bundle",
-    "html:source": "cross-env TEST_ENV=source ./node_modules/.bin/webpack --mode development",
     "test:bundle": "npm run webpack && cross-env TEST_ENV=bundle npm run test",
+
+    "karma": "./node_modules/.bin/karma start",
     "karma:bundle": "npm run webpack && cross-env TEST_ENV=bundle npm run karma",
+    "karma:window": "npm run webpack && cross-env TEST_ENV=window npm run karma",
+
+    "html": "npm run html:source && npm run html:bundle && npm run html:window",
+    "html:source": "cross-env TEST_ENV=source ./node_modules/.bin/webpack --mode development",
     "html:bundle": "cross-env TEST_ENV=bundle ./node_modules/.bin/webpack --mode development",
+    "html:window": "cross-env TEST_ENV=window ./node_modules/.bin/webpack --mode development",
+
     "webpack": "./node_modules/.bin/webpack --optimize-minimize --mode development",
     "webpack:prod": "cross-env NODE_ENV=production ./node_modules/.bin/webpack --optimize-minimize --mode production",
+
     "build": "cross-env NODE_ENV=production ./node_modules/.bin/babel src -d dist/ --keep-file-extension && npm run webpack:prod"
   },
   "author": "Jun Kurihara",

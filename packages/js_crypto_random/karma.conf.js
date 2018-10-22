@@ -8,7 +8,6 @@ const getWebpackConfig = () => {
   config.mode = 'development';
   delete config.entry;
   delete config.output;
-  delete config.plugins;
 
   config.module.rules = config.module.rules.map( (elem) => {
     if(elem.use[0].loader === 'babel-loader'){
@@ -35,6 +34,7 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
+      'dist/jscrandom.bundle.js',
       'test/**/*.spec.js'
     ],
 
