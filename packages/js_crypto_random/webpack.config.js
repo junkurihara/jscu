@@ -78,11 +78,24 @@ module.exports = (env, argv) => {
   const config = webConfig;
   if (argv.mode === 'development'){
     config.devtool = 'inline-source-map'; // add inline source map
-    Object.assign(config.entry, {
-      'test': ['./test/random.spec.js']
-    });
   }
   // else if(argv.mode === 'production'){
   // }
+
+  // when TEST_ENV is set, only test bundle is generated
+  if(process.env.TEST_ENV){
+    config.entry = {
+      '../test/html/random': ['./test/random.spec.js']
+    };
+
+    if(process.env.TEST_ENV === 'bundle'){
+      const newEntry = {};
+      Object.keys(config.entry).map( (key) => {
+        const newKey = `${key}.fromBundled`;
+        newEntry[newKey] = config.entry[key];
+      });
+      config.entry = newEntry;
+    }
+  }
   return config;
 };

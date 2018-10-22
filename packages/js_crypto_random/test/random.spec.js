@@ -1,4 +1,6 @@
-import random from '../src/index.js';
+const random = (process.env.TEST_ENV === 'bundle')
+  ? require('../dist/jscrandom.bundle.js')
+  : require('../src/index.js');
 
 import chai from 'chai';
 // const should = chai.should();
