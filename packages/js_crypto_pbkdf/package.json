@@ -1,6 +1,6 @@
 {
   "name": "js-crypto-pbkdf",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Universal Module for Password-based Key Derivation Function (PBKDF) in JavaScript",
   "main": "dist/index.js",
   "scripts": {
