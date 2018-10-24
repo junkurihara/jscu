@@ -1,15 +1,17 @@
-import hmac from '../src/index.js';
 import random from 'js-crypto-random';
-
+import jseu from 'js-encoding-utils';
 import chai from 'chai';
 // const should = chai.should();
 const expect = chai.expect;
 
-import jseu from 'js-encoding-utils';
+import {getTestEnv} from './prepare.js';
+const env = getTestEnv();
+const hmac = env.library;
+const envName = env.envName;
 
 
 const hashes = ['SHA-256', 'SHA-384', 'SHA-512', 'MD5', 'SHA-1'];
-describe('HMAC test', () => {
+describe(`${envName}: HMAC test`, () => {
   let msg;
   before( async () => {
     msg = new Uint8Array(32);
