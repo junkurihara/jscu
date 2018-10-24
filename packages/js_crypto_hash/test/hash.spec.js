@@ -1,5 +1,10 @@
-// import hash from '../dist/jschash.bundle.js';
-import hash from '../src/index.js';
+import {getTestEnv} from './prepare.js';
+const env = getTestEnv();
+const hash = env.library;
+const envName = env.envName;
+
+
+
 import params from '../src/params.js';
 import chai from 'chai';
 // const should = chai.should();
@@ -7,7 +12,7 @@ const expect = chai.expect;
 
 
 const hashes = ['SHA-256', 'SHA-384', 'SHA-512', 'SHA-1', 'MD5'];
-describe('Hash generation test', () => {
+describe(`${envName}: Hash generation test`, () => {
   let msg;
   before( async () => {
     msg = new Uint8Array(32);
