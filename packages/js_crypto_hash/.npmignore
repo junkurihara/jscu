@@ -7,7 +7,9 @@ yarn-error.log
 .babelrc
 .eslintrc.json
 karma.conf.js
-webpack.config.js
+webpack.common.js
+webpack.prod.js
+webpack.dev.js
 .idea/
 .git/
 .gitignore
