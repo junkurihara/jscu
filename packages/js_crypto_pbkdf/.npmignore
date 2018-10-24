@@ -1,0 +1,16 @@
+src/
+coverage/
+obsolete/
+test/
+yarn.lock
+yarn-error.log
+.babelrc
+.eslintrc.json
+karma.conf.js
+webpack.dev.js
+webpack.common.js
+webpack.prod.js
+.idea/
+.git/
+.gitignore
+.circleci/
