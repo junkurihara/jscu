@@ -1,7 +1,14 @@
 {
   "presets": [
     [ "@babel/preset-env", {
-      "targets": { },
+      "targets": {
+        "browsers": [
+          "last 2 chrome versions",
+          "last 2 firefox versions",
+          "IE 11",
+          "last 2 Edge versions"
+        ]
+      },
       "useBuiltIns": false
     } ]
   ],
@@ -15,5 +22,13 @@
         "regenerator": true
       }
     ]
-  ]
+  ],
+  "env": {
+    "production": {
+      "plugins": ["babel-plugin-transform-remove-console"]
+    },
+    "development": {
+      "plugins": ["babel-plugin-istanbul"]
+    }
+  }
 }

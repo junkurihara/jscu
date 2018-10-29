@@ -43,10 +43,16 @@ Object.defineProperty(exports, "x509", {
     return _index6.default;
   }
 });
+Object.defineProperty(exports, "pbkdf", {
+  enumerable: true,
+  get: function get() {
+    return _index7.default;
+  }
+});
 Object.defineProperty(exports, "Key", {
   enumerable: true,
   get: function get() {
-    return _index7.Key;
+    return _index8.Key;
   }
 });
 exports.pkc = exports.default = void 0;
@@ -63,7 +69,9 @@ var _index5 = _interopRequireDefault(require("js-crypto-hkdf/dist/index.js"));
 
 var _index6 = _interopRequireDefault(require("js-x509-utils/dist/index.js"));
 
-var _index7 = require("js-crypto-key-utils/dist/index.js");
+var _index7 = _interopRequireDefault(require("js-crypto-pbkdf/dist/index.js"));
+
+var _index8 = require("js-crypto-key-utils/dist/index.js");
 
 var pkc = _interopRequireWildcard(require("./pkc.js"));
 
@@ -91,15 +99,17 @@ exports.pkc = pkc;
  *  |-- hash
  *  |-- hmac
  *  |-- hkdf
+ *  |-- pbkdf
  */
 var _default = {
-  Key: _index7.Key,
+  Key: _index8.Key,
   pkc: pkc,
   x509: _index6.default,
   aes: _index.default,
   random: _index2.default,
   hash: _index3.default,
   hmac: _index4.default,
-  hkdf: _index5.default
+  hkdf: _index5.default,
+  pbkdf: _index7.default
 };
 exports.default = _default;

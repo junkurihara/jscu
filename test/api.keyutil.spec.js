@@ -1,4 +1,8 @@
-import jscu from '../src/index.js';
+import {getTestEnv} from './prepare.js';
+const env = getTestEnv();
+const jscu = env.library;
+const envName = env.envName;
+
 import jseu from 'js-encoding-utils';
 
 let crypto;
@@ -14,7 +18,7 @@ const expect = chai.expect;
 
 const curves = ['P-256', 'P-384', 'P-521'];
 const hashes = [ 'SHA-256', 'SHA-384', 'SHA-512'];
-describe('Generated JWK key should be successfully converted to PEM SPKI/PKCS8, and vice varsa', () => {
+describe(`${envName}: Generated JWK key should be successfully converted to PEM SPKI/PKCS8, and vice varsa`, () => {
   let keySet = [];
   let msg;
   before( async () => {
@@ -25,9 +29,7 @@ describe('Generated JWK key should be successfully converted to PEM SPKI/PKCS8, 
       crypto = new crypto();
     }
 
-    keySet = await Promise.all(curves.map( async (crv) => {
-      return await jscu.pkc.generateKey('EC', {namedCurve: crv});
-    }));
+    keySet = await Promise.all(curves.map( async (crv) => await jscu.pkc.generateKey('EC', {namedCurve: crv})));
     msg = new Uint8Array(32);
     for(let i = 0; i < 32; i++) msg[i] = 0xFF & i;
   });

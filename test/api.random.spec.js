@@ -1,12 +1,14 @@
-import jscu from '../src/index.js';
-
+import {getTestEnv} from './prepare.js';
+const env = getTestEnv();
+const jscu = env.library;
+const envName = env.envName;
 
 import chai from 'chai';
 // const should = chai.should();
 const expect = chai.expect;
 
 
-describe('Random generation test', () => {
+describe(`${envName}: Random generation test`, () => {
 
   it('Random bytes of desired length should be generated successfully', async () => {
     const r = await jscu.random.getRandomBytes(32);

@@ -1,4 +1,7 @@
-import jscu from '../src/index.js';
+import {getTestEnv} from './prepare.js';
+const env = getTestEnv();
+const jscu = env.library;
+const envName = env.envName;
 
 import chai from 'chai';
 // const should = chai.should();
@@ -19,7 +22,7 @@ const crtsample = '-----BEGIN CERTIFICATE-----\n' +
   'UR3om5rYSWmj7rgz0uJxoaZkkNH4xM2Zfss=\n' +
   '-----END CERTIFICATE-----';
 
-describe('Generated JWK public key should be successfully converted to X509 PEM certificate and vice versa', () => {
+describe(`${envName}: Generated JWK public key should be successfully converted to X509 PEM certificate and vice versa`, () => {
   let keySet = [];
   let msg;
   before( async () => {

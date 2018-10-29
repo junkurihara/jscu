@@ -15,7 +15,7 @@ Firstly, this library provides following functions that works in most modern bro
 - Public/private key format conversion between JWK and PEM/DER (SPKI for public/PKCS8 for private)
 - Generation of JWK Thumbprint
 - Generation of X.509 public key certificate from JWK and extraction of JWK public key from X.509 public key certificate.
-Additionally, this library provides random, hash, aes, HMAC and HKDF functions. 
+Additionally, this library provides random, hash, AES, HMAC, HKDF, and PBKDF functions. 
 
 # Module structure
 The module structure of this library can be illustrated as follows.
@@ -42,6 +42,7 @@ The module structure of this library can be illustrated as follows.
  *  |-- hash
  *  |-- hmac
  *  |-- hkdf
+ *  |-- pbkdf
  */
 ```
 
@@ -55,6 +56,7 @@ We should note that most of this library's functions are independently available
 - `random`: https://github.com/junkurihara/js-crypto-random
 - `hash`: https://github.com/junkurihara/js-crypto-hash
 - `hkdf`: https://github.com/junkurihara/js-crypto-hkdf
+- `pbkdf`: https://github.com/junkurihara/js-crypto-pbkdf
 - `hmac`: https://github.com/junkurihara/js-crypto-hmac
 
 Please refer to the above repos for further information.

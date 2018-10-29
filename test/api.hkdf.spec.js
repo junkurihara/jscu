@@ -1,4 +1,7 @@
-import jscu from '../src/index.js';
+import {getTestEnv} from './prepare.js';
+const env = getTestEnv();
+const jscu = env.library;
+const envName = env.envName;
 
 import chai from 'chai';
 // const should = chai.should();
@@ -6,7 +9,7 @@ const expect = chai.expect;
 
 
 const hashes = ['SHA-256', 'SHA-384', 'SHA-512'];
-describe('HKDF test', () => {
+describe(`${envName}: HKDF test`, () => {
   let msg;
   const length = 144;
   before( async () => {
