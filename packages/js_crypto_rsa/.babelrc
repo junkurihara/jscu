@@ -26,6 +26,9 @@
   "env": {
     "production": {
       "plugins": ["babel-plugin-transform-remove-console"]
+    },
+    "development": {
+      "plugins": ["babel-plugin-istanbul"]
     }
   }
 }

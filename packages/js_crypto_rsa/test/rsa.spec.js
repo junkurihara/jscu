@@ -1,4 +1,9 @@
-import rsa from '../src/index.js';
+import {getTestEnv} from './prepare.js';
+const env = getTestEnv();
+const rsa = env.library;
+const envName = env.envName;
+
+
 import rsaSmaple from './rsa_sample.js';
 // import * as oaep from '../src/oaep.js';
 import jseu from 'js-encoding-utils';
@@ -6,7 +11,7 @@ import chai from 'chai';
 // const should = chai.should();
 const expect = chai.expect;
 
-describe('RSA cryptography test', () => {
+describe(`${envName}: RSA cryptography test`, () => {
 
   const modulusLength = ['2048', '4096'];
   const keys = [];
