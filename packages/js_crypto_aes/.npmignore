@@ -14,3 +14,4 @@ webpack.common.js
 .git/
 .gitignore
 .circleci/
+.vscode/
