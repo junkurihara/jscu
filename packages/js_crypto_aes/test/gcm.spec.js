@@ -1,4 +1,7 @@
-import aes from '../src/index.js';
+import {getTestEnv} from './prepare.js';
+const env = getTestEnv();
+const aes = env.library;
+const envName = env.envName;
 
 import random from 'js-crypto-random/dist/index.js';
 import chai from 'chai';
@@ -6,7 +9,7 @@ import chai from 'chai';
 const expect = chai.expect;
 
 
-describe('Encryption and Decryption with AES-GCM Test', () => {
+describe(`${envName}: Encryption and Decryption with AES-GCM Test`, () => {
   const keyLength = [16, 32]; // 24 bytes (192 bits) AES key is not supported in Chrome at this point
   let msg;
   let iv;

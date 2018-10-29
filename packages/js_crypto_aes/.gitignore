@@ -4,3 +4,4 @@ obsolete/
 thumbs.db
 yarn-error.log
 .idea/
+.vscode/
