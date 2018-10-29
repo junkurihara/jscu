@@ -1,4 +1,8 @@
-import hkdf from '../src/index.js';
+import {getTestEnv} from './prepare.js';
+const env = getTestEnv();
+const hkdf = env.library;
+const envName = env.envName;
+
 
 import chai from 'chai';
 // const should = chai.should();
@@ -6,7 +10,7 @@ const expect = chai.expect;
 
 
 let hashes = ['SHA-256', 'SHA-384', 'SHA-512', 'SHA-1', 'MD5'];
-describe('HKDF test', () => {
+describe(`${envName}: HKDF test`, () => {
   let masterSecret;
   const length = 144;
   before( async () => {

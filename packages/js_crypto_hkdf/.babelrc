@@ -10,8 +10,7 @@
         ]
       },
       "useBuiltIns": false
-    } ],
-    "babel-preset-minify"
+    } ]
   ],
   "ignore": [ "node_modules" ],
   "only": [ "src", "test" ],
@@ -23,5 +22,13 @@
         "regenerator": true
       }
     ]
-  ]
+  ],
+  "env": {
+    "production": {
+      "plugins": ["babel-plugin-transform-remove-console"]
+    },
+    "development": {
+      "plugins": ["babel-plugin-istanbul"]
+    }
+  }
 }
