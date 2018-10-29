@@ -1,21 +1,12 @@
 // Karma configuration
 // Generated on Wed Jun 13 2018 13:09:34 GMT+0900 (JST)
-
-const webpackConfig = require('./webpack.config.js');
-const babelExtraPlugins = ['babel-plugin-istanbul'];
+const common = require('./webpack.common.js');
+const webpackConfig = require('./webpack.dev.js');
+// const babelExtraPlugins = ['babel-plugin-istanbul'];
 const getWebpackConfig = () => {
   const config = webpackConfig(null, {mode: 'development'});
-  config.mode = 'development';
   delete config.entry;
   delete config.output;
-  delete config.plugins;
-
-  config.module.rules = config.module.rules.map( (elem) => {
-    if(elem.use[0].loader === 'babel-loader'){
-      elem.use[0].options.plugins.push(...babelExtraPlugins);
-    }
-    return elem;
-  });
 
   return config;
 };
@@ -35,7 +26,8 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
-      'test/**/*.spec.js'
+      `./dist/${common.bundleName}`,
+      './test/**/*.spec.js'
     ],
 
 
@@ -50,7 +42,7 @@ module.exports = function(config) {
       './src/**/*.js': ['coverage'],
       './test/**/*.spec.js': ['webpack']
     },
-    // TODO Merge with webpack.config.js
+
     webpack: getWebpackConfig(),
 
     // test results reporter to use

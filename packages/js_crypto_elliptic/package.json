@@ -5,9 +5,17 @@
   "main": "dist/jscec.bundle.js",
   "scripts": {
     "test": "./node_modules/.bin/mocha --require @babel/register --recursive $(find test -name '*.spec.js')",
-    "karma": "./node_modules/.bin/karma start",
-    "webpack": "./node_modules/.bin/webpack --optimize-minimize --mode production",
-    "build": "NODE_ENV=production ./node_modules/.bin/babel src -d dist/ --keep-file-extension && npm run webpack"
+    "test:bundle": "npm run webpack && cross-env TEST_ENV=bundle npm run test",
+    "karma": "cross-env TEST_ENV=source ./node_modules/.bin/karma start",
+    "karma:bundle": "npm run webpack && cross-env TEST_ENV=bundle ./node_modules/.bin/karma start",
+    "karma:window": "npm run webpack && cross-env TEST_ENV=window ./node_modules/.bin/karma start",
+    "html": "npm run html:source && npm run html:bundle && npm run html:window",
+    "html:source": "cross-env TEST_ENV=source NODE_ENV=test npm run webpack",
+    "html:bundle": "cross-env TEST_ENV=bundle NODE_ENV=test npm run webpack",
+    "html:window": "cross-env TEST_ENV=window NODE_ENV=test npm run webpack",
+    "webpack": "./node_modules/.bin/webpack --optimize-minimize --mode development --config webpack.dev.js",
+    "webpack:prod": "cross-env NODE_ENV=production ./node_modules/.bin/webpack --optimize-minimize --mode production --config webpack.prod.js",
+    "build": "cross-env NODE_ENV=production ./node_modules/.bin/babel src -d dist/ --keep-file-extension && npm run webpack:prod"
   },
   "author": "Jun Kurihara",
   "license": "MIT",
@@ -38,8 +46,10 @@
     "babel-plugin-istanbul": "5.1.0",
     "babel-plugin-transform-remove-console": "^6.9.4",
     "chai": "^4.2.0",
-    "eslint": "5.7.0",
-    "karma": "3.0.0",
+    "cross-env": "^5.2.0",
+    "eslint": "^5.8.0",
+    "jsdom": "^12.2.0",
+    "karma": "^3.1.1",
     "karma-chrome-launcher": "^2.2.0",
     "karma-cli": "^1.0.1",
     "karma-coverage": "^1.1.2",
@@ -48,8 +58,10 @@
     "karma-webpack": "3.0.5",
     "mocha": "^5.2.0",
     "mocha-sinon": "^2.1.0",
-    "webpack": "^4.20.2",
-    "webpack-cli": "^3.1.2"
+    "webpack": "^4.23.1",
+    "webpack-cli": "^3.1.2",
+    "webpack-common-shake": "^2.1.0",
+    "webpack-merge": "^4.1.4"
   },
   "dependencies": {
     "@babel/plugin-transform-regenerator": "^7.0.0",
@@ -57,9 +69,9 @@
     "asn1.js": "^5.0.1",
     "buffer": "^5.2.1",
     "elliptic": "^6.4.1",
-    "js-crypto-hash": "^0.2.1",
-    "js-crypto-key-utils": "^0.4.4",
-    "js-crypto-random": "^0.1.2",
+    "js-crypto-hash": "^0.2.3",
+    "js-crypto-key-utils": "^0.4.6",
+    "js-crypto-random": "^0.1.6",
     "js-encoding-utils": "^0.2.7"
   }
 }

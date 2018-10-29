@@ -1,11 +1,15 @@
-import elliptic from '../src/index.js';
+import {getTestEnv} from './prepare.js';
+const env = getTestEnv();
+const elliptic = env.library;
+const envName = env.envName;
+
 
 import chai from 'chai';
 // const should = chai.should();
 const expect = chai.expect;
 
 
-describe('Elliptic curve cryptography test', () => {
+describe(`${envName}: Elliptic curve cryptography test`, () => {
 
   const curves = ['P-256', 'P-384', 'P-521', 'P-256K'];
   const keys = [];
