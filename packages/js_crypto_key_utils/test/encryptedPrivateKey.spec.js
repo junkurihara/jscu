@@ -1,4 +1,8 @@
-import keyutils from '../src/index.js';
+import {getTestEnv} from './prepare.js';
+const env = getTestEnv();
+const keyutils = env.library;
+const envName = env.envName;
+
 import sample from './encrypted_sample.js';
 
 import chai from 'chai';
@@ -12,7 +16,7 @@ function objectSort(obj){
   return map;
 }
 
-describe('RSA/EC Key conversion from/to JWK test.', () => {
+describe(`${envName}: RSA/EC Key conversion from/to JWK test.`, () => {
   const encOptionArray = [
     {algorithm: 'pbes2'}, // = AES256 with hmachWithSHA256
     {algorithm: 'pbes2', cipher: 'aes128-cbc', prf: 'hmacWithSHA256'},

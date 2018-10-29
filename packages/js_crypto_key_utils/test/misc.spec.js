@@ -1,4 +1,9 @@
-import {Key} from '../src/key.js';
+import {getTestEnv} from './prepare.js';
+const env = getTestEnv();
+const Key = env.library.Key;
+const envName = env.envName;
+
+
 import sampleRSA from './rsa_sample.js';
 import ec from 'js-crypto-ec/dist/index.js';
 import jseu from 'js-encoding-utils';
@@ -16,14 +21,12 @@ function objectSort(obj){
 
 const bits = ['2048', '4096'];
 const curves = ['P-256', 'P-384', 'P-521', 'P-256K'];
-describe('RSA/EC Key conversion from/to JWK test.', () => {
+describe(`${envName}: RSA/EC Key conversion from/to JWK test.`, () => {
 
   let ECKeySet = [];
   before(async function (){
     this.timeout(20000);
-    ECKeySet = await Promise.all(curves.map(async (crv) => {
-      return await ec.generateKey(crv);
-    }));
+    ECKeySet = await Promise.all(curves.map(async (crv) => await ec.generateKey(crv)));
   });
 
   it('EC: Derive public key to private key', async function () {
@@ -134,14 +137,12 @@ describe('RSA/EC Key conversion from/to JWK test.', () => {
 
 });
 
-const getKeyStatus = (k) => {
-  return {
-    type: k._type,
-    private: k.isPrivate,
-    derLength: (k._der) ? k._der.length : 0,
-    octLength: (k._oct) ? Object.keys(k._oct).length : 0,
-    jwkKeyLength: (k._jwk) ? Object.keys(k._jwk).length : 0,
-    status: k._current,
-    isEncrypted: k.isEncrypted
-  };
-};
+const getKeyStatus = (k) => ({
+  type: k._type,
+  private: k.isPrivate,
+  derLength: (k._der) ? k._der.length : 0,
+  octLength: (k._oct) ? Object.keys(k._oct).length : 0,
+  jwkKeyLength: (k._jwk) ? Object.keys(k._jwk).length : 0,
+  status: k._current,
+  isEncrypted: k.isEncrypted
+});

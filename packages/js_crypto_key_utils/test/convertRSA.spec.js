@@ -1,4 +1,8 @@
-import keyutils from '../src/index.js';
+import {getTestEnv} from './prepare.js';
+const env = getTestEnv();
+const keyutils = env.library;
+const envName = env.envName;
+
 import sampleRSA from './rsa_sample.js';
 
 import jseu from 'js-encoding-utils';
@@ -16,7 +20,7 @@ function objectSort(obj){
 
 function prune(jwk){
   delete jwk.ext;
-  delete jwk.alg;;
+  delete jwk.alg;
   delete jwk.key_ops;
   return jwk;
 }
@@ -24,7 +28,7 @@ function prune(jwk){
 
 
 const bits = ['2048', '4096'];
-describe('RSA Key conversion from/to JWK test.', () => {
+describe(`${envName}: RSA Key conversion from/to JWK test.`, () => {
   before(async () => {
   });
 

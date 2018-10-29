@@ -10,8 +10,6 @@ import asn from 'asn1.js';
 import jseu from 'js-encoding-utils';
 import pbkdf from 'js-crypto-pbkdf/dist/index.js';
 import jscaes from 'js-crypto-aes/dist/index.js';
-import jschash from 'js-crypto-hash/dist/index.js';
-import jschmac from 'js-crypto-hmac/dist/index.js';
 import jscrandom from 'js-crypto-random/dist/index.js';
 const Buffer = BufferMod.Buffer;
 const BN = asn.bignum;

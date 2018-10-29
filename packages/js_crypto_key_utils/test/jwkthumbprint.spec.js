@@ -1,22 +1,23 @@
-import keyutils from '../src/index.js';
+import {getTestEnv} from './prepare.js';
+const env = getTestEnv();
+const keyutils = env.library;
+const envName = env.envName;
+
 import ec from 'js-crypto-ec/dist/index.js';
 import sampleRSA from './rsa_sample.js';
 
 import chai from 'chai';
-import {getJwkThumbprint} from '../src/index';
 // const should = chai.should();
 const expect = chai.expect;
 
 const curves = ['P-256', 'P-384', 'P-521', 'P-256K'];
 const bits = ['2048', '4096'];
 const hashes = [ 'SHA-256', 'SHA-384', 'SHA-512'];
-describe('JWK thumbprint generation test.', () => {
+describe(`${envName}: JWK thumbprint generation test.`, () => {
 
   let keySet = [];
   before(async () => {
-    keySet = await Promise.all(curves.map(async (crv) => {
-      return await ec.generateKey(crv);
-    }));
+    keySet = await Promise.all(curves.map(async (crv) => await ec.generateKey(crv)));
   });
 
   it('EC: JWK thumbprint in array buffer is generated successfully for each curve and hashes', async () => {
