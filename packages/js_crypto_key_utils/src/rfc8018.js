@@ -8,6 +8,7 @@ import des from 'des.js';
 import BufferMod from 'buffer';
 import asn from 'asn1.js';
 import jseu from 'js-encoding-utils';
+import pbkdf from 'js-crypto-pbkdf/dist/index.js';
 import jscaes from 'js-crypto-aes/dist/index.js';
 import jschash from 'js-crypto-hash/dist/index.js';
 import jschmac from 'js-crypto-hmac/dist/index.js';
@@ -142,7 +143,7 @@ async function encryptPBES2(binKey, passphrase, kdfAlgorithm, prf, iterationCoun
 
   let key;
   if (kdfAlgorithm === 'pbkdf2') {
-    key = await pbkdf2(pBuffer, salt, iterationCount, keyLength, params.pbkdf2Prfs[prf].hash);
+    key = await pbkdf.pbkdf2(pBuffer, salt, iterationCount, keyLength, params.pbkdf2Prfs[prf].hash);
   } else throw new Error('UnsupportedKDF');
 
   // encrypt
@@ -197,7 +198,7 @@ async function decryptPBES2(decoded, passphrase){
     const salt = new Uint8Array(kdf.parameters.salt.value);
     const iterationCount = kdf.parameters.iterationCount.toNumber();
     const prf = kdf.parameters.prf.algorithm;
-    key = await pbkdf2(pBuffer, salt, iterationCount, keyLength, params.pbkdf2Prfs[prf].hash);
+    key = await pbkdf.pbkdf2(pBuffer, salt, iterationCount, keyLength, params.pbkdf2Prfs[prf].hash);
   }
   else throw new Error('UnsupportedKDF');
 
@@ -220,50 +221,6 @@ async function decryptPBES2(decoded, passphrase){
   return OneAsymmetricKey.decode(out, 'der');
 }
 
-async function pbkdf2(p, s, c, dkLen, hash) {
-  // const crypto = require('crypto');
-  // const key = crypto.pbkdf2Sync(p, s, c, dkLen, 'sha1');
-  // console.log(key.toString('hex'));
-
-  const hLen = params.hashes[hash].hashSize;
-
-  const l = Math.ceil(dkLen/hLen);
-  const r = dkLen - (l-1)*hLen;
-
-  const funcF = async (i) => {
-    const seed = new Uint8Array(s.length + 4);
-    seed.set(s);
-    seed.set(nwbo(i+1, 4), s.length);
-    let u = await jschmac.compute(p, seed, hash);
-    let outputF = new Uint8Array(u);
-    for(let j = 1; j < c; j++){
-      u = await jschmac.compute(p, u, hash);
-      outputF = u.map( (elem, idx) => elem ^ outputF[idx]);
-    }
-    return {index: i, value: outputF};
-  };
-  const Tis = [];
-  const DK = new Uint8Array(dkLen);
-  for(let i = 0; i < l; i++) Tis.push(funcF(i));
-  const TisResolved = await Promise.all(Tis);
-  TisResolved.forEach( (elem) => {
-    if (elem.index !== l - 1) DK.set(elem.value, elem.index*hLen);
-    else DK.set(elem.value.slice(0, r), elem.index*hLen);
-  });
-
-  return DK;
-}
-
-function nwbo(num, len){
-  const arr = new Uint8Array(len);
-
-  for(let i=0; i<len; i++){
-    arr[i] = 0xFF && (num >> ((len - i - 1)*8));
-  }
-
-  return arr;
-}
-
 //////////////////////////////
 // PBES1 RFC8018 Section 6.1.1
 async function encryptPBES1(binKey, passphrase, algorithm, iterationCount){
@@ -271,7 +228,7 @@ async function encryptPBES1(binKey, passphrase, algorithm, iterationCount){
   const pBuffer = jseu.encoder.stringToArrayBuffer(passphrase);
   const salt = await jscrandom.getRandomBytes(8); // defined as 8 octet
   const hash = params.passwordBasedEncryptionSchemes[algorithm].hash;
-  const keyIv = await pbkdf1(pBuffer, salt, iterationCount, 16, hash);
+  const keyIv = await pbkdf.pbkdf1(pBuffer, salt, iterationCount, 16, hash);
   const key = keyIv.slice(0, 8);
   const iv = keyIv.slice(8, 16);
 
@@ -306,7 +263,7 @@ async function decryptPBES1(decoded, passphrase){
   const salt = new Uint8Array(decoded.encryptionAlgorithm.parameters.salt);
   const hash = params.passwordBasedEncryptionSchemes[decoded.encryptionAlgorithm.algorithm].hash;
   const iterationCount = decoded.encryptionAlgorithm.parameters.iterationCount.toNumber();
-  const keyIv = await pbkdf1(pBuffer, salt, iterationCount, 16, hash);
+  const keyIv = await pbkdf.pbkdf1(pBuffer, salt, iterationCount, 16, hash);
   const key = keyIv.slice(0, 8);
   const iv = keyIv.slice(8, 16);
 
@@ -322,15 +279,4 @@ async function decryptPBES1(decoded, passphrase){
   else throw new Error('UnsupportedEncryptionAlgorithm');
 
   return OneAsymmetricKey.decode(out, 'der');
-}
-
-async function pbkdf1(p, s, c, dkLen, hash){
-  if(dkLen > params.hashes[hash].hashSize) throw new Error('TooLongIntendedKeyLength');
-  let seed = new Uint8Array(p.length + s.length);
-  seed.set(p);
-  seed.set(s, p.length);
-  for(let i = 0; i < c; i++){
-    seed = await jschash.compute(seed, hash);
-  }
-  return seed.slice(0, dkLen);
 }

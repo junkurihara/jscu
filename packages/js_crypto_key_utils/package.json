@@ -51,9 +51,9 @@
     "babel-loader": "8.0.4",
     "babel-plugin-istanbul": "5.1.0",
     "chai": "^4.2.0",
-    "eslint": "5.7.0",
-    "js-crypto-ec": "^0.3.0",
-    "karma": "3.0.0",
+    "eslint": "^5.8.0",
+    "js-crypto-ec": "^0.3.1",
+    "karma": "^3.1.1",
     "karma-chrome-launcher": "^2.2.0",
     "karma-cli": "^1.0.1",
     "karma-coverage": "^1.1.2",
@@ -62,7 +62,7 @@
     "karma-webpack": "3.0.5",
     "mocha": "^5.2.0",
     "mocha-sinon": "^2.1.0",
-    "webpack": "^4.20.2",
+    "webpack": "^4.23.1",
     "webpack-cli": "^3.1.2"
   },
   "dependencies": {
@@ -73,9 +73,10 @@
     "des.js": "^1.0.0",
     "elliptic": "^6.4.1",
     "js-crypto-aes": "^0.3.0",
-    "js-crypto-hash": "^0.2.1",
-    "js-crypto-hmac": "^0.2.1",
-    "js-crypto-random": "^0.1.2",
+    "js-crypto-hash": "^0.2.3",
+    "js-crypto-hmac": "^0.2.2",
+    "js-crypto-pbkdf": "^0.1.0",
+    "js-crypto-random": "^0.1.6",
     "js-encoding-utils": "^0.2.7"
   }
 }

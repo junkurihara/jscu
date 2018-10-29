@@ -71,7 +71,8 @@ const webConfig = {
     new webpack.optimize.MinChunkSizePlugin({minChunkSize: 1000})
   ],
   node: {
-    fs: 'empty'
+    fs: 'empty',
+    Buffer: false
   }
 };
 

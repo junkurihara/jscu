@@ -26,13 +26,15 @@ var _asn = _interopRequireDefault(require("asn1.js"));
 
 var _jsEncodingUtils = _interopRequireDefault(require("js-encoding-utils"));
 
-var _index = _interopRequireDefault(require("js-crypto-aes/dist/index.js"));
+var _index = _interopRequireDefault(require("js-crypto-pbkdf/dist/index.js"));
 
-var _index2 = _interopRequireDefault(require("js-crypto-hash/dist/index.js"));
+var _index2 = _interopRequireDefault(require("js-crypto-aes/dist/index.js"));
 
-var _index3 = _interopRequireDefault(require("js-crypto-hmac/dist/index.js"));
+var _index3 = _interopRequireDefault(require("js-crypto-hash/dist/index.js"));
 
-var _index4 = _interopRequireDefault(require("js-crypto-random/dist/index.js"));
+var _index4 = _interopRequireDefault(require("js-crypto-hmac/dist/index.js"));
+
+var _index5 = _interopRequireDefault(require("js-crypto-random/dist/index.js"));
 
 /**
  * rfc8081
@@ -259,7 +261,7 @@ function _encryptPBES() {
             // kdf
             pBuffer = _jsEncodingUtils.default.encoder.stringToArrayBuffer(passphrase);
             _context3.next = 3;
-            return _index4.default.getRandomBytes(_params.default.keyDerivationFunctions[kdfAlgorithm].defaultSaltLen);
+            return _index5.default.getRandomBytes(_params.default.keyDerivationFunctions[kdfAlgorithm].defaultSaltLen);
 
           case 3:
             salt = _context3.sent;
@@ -272,7 +274,7 @@ function _encryptPBES() {
             }
 
             _context3.next = 8;
-            return pbkdf2(pBuffer, salt, iterationCount, keyLength, _params.default.pbkdf2Prfs[prf].hash);
+            return _index.default.pbkdf2(pBuffer, salt, iterationCount, keyLength, _params.default.pbkdf2Prfs[prf].hash);
 
           case 8:
             key = _context3.sent;
@@ -290,7 +292,7 @@ function _encryptPBES() {
 
             _context3.t0 = Buffer;
             _context3.next = 16;
-            return _index4.default.getRandomBytes(_params.default.encryptionSchemes[cipher].ivLength);
+            return _index5.default.getRandomBytes(_params.default.encryptionSchemes[cipher].ivLength);
 
           case 16:
             _context3.t1 = _context3.sent;
@@ -312,13 +314,13 @@ function _encryptPBES() {
             }
 
             _context3.next = 26;
-            return _index4.default.getRandomBytes(_params.default.encryptionSchemes[cipher].ivLength);
+            return _index5.default.getRandomBytes(_params.default.encryptionSchemes[cipher].ivLength);
 
           case 26:
             iv = _context3.sent;
             _context3.t2 = Buffer;
             _context3.next = 30;
-            return _index.default.encrypt(new Uint8Array(binKey), key, {
+            return _index2.default.encrypt(new Uint8Array(binKey), key, {
               name: 'AES-CBC',
               iv: iv
             });
@@ -409,7 +411,7 @@ function _decryptPBES() {
             iterationCount = kdf.parameters.iterationCount.toNumber();
             prf = kdf.parameters.prf.algorithm;
             _context4.next = 12;
-            return pbkdf2(pBuffer, salt, iterationCount, keyLength, _params.default.pbkdf2Prfs[prf].hash);
+            return _index.default.pbkdf2(pBuffer, salt, iterationCount, keyLength, _params.default.pbkdf2Prfs[prf].hash);
 
           case 12:
             key = _context4.sent;
@@ -445,7 +447,7 @@ function _decryptPBES() {
             _iv = new Uint8Array(eS.parameters);
             _context4.t0 = Buffer;
             _context4.next = 28;
-            return _index.default.decrypt(new Uint8Array(decoded.encryptedData), key, {
+            return _index2.default.decrypt(new Uint8Array(decoded.encryptedData), key, {
               name: 'AES-CBC',
               iv: _iv
             });
@@ -507,7 +509,7 @@ function _pbkdf() {
                         seed.set(s);
                         seed.set(nwbo(i + 1, 4), s.length);
                         _context5.next = 5;
-                        return _index3.default.compute(p, seed, hash);
+                        return _index4.default.compute(p, seed, hash);
 
                       case 5:
                         u = _context5.sent;
@@ -521,7 +523,7 @@ function _pbkdf() {
                         }
 
                         _context5.next = 11;
-                        return _index3.default.compute(p, u, hash);
+                        return _index4.default.compute(p, u, hash);
 
                       case 11:
                         u = _context5.sent;
@@ -610,14 +612,14 @@ function _encryptPBES2() {
             // pbkdf1
             pBuffer = _jsEncodingUtils.default.encoder.stringToArrayBuffer(passphrase);
             _context7.next = 3;
-            return _index4.default.getRandomBytes(8);
+            return _index5.default.getRandomBytes(8);
 
           case 3:
             salt = _context7.sent;
             // defined as 8 octet
             hash = _params.default.passwordBasedEncryptionSchemes[algorithm].hash;
             _context7.next = 7;
-            return pbkdf1(pBuffer, salt, iterationCount, 16, hash);
+            return _index.default.pbkdf1(pBuffer, salt, iterationCount, 16, hash);
 
           case 7:
             keyIv = _context7.sent;
@@ -685,7 +687,7 @@ function _decryptPBES2() {
             hash = _params.default.passwordBasedEncryptionSchemes[decoded.encryptionAlgorithm.algorithm].hash;
             iterationCount = decoded.encryptionAlgorithm.parameters.iterationCount.toNumber();
             _context8.next = 6;
-            return pbkdf1(pBuffer, salt, iterationCount, 16, hash);
+            return _index.default.pbkdf1(pBuffer, salt, iterationCount, 16, hash);
 
           case 6:
             keyIv = _context8.sent;
@@ -758,7 +760,7 @@ function _pbkdf2() {
             }
 
             _context9.next = 9;
-            return _index2.default.compute(seed, hash);
+            return _index3.default.compute(seed, hash);
 
           case 9:
             seed = _context9.sent;
