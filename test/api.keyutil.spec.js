@@ -71,7 +71,7 @@ describe(`${envName}: Generated JWK key should be successfully converted to PEM 
   });
 });
 
-describe('PEM SPKI/PKCS8 key should be successfully converted to usable JWK', () => {
+describe(`${envName}: PEM SPKI/PKCS8 key should be successfully converted to usable JWK`, () => {
   const pubOSSL =
     '-----BEGIN PUBLIC KEY-----\n' +
     'MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEpbsQYkkaJa+rvxkad9m7gOuc8p3D\n' +

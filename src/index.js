@@ -29,7 +29,7 @@ import hash from 'js-crypto-hash/dist/index.js';
 import hmac from 'js-crypto-hmac/dist/index.js';
 import hkdf from 'js-crypto-hkdf/dist/index.js';
 import x509 from 'js-x509-utils/dist/index.js';
-import pbkdf from 'js-crypto-pbkdf/dist/index.js'
+import pbkdf from 'js-crypto-pbkdf/dist/index.js';
 
 import {Key} from 'js-crypto-key-utils/dist/index.js';
 import * as pkc from './pkc.js';
