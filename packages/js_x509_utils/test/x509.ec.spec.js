@@ -1,4 +1,8 @@
-import x509 from '../src/index.js';
+import {getTestEnv} from './prepare.js';
+const env = getTestEnv();
+const x509 = env.library;
+const envName = env.envName;
+
 import ec from 'js-crypto-ec/dist/index.js';
 
 import chai from 'chai';
@@ -20,14 +24,12 @@ const crtsample = '-----BEGIN CERTIFICATE-----\n' +
   'UR3om5rYSWmj7rgz0uJxoaZkkNH4xM2Zfss=\n' +
   '-----END CERTIFICATE-----';
 
-describe('Generated JWK EC public key should be successfully converted to X509 PEM certificate and vice versa', () => {
+describe(`${envName}: Generated JWK EC public key should be successfully converted to X509 PEM certificate and vice versa`, () => {
   let keySet = [];
   let msg;
   before(async function () {
     this.timeout(20000);
-    keySet = await Promise.all(curves.map(async (crv) => {
-      return await ec.generateKey(crv);
-    }));
+    keySet = await Promise.all(curves.map(async (crv) => await ec.generateKey(crv)));
     msg = new Uint8Array(32);
     for (let i = 0; i < 32; i++) msg[i] = 0xFF & i;
   });

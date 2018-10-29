@@ -1,4 +1,8 @@
-import x509 from '../src/index.js';
+import {getTestEnv} from './prepare.js';
+const env = getTestEnv();
+const x509 = env.library;
+const envName = env.envName;
+
 import sample from './sample_crt.js';
 
 import rsa from 'js-crypto-rsa/dist/index.js';
@@ -12,7 +16,7 @@ const hashes = ['SHA-256', 'SHA-384', 'SHA-512'];//, 'SHA-1'];
 const pkcs1s = [ 'sha256WithRSAEncryption', 'sha384WithRSAEncryption', 'sha512WithRSAEncryption']; // RSASSA-PKCS1-v1_5
 const constantSaltLen = 32;
 
-describe('RSA: Generated JWK public key should be successfully converted to X509 PEM certificate and vice versa', () => {
+describe(`${envName}: RSA: Generated JWK public key should be successfully converted to X509 PEM certificate and vice versa`, () => {
   before(async () => {
   });
 
