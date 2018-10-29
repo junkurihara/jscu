@@ -2,7 +2,7 @@
   "name": "js-crypto-key-utils",
   "version": "0.4.5",
   "description": "Universal Module for Cryptographic Key Utilities in JavaScript, including PEM-JWK converters",
-  "main": "dist/jsckeyutil.bundle.js",
+  "main": "dist/jsckey.bundle.js",
   "scripts": {
     "test": "./node_modules/.bin/mocha --require @babel/register --recursive $(find test -name '*.spec.js')",
     "test:bundle": "npm run webpack && cross-env TEST_ENV=bundle npm run test",
