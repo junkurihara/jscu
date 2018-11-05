@@ -126,7 +126,7 @@ export async function decrypt(data, privateKey, options = {}){
   else if (privateKey.kty === 'RSA') {
     if(typeof options.hash !== 'undefined') options.hash = 'SHA-256';
     if(typeof options.label !== 'undefined') options.label = new Uint8Array([]);
-    msg = await rsa.decrypt(data.data, privateKey, options.hash, options.label);
+    msg = await rsa.decrypt(data, privateKey, options.hash, options.label);
   }
   else throw new Error('UnsupportedKeyType');
 

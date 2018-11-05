@@ -53,7 +53,7 @@ describe(`${envName}: Encryption test`, () => {
       let result = true;
       const encrypted = await jscu.pkc.encrypt(msg, rsaSample[kp].publicKey.jwk, {hash: 'SHA-256'}).catch( (e) => {console.error(e); result = false;});
       // console.log(jseu.encoder.encodeBase64(encrypted));
-      const decrypted = await jscu.pkc.decrypt(encrypted, rsaSample[kp].privateKey.jwk, {hash: 'SHA-256'}).catch( (e) => {result = false;});
+      const decrypted = await jscu.pkc.decrypt(encrypted.data, rsaSample[kp].privateKey.jwk, {hash: 'SHA-256'}).catch( (e) => {result = false;});
 
       expect(result).to.be.true;
       return (decrypted.toString() === msg.toString());

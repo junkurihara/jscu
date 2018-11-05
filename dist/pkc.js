@@ -388,7 +388,7 @@ function _decrypt() {
             if (typeof options.hash !== 'undefined') options.hash = 'SHA-256';
             if (typeof options.label !== 'undefined') options.label = new Uint8Array([]);
             _context5.next = 14;
-            return _index2.default.decrypt(data.data, privateKey, options.hash, options.label);
+            return _index2.default.decrypt(data, privateKey, options.hash, options.label);
 
           case 14:
             msg = _context5.sent;
