@@ -37,11 +37,11 @@
     "openssl"
   ],
   "devDependencies": {
-    "@babel/cli": "7.1.2",
-    "@babel/core": "7.1.2",
+    "@babel/cli": "^7.1.5",
+    "@babel/core": "^7.1.5",
     "@babel/plugin-transform-runtime": "7.1.0",
     "@babel/polyfill": "7.0.0",
-    "@babel/preset-env": "7.1.0",
+    "@babel/preset-env": "^7.1.5",
     "@babel/register": "7.0.0",
     "babel-eslint": "10.0.1",
     "babel-loader": "8.0.4",
@@ -62,7 +62,7 @@
     "mocha": "^5.2.0",
     "mocha-sinon": "^2.1.0",
     "node-webcrypto-ossl": "^1.0.38",
-    "webpack": "^4.25.0",
+    "webpack": "^4.25.1",
     "webpack-bundle-size-analyzer": "^2.7.0",
     "webpack-cli": "^3.1.2",
     "webpack-common-shake": "^2.1.0",
@@ -70,17 +70,17 @@
   },
   "dependencies": {
     "@babel/plugin-transform-regenerator": "^7.0.0",
-    "@babel/runtime": "^7.1.2",
+    "@babel/runtime": "^7.1.5",
     "js-crypto-aes": "^0.3.2",
-    "js-crypto-ec": "^0.3.2",
+    "js-crypto-ec": "^0.3.3",
     "js-crypto-hash": "^0.2.3",
     "js-crypto-hkdf": "^0.3.2",
     "js-crypto-hmac": "^0.2.2",
-    "js-crypto-key-utils": "^0.4.6",
+    "js-crypto-key-utils": "^0.4.7",
     "js-crypto-pbkdf": "^0.1.0",
     "js-crypto-random": "^0.1.6",
-    "js-crypto-rsa": "^0.3.2",
+    "js-crypto-rsa": "^0.3.3",
     "js-encoding-utils": "^0.2.7",
-    "js-x509-utils": "^0.2.6"
+    "js-x509-utils": "^0.2.7"
   }
 }
