@@ -7,6 +7,7 @@ import jseu from 'js-encoding-utils';
 import BufferMod from 'buffer';
 const Buffer = BufferMod.Buffer;
 import params from './params.js';
+import {appendLeadingZeros, pruneLeadingZeros} from './util';
 
 export function fromJwk(jwk, type){
 
@@ -15,7 +16,11 @@ export function fromJwk(jwk, type){
   const parameters = Buffer.from([0x05, 0x00]);
   const algorithm = { algorithm: publicKeyAlgorithmOid, parameters };
 
-  const modulus = new asn.bignum(jseu.encoder.decodeBase64Url(jwk.n));
+  const modulusBytes = jseu.encoder.decodeBase64Url(jwk.n);
+  const nLen = modulusBytes.length;
+  const modulusLength = (nLen % 128 === 0) ? nLen : nLen + (128 - (nLen % 128));
+
+  const modulus = new asn.bignum(appendLeadingZeros(modulusBytes, modulusLength)); // TODO check
   const publicExponent = new asn.bignum(jseu.encoder.decodeBase64Url(jwk.e));
 
   const decoded = {};
@@ -33,12 +38,12 @@ export function fromJwk(jwk, type){
       version: 0,
       modulus,
       publicExponent,
-      privateExponent: new asn.bignum( jseu.encoder.decodeBase64Url(jwk.d)),
-      prime1: new asn.bignum( jseu.encoder.decodeBase64Url(jwk.p)),
-      prime2: new asn.bignum( jseu.encoder.decodeBase64Url(jwk.q)),
-      exponent1: new asn.bignum( jseu.encoder.decodeBase64Url(jwk.dp)),
-      exponent2: new asn.bignum( jseu.encoder.decodeBase64Url(jwk.dq)),
-      coefficient: new asn.bignum( jseu.encoder.decodeBase64Url(jwk.qi))
+      privateExponent: new asn.bignum( appendLeadingZeros(jseu.encoder.decodeBase64Url(jwk.d), modulusLength)), // TODO check
+      prime1: new asn.bignum( appendLeadingZeros(jseu.encoder.decodeBase64Url(jwk.p), modulusLength)),
+      prime2: new asn.bignum( appendLeadingZeros(jseu.encoder.decodeBase64Url(jwk.q), modulusLength)),
+      exponent1: new asn.bignum( appendLeadingZeros(jseu.encoder.decodeBase64Url(jwk.dp), modulusLength)),
+      exponent2: new asn.bignum( appendLeadingZeros(jseu.encoder.decodeBase64Url(jwk.dq), modulusLength)),
+      coefficient: new asn.bignum( appendLeadingZeros(jseu.encoder.decodeBase64Url(jwk.qi), modulusLength))
     }, 'der');
   }
   return decoded;
@@ -72,8 +77,8 @@ export function toJwk(decoded, type){
 
     return {
       kty: 'RSA',
-      n: jseu.encoder.encodeBase64Url(modulus),
-      e: jseu.encoder.encodeBase64Url(publicExponent)
+      n: jseu.encoder.encodeBase64Url(pruneLeadingZeros(modulus)), // TODO check
+      e: jseu.encoder.encodeBase64Url(pruneLeadingZeros(publicExponent))
     };
   }
   else if (type === 'private'){ // PKCS8
@@ -107,14 +112,14 @@ export function toJwk(decoded, type){
     // JWW RSA private key: https://tools.ietf.org/html/rfc7517
     return {
       kty: 'RSA',
-      n: jseu.encoder.encodeBase64Url(privateKeyElems.modulus),
-      e: jseu.encoder.encodeBase64Url(privateKeyElems.publicExponent),
-      d: jseu.encoder.encodeBase64Url(privateKeyElems.privateExponent),
-      p: jseu.encoder.encodeBase64Url(privateKeyElems.prime1),
-      q: jseu.encoder.encodeBase64Url(privateKeyElems.prime2),
-      dp: jseu.encoder.encodeBase64Url(privateKeyElems.exponent1),
-      dq: jseu.encoder.encodeBase64Url(privateKeyElems.exponent2),
-      qi: jseu.encoder.encodeBase64Url(privateKeyElems.coefficient)
+      n: jseu.encoder.encodeBase64Url(pruneLeadingZeros(privateKeyElems.modulus)), // TODO check
+      e: jseu.encoder.encodeBase64Url(pruneLeadingZeros(privateKeyElems.publicExponent)),
+      d: jseu.encoder.encodeBase64Url(pruneLeadingZeros(privateKeyElems.privateExponent)),
+      p: jseu.encoder.encodeBase64Url(pruneLeadingZeros(privateKeyElems.prime1)),
+      q: jseu.encoder.encodeBase64Url(pruneLeadingZeros(privateKeyElems.prime2)),
+      dp: jseu.encoder.encodeBase64Url(pruneLeadingZeros(privateKeyElems.exponent1)),
+      dq: jseu.encoder.encodeBase64Url(pruneLeadingZeros(privateKeyElems.exponent2)),
+      qi: jseu.encoder.encodeBase64Url(pruneLeadingZeros(privateKeyElems.coefficient))
     };
   }
 }

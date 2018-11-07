@@ -67,3 +67,30 @@ export function getJwkType(jwkey){
   }
   else throw new Error('UnsupportedJWKType');
 }
+
+// for jwk formatting of RSA
+// https://tools.ietf.org/html/rfc7518#section-6.3
+export function pruneLeadingZeros(array){
+  if(!(array instanceof Uint8Array)) throw new Error('NonUint8Array');
+
+  let offset = 0;
+  for (let i = 0; i < array.length; i++){
+    if(array[i] !== 0x00) break;
+    offset++;
+  }
+  if(offset > 0) console.log('omgomg');
+
+  const returnArray = new Uint8Array(array.length - offset);
+  returnArray.set(array.slice(offset, array.length));
+  return returnArray;
+}
+
+// for pem/oct/der formatting from jwk of RSA
+export function appendLeadingZeros(array, len){
+  if(!(array instanceof Uint8Array)) throw new Error('NonUint8Array');
+  if(array.length > len) throw new Error('InvalidLength');
+
+  const returnArray = new Uint8Array(len); // initialized with zeros
+  returnArray.set(array, len - array.length);
+  return returnArray;
+}
