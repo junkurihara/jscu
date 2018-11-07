@@ -41,7 +41,7 @@
     "@babel/core": "^7.1.5",
     "@babel/plugin-transform-runtime": "^7.1.0",
     "@babel/polyfill": "^7.0.0",
-    "@babel/preset-env": "^7.1.0",
+    "@babel/preset-env": "^7.1.5",
     "@babel/register": "^7.0.0",
     "babel-eslint": "^10.0.1",
     "babel-loader": "^8.0.4",
@@ -70,7 +70,7 @@
     "@babel/runtime": "^7.1.2",
     "bn.js": "^4.11.8",
     "js-crypto-hash": "^0.2.3",
-    "js-crypto-key-utils": "^0.4.6",
+    "js-crypto-key-utils": "^0.4.7",
     "js-crypto-random": "^0.1.6",
     "js-encoding-utils": "^0.2.7"
   }
