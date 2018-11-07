@@ -16,11 +16,13 @@ export function fromJwk(jwk, type){
   const parameters = Buffer.from([0x05, 0x00]);
   const algorithm = { algorithm: publicKeyAlgorithmOid, parameters };
 
+  // to append leading zeros (pruned when making JWK) in order to make binary of intended bit length
+  // https://tools.ietf.org/html/rfc7518#section-6.3
   const modulusBytes = jseu.encoder.decodeBase64Url(jwk.n);
   const nLen = modulusBytes.length;
   const modulusLength = (nLen % 128 === 0) ? nLen : nLen + (128 - (nLen % 128));
 
-  const modulus = new asn.bignum(appendLeadingZeros(modulusBytes, modulusLength)); // TODO check
+  const modulus = new asn.bignum(appendLeadingZeros(modulusBytes, modulusLength)); // JWA RFC
   const publicExponent = new asn.bignum(jseu.encoder.decodeBase64Url(jwk.e));
 
   const decoded = {};
@@ -38,7 +40,7 @@ export function fromJwk(jwk, type){
       version: 0,
       modulus,
       publicExponent,
-      privateExponent: new asn.bignum( appendLeadingZeros(jseu.encoder.decodeBase64Url(jwk.d), modulusLength)), // TODO check
+      privateExponent: new asn.bignum( appendLeadingZeros(jseu.encoder.decodeBase64Url(jwk.d), modulusLength)),
       prime1: new asn.bignum( appendLeadingZeros(jseu.encoder.decodeBase64Url(jwk.p), modulusLength)),
       prime2: new asn.bignum( appendLeadingZeros(jseu.encoder.decodeBase64Url(jwk.q), modulusLength)),
       exponent1: new asn.bignum( appendLeadingZeros(jseu.encoder.decodeBase64Url(jwk.dp), modulusLength)),
@@ -77,7 +79,7 @@ export function toJwk(decoded, type){
 
     return {
       kty: 'RSA',
-      n: jseu.encoder.encodeBase64Url(pruneLeadingZeros(modulus)), // TODO check
+      n: jseu.encoder.encodeBase64Url(pruneLeadingZeros(modulus)), // prune leading zeros https://tools.ietf.org/html/rfc7518#section-6.3
       e: jseu.encoder.encodeBase64Url(pruneLeadingZeros(publicExponent))
     };
   }
@@ -109,10 +111,10 @@ export function toJwk(decoded, type){
       privateKeyElems[key] = new Uint8Array(decoded.privateKey[key].toArray('be', (len>>1) ));
     });
 
-    // JWW RSA private key: https://tools.ietf.org/html/rfc7517
+    // prune leading zeros JWW RSA private key: https://tools.ietf.org/html/rfc7517
     return {
       kty: 'RSA',
-      n: jseu.encoder.encodeBase64Url(pruneLeadingZeros(privateKeyElems.modulus)), // TODO check
+      n: jseu.encoder.encodeBase64Url(pruneLeadingZeros(privateKeyElems.modulus)),
       e: jseu.encoder.encodeBase64Url(pruneLeadingZeros(privateKeyElems.publicExponent)),
       d: jseu.encoder.encodeBase64Url(pruneLeadingZeros(privateKeyElems.privateExponent)),
       p: jseu.encoder.encodeBase64Url(pruneLeadingZeros(privateKeyElems.prime1)),

@@ -10,6 +10,8 @@ exports.isAsn1Public = isAsn1Public;
 exports.getAsn1KeyType = getAsn1KeyType;
 exports.getSec1KeyType = getSec1KeyType;
 exports.getJwkType = getJwkType;
+exports.pruneLeadingZeros = pruneLeadingZeros;
+exports.appendLeadingZeros = appendLeadingZeros;
 
 var _jsEncodingUtils = _interopRequireDefault(require("js-encoding-utils"));
 
@@ -78,4 +80,30 @@ function getJwkType(jwkey) {
   } else if (jwkey.kty === 'RSA') {
     if (jwkey.n && jwkey.e && jwkey.d && jwkey.p && jwkey.q && jwkey.dp && jwkey.dq && jwkey.qi) return 'private';else if (jwkey.n && jwkey.e) return 'public';else throw new Error('InvalidRSAKey');
   } else throw new Error('UnsupportedJWKType');
+} // for jwk formatting of RSA
+// https://tools.ietf.org/html/rfc7518#section-6.3
+
+
+function pruneLeadingZeros(array) {
+  if (!(array instanceof Uint8Array)) throw new Error('NonUint8Array');
+  var offset = 0;
+
+  for (var i = 0; i < array.length; i++) {
+    if (array[i] !== 0x00) break;
+    offset++;
+  }
+
+  var returnArray = new Uint8Array(array.length - offset);
+  returnArray.set(array.slice(offset, array.length));
+  return returnArray;
+} // for pem/oct/der formatting from jwk of RSA
+
+
+function appendLeadingZeros(array, len) {
+  if (!(array instanceof Uint8Array)) throw new Error('NonUint8Array');
+  if (array.length > len) throw new Error('InvalidLength');
+  var returnArray = new Uint8Array(len); // initialized with zeros
+
+  returnArray.set(array, len - array.length);
+  return returnArray;
 }

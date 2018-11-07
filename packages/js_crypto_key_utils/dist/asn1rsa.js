@@ -16,6 +16,8 @@ var _buffer = _interopRequireDefault(require("buffer"));
 
 var _params = _interopRequireDefault(require("./params.js"));
 
+var _util = require("./util");
+
 /**
  * asn1rsa.js
  */
@@ -28,8 +30,15 @@ function fromJwk(jwk, type) {
   var algorithm = {
     algorithm: publicKeyAlgorithmOid,
     parameters: parameters
-  };
-  var modulus = new _asn.default.bignum(_jsEncodingUtils.default.encoder.decodeBase64Url(jwk.n));
+  }; // to append leading zeros (pruned when making JWK) in order to make binary of intended bit length
+  // https://tools.ietf.org/html/rfc7518#section-6.3
+
+  var modulusBytes = _jsEncodingUtils.default.encoder.decodeBase64Url(jwk.n);
+
+  var nLen = modulusBytes.length;
+  var modulusLength = nLen % 128 === 0 ? nLen : nLen + (128 - nLen % 128);
+  var modulus = new _asn.default.bignum((0, _util.appendLeadingZeros)(modulusBytes, modulusLength)); // JWA RFC
+
   var publicExponent = new _asn.default.bignum(_jsEncodingUtils.default.encoder.decodeBase64Url(jwk.e));
   var decoded = {};
 
@@ -52,12 +61,12 @@ function fromJwk(jwk, type) {
       version: 0,
       modulus: modulus,
       publicExponent: publicExponent,
-      privateExponent: new _asn.default.bignum(_jsEncodingUtils.default.encoder.decodeBase64Url(jwk.d)),
-      prime1: new _asn.default.bignum(_jsEncodingUtils.default.encoder.decodeBase64Url(jwk.p)),
-      prime2: new _asn.default.bignum(_jsEncodingUtils.default.encoder.decodeBase64Url(jwk.q)),
-      exponent1: new _asn.default.bignum(_jsEncodingUtils.default.encoder.decodeBase64Url(jwk.dp)),
-      exponent2: new _asn.default.bignum(_jsEncodingUtils.default.encoder.decodeBase64Url(jwk.dq)),
-      coefficient: new _asn.default.bignum(_jsEncodingUtils.default.encoder.decodeBase64Url(jwk.qi))
+      privateExponent: new _asn.default.bignum((0, _util.appendLeadingZeros)(_jsEncodingUtils.default.encoder.decodeBase64Url(jwk.d), modulusLength)),
+      prime1: new _asn.default.bignum((0, _util.appendLeadingZeros)(_jsEncodingUtils.default.encoder.decodeBase64Url(jwk.p), modulusLength)),
+      prime2: new _asn.default.bignum((0, _util.appendLeadingZeros)(_jsEncodingUtils.default.encoder.decodeBase64Url(jwk.q), modulusLength)),
+      exponent1: new _asn.default.bignum((0, _util.appendLeadingZeros)(_jsEncodingUtils.default.encoder.decodeBase64Url(jwk.dp), modulusLength)),
+      exponent2: new _asn.default.bignum((0, _util.appendLeadingZeros)(_jsEncodingUtils.default.encoder.decodeBase64Url(jwk.dq), modulusLength)),
+      coefficient: new _asn.default.bignum((0, _util.appendLeadingZeros)(_jsEncodingUtils.default.encoder.decodeBase64Url(jwk.qi), modulusLength))
     }, 'der');
   }
 
@@ -89,8 +98,9 @@ function toJwk(decoded, type) {
     publicExponent = new Uint8Array(publicExponent.toArray('be', publicExponent.byteLength()));
     return {
       kty: 'RSA',
-      n: _jsEncodingUtils.default.encoder.encodeBase64Url(modulus),
-      e: _jsEncodingUtils.default.encoder.encodeBase64Url(publicExponent)
+      n: _jsEncodingUtils.default.encoder.encodeBase64Url((0, _util.pruneLeadingZeros)(modulus)),
+      // prune leading zeros https://tools.ietf.org/html/rfc7518#section-6.3
+      e: _jsEncodingUtils.default.encoder.encodeBase64Url((0, _util.pruneLeadingZeros)(publicExponent))
     };
   } else if (type === 'private') {
     // PKCS8
@@ -117,18 +127,18 @@ function toJwk(decoded, type) {
 
     keys.forEach(function (key) {
       privateKeyElems[key] = new Uint8Array(decoded.privateKey[key].toArray('be', _len >> 1));
-    }); // JWW RSA private key: https://tools.ietf.org/html/rfc7517
+    }); // prune leading zeros JWW RSA private key: https://tools.ietf.org/html/rfc7517
 
     return {
       kty: 'RSA',
-      n: _jsEncodingUtils.default.encoder.encodeBase64Url(privateKeyElems.modulus),
-      e: _jsEncodingUtils.default.encoder.encodeBase64Url(privateKeyElems.publicExponent),
-      d: _jsEncodingUtils.default.encoder.encodeBase64Url(privateKeyElems.privateExponent),
-      p: _jsEncodingUtils.default.encoder.encodeBase64Url(privateKeyElems.prime1),
-      q: _jsEncodingUtils.default.encoder.encodeBase64Url(privateKeyElems.prime2),
-      dp: _jsEncodingUtils.default.encoder.encodeBase64Url(privateKeyElems.exponent1),
-      dq: _jsEncodingUtils.default.encoder.encodeBase64Url(privateKeyElems.exponent2),
-      qi: _jsEncodingUtils.default.encoder.encodeBase64Url(privateKeyElems.coefficient)
+      n: _jsEncodingUtils.default.encoder.encodeBase64Url((0, _util.pruneLeadingZeros)(privateKeyElems.modulus)),
+      e: _jsEncodingUtils.default.encoder.encodeBase64Url((0, _util.pruneLeadingZeros)(privateKeyElems.publicExponent)),
+      d: _jsEncodingUtils.default.encoder.encodeBase64Url((0, _util.pruneLeadingZeros)(privateKeyElems.privateExponent)),
+      p: _jsEncodingUtils.default.encoder.encodeBase64Url((0, _util.pruneLeadingZeros)(privateKeyElems.prime1)),
+      q: _jsEncodingUtils.default.encoder.encodeBase64Url((0, _util.pruneLeadingZeros)(privateKeyElems.prime2)),
+      dp: _jsEncodingUtils.default.encoder.encodeBase64Url((0, _util.pruneLeadingZeros)(privateKeyElems.exponent1)),
+      dq: _jsEncodingUtils.default.encoder.encodeBase64Url((0, _util.pruneLeadingZeros)(privateKeyElems.exponent2)),
+      qi: _jsEncodingUtils.default.encoder.encodeBase64Url((0, _util.pruneLeadingZeros)(privateKeyElems.coefficient))
     };
   }
 } ///////////

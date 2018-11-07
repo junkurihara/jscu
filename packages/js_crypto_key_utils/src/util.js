@@ -78,7 +78,6 @@ export function pruneLeadingZeros(array){
     if(array[i] !== 0x00) break;
     offset++;
   }
-  if(offset > 0) console.log('omgomg');
 
   const returnArray = new Uint8Array(array.length - offset);
   returnArray.set(array.slice(offset, array.length));
