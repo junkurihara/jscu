@@ -71,16 +71,16 @@
   "dependencies": {
     "@babel/plugin-transform-regenerator": "^7.0.0",
     "@babel/runtime": "^7.1.5",
-    "js-crypto-aes": "^0.3.2",
-    "js-crypto-ec": "^0.3.3",
-    "js-crypto-hash": "^0.2.3",
-    "js-crypto-hkdf": "^0.3.2",
-    "js-crypto-hmac": "^0.2.2",
-    "js-crypto-key-utils": "^0.4.7",
-    "js-crypto-pbkdf": "^0.1.0",
-    "js-crypto-random": "^0.1.6",
-    "js-crypto-rsa": "^0.3.3",
-    "js-encoding-utils": "^0.2.7",
-    "js-x509-utils": "^0.2.7"
+    "js-crypto-aes": "^0.3.3",
+    "js-crypto-ec": "^0.3.4",
+    "js-crypto-hash": "^0.2.4",
+    "js-crypto-hkdf": "^0.3.4",
+    "js-crypto-hmac": "^0.2.3",
+    "js-crypto-key-utils": "^0.4.8",
+    "js-crypto-pbkdf": "^0.1.1",
+    "js-crypto-random": "^0.1.7",
+    "js-crypto-rsa": "^0.3.5",
+    "js-encoding-utils": "^0.2.8",
+    "js-x509-utils": "^0.2.8"
   }
 }
