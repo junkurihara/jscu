@@ -33,11 +33,11 @@
     "webcrypto"
   ],
   "devDependencies": {
-    "@babel/cli": "7.1.2",
-    "@babel/core": "7.1.2",
+    "@babel/cli": "^7.1.5",
+    "@babel/core": "^7.1.5",
     "@babel/plugin-transform-runtime": "7.1.0",
     "@babel/polyfill": "7.0.0",
-    "@babel/preset-env": "7.1.0",
+    "@babel/preset-env": "^7.1.5",
     "@babel/register": "7.0.0",
     "babel-eslint": "10.0.1",
     "babel-loader": "8.0.4",
@@ -45,10 +45,10 @@
     "babel-plugin-transform-remove-console": "^6.9.4",
     "chai": "^4.2.0",
     "cross-env": "^5.2.0",
-    "eslint": "^5.7.0",
-    "js-crypto-random": "^0.1.5",
-    "js-encoding-utils": "^0.2.7",
-    "jsdom": "^12.2.0",
+    "eslint": "^5.8.0",
+    "js-crypto-random": "^0.1.7",
+    "js-encoding-utils": "^0.2.8",
+    "jsdom": "^13.0.0",
     "karma": "^3.1.1",
     "karma-chrome-launcher": "^2.2.0",
     "karma-cli": "^1.0.1",
@@ -58,14 +58,14 @@
     "karma-webpack": "3.0.5",
     "mocha": "^5.2.0",
     "mocha-sinon": "^2.1.0",
-    "webpack": "^4.22.0",
+    "webpack": "^4.25.1",
     "webpack-cli": "^3.1.2",
     "webpack-common-shake": "^2.1.0",
     "webpack-merge": "^4.1.4"
   },
   "dependencies": {
     "@babel/plugin-transform-regenerator": "^7.0.0",
-    "@babel/runtime": "^7.1.2",
-    "js-crypto-hash": "^0.2.3"
+    "@babel/runtime": "^7.1.5",
+    "js-crypto-hash": "^0.2.4"
   }
 }
