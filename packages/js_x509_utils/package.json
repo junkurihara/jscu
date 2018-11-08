@@ -69,10 +69,10 @@
     "asn1.js-rfc5280": "^3.0.0",
     "bn.js": "^4.11.8",
     "buffer": "^5.2.1",
-    "js-crypto-ec": "^0.3.3",
-    "js-crypto-key-utils": "^0.4.7",
-    "js-crypto-random": "^0.1.6",
-    "js-crypto-rsa": "^0.3.4",
-    "js-encoding-utils": "^0.2.7"
+    "js-crypto-ec": "^0.3.4",
+    "js-crypto-key-utils": "^0.4.8",
+    "js-crypto-random": "^0.1.7",
+    "js-crypto-rsa": "^0.3.5",
+    "js-encoding-utils": "^0.2.8"
   }
 }
