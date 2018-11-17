@@ -17,3 +17,4 @@ webpack.prod.js
 .circleci/
 .nyc_output/
 .nycrc
+renovate.json
