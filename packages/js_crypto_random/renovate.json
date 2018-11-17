@@ -14,7 +14,7 @@
   "patch": {
     "automerge": true
   },
-  "commitBody": "[skip ci]",
+  "commitBody": "[ci skip]",
   "labels": ["update-dependencies"],
   "timezone": "Asia/Tokyo"
 }
