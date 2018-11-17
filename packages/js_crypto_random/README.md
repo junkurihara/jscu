@@ -2,7 +2,6 @@ Universal Module for Secure Random Generator in JavaScript
 --
 [![npm version](https://badge.fury.io/js/js-crypto-random.svg)](https://badge.fury.io/js/js-crypto-random)
 [![CircleCI](https://circleci.com/gh/junkurihara/js-crypto-random.svg?style=svg)](https://circleci.com/gh/junkurihara/js-crypto-random)
-[![Coverage Status](https://coveralls.io/repos/github/junkurihara/js-crypto-random/badge.svg?branch=master)](https://coveralls.io/github/junkurihara/js-crypto-random?branch=master)
 [![Dependencies](https://david-dm.org/junkurihara/js-crypto-random.svg)](https://david-dm.org/junkurihara/js-crypto-random)
 [![Maintainability](https://api.codeclimate.com/v1/badges/8669bc06f9006abd8e77/maintainability)](https://codeclimate.com/github/junkurihara/js-crypto-random/maintainability)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
