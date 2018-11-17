@@ -1,5 +1,20 @@
 {
   "extends": [
-    "config:base"
-  ]
+    "config:base",
+    ":pinOnlyDevDependencies"
+  ],
+  "assignees": ["junkurihara"],
+  "automerge": true,
+  "major": {
+    "automerge": false
+  },
+  "minor": {
+    "automerge": false
+  },
+  "patch": {
+    "automerge": true
+  },
+  "commitBody": "[skip ci]",
+  "labels": ["update-dependencies"],
+  "timezone": "Asia/Tokyo"
 }

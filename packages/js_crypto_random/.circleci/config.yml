@@ -40,7 +40,7 @@ jobs:
           key: v1-dependencies-{{ checksum "package.json" }}
 
       # run tests!
-      - run: npm run test
+      - run: yarn add --dev coveralls && npm run test && ./node_modules/.bin/nyc report --reporter=text-lcov | ./node_modules/.bin/coveralls
 
       - run: npm run karma
 
