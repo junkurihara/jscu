@@ -1,6 +1,6 @@
 {
   "name": "js-crypto-random",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Universal Module for Secure Random Generator in JavaScript",
   "main": "dist/jscrandom.bundle.js",
   "scripts": {

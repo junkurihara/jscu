@@ -51,6 +51,11 @@ jobs:
           path: ./coverage
           destination: coverage-report
 
+      # to share workspase among workflow jobs
+      - persist_to_workspace:
+          root: ~/repo
+          paths: .
+
   publish:
     <<: *defaults
     steps:
@@ -74,7 +79,7 @@ workflows:
     - test:
         filters:
           tags:
-            only: /^v.*/
+            only: /^v.[0-9]+(\.[0-9]+)*/
     - publish:
         requires:
         - test
