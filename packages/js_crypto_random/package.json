@@ -5,6 +5,9 @@
   "main": "dist/jscrandom.bundle.js",
   "scripts": {
     "flow:version": "npm version --no-git-tag-version",
+    "release:start": "./node_modules/.bin/can-npm-publish --vorbose && git flow release start $npm_package_version",
+    "release:finish": "git flow release finish $npm_package_version",
+    "release:push": "git push --all && git push origin $npm_package_version",
     "test": "cross-env NODE_ENV=test nyc mocha --recursive $(find test -name '*.spec.js')",
     "test:bundle": "npm run webpack && cross-env TEST_ENV=bundle npm run test",
     "karma": "cross-env TEST_ENV=source ./node_modules/.bin/karma start",
@@ -44,6 +47,7 @@
     "babel-loader": "8.0.4",
     "babel-plugin-istanbul": "5.1.0",
     "babel-plugin-transform-remove-console": "6.9.4",
+    "can-npm-publish": "^1.3.1",
     "chai": "4.2.0",
     "cross-env": "5.2.0",
     "eslint": "5.9.0",
