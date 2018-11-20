@@ -4,6 +4,7 @@
   "description": "Universal Module for Secure Random Generator in JavaScript",
   "main": "dist/jscrandom.bundle.js",
   "scripts": {
+    "flow:version": "npm version --no-git-tag-version",
     "test": "cross-env NODE_ENV=test nyc mocha --recursive $(find test -name '*.spec.js')",
     "test:bundle": "npm run webpack && cross-env TEST_ENV=bundle npm run test",
     "karma": "cross-env TEST_ENV=source ./node_modules/.bin/karma start",
