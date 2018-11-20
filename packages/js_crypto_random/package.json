@@ -1,13 +1,13 @@
 {
   "name": "js-crypto-random",
-  "version": "0.1.7",
+  "version": "0.2.0",
   "description": "Universal Module for Secure Random Generator in JavaScript",
   "main": "dist/jscrandom.bundle.js",
   "scripts": {
     "flow:version": "npm version --no-git-tag-version",
-    "release:start": "./node_modules/.bin/can-npm-publish --vorbose && git flow release start $npm_package_version",
-    "release:finish": "git flow release finish $npm_package_version",
-    "release:push": "git push --all && git push origin $npm_package_version",
+    "release:start": "./node_modules/.bin/can-npm-publish --vorbose && git flow release start v$npm_package_version",
+    "release:finish": "git flow release finish v$npm_package_version",
+    "release:push": "git push --all && git push origin v$npm_package_version",
     "test": "cross-env NODE_ENV=test nyc mocha --recursive $(find test -name '*.spec.js')",
     "test:bundle": "npm run webpack && cross-env TEST_ENV=bundle npm run test",
     "karma": "cross-env TEST_ENV=source ./node_modules/.bin/karma start",
