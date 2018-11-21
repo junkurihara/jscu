@@ -33,10 +33,10 @@ module.exports = (env, argv) => {
   // test bundle build setting
   if(process.env.TEST_ENV){
 
-    // when NODE_ENV = test is set, only test bundles are generated.
+    // when NODE_ENV = html is set, only test bundles are generated.
     // this is only the case where the bundled js files are generated for test using html file.
     // NOTE Karma does not refer to config.entry, and it pre-process the spec files written in karma.conf.js
-    if(process.env.NODE_ENV === 'test'){
+    if(process.env.NODE_ENV === 'html'){
       config.entry = getEntriesForHTMLTest(config);
       createNewHtml(config.entry); // Edit HTML here
     }
