@@ -5,7 +5,7 @@ const envName = env.envName;
 
 
 import sampleRSA from './rsa_sample.js';
-import ec from 'js-crypto-ec/dist/index.js';
+import sampleEC from './ec_sample.js';
 import jseu from 'js-encoding-utils';
 
 import chai from 'chai';
@@ -26,7 +26,7 @@ describe(`${envName}: RSA/EC Key conversion from/to JWK test.`, () => {
   let ECKeySet = [];
   before(async function (){
     this.timeout(20000);
-    ECKeySet = await Promise.all(curves.map(async (crv) => await ec.generateKey(crv)));
+    ECKeySet = sampleEC.ecKey;//await Promise.all(curves.map(async (crv) => await ec.generateKey(crv)));
   });
 
   it('EC: Derive public key to private key', async function () {

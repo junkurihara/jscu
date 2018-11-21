@@ -3,7 +3,7 @@ const env = getTestEnv();
 const keyutils = env.library;
 const envName = env.envName;
 
-import ec from 'js-crypto-ec/dist/index.js';
+import ecKey from './ec_sample.js';
 
 import chai from 'chai';
 // const should = chai.should();
@@ -30,7 +30,7 @@ describe(`${envName}: EC Key conversion from/to JWK test.`, () => {
   let ECKeySet = [];
   before(async function (){
     this.timeout(20000);
-    ECKeySet = await Promise.all(curves.map(async (crv) => await ec.generateKey(crv)));
+    ECKeySet = ecKey.ecKey;//await Promise.all(curves.map(async (crv) => await ec.generateKey(crv)));
   });
 
   it('JWK EC should be successfully converted to PEM and re-converted to JWK correctly', async () => {

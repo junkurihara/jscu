@@ -1,21 +1,23 @@
 # Javascript Node CircleCI 2.0 configuration file
 #
 # Check https://circleci.com/docs/2.0/language-javascript/ for more details
-#
+# https://circleci.com/blog/publishing-npm-packages-using-circleci-2-0/
 version: 2
+defaults: &defaults
+  working_directory: ~/repo
+  docker:
+    # specify the version you desire here
+    - image: circleci/node:latest-browsers
+
+    # Specify service dependencies here if necessary
+    # CircleCI maintains a library of pre-built images
+    # documented at https://circleci.com/docs/2.0/circleci-images/
+    # - image: circleci/mongo:3.4.4
+
+
 jobs:
-  build:
-    docker:
-      # specify the version you desire here
-      - image: circleci/node:latest-browsers
-
-      # Specify service dependencies here if necessary
-      # CircleCI maintains a library of pre-built images
-      # documented at https://circleci.com/docs/2.0/circleci-images/
-      # - image: circleci/mongo:3.4.4
-
-    working_directory: ~/repo
-
+  test:
+    <<: *defaults
     steps:
       - checkout
 
@@ -40,11 +42,49 @@ jobs:
           key: v1-dependencies-{{ checksum "package.json" }}
 
       # run tests!
-      - run: npm run test
+      #- run: yarn add --dev coveralls && npm run test && ./node_modules/.bin/nyc report --reporter=text-lcov | ./node_modules/.bin/coveralls
+      - run: yarn test
 
-      - run: npm run karma
+      - run: yarn karma
 
       - store_artifacts:
           path: ./coverage
           destination: coverage-report
 
+      # to share workspase among workflow jobs
+      - persist_to_workspace:
+          root: ~/repo
+          paths: .
+
+  publish:
+    <<: *defaults
+    steps:
+    - attach_workspace:
+        at: ~/repo
+    - run:
+        name: Authenticate with registry
+        command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ~/repo/.npmrc
+    - run:
+        name: Build production module
+        command: npm run build
+    - run:
+        name: Publish package
+        command: npm publish
+
+
+workflows:
+  version: 2
+  test-publish:
+    jobs:
+    - test:
+        filters:
+          tags:
+            only: /^v[0-9]+(\.[0-9]+)*/
+    - publish:
+        requires:
+        - test
+        filters:
+          tags:
+            only: /^v[0-9]+(\.[0-9]+)*/
+          branches:
+            ignore: /.*/
