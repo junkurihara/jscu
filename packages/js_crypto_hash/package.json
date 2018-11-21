@@ -4,6 +4,10 @@
   "description": "Universal Module for Hash Function in JavaScript",
   "main": "dist/jschash.bundle.js",
   "scripts": {
+    "flow:version": "npm version --no-git-tag-version",
+    "release:start": "./node_modules/.bin/can-npm-publish --vorbose && git flow release start v$npm_package_version",
+    "release:finish": "git flow release finish v$npm_package_version",
+    "release:push": "git push --all && git push origin v$npm_package_version",
     "test": "./node_modules/.bin/mocha --require @babel/register --recursive $(find test -name '*.spec.js')",
     "test:bundle": "npm run webpack && cross-env TEST_ENV=bundle npm run test",
     "karma": "cross-env TEST_ENV=source ./node_modules/.bin/karma start",
