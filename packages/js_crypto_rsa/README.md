@@ -1,6 +1,11 @@
 Universal Module for RSA Cryptography (RSA-OAEP and RSASSA-PSS/PKCS1-V1_5) in JavaScript
 --
+[![npm version](https://badge.fury.io/js/js-crypto-rsa.svg)](https://badge.fury.io/js/js-crypto-rsa)
 [![CircleCI](https://circleci.com/gh/junkurihara/js-crypto-rsa.svg?style=svg)](https://circleci.com/gh/junkurihara/js-crypto-rsa)
+[![Dependencies](https://david-dm.org/junkurihara/js-crypto-rsa.svg)](https://david-dm.org/junkurihara/js-crypto-rsa)
+[![Maintainability](https://api.codeclimate.com/v1/badges/e1f852a626255f944fd8/maintainability)](https://codeclimate.com/github/junkurihara/js-crypto-rsa/maintainability)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 > **WARNING**: At this time this solution should be considered suitable for research and experimentation, further code and security review is needed before utilization in a production application.
 
 # Introduction and Overview
