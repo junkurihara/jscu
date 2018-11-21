@@ -1,6 +1,6 @@
 {
   "name": "js-x509-utils",
-  "version": "0.2.8",
+  "version": "0.3.0",
   "description": "Universal Module of X.509 Certificate Utilities in JavaScript",
   "main": "dist/x509.bundle.js",
   "scripts": {
