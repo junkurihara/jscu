@@ -7,11 +7,14 @@ yarn-error.log
 .babelrc
 .eslintrc.json
 karma.conf.js
+webpack.dev.js
 webpack.common.js
 webpack.prod.js
-webpack.dev.js
-.vscode/
 .idea/
+.vscode/
 .git/
 .gitignore
 .circleci/
+.nyc_output/
+.nycrc
+renovate.json

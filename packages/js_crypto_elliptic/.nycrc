@@ -1,0 +1,11 @@
+{
+  "include": [ "src/**/*.js", "src/*.js" ],
+  "exclude": [ "webpack.*.js", "**/dist/**", "**/obsolete/**", "**/node_modules/**", "**/test/**" ],
+  "reporter": [ "lcov", "text-summary" ],
+  "require": [ "@babel/register" ],
+  "report-dir": "./coverage/nyc",
+  "extension": [ ".js", ".jsx", ".mjs" ],
+  "sourceMap": false,
+  "instrument": false,
+  "all": true
+}
