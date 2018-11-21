@@ -4,5 +4,7 @@ obsolete/
 thumbs.db
 yarn-error.log
 .idea/
-.coverage/
 .vscode/
+.coverage/
+.nyc_output/
+dist/

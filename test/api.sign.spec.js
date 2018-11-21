@@ -1,4 +1,8 @@
-import jscu from '../src/index.js';
+import {getTestEnv} from './prepare.js';
+const env = getTestEnv();
+const jscu = env.library;
+const envName = env.envName;
+
 import rsaSample from './rsa_sample.js';
 
 import chai from 'chai';
@@ -6,7 +10,7 @@ import chai from 'chai';
 const expect = chai.expect;
 
 
-describe('Signing and verification test via exported api', () => {
+describe(`${envName}: Signing and verification test via exported api`, () => {
   const curves = ['P-256', 'P-384', 'P-521', 'P-256K'];
   const hashes = [ 'SHA-256', 'SHA-384', 'SHA-512'];
   let keySet = [];

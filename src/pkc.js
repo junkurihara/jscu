@@ -100,7 +100,7 @@ export async function encrypt(msg, publicKey, options = {}){
   else if (publicKey.kty === 'RSA') {
     if(typeof options.hash !== 'undefined') options.hash = 'SHA-256';
     if(typeof options.label !== 'undefined') options.label = new Uint8Array([]);
-    ciphertext = await rsa.encrypt(msg, publicKey, options.hash, options.label);
+    ciphertext.data = await rsa.encrypt(msg, publicKey, options.hash, options.label);
   }
   else throw new Error('UnsupportedKeyType');
 

@@ -321,7 +321,7 @@ function _encrypt() {
             return _index2.default.encrypt(msg, publicKey, options.hash, options.label);
 
           case 15:
-            ciphertext = _context4.sent;
+            ciphertext.data = _context4.sent;
             _context4.next = 19;
             break;
 

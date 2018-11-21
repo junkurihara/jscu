@@ -1,4 +1,7 @@
-import jscu from '../src/index.js';
+import {getTestEnv} from './prepare.js';
+const env = getTestEnv();
+const jscu = env.library;
+const envName = env.envName;
 
 import chai from 'chai';
 // const should = chai.should();
@@ -14,7 +17,7 @@ async function keyAssert(crv){
   expect(keys.publicKey.y, `failed at ${crv}`).equal(keys.privateKey.y);
 }
 
-describe('Key generation test via exported api', () => {
+describe(`${envName}: Key generation test via exported api`, () => {
 
 
   const curves = ['P-256', 'P-384', 'P-521', 'P-256K'];
@@ -35,9 +38,7 @@ describe('Key generation test via exported api', () => {
   if (typeof window !== 'undefined'){ // todo node unsupported this.
     it('RSA Key Generation should be done successfully', async () => {
       let result = true;
-      const keys = await Promise.all([2048, 4096].map( async (nLen) => {
-        return await jscu.pkc.generateKey('RSA', {modulusLength: nLen});
-      })).catch( (e) => {result = false; });
+      const keys = await Promise.all([2048, 4096].map( async (nLen) => await jscu.pkc.generateKey('RSA', {modulusLength: nLen}))).catch( (e) => {result = false; });
       console.log(keys);
       expect(result).to.be.true;
     });
