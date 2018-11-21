@@ -1,6 +1,10 @@
 Universal Module for AES Encryption and Decryption in JavaScript
 --
+[![npm version](https://badge.fury.io/js/js-crypto-aes.svg)](https://badge.fury.io/js/js-crypto-aes)
 [![CircleCI](https://circleci.com/gh/junkurihara/js-crypto-aes.svg?style=svg)](https://circleci.com/gh/junkurihara/js-crypto-aes)
+[![Dependencies](https://david-dm.org/junkurihara/js-crypto-aes.svg)](https://david-dm.org/junkurihara/js-crypto-aes)
+[![Maintainability](https://api.codeclimate.com/v1/badges/288e12de5edec0f4a00d/maintainability)](https://codeclimate.com/github/junkurihara/js-crypto-aes/maintainability)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 > **WARNING**: At this time this solution should be considered suitable for research and experimentation, further code and security review is needed before utilization in a production application.
 
