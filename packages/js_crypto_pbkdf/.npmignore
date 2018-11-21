@@ -11,6 +11,10 @@ webpack.dev.js
 webpack.common.js
 webpack.prod.js
 .idea/
+.vscode/
 .git/
 .gitignore
 .circleci/
+.nyc_output/
+.nycrc
+renovate.json
