@@ -65,7 +65,7 @@
     "mocha": "5.2.0",
     "mocha-sinon": "2.1.0",
     "nyc": "13.1.0",
-    "webpack": "4.26.0",
+    "webpack": "4.26.1",
     "webpack-cli": "3.1.2",
     "webpack-common-shake": "2.1.0",
     "webpack-merge": "4.1.4"
