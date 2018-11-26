@@ -2,7 +2,8 @@
   "extends": [
     "config:base",
     ":timezone(Asia/Tokyo)",
-    ":pinOnlyDevDependencies"
+    ":pinOnlyDevDependencies",
+    ":pinSKipCi"
   ],
   "assignees": ["junkurihara"],
   "automerge": true,
@@ -10,12 +11,15 @@
     "automerge": false
   },
   "minor": {
-    "automerge": false
+    "automerge": true
   },
   "patch": {
     "automerge": true
   },
-  "commitBody": "[ci skip]",
   "labels": ["update-dependencies"],
-  "schedule": ["after 10pm and before 5am on every weekday", "every weekend"]
+  "schedule": [
+    "after 10pm every weekday",
+    "every weekend",
+    "before 5am every weekday"	
+  ]
 }
