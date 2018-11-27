@@ -3,7 +3,7 @@
     "config:base",
     ":timezone(Asia/Tokyo)",
     ":pinOnlyDevDependencies",
-    ":pinSKipCi"
+    ":pinSkipCi"
   ],
   "assignees": ["junkurihara"],
   "automerge": true,
@@ -18,8 +18,8 @@
   },
   "labels": ["update-dependencies"],
   "schedule": [
-    "after 10pm every weekday",
+    "after 9pm every weekday",
     "every weekend",
-    "before 5am every weekday"	
+    "before 11am every weekday"	
   ]
 }
