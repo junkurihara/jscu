@@ -95,6 +95,7 @@
     "js-crypto-hash": "^0.3.1",
     "js-crypto-pbkdf": "^0.2.0",
     "js-crypto-random": "^0.2.4",
-    "js-encoding-utils": "^0.3.0"
+    "js-encoding-utils": "^0.3.0",
+    "lodash.clonedeep": "^4.5.0"
   }
 }

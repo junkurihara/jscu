@@ -3,7 +3,7 @@
  */
 import {fromJwkTo, toJwkFrom} from './converter.js';
 import {getJwkThumbprint} from './thumbprint.js';
-
+import cloneDeep from 'lodash.clonedeep'
 import jseu from 'js-encoding-utils';
 import {getJwkType, getSec1KeyType, isAsn1Encrypted, isAsn1Public} from './util.js';
 
@@ -18,23 +18,26 @@ export class Key {
    * @param options
    */
   constructor(format, key, options={}){
+    const localKey = cloneDeep(key);
+    const localOpt = cloneDeep(options);
+    
     this._jwk = {};
     this._der = null;
     this._oct = {}; // only for EC keys
     this._current = {jwk: false, der: false, oct: false};
 
     if(format === 'jwk'){
-      this._setJwk(key);
+      this._setJwk(localKey);
     }
     else if (format === 'der' || format === 'pem'){
-      if(format === 'der' && !(key instanceof Uint8Array)) throw new Error('DerKeyMustBeUint8Array');
-      if(format === 'pem' && (typeof key !== 'string')) throw new Error('PemKeyMustBeString');
-      this._setAsn1(key, format);
+      if(format === 'der' && !(localKey instanceof Uint8Array)) throw new Error('DerKeyMustBeUint8Array');
+      if(format === 'pem' && (typeof localKey !== 'string')) throw new Error('PemKeyMustBeString');
+      this._setAsn1(localKey, format);
     }
     else if (format === 'oct'){
-      if(typeof options.namedCurve !== 'string') throw new Error('namedCurveMustBeSpecified');
-      if(!(key instanceof Uint8Array)) throw new Error('OctetKeyMustBeUint8Array');
-      this._setSec1(key, options.namedCurve);
+      if(typeof localOpt.namedCurve !== 'string') throw new Error('namedCurveMustBeSpecified');
+      if(!(localKey instanceof Uint8Array)) throw new Error('OctetKeyMustBeUint8Array');
+      this._setSec1(localKey, localOpt.namedCurve);
     }
     else throw new Error('UnsupportedType');
   }
