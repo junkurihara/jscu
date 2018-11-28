@@ -90,7 +90,7 @@ import jscu from 'js-crypto-utils/dist/index.js'; // for npm/github
 ```
 
 # Usage
-**NOTE:** This library always uses JWK-formatted keys ([RFC7517](https://tools.ietf.org/html/rfc7517)) to do any operations. If you have keys in another format, like PEM, please instantiate `jscu.Key` class with your key at first to convert them to JWK.
+**NOTE:** This library always uses `jscu.Key` objects as instances of public and private keys, and the `Key` object can be instantiated from and can export ones in various formats. For the detailed usage of `Key` object, please refer to [another GitHub repo](https://github.com/junkurihara/js-crypto-key-utils).
 
 ## Key generation, sign and verify
 ```javascript
@@ -99,7 +99,7 @@ jscu.pkc.generateKey(  // key generation
   'EC', // ECDSA or ECDH key pair
   {namedCurve: 'P-256'} // or 'P-384', 'P-521', 'P-256K'
 )
-.then( async (keyPair) => { // get a key pair in JWK
+.then( async (keyPair) => { // get a key pair in jscu.Key object
   const msg = new Uint8Array(32);
   for(let i = 0; i < 32; i++) msg[i] = 0xFF & i;
   
@@ -114,7 +114,7 @@ jscu.pkc.generateKey(  // key generation
   'RSA', // RSA key pair
   {modulusLength: 2048}
 )
-.then( async (keyPair) => { // get a key pair in JWK
+.then( async (keyPair) => { // get a key pair in jscu.Key object
   const msg = new Uint8Array(32);
   for(let i = 0; i < 32; i++) msg[i] = 0xFF & i;
   
@@ -130,13 +130,13 @@ jscu.pkc.generateKey(  // key generation
 const msg = new Uint8Array(32);
 for(let i = 0; i < 32; i++) msg[i] = 0xFF & i;
 
-const remotePublicKey = {...}; // destination's publicKey in JWK
-const remotePrivateKey = {...}; // destination's privateKey in JWK
+const remotePublicKey = {...}; // destination's publicKey in jscu.Key object
+const remotePrivateKey = {...}; // destination's privateKey in jscu.Key object
 
 jscu.pkc.generateKey(  // key generation
   'EC', // ECDSA or ECDH key pair
   {namedCurve: 'P-256'} // or 'P-384', 'P-521', 'P-256K'
-).then( async (keyPair) => { // get a key pair in JWK
+).then( async (keyPair) => { // get a key pair in jscu.Key object
   ////////////////////////////
   // encryption at my side
   ////////////////////////////
@@ -174,8 +174,8 @@ Note that AES and HKDF are independently available from `jscu.aes` and `jscu.hkd
 const msg = new Uint8Array(32);
 for(let i = 0; i < 32; i++) msg[i] = 0xFF & i;
 
-const publicKey = {...}; // publicKey in JWK
-const privateKey = {...}; // privateKey in JWK
+const publicKey = {...}; // publicKey in jscu.Key object
+const privateKey = {...}; // privateKey in jscu.Key object
 
 jscu.pkc.encrypt(
   msg,

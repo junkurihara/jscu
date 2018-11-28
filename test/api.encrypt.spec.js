@@ -3,8 +3,6 @@ const env = getTestEnv();
 const jscu = env.library;
 const envName = env.envName;
 
-import rsaSample from './rsa_sample.js';
-
 describe(`${envName}: Encryption test`, () => {
   const curves = ['P-256', 'P-384', 'P-521'];
   const hashes = [ 'SHA-256', 'SHA-384', 'SHA-512'];
