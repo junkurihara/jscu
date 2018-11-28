@@ -3,6 +3,7 @@ JavaScript Cryptographic Utilities for Browsers and Node.js Crypto-Suite Compati
 [![npm version](https://badge.fury.io/js/js-crypto-utils.svg)](https://badge.fury.io/js/js-crypto-utils)
 [![CircleCI](https://circleci.com/gh/junkurihara/jscu.svg?style=svg)](https://circleci.com/gh/junkurihara/jscu)
 [![Dependencies](https://david-dm.org/junkurihara/jscu.svg)](https://david-dm.org/junkurihara/jscu)
+[![Coverage Status](https://coveralls.io/repos/github/junkurihara/jscu/badge.svg?branch=develop)](https://coveralls.io/github/junkurihara/jscu?branch=develop)
 [![Maintainability](https://api.codeclimate.com/v1/badges/3e20cff0e8e062363a13/maintainability)](https://codeclimate.com/github/junkurihara/jscu/maintainability)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 

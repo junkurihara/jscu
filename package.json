@@ -87,6 +87,7 @@
     "js-crypto-random": "^0.2.4",
     "js-crypto-rsa": "^0.4.0",
     "js-encoding-utils": "^0.3.0",
-    "js-x509-utils": "^0.3.0"
+    "js-x509-utils": "^0.3.0",
+    "lodash.clonedeep": "^4.5.0"
   }
 }
