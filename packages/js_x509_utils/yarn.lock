@@ -3960,10 +3960,10 @@ js-crypto-aes@^0.4.1:
     "@babel/plugin-transform-regenerator" "^7.0.0"
     "@babel/runtime" "^7.1.5"
 
-js-crypto-ec@^0.4.0:
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/js-crypto-ec/-/js-crypto-ec-0.4.0.tgz#78c81ece0f82cc60605a44b883e6023e70df1bb8"
-  integrity sha512-CgXul29Ow/Mk9ufjb1F962ROZDqKZzI1caT1Zy3KAEc8HvoE2TZUs/oa0hf4nTqMbl6x2FEM0LUsnIvjfcaWhg==
+js-crypto-ec@^0.4.1:
+  version "0.4.1"
+  resolved "https://registry.yarnpkg.com/js-crypto-ec/-/js-crypto-ec-0.4.1.tgz#d1ba9a9688e275d2dfb554636e83f692cf737f5c"
+  integrity sha512-a5NZc/dVQX9CwzURI3DXYEnBevdpMRkMjkZhsd3P20p0L1HkG4lUeJxwUCNpazTBuG1saNwp0ARPlo6kvALW4g==
   dependencies:
     "@babel/plugin-transform-regenerator" "^7.0.0"
     "@babel/runtime" "^7.1.5"
@@ -3971,7 +3971,7 @@ js-crypto-ec@^0.4.0:
     buffer "^5.2.1"
     elliptic "^6.4.1"
     js-crypto-hash "^0.3.1"
-    js-crypto-key-utils "^0.5.1"
+    js-crypto-key-utils "^0.5.3"
     js-crypto-random "^0.2.4"
     js-encoding-utils "^0.3.0"
 
@@ -3994,10 +3994,10 @@ js-crypto-hmac@^0.3.1:
     "@babel/runtime" "^7.1.5"
     js-crypto-hash "^0.3.1"
 
-js-crypto-key-utils@^0.5.1:
-  version "0.5.1"
-  resolved "https://registry.yarnpkg.com/js-crypto-key-utils/-/js-crypto-key-utils-0.5.1.tgz#4368d3f3a26f60807ba4598b22b9596b0229e618"
-  integrity sha512-P6iFO+rMBfhGzbX/z7md+FB57QHDuUo1JxXByz+dPKL1Oj5fLA8AghKWr3jbU9J9+nV6r/X9wO8g9Ns7VJwgow==
+js-crypto-key-utils@^0.5.3:
+  version "0.5.3"
+  resolved "https://registry.yarnpkg.com/js-crypto-key-utils/-/js-crypto-key-utils-0.5.3.tgz#67ec7f2ce48949e9e31a7240601d6326eb05cfdf"
+  integrity sha512-sJdWrJcon3PM3EGlZWBkgbBfhSwMVzn1l5OWkDCCqVgRxm/ARbOOEaST5VWAdYNLQPN8WskDKQDr/+KMwDo52Q==
   dependencies:
     "@babel/plugin-transform-regenerator" "7.0.0"
     "@babel/runtime" "^7.1.5"
@@ -4010,6 +4010,7 @@ js-crypto-key-utils@^0.5.1:
     js-crypto-pbkdf "^0.2.0"
     js-crypto-random "^0.2.4"
     js-encoding-utils "^0.3.0"
+    lodash.clonedeep "^4.5.0"
 
 js-crypto-pbkdf@^0.2.0:
   version "0.2.0"
@@ -4030,16 +4031,16 @@ js-crypto-random@^0.2.4:
     "@babel/plugin-transform-regenerator" "^7.0.0"
     "@babel/runtime" "^7.1.5"
 
-js-crypto-rsa@^0.4.0:
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/js-crypto-rsa/-/js-crypto-rsa-0.4.0.tgz#af486078c6a2025d977013ee35042c52c5c86901"
-  integrity sha512-LeGf1V7XfdadSua7BZUPboNFunjt55oKQFWLzNZRA5YQws3F/W8jGTZXuCnZxcqA5rCfNbDfJ/qV2VwOehiRBg==
+js-crypto-rsa@^0.4.1:
+  version "0.4.1"
+  resolved "https://registry.yarnpkg.com/js-crypto-rsa/-/js-crypto-rsa-0.4.1.tgz#7bcaeed75f0757db40065565fcba1bcfaa653456"
+  integrity sha512-hX+otlNM64BcZ080O0HpProGlnaUgCY8kirZIsSIjKPWNkXO6SbW5ux/EtsmbpvC4I4IDS2rax+1lJsPoC/HYg==
   dependencies:
     "@babel/plugin-transform-regenerator" "^7.0.0"
     "@babel/runtime" "^7.1.5"
     bn.js "^4.11.8"
     js-crypto-hash "^0.3.1"
-    js-crypto-key-utils "^0.5.1"
+    js-crypto-key-utils "^0.5.3"
     js-crypto-random "^0.2.4"
     js-encoding-utils "^0.3.0"
 
@@ -4351,6 +4352,11 @@ locate-path@^3.0.0:
   dependencies:
     p-locate "^3.0.0"
     path-exists "^3.0.0"
+
+lodash.clonedeep@^4.5.0:
+  version "4.5.0"
+  resolved "https://registry.yarnpkg.com/lodash.clonedeep/-/lodash.clonedeep-4.5.0.tgz#e23f3f9c4f8fbdde872529c1071857a086e5ccef"
+  integrity sha1-4j8/nE+Pvd6HJSnBBxhXoIblzO8=
 
 lodash.debounce@^4.0.8:
   version "4.0.8"
