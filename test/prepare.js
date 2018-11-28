@@ -1,6 +1,7 @@
 /**
  * prepare.js
  */
+import chai from 'chai';
 const common = require('../webpack.common.js');
 
 export function getTestEnv(){
@@ -28,8 +29,10 @@ export function getTestEnv(){
     envName = 'Source';
     library = require(`../src/${common.entryName}`);
     message = '**This is a test with source codes in src.**';
-
   }
+
+  // const should = chai.should();
+  global.expect = chai.expect;
 
   return {library, envName, message};
 }
