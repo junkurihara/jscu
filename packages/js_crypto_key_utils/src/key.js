@@ -3,7 +3,7 @@
  */
 import {fromJwkTo, toJwkFrom} from './converter.js';
 import {getJwkThumbprint} from './thumbprint.js';
-import cloneDeep from 'lodash.clonedeep'
+import cloneDeep from 'lodash.clonedeep';
 import jseu from 'js-encoding-utils';
 import {getJwkType, getSec1KeyType, isAsn1Encrypted, isAsn1Public} from './util.js';
 
@@ -20,7 +20,7 @@ export class Key {
   constructor(format, key, options={}){
     const localKey = cloneDeep(key);
     const localOpt = cloneDeep(options);
-    
+
     this._jwk = {};
     this._der = null;
     this._oct = {}; // only for EC keys
