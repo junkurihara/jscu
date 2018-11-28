@@ -4066,10 +4066,10 @@ js-crypto-aes@^0.4.1:
     "@babel/plugin-transform-regenerator" "^7.0.0"
     "@babel/runtime" "^7.1.5"
 
-js-crypto-ec@^0.4.0:
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/js-crypto-ec/-/js-crypto-ec-0.4.0.tgz#78c81ece0f82cc60605a44b883e6023e70df1bb8"
-  integrity sha512-CgXul29Ow/Mk9ufjb1F962ROZDqKZzI1caT1Zy3KAEc8HvoE2TZUs/oa0hf4nTqMbl6x2FEM0LUsnIvjfcaWhg==
+js-crypto-ec@^0.4.1:
+  version "0.4.1"
+  resolved "https://registry.yarnpkg.com/js-crypto-ec/-/js-crypto-ec-0.4.1.tgz#d1ba9a9688e275d2dfb554636e83f692cf737f5c"
+  integrity sha512-a5NZc/dVQX9CwzURI3DXYEnBevdpMRkMjkZhsd3P20p0L1HkG4lUeJxwUCNpazTBuG1saNwp0ARPlo6kvALW4g==
   dependencies:
     "@babel/plugin-transform-regenerator" "^7.0.0"
     "@babel/runtime" "^7.1.5"
@@ -4077,7 +4077,7 @@ js-crypto-ec@^0.4.0:
     buffer "^5.2.1"
     elliptic "^6.4.1"
     js-crypto-hash "^0.3.1"
-    js-crypto-key-utils "^0.5.1"
+    js-crypto-key-utils "^0.5.3"
     js-crypto-random "^0.2.4"
     js-encoding-utils "^0.3.0"
 
@@ -4110,10 +4110,10 @@ js-crypto-hmac@^0.3.1:
     "@babel/runtime" "^7.1.5"
     js-crypto-hash "^0.3.1"
 
-js-crypto-key-utils@^0.5.1:
-  version "0.5.1"
-  resolved "https://registry.yarnpkg.com/js-crypto-key-utils/-/js-crypto-key-utils-0.5.1.tgz#4368d3f3a26f60807ba4598b22b9596b0229e618"
-  integrity sha512-P6iFO+rMBfhGzbX/z7md+FB57QHDuUo1JxXByz+dPKL1Oj5fLA8AghKWr3jbU9J9+nV6r/X9wO8g9Ns7VJwgow==
+js-crypto-key-utils@^0.5.3:
+  version "0.5.3"
+  resolved "https://registry.yarnpkg.com/js-crypto-key-utils/-/js-crypto-key-utils-0.5.3.tgz#67ec7f2ce48949e9e31a7240601d6326eb05cfdf"
+  integrity sha512-sJdWrJcon3PM3EGlZWBkgbBfhSwMVzn1l5OWkDCCqVgRxm/ARbOOEaST5VWAdYNLQPN8WskDKQDr/+KMwDo52Q==
   dependencies:
     "@babel/plugin-transform-regenerator" "7.0.0"
     "@babel/runtime" "^7.1.5"
@@ -4126,6 +4126,7 @@ js-crypto-key-utils@^0.5.1:
     js-crypto-pbkdf "^0.2.0"
     js-crypto-random "^0.2.4"
     js-encoding-utils "^0.3.0"
+    lodash.clonedeep "^4.5.0"
 
 js-crypto-pbkdf@^0.2.0:
   version "0.2.0"
@@ -4146,16 +4147,16 @@ js-crypto-random@^0.2.4:
     "@babel/plugin-transform-regenerator" "^7.0.0"
     "@babel/runtime" "^7.1.5"
 
-js-crypto-rsa@^0.4.0:
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/js-crypto-rsa/-/js-crypto-rsa-0.4.0.tgz#af486078c6a2025d977013ee35042c52c5c86901"
-  integrity sha512-LeGf1V7XfdadSua7BZUPboNFunjt55oKQFWLzNZRA5YQws3F/W8jGTZXuCnZxcqA5rCfNbDfJ/qV2VwOehiRBg==
+js-crypto-rsa@^0.4.1:
+  version "0.4.1"
+  resolved "https://registry.yarnpkg.com/js-crypto-rsa/-/js-crypto-rsa-0.4.1.tgz#7bcaeed75f0757db40065565fcba1bcfaa653456"
+  integrity sha512-hX+otlNM64BcZ080O0HpProGlnaUgCY8kirZIsSIjKPWNkXO6SbW5ux/EtsmbpvC4I4IDS2rax+1lJsPoC/HYg==
   dependencies:
     "@babel/plugin-transform-regenerator" "^7.0.0"
     "@babel/runtime" "^7.1.5"
     bn.js "^4.11.8"
     js-crypto-hash "^0.3.1"
-    js-crypto-key-utils "^0.5.1"
+    js-crypto-key-utils "^0.5.3"
     js-crypto-random "^0.2.4"
     js-encoding-utils "^0.3.0"
 
@@ -4177,10 +4178,10 @@ js-levenshtein@^1.1.3:
   resolved "https://registry.yarnpkg.com/js-tokens/-/js-tokens-4.0.0.tgz#19203fb59991df98e3a287050d4647cdeaf32499"
   integrity sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ==
 
-js-x509-utils@^0.3.0:
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/js-x509-utils/-/js-x509-utils-0.3.0.tgz#341eed3ec68372aeabd1f2c2ad706252cac335b2"
-  integrity sha512-UGVWRDV/tSNXmM27nkOmirTOzfRboD8H8sgvm5Gi7NT2nfZSDG/pthPQvmckgVR2YPytPgubZDgfUIfkkz22AA==
+js-x509-utils@^0.3.1:
+  version "0.3.1"
+  resolved "https://registry.yarnpkg.com/js-x509-utils/-/js-x509-utils-0.3.1.tgz#69e8a2a3a7be0a1cbdababefd6fc70f461d226ea"
+  integrity sha512-SGD7XOnwvQ5a1/Cp5sk73pLVIN4QJc50UrfEvYBRVtlzeJmxmdyGeGaN8slxpC61f42DrM3wTsCJzvExdHsecQ==
   dependencies:
     "@babel/plugin-transform-regenerator" "7.0.0"
     "@babel/runtime" "^7.1.5"
@@ -4188,10 +4189,10 @@ js-x509-utils@^0.3.0:
     asn1.js-rfc5280 "^3.0.0"
     bn.js "^4.11.8"
     buffer "^5.2.1"
-    js-crypto-ec "^0.4.0"
-    js-crypto-key-utils "^0.5.1"
+    js-crypto-ec "^0.4.1"
+    js-crypto-key-utils "^0.5.3"
     js-crypto-random "^0.2.4"
-    js-crypto-rsa "^0.4.0"
+    js-crypto-rsa "^0.4.1"
     js-encoding-utils "^0.3.0"
 
 js-yaml@3.x, js-yaml@^3.12.0:
@@ -4931,7 +4932,7 @@ mute-stream@0.0.7:
   resolved "https://registry.yarnpkg.com/mute-stream/-/mute-stream-0.0.7.tgz#3075ce93bc21b8fab43e1bc4da7e8115ed1e7bab"
   integrity sha1-MHXOk7whuPq0PhvE2n6BFe0ee6s=
 
-nan@^2.10.0, nan@^2.9.2:
+nan@^2.9.2:
   version "2.10.0"
   resolved "https://registry.yarnpkg.com/nan/-/nan-2.10.0.tgz#96d0cd610ebd58d4b4de9cc0c6828cda99c7548f"
   integrity sha512-bAdJv7fBLhWC+/Bls0Oza+mvTaNQtP+1RyhhhvD95pgUJz6XM5IzgmxOkItJ9tkoCiplvAnXI1tNmmUD/eScyA==
@@ -5043,16 +5044,6 @@ node-releases@^1.0.0-alpha.11:
   integrity sha512-CaViu+2FqTNYOYNihXa5uPS/zry92I3vPU4nCB6JB3OeZ2UGtOpF5gRwuN4+m3hbEcL47bOXyun1jX2iC+3uEQ==
   dependencies:
     semver "^5.3.0"
-
-node-webcrypto-ossl@1.0.38:
-  version "1.0.38"
-  resolved "https://registry.yarnpkg.com/node-webcrypto-ossl/-/node-webcrypto-ossl-1.0.38.tgz#5b281e020ee90879b995fb2c9232db1eea0fda63"
-  integrity sha512-UiQcDiBDNzaZbP0WVgz4QvVTVI4uR4jrFAtOtFsKbDDNOMFWc9+3mVeiF1hVvdLlv3ILC0ODgs8Wp/hp7SMoLA==
-  dependencies:
-    mkdirp "^0.5.1"
-    nan "^2.10.0"
-    tslib "^1.9.0"
-    webcrypto-core "^0.1.22"
 
 nopt@3.x:
   version "3.0.6"
@@ -6767,7 +6758,7 @@ trim-right@^1.0.1:
   resolved "https://registry.yarnpkg.com/trim-right/-/trim-right-1.0.1.tgz#cb2e1203067e0c8de1f614094b9fe45704ea6003"
   integrity sha1-yy4SAwZ+DI3h9hQJS5/kVwTqYAM=
 
-tslib@^1.7.1, tslib@^1.9.0:
+tslib@^1.9.0:
   version "1.9.3"
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.9.3.tgz#d7e4dd79245d85428c4d7e4822a79917954ca286"
   integrity sha512-4krF8scpejhaOgqzBEcGM7yDIEfi0/8+8zDRZhNZZ2kjmHJ4hv3zCbQWxoJGz1iw5U0Jl0nma13xzHXcncMavQ==
@@ -7069,13 +7060,6 @@ watchpack@^1.5.0:
     chokidar "^2.0.2"
     graceful-fs "^4.1.2"
     neo-async "^2.5.0"
-
-webcrypto-core@^0.1.22:
-  version "0.1.22"
-  resolved "https://registry.yarnpkg.com/webcrypto-core/-/webcrypto-core-0.1.22.tgz#59d78a8f50776206fcac2db3a7a1f4b928ceda48"
-  integrity sha512-UoNP+/3I74foiQLe1m4ToxoN3oloWnH3Na0TPWNzu/ALhDl1MbhgS0QEezdNNQbkj/6i9cf59k7LeOAAvd0hzg==
-  dependencies:
-    tslib "^1.7.1"
 
 webidl-conversions@^4.0.2:
   version "4.0.2"
