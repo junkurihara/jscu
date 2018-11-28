@@ -3,10 +3,6 @@ const env = getTestEnv();
 const jscu = env.library;
 const envName = env.envName;
 
-import chai from 'chai';
-// const should = chai.should();
-const expect = chai.expect;
-
 async function keyAssert(crv){
   const keys = await jscu.pkc.generateKey('EC', {namedCurve: crv});
   expect(keys).to.be.a('object');
