@@ -40,12 +40,8 @@ export async function sign(msg, privateJwk, hash = 'SHA-256', algorithm = {name:
   const privatePem = await keyObj.export('pem');
   const sign = nodeCrypto.createSign(params.hashes[hash].nodeName);
   sign.update(msg);
-  const key = Object.assign(
-    {key: privatePem},
-    (algorithm.name === 'RSA-PSS')
-      ? {saltLength: algorithm.saltLength, padding: nodeCrypto.constants.RSA_PKCS1_PSS_PADDING}
-      : {});
-  return new Uint8Array(sign.sign(key));
+  const opt = (algorithm.name === 'RSA-PSS') ? {saltLength: algorithm.saltLength, padding: nodeCrypto.constants.RSA_PKCS1_PSS_PADDING} : {};
+  return new Uint8Array(sign.sign(Object.assign({key: privatePem}, opt)));
 }
 
 export async function verify(msg, signature, publicJwk, hash = 'SHA-256', algorithm = {name: 'RSA-PSS', saltLength: 192}, nodeCrypto) {
@@ -54,12 +50,8 @@ export async function verify(msg, signature, publicJwk, hash = 'SHA-256', algori
   const publicPem = await keyObj.export('pem', {outputPublic: true});
   const verify = nodeCrypto.createVerify(params.hashes[hash].nodeName);
   verify.update(msg);
-  const key = Object.assign(
-    {key: publicPem},
-    (algorithm.name === 'RSA-PSS')
-      ? {saltLength: algorithm.saltLength, padding: nodeCrypto.constants.RSA_PKCS1_PSS_PADDING}
-      : {});
-  return verify.verify(key, signature);
+  const opt = (algorithm.name === 'RSA-PSS') ? {saltLength: algorithm.saltLength, padding: nodeCrypto.constants.RSA_PKCS1_PSS_PADDING} : {};
+  return verify.verify(Object.assign({key: publicPem}, opt), signature);
 }
 
 

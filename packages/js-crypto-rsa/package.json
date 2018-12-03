@@ -1,6 +1,6 @@
 {
   "name": "js-crypto-rsa",
-  "version": "0.4.3",
+  "version": "0.4.4",
   "description": "Universal Module for RSA Cryptography (RSA-OAEP and RSASSA-PSS/PKCS1-V1_5) in JavaScript",
   "main": "dist/index.js",
   "scripts": {
@@ -39,8 +39,6 @@
     "rsassa-pkcs1-v1_5",
     "rfc3447"
   ],
-  "devDependencies": {
-  },
   "dependencies": {
     "@babel/plugin-transform-regenerator": "^7.0.0",
     "@babel/runtime": "^7.1.5",

@@ -1,0 +1,31 @@
+{
+  "source": "./packages",
+  "includes": [".*\\/src\\/.+\\.js$"],
+  "destination": "./esdocs",
+  "package": "./package.json",
+  "index": "./README.md",
+  "plugins": [
+    {
+      "name": "esdoc-standard-plugin",
+      "option": {
+        "brand": {
+          "title": "jscu",
+          "description": "A Universal Cryptographic Library for JavaScript",
+          "repository": "https://github.com/junkurihara/jscu"
+        },
+        "lint": {"enable": true},
+        "coverage": {"enable": true},
+        "test": {
+          "source": "./packages",
+          "interfaces": ["describe", "it"],
+          "includes": [".*\\/test\\/.+\\.spec\\.js$"]
+        },
+        "manual": {
+          "index": "./packages/js-crypto-utils/README.md",
+          "globalIndex": false,
+          "files": [ "./packages/js-crypto-utils/README.md" ]
+        }
+      }
+    }
+  ]
+}

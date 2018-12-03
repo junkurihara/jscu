@@ -1,9 +1,7 @@
 Universal Module for Cryptographic Key Utilities in JavaScript
 --
 [![npm version](https://badge.fury.io/js/js-crypto-key-utils.svg)](https://badge.fury.io/js/js-crypto-key-utils)
-[![CircleCI](https://circleci.com/gh/junkurihara/js-crypto-key-utils.svg?style=svg)](https://circleci.com/gh/junkurihara/js-crypto-key-utils)
-[![Dependencies](https://david-dm.org/junkurihara/js-crypto-key-utils.svg)](https://david-dm.org/junkurihara/js-crypto-key-utils)
-[![Maintainability](https://api.codeclimate.com/v1/badges/e6cddda88dafdaf58c78/maintainability)](https://codeclimate.com/github/junkurihara/js-crypto-key-utils/maintainability)
+[![Dependencies](https://david-dm.org/junkurihara/jscu.svg?path=packages/js-crypto-key-utils)](https://david-dm.org/junkurihara/jscu?path=packages/js-crypto-key-utils)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 
