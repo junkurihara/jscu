@@ -1,0 +1,24 @@
+{
+  "version": "independent",
+  "npmClient": "yarn",
+  "command": {
+    "publish": {
+      "ignoreChanges": [
+        "*.md",
+        "*.json",
+        "*.txt",
+        "test/**",
+        "package.json"
+      ]
+    },
+    "bootstrap": {
+      "ignore": "component-*",
+      "npmClientArgs": [
+        "--no-lockfile"
+      ]
+    }
+  },
+  "packages": [
+    "packages/*"
+  ]
+}
