@@ -2,7 +2,7 @@
 #SEMVER_STRING=$1
 
 # update packages' version. the root package would be always updated.
-lerna version --no-git-tag-version --no-push #$SEMVER_STRING
+lerna version --no-push #$SEMVER_STRING
 
 # update root version according the root version
 NODE_COMMAND="const fs=require('fs'); const obj=JSON.parse(fs.readFileSync('$npm_package_root_package/package.json', 'utf8')); console.log(obj.version);"
