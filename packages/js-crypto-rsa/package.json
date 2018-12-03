@@ -1,13 +1,9 @@
 {
-  "name": "js-crypto-ec",
+  "name": "js-crypto-rsa",
   "version": "0.4.1",
-  "description": "Universal Module for Elliptic Curve Cryptography (ECDSA and ECDH) in JavaScript",
-  "main": "dist/jscec.bundle.js",
+  "description": "Universal Module for RSA Cryptography (RSA-OAEP and RSASSA-PSS/PKCS1-V1_5) in JavaScript",
+  "main": "dist/jscrsa.js",
   "scripts": {
-    "flow:version": "npm version --no-git-tag-version",
-    "release:start": "./node_modules/.bin/can-npm-publish --vorbose && git flow release start v$npm_package_version",
-    "release:finish": "git flow release finish v$npm_package_version",
-    "release:push": "git push --all && git push origin v$npm_package_version",
     "test": "cross-env NODE_ENV=test nyc mocha --recursive $(find test -name '*.spec.js')",
     "test:bundle": "npm run webpack && cross-env TEST_ENV=bundle npm run test",
     "karma": "cross-env TEST_ENV=source ./node_modules/.bin/karma start",
@@ -20,24 +16,27 @@
     "webpack": "./node_modules/.bin/webpack --optimize-minimize --mode development --config webpack.dev.js",
     "webpack:prod": "cross-env NODE_ENV=production ./node_modules/.bin/webpack --optimize-minimize --mode production --config webpack.prod.js",
     "analyze": "cross-env NODE_ENV=production ./node_modules/.bin/webpack --mode production --optimize-minimize --json --config webpack.prod.js | webpack-bundle-size-analyzer",
-    "build": "cross-env NODE_ENV=production ./node_modules/.bin/babel src -d dist/ --keep-file-extension && npm run webpack:prod"
+    "babel": "cross-env NODE_ENV=production ./node_modules/.bin/babel src -d dist/ --keep-file-extension",
+    "build": "npm run babel && npm run webpack:prod"
   },
   "author": "Jun Kurihara",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/junkurihara/js-crypto-ec.git"
+    "url": "git+https://github.com/junkurihara/jscu.git"
   },
   "bugs": {
-    "url": "https://github.com/junkurihara/js-crypto-ec/issues"
+    "url": "https://github.com/junkurihara/jscu/issues"
   },
-  "homepage": "https://github.com/junkurihara/js-crypto-ec#readme",
+  "homepage": "https://github.com/junkurihara/jscu/tree/master/packages/js-crypto-rsa#readme",
   "keywords": [
     "crypto",
-    "elliptic curve",
     "webcrypto",
-    "ecdsa",
-    "ecdh"
+    "rsa",
+    "rsa-oaep",
+    "rsa-pss",
+    "rsassa-pkcs1-v1_5",
+    "rfc3447"
   ],
   "devDependencies": {
     "@babel/cli": "7.1.5",
@@ -73,9 +72,7 @@
   "dependencies": {
     "@babel/plugin-transform-regenerator": "^7.0.0",
     "@babel/runtime": "^7.1.5",
-    "asn1.js": "^5.0.1",
-    "buffer": "^5.2.1",
-    "elliptic": "^6.4.1",
+    "bn.js": "^4.11.8",
     "js-crypto-hash": "^0.3.1",
     "js-crypto-key-utils": "^0.5.3",
     "js-crypto-random": "^0.2.4",
