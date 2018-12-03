@@ -9,6 +9,7 @@
     "release:start": "git flow release start v$npm_package_version",
     "release:finish": "git flow release finish v$npm_package_version",
     "release:push": "git push --all --follow-tags",
+    "babel": "lerna run babel",
     "build": "lerna run build",
     "test": "lerna run test",
     "test:bundle": "lerna run test:bundle",
