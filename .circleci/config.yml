@@ -67,7 +67,7 @@ jobs:
         command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ~/repo/.npmrc
     - run:
         name: Build production module
-        command: ./node_modules/.bin/lerna build
+        command: ./node_modules/.bin/lerna run build
     - run:
         name: Publish package
         command: ./node_modules/.bin/lerna publish from-package
