@@ -34,7 +34,7 @@ jobs:
 
       - run:
           name: 'package install'
-          command: yarn install && ./node_modules/.bin/lerna bootstrap
+          command: yarn install
 
       # run tests!
       - run: yarn babel
@@ -65,7 +65,7 @@ jobs:
         at: ~/repo
     - run:
         name: Build production module
-        command: ./node_modules/.bin/lerna run build
+        command: yarn build
     - run:
         name: Publish package
         command: bash scripts/publish.sh

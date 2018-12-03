@@ -22,6 +22,7 @@
       ]
     }
   },
+  "useWorkspaces": true,
   "packages": [
     "packages/*"
   ]

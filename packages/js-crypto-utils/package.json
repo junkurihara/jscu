@@ -17,7 +17,8 @@
     "webpack:prod": "cross-env NODE_ENV=production ./node_modules/.bin/webpack --optimize-minimize --mode production --config webpack.prod.js",
     "analyze": "cross-env NODE_ENV=production ./node_modules/.bin/webpack --mode production --optimize-minimize --json --config webpack.prod.js | webpack-bundle-size-analyzer",
     "babel": "cross-env NODE_ENV=production ./node_modules/.bin/babel src -d dist/ --keep-file-extension",
-    "build": "npm run babel && npm run webpack:prod"
+    "build": "npm run babel && npm run webpack:prod",
+    "cleanup": "rm -rf ./dist coverage .nyc_output"
   },
   "author": "Jun Kurihara",
   "license": "MIT",
