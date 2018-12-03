@@ -34,7 +34,7 @@ jobs:
 
       - run:
           name: 'package install'
-          command: yarn install && lerna bootstrap
+          command: yarn install && ./node_modules/.bin/lerna bootstrap
 
       # run tests!
       - run: yarn test
@@ -67,10 +67,10 @@ jobs:
         command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ~/repo/.npmrc
     - run:
         name: Build production module
-        command: lerna build
+        command: ./node_modules/.bin/lerna build
     - run:
         name: Publish package
-        command: lerna publish from-package
+        command: ./node_modules/.bin/lerna publish from-package
 
 
 workflows:
