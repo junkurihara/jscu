@@ -4,7 +4,7 @@
 
 import params from './params.js';
 import * as asn1enc from './asn1enc.js';
-import {Key} from 'js-crypto-key-utils/dist/index.js';
+import {Key} from 'js-crypto-key-utils';
 import jseu from 'js-encoding-utils';
 
 export async function generateKey(namedCurve, nodeCrypto){

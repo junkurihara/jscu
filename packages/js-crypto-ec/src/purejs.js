@@ -4,9 +4,9 @@
 
 import params from './params.js';
 import * as asn1enc from './asn1enc.js';
-import random from 'js-crypto-random/dist/index.js';
-import jschash from 'js-crypto-hash/dist/index.js';
-import {Key} from 'js-crypto-key-utils/dist/index.js';
+import random from 'js-crypto-random';
+import jschash from 'js-crypto-hash';
+import {Key} from 'js-crypto-key-utils';
 import jseu from 'js-encoding-utils';
 import elliptic from 'elliptic';
 const Ec = elliptic.ec;

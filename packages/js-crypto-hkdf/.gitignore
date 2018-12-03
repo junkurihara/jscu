@@ -1,0 +1,10 @@
+.DS_Store
+node_modules/
+obsolete/
+thumbs.db
+yarn-error.log
+.idea/
+.vscode/
+.coverage/
+.nyc_output/
+dist/

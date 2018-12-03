@@ -3,7 +3,7 @@ const env = getTestEnv();
 const x509 = env.library;
 const envName = env.envName;
 
-import ec from 'js-crypto-ec/dist/index.js';
+import ec from 'js-crypto-ec';
 
 import chai from 'chai';
 // const should = chai.should();

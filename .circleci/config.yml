@@ -34,13 +34,13 @@ jobs:
 
       - run:
           name: 'package install'
-          command: yarn install && ./node_modules/.bin/lerna bootstrap
+          command: yarn install
 
       # run tests!
       - run: yarn babel
       - run: yarn test
       - run: yarn karma
-      - run: yarn add --dev coveralls lcov-result-merger
+      - run: yarn add coveralls lcov-result-merger --dev -W
       - run: mkdir -p coverage && ./node_modules/.bin/lcov-result-merger './packages/*/coverage/*/lcov.info' ./coverage/merged-lcov.info
       - run: cat ./coverage/merged-lcov.info | ./node_modules/.bin/coveralls
 
@@ -65,7 +65,7 @@ jobs:
         at: ~/repo
     - run:
         name: Build production module
-        command: ./node_modules/.bin/lerna run build
+        command: yarn build
     - run:
         name: Publish package
         command: bash scripts/publish.sh
