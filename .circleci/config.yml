@@ -70,7 +70,7 @@ jobs:
         command: ./node_modules/.bin/lerna run build
     - run:
         name: Publish package
-        command: ./node_modules/.bin/lerna publish
+        command: bash script/publish.sh
 
 
 workflows:
