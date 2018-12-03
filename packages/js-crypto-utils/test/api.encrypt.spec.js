@@ -9,7 +9,8 @@ describe(`${envName}: Encryption test`, () => {
   let ecKeySet = [];
   let rsaKeySet = [];
   let msg;
-  before( async () => {
+  before( async function () {
+    this.timeout(10000);
     ecKeySet = await Promise.all(curves.map( async (crv) => [ await jscu.pkc.generateKey('EC', {namedCurve: crv}), await jscu.pkc.generateKey('EC', {namedCurve: crv})]));
     rsaKeySet = await Promise.all([2048, 4096].map( async (nLen) => await jscu.pkc.generateKey('RSA', {modulusLength: nLen})));
     msg = new Uint8Array(32);
