@@ -23,15 +23,15 @@
  *  |-- pbkdf
  */
 
-import aes from 'js-crypto-aes/dist/index.js';
-import random from 'js-crypto-random/dist/index.js';
-import hash from 'js-crypto-hash/dist/index.js';
-import hmac from 'js-crypto-hmac/dist/index.js';
-import hkdf from 'js-crypto-hkdf/dist/index.js';
-import x509 from 'js-x509-utils/dist/index.js';
-import pbkdf from 'js-crypto-pbkdf/dist/index.js';
+import aes from 'js-crypto-aes';
+import random from 'js-crypto-random';
+import hash from 'js-crypto-hash';
+import hmac from 'js-crypto-hmac';
+import hkdf from 'js-crypto-hkdf';
+import x509 from 'js-x509-utils';
+import pbkdf from 'js-crypto-pbkdf';
 
-import {Key} from 'js-crypto-key-utils/dist/index.js';
+import {Key} from 'js-crypto-key-utils';
 import * as pkc from './pkc.js';
 
 export {

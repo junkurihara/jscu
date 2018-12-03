@@ -2,8 +2,8 @@
  * oaep.js
  */
 import params from './params.js';
-import jschash from 'js-crypto-hash/dist/index.js';
-import random from 'js-crypto-random/dist/index.js';
+import jschash from 'js-crypto-hash';
+import random from 'js-crypto-random';
 
 
 // RFC3447 https://tools.ietf.org/html/rfc3447

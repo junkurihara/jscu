@@ -1,0 +1,37 @@
+{
+  "presets": [
+    [ "@babel/preset-env", {
+      "targets": {
+        "browsers": [
+          "last 2 chrome versions",
+          "last 2 firefox versions",
+          "IE 11",
+          "last 2 Edge versions"
+        ]
+      },
+      "useBuiltIns": false
+    } ]
+  ],
+  "ignore": [ "node_modules" ],
+  "only": [ "src", "test" ],
+  "plugins": [
+    [
+      "@babel/plugin-transform-runtime",
+      {
+        "@babel/polyfill": false,
+        "regenerator": true
+      }
+    ]
+  ],
+  "env": {
+    "production": {
+      "plugins": ["babel-plugin-transform-remove-console"]
+    },
+    "development": {
+      "plugins": ["babel-plugin-istanbul"]
+    },
+    "test": {
+      "plugins": ["babel-plugin-istanbul"]
+    }
+  }
+}

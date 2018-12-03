@@ -4,7 +4,7 @@
 
 import params from './params.js';
 import * as util from './util.js';
-import rsa from 'js-crypto-rsa/dist/index.js';
+import rsa from 'js-crypto-rsa';
 import asn from 'asn1.js';
 const BN = asn.bignum;
 import rfc5280 from 'asn1.js-rfc5280';
