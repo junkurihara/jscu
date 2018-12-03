@@ -4,15 +4,15 @@ NPMDIRS=`find ./packages -maxdepth 2 -type f -name "package.json" | sed "s/\(\.\
 
 for DIR in ${NPMDIRS}; do
   echo -e "\n-- ${DIR} --"
-  cd ${DIR}
+  pushd $DIR
   ../../node_modules/.bin/can-npm-publish --vorbose
   if [[ $? = 0 ]]; then
     echo "Authenticate with registry"
-    echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > .npmrc
+    #echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > .npmrc
     echo "Publish updated package"
     npm publish
   else
     echo "No need to update"
   fi
-  cd ../
+  popd
 done

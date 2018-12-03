@@ -8,7 +8,6 @@
         "*.json",
         "*.txt",
         "**/test/**",
-        "package.json",
         "**/coverage/**",
         "**/dist/**",
         "**/.nyc_output/**",
