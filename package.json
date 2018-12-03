@@ -2,7 +2,7 @@
   "name": "jscu",
   "private": true,
   "license": "MIT",
-  "version": "0.14.3",
+  "version": "0.14.4",
   "root_package": "packages/js-crypto-utils",
   "scripts": {
     "flow:version": "git checkout develop && bash scripts/version.sh",
