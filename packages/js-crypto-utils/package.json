@@ -27,7 +27,7 @@
   "bugs": {
     "url": "https://github.com/junkurihara/jscu/issues"
   },
-  "homepage": "https://github.com/junkurihara/jscu#readme",
+  "homepage": "https://github.com/junkurihara/jscu/tree/master/packages/js-crypto-utils#readme",
   "keywords": [
     "webcrypto",
     "jwk",
