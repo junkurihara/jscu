@@ -7,8 +7,12 @@
         "*.md",
         "*.json",
         "*.txt",
-        "test/**",
-        "package.json"
+        "**/test/**",
+        "package.json",
+        "**/coverage/**",
+        "**/dist/**",
+        "**/.nyc_output/**",
+        "**/node_modules/**"
       ]
     },
     "bootstrap": {

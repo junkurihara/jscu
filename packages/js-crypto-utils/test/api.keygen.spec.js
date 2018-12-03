@@ -39,14 +39,16 @@ async function rsaKeyPairAssert(kp){
 describe(`${envName}: Key generation test via exported api`, () => {
 
   const curves = ['P-256', 'P-384', 'P-521', 'P-256K'];
-  it('ECDSA Key Generation should be done successfully', async () => {
+  it('ECDSA Key Generation should be done successfully', async function () {
+    this.timeout(10000);
     await Promise.all(curves.map( async (crv) => {
       const kp = await jscu.pkc.generateKey('EC', {namedCurve: crv});
       await ecKeyPairAssert(kp);
     }));
   });
 
-  it('ECDSA Key Generation should be done unsuccessfully', async () => {
+  it('ECDSA Key Generation should be done unsuccessfully', async function () {
+    this.timeout(10000);
     const crv = '256'; // unsupported // K-256 is supported sometimes.
     let err;
     try {
@@ -56,7 +58,8 @@ describe(`${envName}: Key generation test via exported api`, () => {
     expect(err).to.be.a('error');
   });
 
-  it('RSA Key Generation should be done successfully', async () => {
+  it('RSA Key Generation should be done successfully', async function () {
+    this.timeout(10000);
     let result = true;
     await Promise.all([2048, 4096].map( async (nLen) => {
       const kp = await jscu.pkc.generateKey('RSA', {modulusLength: nLen});
