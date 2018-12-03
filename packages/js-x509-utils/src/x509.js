@@ -8,8 +8,8 @@ import * as ecdsa from './ec.js';
 import BN from 'bn.js';
 import rfc5280 from 'asn1.js-rfc5280';
 import jseu from 'js-encoding-utils';
-import random from 'js-crypto-random/dist/index.js';
-import {Key} from 'js-crypto-key-utils/dist/index.js';
+import random from 'js-crypto-random';
+import {Key} from 'js-crypto-key-utils';
 
 import BufferMod from 'buffer';
 const Buffer = BufferMod.Buffer;

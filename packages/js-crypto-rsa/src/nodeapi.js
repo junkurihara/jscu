@@ -3,7 +3,7 @@
  */
 
 import params from './params.js';
-import {Key} from 'js-crypto-key-utils/dist/index.js';
+import {Key} from 'js-crypto-key-utils';
 import jseu from 'js-encoding-utils';
 import * as oaep from './oaep.js';
 import BN from 'bn.js';

@@ -3,7 +3,7 @@
  */
 
 import jseu from 'js-encoding-utils';
-import hash from 'js-crypto-hash/dist/index.js';
+import hash from 'js-crypto-hash';
 import BufferMod from 'buffer';
 const Buffer = BufferMod.Buffer;
 /**

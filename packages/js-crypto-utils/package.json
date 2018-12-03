@@ -2,7 +2,7 @@
   "name": "js-crypto-utils",
   "version": "0.14.8",
   "description": "JavaScript cryptographic utilities for OpenSSL-WebCrypto compatibility including PEM/X509-JWK converter.",
-  "main": "dist/jscu.bundle.js",
+  "main": "dist/index.js",
   "scripts": {
     "test": "cross-env NODE_ENV=test nyc mocha --recursive $(find test -name '*.spec.js')",
     "test:bundle": "npm run webpack && cross-env TEST_ENV=bundle npm run test",

@@ -2,7 +2,7 @@
   "name": "js-crypto-rsa",
   "version": "0.4.2",
   "description": "Universal Module for RSA Cryptography (RSA-OAEP and RSASSA-PSS/PKCS1-V1_5) in JavaScript",
-  "main": "dist/jscrsa.js",
+  "main": "dist/index.js",
   "scripts": {
     "test": "cross-env NODE_ENV=test nyc mocha --recursive $(find test -name '*.spec.js')",
     "test:bundle": "npm run webpack && cross-env TEST_ENV=bundle npm run test",

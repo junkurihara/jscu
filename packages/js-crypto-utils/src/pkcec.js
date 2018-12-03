@@ -2,10 +2,10 @@
  * pkcec.js
  */
 
-import random from 'js-crypto-random/dist/index.js';
-import ec from 'js-crypto-ec/dist/index.js';
-import hkdf from 'js-crypto-hkdf/dist/index.js';
-import aes from 'js-crypto-aes/dist/index.js';
+import random from 'js-crypto-random';
+import ec from 'js-crypto-ec';
+import hkdf from 'js-crypto-hkdf';
+import aes from 'js-crypto-aes';
 
 import params from './params.js';
 

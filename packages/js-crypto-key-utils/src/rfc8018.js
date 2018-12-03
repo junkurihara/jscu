@@ -8,9 +8,9 @@ import des from 'des.js';
 import BufferMod from 'buffer';
 import asn from 'asn1.js';
 import jseu from 'js-encoding-utils';
-import pbkdf from 'js-crypto-pbkdf/dist/index.js';
-import jscaes from 'js-crypto-aes/dist/index.js';
-import jscrandom from 'js-crypto-random/dist/index.js';
+import pbkdf from 'js-crypto-pbkdf';
+import jscaes from 'js-crypto-aes';
+import jscrandom from 'js-crypto-random';
 const Buffer = BufferMod.Buffer;
 const BN = asn.bignum;
 

@@ -5,8 +5,8 @@ const envName = env.envName;
 
 import sample from './sample_crt.js';
 
-import rsa from 'js-crypto-rsa/dist/index.js';
-import {Key} from 'js-crypto-key-utils/dist/index.js';
+import rsa from 'js-crypto-rsa';
+import {Key} from 'js-crypto-key-utils';
 import chai from 'chai';
 import sample_crt from './sample_crt';
 // const should = chai.should();

@@ -2,12 +2,8 @@
   "name": "js-crypto-key-utils",
   "version": "0.5.3",
   "description": "Universal Module for Cryptographic Key Utilities in JavaScript, including PEM-JWK converters",
-  "main": "dist/jsckey.bundle.js",
+  "main": "dist/index.js",
   "scripts": {
-    "flow:version": "npm version --no-git-tag-version",
-    "release:start": "./node_modules/.bin/can-npm-publish --vorbose && git flow release start v$npm_package_version",
-    "release:finish": "git flow release finish v$npm_package_version",
-    "release:push": "git push --all && git push origin v$npm_package_version",
     "test": "cross-env NODE_ENV=test nyc mocha --recursive $(find test -name '*.spec.js')",
     "test:bundle": "npm run webpack && cross-env TEST_ENV=bundle npm run test",
     "karma": "cross-env TEST_ENV=source ./node_modules/.bin/karma start",
@@ -20,18 +16,19 @@
     "webpack": "./node_modules/.bin/webpack --optimize-minimize --mode development --config webpack.dev.js",
     "webpack:prod": "cross-env NODE_ENV=production ./node_modules/.bin/webpack --optimize-minimize --mode production --config webpack.prod.js",
     "analyze": "cross-env NODE_ENV=production ./node_modules/.bin/webpack --mode production --optimize-minimize --json --config webpack.prod.js | webpack-bundle-size-analyzer",
-    "build": "cross-env NODE_ENV=production ./node_modules/.bin/babel src -d dist/ --keep-file-extension && npm run webpack:prod"
+    "babel": "cross-env NODE_ENV=production ./node_modules/.bin/babel src -d dist/ --keep-file-extension",
+    "build": "npm run babel && npm run webpack:prod"
   },
   "author": "Jun Kurihara",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/junkurihara/js-crypto-key-utils.git"
+    "url": "git+https://github.com/junkurihara/jscu.git"
   },
   "bugs": {
-    "url": "https://github.com/junkurihara/js-crypto-key-utils/issues"
+    "url": "https://github.com/junkurihara/jscu/issues"
   },
-  "homepage": "https://github.com/junkurihara/js-crypto-key-utils#readme",
+  "homepage": "https://github.com/junkurihara/jscu/tree/master/packages/js-crypto-key-utils#readme",
   "keywords": [
     "crypto",
     "webcrypto",

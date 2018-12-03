@@ -2,8 +2,8 @@
  * pkc.js
  */
 
-import ec from 'js-crypto-ec/dist/index.js';
-import rsa from 'js-crypto-rsa/dist/index.js';
+import ec from 'js-crypto-ec';
+import rsa from 'js-crypto-rsa';
 import { Key } from 'js-crypto-key-utils/dist/key';
 import cloneDeep from 'lodash.clonedeep';
 import * as pkcec from './pkcec.js';

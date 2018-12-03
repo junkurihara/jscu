@@ -3,7 +3,7 @@
  */
 
 import params from './params.js';
-import ec from 'js-crypto-ec/dist/index.js';
+import ec from 'js-crypto-ec';
 import BufferMod from 'buffer';
 const Buffer = BufferMod.Buffer;
 
