@@ -1,6 +1,6 @@
 {
   "name": "js-crypto-utils",
-  "version": "0.14.6",
+  "version": "0.14.7",
   "description": "JavaScript cryptographic utilities for OpenSSL-WebCrypto compatibility including PEM/X509-JWK converter.",
   "main": "dist/jscu.bundle.js",
   "scripts": {
@@ -68,7 +68,7 @@
     "js-crypto-random": "^0.2.4",
     "js-crypto-rsa": "^0.4.1",
     "js-encoding-utils": "^0.3.0",
-    "js-x509-utils": "^0.3.1",
+    "js-x509-utils": "^0.3.2",
     "lodash.clonedeep": "^4.5.0"
   }
 }
