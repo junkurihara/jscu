@@ -1,6 +1,6 @@
 {
   "name": "js-crypto-hash",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "Universal Module for Hash Function in JavaScript",
   "main": "dist/index.js",
   "scripts": {
@@ -35,8 +35,6 @@
     "hash",
     "webcrypto"
   ],
-  "devDependencies": {
-  },
   "dependencies": {
     "@babel/plugin-transform-regenerator": "^7.0.0",
     "@babel/runtime": "^7.1.5",
