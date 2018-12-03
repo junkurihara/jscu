@@ -63,9 +63,6 @@ jobs:
     - attach_workspace:
         at: ~/repo
     - run:
-        name: Authenticate with registry
-        command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ~/repo/.npmrc
-    - run:
         name: Build production module
         command: ./node_modules/.bin/lerna run build
     - run:
