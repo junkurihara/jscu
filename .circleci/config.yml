@@ -37,6 +37,7 @@ jobs:
           command: yarn install && ./node_modules/.bin/lerna bootstrap
 
       # run tests!
+      - run: yarn babel
       - run: yarn test
       - run: yarn karma
       - run: yarn add --dev coveralls lcov-result-merger
