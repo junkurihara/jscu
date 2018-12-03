@@ -1,6 +1,8 @@
 Universal Module of X.509 Certificate Utilities in JavaScript 
 --
-[![CircleCI](https://circleci.com/gh/junkurihara/js-x509-utils.svg?style=svg)](https://circleci.com/gh/junkurihara/js-x509-utils)
+[![npm version](https://badge.fury.io/js/js-x509-utils.svg)](https://badge.fury.io/js/js-x509-utils)
+[![Dependencies](https://david-dm.org/junkurihara/jscu.svg?path=packages/js-x509-utils)](https://david-dm.org/junkurihara/jscu?path=packages/js-x509-utils)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 > **WARNING**: At this time this solution should be considered suitable for research and experimentation, further code and security review is needed before utilization in a production application.
 
