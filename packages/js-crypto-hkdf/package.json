@@ -1,7 +1,7 @@
 {
-  "name": "js-crypto-ec",
-  "version": "0.4.2",
-  "description": "Universal Module for Elliptic Curve Cryptography (ECDSA and ECDH) in JavaScript",
+  "name": "js-crypto-hkdf",
+  "version": "0.4.0",
+  "description": "Universal Module for HKDF (Hash-based Key Derivation Function) in JavaScript",
   "main": "dist/index.js",
   "scripts": {
     "test": "cross-env NODE_ENV=test nyc mocha --recursive $(find test -name '*.spec.js')",
@@ -29,25 +29,19 @@
   "bugs": {
     "url": "https://github.com/junkurihara/jscu/issues"
   },
-  "homepage": "https://github.com/junkurihara/jscu/tree/master/packages/js-crypto-ec#readme",
+  "homepage": "https://github.com/junkurihara/jscu/tree/master/packages/js-crypto-hkdf#readme",
   "keywords": [
     "crypto",
-    "elliptic curve",
-    "webcrypto",
-    "ecdsa",
-    "ecdh"
+    "hkdf",
+    "rfc5869",
+    "webcrypto"
   ],
   "devDependencies": {
   },
   "dependencies": {
     "@babel/plugin-transform-regenerator": "^7.0.0",
     "@babel/runtime": "^7.1.5",
-    "asn1.js": "^5.0.1",
-    "buffer": "^5.2.1",
-    "elliptic": "^6.4.1",
-    "js-crypto-hash": "^0.3.1",
-    "js-crypto-key-utils": "^0.5.3",
-    "js-crypto-random": "^0.2.4",
-    "js-encoding-utils": "^0.3.0"
+    "js-crypto-hmac": "^0.3.1",
+    "js-crypto-random": "^0.2.4"
   }
 }
