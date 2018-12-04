@@ -4,7 +4,7 @@ jscu: A Universal Cryptographic Library for JavaScript
 [![CircleCI](https://circleci.com/gh/junkurihara/jscu.svg?style=svg)](https://circleci.com/gh/junkurihara/jscu)
 [![Coverage Status](https://coveralls.io/repos/github/junkurihara/jscu/badge.svg?branch=develop)](https://coveralls.io/github/junkurihara/jscu?branch=develop)
 [![Dependencies](https://david-dm.org/junkurihara/jscu.svg)](https://david-dm.org/junkurihara/jscu)
-[![Maintainability](https://api.codeclimate.com/v1/badges/3e20cff0e8e062363a13/maintainability)](https://codeclimate.com/github/junkurihara/jscu/maintainability)
+[![Maintainability](https://api.codeclimate.com/v1/badges/3e20cff0e8e062363a13/maintainability.svg)](https://codeclimate.com/github/junkurihara/jscu/maintainability)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 > **WARNING**: At this time this solution should be considered suitable for research and experimentation, further code and security review is needed before utilization in a production application.
@@ -23,4 +23,4 @@ Usage of this monorepo and procedures for NPM deployment are summarized as follo
   1. First execute `yarn flow:version` and bump a version of each package that has been modified on `develop` branch. Here we note that for each updated package, the updated tag would be committed (not pushed), and hence we should almost finalize the release operation at least for each package. This simultaneously update the repo version specified in the root `package.json` without committing.
   2. Add final changes for release at the level of GitHub repo. Then, commit changes and then execute `yarn release:start` to start release process on a release branch. Here we note the release version will be the updated Git repo version.
   3. To finalize the release operation, execute `yarn release:finish` to merge the release branch to `master`, and then merge `master` to `develop`. It will also tag the `master` branch with the updated Git repo version, i.e., the root package (`packages/js-crypto-utils`) version.
-  4. Execute `yarn release:finish` and push all branches and the generated tag of Git repo version to GitHub.
+  4. Execute `yarn release:push` and push all branches and the generated tag of Git repo version to GitHub.
