@@ -6,14 +6,15 @@ import params from './params.js';
 
 /**
  * Encrypt data through AES of WebCrypto API.
- * @param msg {Uint8Array}: Plaintext message to be encrypted.
- * @param key {Uint8Array}: Byte array of symmetric key.
- * @param name {String}: Name of AES algorithm like 'AES-GCM'.
- * @param iv {Uint8Array}: Byte array of initial vector if required.
- * @param additionalData {Uint8Array}: Byte array of additional data if required.
- * @param tagLength {Number}: Authentication tag length if required.
- * @param webCrypto {Object}: WebCrypto object, i.e., window.crypto.subtle or window.mscrypto.subtle
- * @return {Promise<Uint8Array>}: Encrypted data byte array.
+ * @param {Uint8Array} msg - Plaintext message to be encrypted.
+ * @param {Uint8Array} key - Byte array of symmetric key.
+ * @param {String} name - Name of AES algorithm like 'AES-GCM'.
+ * @param {Uint8Array} [iv] - Byte array of initial vector if required.
+ * @param {Uint8Array} [additionalData] - Byte array of additional data if required.
+ * @param {Number} [tagLength] - Authentication tag length if required.
+ * @param {Object} webCrypto - WebCrypto object, i.e., window.crypto.subtle or window.msCrypto.subtle
+ * @return {Promise<Uint8Array>} - Encrypted data byte array.
+ * @throws {Error} - Throws if UnsupportedCipher.
  */
 export async function encrypt(msg, key, {name = 'AES-GCM', iv, additionalData, tagLength}, webCrypto) {
   if (Object.keys(params.ciphers).indexOf(name) < 0) throw new Error('UnsupportedCipher');
@@ -41,14 +42,15 @@ export async function encrypt(msg, key, {name = 'AES-GCM', iv, additionalData, t
 
 /**
  * Decrypt data through AES of WebCrypto API.
- * @param data {Uint8Array}: Encrypted message to be decrypted.
- * @param key {Uint8Array}: BYte array of symmetric key.
- * @param name {String}: Name of AES algorithm like 'AES-GCM'.
- * @param iv {Uint8Array}: Byte array of initial vector if required.
- * @param additionalData {Uint8Array}: Byte array of additional data if required.
- * @param tagLength {Number}: Authentication tag length if required.
- * @param webCrypto {Object}: WebCrypto object, i.e., window.crypto.subtle or window.mscrypto.subtle
- * @return {Promise<Uint8Array>}: Decrypted plaintext message.
+ * @param {Uint8Array} data - Encrypted message to be decrypted.
+ * @param {Uint8Array} key - Byte array of symmetric key.
+ * @param {String} name - Name of AES algorithm like 'AES-GCM'.
+ * @param {Uint8Array} [iv] - Byte array of initial vector if required.
+ * @param {Uint8Array} [additionalData] - Byte array of additional data if required.
+ * @param {Number} [tagLength] - Authentication tag length if required.
+ * @param {Object} webCrypto - WebCrypto object, i.e., window.crypto.subtle or window.msCrypto.subtle
+ * @return {Promise<Uint8Array>} - Decrypted plaintext message.
+ * @throws {Error} - Throws if UnsupportedCipher or DecryptionFailure.
  */
 export async function decrypt(data, key, {name='AES-GCM', iv, additionalData, tagLength}, webCrypto) {
   if (Object.keys(params.ciphers).indexOf(name) < 0) throw new Error('UnsupportedCipher');
@@ -83,10 +85,10 @@ export async function decrypt(data, key, {name='AES-GCM', iv, additionalData, ta
 
 /**
  * Set params for encryption algorithms.
- * @param name {String}: Name of AES algorithm like 'AES-GCM'.
- * @param iv {Uint8Array}: Byte array of initial vector if required.
- * @param additionalData {Uint8Array}: Byte array of additional data if required.
- * @param tagLength {Number}: Authentication tag length if required.
+ * @param {String} name - Name of AES algorithm like 'AES-GCM'.
+ * @param {Uint8Array} [iv] - Byte array of initial vector if required.
+ * @param {Uint8Array} [additionalData] - Byte array of additional data if required.
+ * @param {Number} [tagLength] - Authentication tag length if required.
  */
 const setCipherParams = ({name, iv, additionalData, tagLength}) => {
   const alg = {};

@@ -9,9 +9,10 @@ import params from './params.js';
 
 /**
  * Check if the given algorithm spec is valid.
- * @param name {String}: Name of the specified algorithm like 'AES-GCM'.
- * @param iv {Uint8Array}: IV byte array if required
- * @param tagLength {Number}: Authentication tag length if required
+ * @param {String} name - Name of the specified algorithm like 'AES-GCM'.
+ * @param {Uint8Array} iv - IV byte array if required
+ * @param {Number} tagLength - Authentication tag length if required
+ * @throws {Error} - Throws if UnsupportedAlgorithm, InvalidArguments, InvalidIVLength, or InvalidTagLength.
  */
 function assertAlgorithms({name, iv, tagLength}){
   if(Object.keys(params.ciphers).indexOf(name) < 0) throw new Error('UnsupportedAlgorithm');
@@ -28,13 +29,14 @@ function assertAlgorithms({name, iv, tagLength}){
 
 /**
  * Encrypt data with AES
- * @param msg {Uint8Array}: Message to be encrypted.
- * @param key {Uint8Array}: The symmetric key used to encrypt the message.
- * @param name {String}: Name of the specified algorithm like 'AES-GCM'.
- * @param iv {Uint8Array}: Byte array of the initial vector if required.
- * @param additionalData {Uint8Array}: Byte array of additional data if required.
- * @param tagLength {Number}: Authentication tag length if required.
- * @return {Promise<Uint8Array>}: Encrypted message.
+ * @param {Uint8Array} msg - Message to be encrypted.
+ * @param {Uint8Array} key - The symmetric key used to encrypt the message.
+ * @param {String} [name = 'AES-GCM'] - Name of the specified algorithm like 'AES-GCM'.
+ * @param {Uint8Array} [iv] - Byte array of the initial vector if required.
+ * @param {Uint8Array} [additionalData = new Uint8Array([])] - Byte array of additional data if required.
+ * @param {Number} [tagLength = params.ciphers[name].tagLength] - Authentication tag length if required.
+ * @return {Promise<Uint8Array>} - Encrypted message.
+ * @throws {Error} - Throws if InvalidArguments, FaildToEncryptWeb/Node, or UnsupportedEnvironment (no webcrypto/nodecrypto).
  */
 export async function encrypt(msg, key, {name = 'AES-GCM', iv, additionalData=new Uint8Array([]), tagLength}){
   // assertion and sanitizing
@@ -68,13 +70,14 @@ export async function encrypt(msg, key, {name = 'AES-GCM', iv, additionalData=ne
 
 /**
  * Decrypt data with AES
- * @param data {Uint8Array}: Byte array of encrypted data.
- * @param key {Uint8Array}: Byte array of symmetric key to be used for decryption.
- * @param name {String}: Name of the specified algorithm like 'AES-GCM'.
- * @param iv {Uint8Array}: Byte array of the initial vector if required.
- * @param additionalData {Uint8Array}: {Uint8Array}: Byte array of additional data if required.
- * @param tagLength {Number}: Authentication tag length if required.
- * @return {Promise<Uint8Array>}: Decrypted plaintext message.
+ * @param {Uint8Array} data - Byte array of encrypted data.
+ * @param {Uint8Array} key - Byte array of symmetric key to be used for decryption.
+ * @param {String} [name = 'AES-GCM'] - Name of the specified algorithm like 'AES-GCM'.
+ * @param {Uint8Array} [iv] - Byte array of the initial vector if required.
+ * @param {Uint8Array} [additionalData = new Uint8Array([])] - Byte array of additional data if required.
+ * @param {Number} [tagLength = params.ciphers[name].tagLength] - Authentication tag length if required.
+ * @return {Promise<Uint8Array>} - Decrypted plaintext message.
+ * @throws {Error} - Throws if InvalidArguments, FaildToDecryptWeb/Node, or UnsupportedEnvironment (no webcrypto/nodecrypto).
  */
 export async function decrypt(data, key, {name='AES-GCM', iv, additionalData=new Uint8Array([]), tagLength}){
   // assertion and sanitizing

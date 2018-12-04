@@ -4,6 +4,18 @@
 
 import params from './params.js';
 
+/**
+ * Encrypt plaintext message via AES Node.js crypto API
+ * @param {Uint8Array} msg - Plaintext message to be encrypted.
+ * @param {Uint8Array} key - Byte array of symmetric key.
+ * @param {String} name - Name of AES algorithm like 'AES-GCM'.
+ * @param {Uint8Array} [iv] - Byte array of initial vector if required.
+ * @param {Uint8Array} [additionalData] - Byte array of additional data if required.
+ * @param {Number} [tagLength] - Authentication tag length if required.
+ * @param {Object} nodeCrypto - NodeCrypto object, i.e., require(crypto) in Node.js.
+ * @return {Uint8Array} - Encrypted message byte array.
+ * @throws {Error} - Throws error if UnsupportedCipher.
+ */
 export function encrypt(msg, key, {name = 'AES-GCM', iv, additionalData, tagLength}, nodeCrypto){
   let alg = params.ciphers[name].nodePrefix;
   alg = `${alg}-${(key.byteLength*8).toString()}-`;
@@ -38,6 +50,18 @@ export function encrypt(msg, key, {name = 'AES-GCM', iv, additionalData, tagLeng
 }
 
 
+/**
+ * Decrypt data through AES Node.js crypto API.
+ * @param {Uint8Array} data - Encrypted message to be decrypted.
+ * @param {Uint8Array} key - Byte array of symmetric key.
+ * @param {String} name - Name of AES algorithm like 'AES-GCM'.
+ * @param {Uint8Array} [iv] - Byte array of initial vector if required.
+ * @param {Uint8Array} [additionalData] - Byte array of additional data if required.
+ * @param {Number} [tagLength] - Authentication tag length if required.
+ * @param {Object} nodeCrypto - NodeCrypto object, i.e., require(crypto) in Node.js.
+ * @return {Uint8Array} - Decrypted message byte array.
+ * @throws {Error} - Throws error if UnsupportedCipher or DecryptionFailure.
+ */
 export function decrypt(data, key, {name='AES-GCM', iv, additionalData, tagLength}, nodeCrypto) {
   let alg = params.ciphers[name].nodePrefix;
   alg = `${alg}-${(key.byteLength*8).toString()}-`;
