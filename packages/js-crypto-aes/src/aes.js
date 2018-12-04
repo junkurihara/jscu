@@ -9,7 +9,7 @@ import params from './params.js';
 
 /**
  * Check if the given algorithm spec is valid.
- * @param name {string}: Name of the specified algorithm like 'AES-GCM'.
+ * @param name {String}: Name of the specified algorithm like 'AES-GCM'.
  * @param iv {Uint8Array}: IV byte array if required
  * @param tagLength {Number}: Authentication tag length if required
  */
@@ -30,7 +30,7 @@ function assertAlgorithms({name, iv, tagLength}){
  * Encrypt data with AES
  * @param msg {Uint8Array}: Message to be encrypted.
  * @param key {Uint8Array}: The symmetric key used to encrypt the message.
- * @param name {string}: Name of the specified algorithm like 'AES-GCM'.
+ * @param name {String}: Name of the specified algorithm like 'AES-GCM'.
  * @param iv {Uint8Array}: Byte array of the initial vector if required.
  * @param additionalData {Uint8Array}: Byte array of additional data if required.
  * @param tagLength {Number}: Authentication tag length if required.
@@ -70,7 +70,7 @@ export async function encrypt(msg, key, {name = 'AES-GCM', iv, additionalData=ne
  * Decrypt data with AES
  * @param data {Uint8Array}: Byte array of encrypted data.
  * @param key {Uint8Array}: Byte array of symmetric key to be used for decryption.
- * @param name {string}: Name of the specified algorithm like 'AES-GCM'.
+ * @param name {String}: Name of the specified algorithm like 'AES-GCM'.
  * @param iv {Uint8Array}: Byte array of the initial vector if required.
  * @param additionalData {Uint8Array}: {Uint8Array}: Byte array of additional data if required.
  * @param tagLength {Number}: Authentication tag length if required.
