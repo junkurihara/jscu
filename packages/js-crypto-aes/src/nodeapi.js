@@ -16,7 +16,7 @@ import params from './params.js';
  * @return {Uint8Array} - Encrypted message byte array.
  * @throws {Error} - Throws error if UnsupportedCipher.
  */
-export function encrypt(msg, key, {name = 'AES-GCM', iv, additionalData, tagLength}, nodeCrypto){
+export function encrypt(msg, key, {name, iv, additionalData, tagLength}, nodeCrypto){
   let alg = params.ciphers[name].nodePrefix;
   alg = `${alg}-${(key.byteLength*8).toString()}-`;
   alg = alg + params.ciphers[name].nodeSuffix;
@@ -31,9 +31,7 @@ export function encrypt(msg, key, {name = 'AES-GCM', iv, additionalData, tagLeng
   case 'AES-CBC': {
     cipher = nodeCrypto.createCipheriv(alg, key, iv);
     break;
-  }
-  default: throw new Error('UnsupportedCipher');
-  }
+  }}
 
   const body = new Uint8Array(cipher.update(msg));
   const final = new Uint8Array(cipher.final());
@@ -62,7 +60,7 @@ export function encrypt(msg, key, {name = 'AES-GCM', iv, additionalData, tagLeng
  * @return {Uint8Array} - Decrypted message byte array.
  * @throws {Error} - Throws error if UnsupportedCipher or DecryptionFailure.
  */
-export function decrypt(data, key, {name='AES-GCM', iv, additionalData, tagLength}, nodeCrypto) {
+export function decrypt(data, key, {name, iv, additionalData, tagLength}, nodeCrypto) {
   let alg = params.ciphers[name].nodePrefix;
   alg = `${alg}-${(key.byteLength*8).toString()}-`;
   alg = alg + params.ciphers[name].nodeSuffix;

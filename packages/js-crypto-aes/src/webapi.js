@@ -2,8 +2,6 @@
  * webapi.js
  */
 
-import params from './params.js';
-
 /**
  * Encrypt data through AES of WebCrypto API.
  * @param {Uint8Array} msg - Plaintext message to be encrypted.
@@ -17,8 +15,6 @@ import params from './params.js';
  * @throws {Error} - Throws if UnsupportedCipher.
  */
 export async function encrypt(msg, key, {name = 'AES-GCM', iv, additionalData, tagLength}, webCrypto) {
-  if (Object.keys(params.ciphers).indexOf(name) < 0) throw new Error('UnsupportedCipher');
-
   const encryptionConfig = setCipherParams({name, iv, additionalData, tagLength});
 
   if (typeof window.msCrypto === 'undefined') {
@@ -52,9 +48,7 @@ export async function encrypt(msg, key, {name = 'AES-GCM', iv, additionalData, t
  * @return {Promise<Uint8Array>} - Decrypted plaintext message.
  * @throws {Error} - Throws if UnsupportedCipher or DecryptionFailure.
  */
-export async function decrypt(data, key, {name='AES-GCM', iv, additionalData, tagLength}, webCrypto) {
-  if (Object.keys(params.ciphers).indexOf(name) < 0) throw new Error('UnsupportedCipher');
-
+export async function decrypt(data, key, {name, iv, additionalData, tagLength}, webCrypto) {
   const decryptionConfig = setCipherParams({name, iv, additionalData, tagLength});
 
   if (!window.msCrypto) {
@@ -103,9 +97,7 @@ const setCipherParams = ({name, iv, additionalData, tagLength}) => {
     alg.name = name;
     alg.iv = iv;
     break;
-  }
-  default: break;
-  }
+  }}
 
   return alg;
 };
