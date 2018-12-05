@@ -2,9 +2,11 @@
  * util.js
  */
 
+/**
+ * Retrive WebCryptoAPI object, i.e., window.crypto.subtle
+ * @return {undefined|Object}
+ */
 export function getWebCrypto () {
   if (typeof window === 'undefined') return undefined;
-  else {
-    if (window.crypto) return window.crypto.subtle;
-  }
+  if (window.crypto) return window.crypto.subtle;
 }
