@@ -48,7 +48,8 @@ describe(`${envName}: Elliptic curve cryptography test`, () => {
     expect(results.every( (r) => r)).to.be.true;
   });
 
-  it('Shared secret is correctly computed at each side', async () => {
+  it('Shared secret is correctly computed at each side', async function() {
+    this.timeout(10000);
     const results = await Promise.all(keys.map( async (kp) => {
       let result = true;
       const newKey = await elliptic.generateKey(kp.privateKey.crv).catch( (e) => {result = false;});

@@ -4,7 +4,14 @@
 
 import jseu from 'js-encoding-utils';
 
-export async function generateKey(modulusLength = 2048, publicExponent = new Uint8Array([0x01, 0x00, 0x01]), webCrypto){
+/**
+ * Generate RSA public/private key pair.
+ * @param {Number} modulusLength - Modulus length in bits, i.e., n.
+ * @param {Uint8Array} publicExponent - Public exponent, i.e, e.
+ * @param {Object} webCrypto - WebCryptoSubtle object, i.e., window.crypto.subtle or window.msCrypto.subtle.
+ * @return {Promise<{publicKey: JsonWebKey, privateKey: JsonWebKey}>}
+ */
+export async function generateKey(modulusLength, publicExponent, webCrypto){
   // generate rsa key
   // hash is used for signing and verification. never be used for key generation
   let publicKey;
@@ -31,7 +38,17 @@ export async function generateKey(modulusLength = 2048, publicExponent = new Uin
   return {publicKey, privateKey};
 }
 
-export async function sign(msg, privateJwk, hash = 'SHA-256', algorithm = {name: 'RSA-PSS', saltLength: 192}, webCrypto) {
+/**
+ * RSA signing via RSA-PSS or RSASSA-PKCS1-v1_5 in WebAPI.
+ * @param {Uint8Array} msg - Byte array of message to be signed.
+ * @param {JsonWebKey} privateJwk - Private key for signing in JWK format.
+ * @param {String} hash - Name of hash algorithm like 'SHA-256'.
+ * @param {Object} algorithm - Object to specify algorithm parameters.
+ * @param {Object} webCrypto - WebCryptoSubtle object
+ * @return {Promise<Uint8Array>} - Byte array of raw signature.
+ * @throws {Error} - if RSA-PSS in IE.
+ */
+export async function sign(msg, privateJwk, hash, algorithm, webCrypto) {
   const algo = {name: algorithm.name, hash: {name: hash}, saltLength: algorithm.saltLength};
 
   let signature;
@@ -40,14 +57,25 @@ export async function sign(msg, privateJwk, hash = 'SHA-256', algorithm = {name:
     signature = await webCrypto.sign(algo, key, msg);
   }
   else {
-    if(algorithm.name === 'RSA-PSS') throw new Error('IE does not support RSA-PSS. Use RSASSA-PKCS1-v1_5.')
+    if(algorithm.name === 'RSA-PSS') throw new Error('IE does not support RSA-PSS. Use RSASSA-PKCS1-v1_5.');
     const key = await msImportKey('jwk', privateJwk, algo, false, ['sign'], webCrypto);
     signature = await msSign(algo, key, msg, webCrypto);
   }
   return new Uint8Array(signature);
 }
 
-export async function verify(msg, signature, publicJwk, hash = 'SHA-256', algorithm = {name: 'RSA-PSS', saltLength: 192}, webCrypto){
+/**
+ * Verification of RSA signature via RSA-PSS or RSASSA-PKCS1-v1_5 in WebAPI.
+ * @param {Uint8Array} msg - Byte array of message signed.
+ * @param {Uint8Array} signature - Byte array of raw signature.
+ * @param {JsonWebKey} publicJwk - public key for signing in JWK format.
+ * @param {String} hash - Name of hash algorithm like 'SHA-256'.
+ * @param {Object} algorithm - Object to specify algorithm parameters.
+ * @param {Object} webCrypto - WebCryptoSubtle object
+ * @return {Promise<boolean>} - Result of verification.
+ * @throws {Error} - if RSA-PSS in IE.
+ */
+export async function verify(msg, signature, publicJwk, hash, algorithm, webCrypto){
   const algo = {name: algorithm.name, hash: {name: hash}, saltLength: algorithm.saltLength};
 
   let valid;
@@ -63,7 +91,17 @@ export async function verify(msg, signature, publicJwk, hash = 'SHA-256', algori
   return valid;
 }
 
-export async function encrypt(msg, publicJwk, hash = 'SHA-256', label = new Uint8Array([]), webCrypto){
+/**
+ * RSA Encryption via WebAPI.
+ * @param {Uint8Array} msg - Byte array of message to be encrypted
+ * @param {JsonWebKey} publicJwk - Public key in JWK format.
+ * @param {String} hash - Name of hash algorithm like 'SHA-256'
+ * @param {Uint8Array} label - RSA-OAEP label.
+ * @param {Object} webCrypto - WebCryptoSubtle object
+ * @return {Promise<Uint8Array>} - Encrypted message.
+ * @throws {Error} - if RSA-OAEP label is specified in IE.
+ */
+export async function encrypt(msg, publicJwk, hash, label, webCrypto){
   const algo = {name: 'RSA-OAEP', hash: {name: hash}, label};
 
   let encrypted;
@@ -79,7 +117,17 @@ export async function encrypt(msg, publicJwk, hash = 'SHA-256', label = new Uint
   return new Uint8Array(encrypted);
 }
 
-export async function decrypt(msg, privateJwk, hash = 'SHA-256', label = new Uint8Array([]), webCrypto){
+/**
+ * RSA Decryption via WebAPI.
+ * @param {Uint8Array} msg - encrypted message byte array.
+ * @param {JsonWebKey} privateJwk - Private key in JWK format.
+ * @param {String} hash - Name of hash algorithm like 'SHA-256'
+ * @param {Uint8Array} label - RSA-OAEP label.
+ * @param {Object} webCrypto - WebCryptoSubtle object.
+ * @return {Promise<Uint8Array>} - Decrypted message.
+ * @throws {Error} - if RSA-OAEP label is specified in IE.
+ */
+export async function decrypt(msg, privateJwk, hash, label, webCrypto){
   const algo = {name: 'RSA-OAEP', hash: {name: hash}, label};
 
   let decrypted;
@@ -95,6 +143,8 @@ export async function decrypt(msg, privateJwk, hash = 'SHA-256', label = new Uin
   return new Uint8Array(decrypted);
 }
 
+
+/////////////////////////////////////////////
 // function definitions for IE
 const msGenerateKey = (alg, ext, use, webCrypto) => new Promise ( (resolve, reject) => {
   const op = webCrypto.generateKey(alg, ext, use);
