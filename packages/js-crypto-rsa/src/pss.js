@@ -21,6 +21,14 @@ import params from './params.js';
        - If emLen < hLen + sLen + 2, output "inconsistent" and stop.
  */
 // emLen = Math.ceil((modBits(=k) - 1)/8), e.g., Math.ceil(2047/8) = 256, that is exactly equal to k)
+/**
+ * Check PSS Length.
+ * @param {String} mode - 'sign' or 'verify'
+ * @param {Number} k - Octet length of modulus length, i.e., n.
+ * @param {String} hash - Name of hash function.
+ * @param {Number} saltLength - Length of salt.
+ * @throws {Error} - Throws if Inconsistent, EncodingError, or InvalidMode.
+ */
 export function checkLength(mode, {k, hash, saltLength}){
   if(mode === 'sign'){
     if (k > (1 << params.hashes[hash].maxInput) - 1) throw new Error('Inconsistent');

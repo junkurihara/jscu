@@ -44,7 +44,8 @@ describe(`${envName}: Test for PBKDF 1 and 2`, () => {
   before( async () => {
   });
 
-  it('PBKDF2 with password string', async () => {
+  it('PBKDF2 with password string', async function() {
+    this.timeout(10000);
     const array = await Promise.all( hashes.map( async (h) => {
       const key = await pbkdf.pbkdf2(
         sample.pbkdf2.p,
@@ -58,7 +59,8 @@ describe(`${envName}: Test for PBKDF 1 and 2`, () => {
     expect(array.every( (elem) => elem)).to.be.true;
   });
 
-  it('PBKDF2 with password buffer', async () => {
+  it('PBKDF2 with password buffer', async function() {
+    this.timeout(10000);
     const array = await Promise.all( hashes.map( async (h) => {
       const key = await pbkdf.pbkdf2(
         jseu.encoder.hexStringToArrayBuffer(sample.pbkdf2.pbuf),
@@ -72,7 +74,8 @@ describe(`${envName}: Test for PBKDF 1 and 2`, () => {
     expect(array.every( (elem) => elem)).to.be.true;
   });
 
-  it('PBKDF1 with password string', async () => {
+  it('PBKDF1 with password string', async function() {
+    this.timeout(10000);
     const array = await Promise.all( hashes.map( async (h) => {
       const key = await pbkdf.pbkdf1(
         sample.pbkdf1.p,
@@ -86,7 +89,8 @@ describe(`${envName}: Test for PBKDF 1 and 2`, () => {
     expect(array.every( (elem) => elem)).to.be.true;
   });
 
-  it('PBKDF1 with password buffer', async () => {
+  it('PBKDF1 with password buffer', async function() {
+    this.timeout(10000);
     const array = await Promise.all( hashes.map( async (h) => {
       const key = await pbkdf.pbkdf1(
         jseu.encoder.hexStringToArrayBuffer(sample.pbkdf1.pbuf),

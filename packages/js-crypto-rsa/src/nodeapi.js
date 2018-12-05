@@ -8,8 +8,15 @@ import jseu from 'js-encoding-utils';
 import * as oaep from './oaep.js';
 import BN from 'bn.js';
 
-// TODO: Currently not implemented in Node.js. Will be available from Node.js v10.12.0.
-export async function generateKey(modulusLength = 2048, publicExponent = new Uint8Array([0x01, 0x00, 0x01]), nodeCrypto){
+/**
+ * Generate RSA public/private key pair.
+ * @param {Number} modulusLength - Modulus length in bits, i.e., n.
+ * @param {Uint8Array} publicExponent - Public exponent, i.e, e.
+ * @param {Object} nodeCrypto - NodeCrypto object.
+ * @return {Promise<{publicKey: JsonWebKey, privateKey: JsonWebKey}>}
+ * @throws {Error} - Throws if KeyGenerationFailedNode.
+ */
+export async function generateKey(modulusLength, publicExponent, nodeCrypto){
   const pe = new BN(publicExponent);
   const options = {
     modulusLength: (typeof modulusLength !== 'number') ? parseInt(modulusLength, 10) : modulusLength,
@@ -34,7 +41,17 @@ export async function generateKey(modulusLength = 2048, publicExponent = new Uin
   };
 }
 
-export async function sign(msg, privateJwk, hash = 'SHA-256', algorithm = {name: 'RSA-PSS', saltLength: 192}, nodeCrypto) {
+/**
+ * RSA signing via RSA-PSS or RSASSA-PKCS1-v1_5 in Node.js.
+ * @param {Uint8Array} msg - Byte array of message to be signed.
+ * @param {JsonWebKey} privateJwk - Private key for signing in JWK format.
+ * @param {String} hash - Name of hash algorithm like 'SHA-256'.
+ * @param {Object} algorithm - Object to specify algorithm parameters.
+ * @param {Object} nodeCrypto - NodeCrypto object
+ * @return {Promise<Uint8Array>} - Byte array of raw signature.
+ * @throws {Error} - Throws if NotPublicKeyForRSASign.
+ */
+export async function sign(msg, privateJwk, hash, algorithm, nodeCrypto) {
   const keyObj = new Key('jwk', privateJwk);
   if(!keyObj.isPrivate) throw new Error('NotPrivateKeyForRSASign');
   const privatePem = await keyObj.export('pem');
@@ -44,7 +61,19 @@ export async function sign(msg, privateJwk, hash = 'SHA-256', algorithm = {name:
   return new Uint8Array(sign.sign(Object.assign({key: privatePem}, opt)));
 }
 
-export async function verify(msg, signature, publicJwk, hash = 'SHA-256', algorithm = {name: 'RSA-PSS', saltLength: 192}, nodeCrypto) {
+/**
+ /**
+ * Verification of RSA signature via RSA-PSS or RSASSA-PKCS1-v1_5 in Node.js.
+ * @param {Uint8Array} msg - Byte array of message signed.
+ * @param {Uint8Array} signature - Byte array of raw signature.
+ * @param {JsonWebKey} publicJwk - public key for signing in JWK format.
+ * @param {String} hash - Name of hash algorithm like 'SHA-256'.
+ * @param {Object} algorithm - Object to specify algorithm parameters.
+ * @param {Object} nodeCrypto - NodeCrypto object
+ * @return {Promise<boolean>} - Result of verification.
+ * @throws {Error} - Throws if NotPublicKeyForRSAVerify.
+ */
+export async function verify(msg, signature, publicJwk, hash, algorithm, nodeCrypto) {
   const keyObj = new Key('jwk', publicJwk);
   if(keyObj.isPrivate) throw new Error('NotPublicKeyForRSAVerify');
   const publicPem = await keyObj.export('pem', {outputPublic: true});
@@ -54,7 +83,16 @@ export async function verify(msg, signature, publicJwk, hash = 'SHA-256', algori
   return verify.verify(Object.assign({key: publicPem}, opt), signature);
 }
 
-
+/**
+ * RSA Encryption via NodeCrypto.
+ * @param {Uint8Array} msg - Byte array of message to be encrypted
+ * @param {JsonWebKey} publicJwk - Public key in JWK format.
+ * @param {String} hash - Name of hash algorithm like 'SHA-256'
+ * @param {Uint8Array} label - RSA-OAEP label.
+ * @param {Object} nodeCrypto - NodeCrypto object.
+ * @return {Promise<Uint8Array>} - Encrypted message.
+ * @throws {Error} - Throws if NotPublicKeyForRSAEncrypt.
+ */
 export async function encrypt(msg, publicJwk, hash = 'SHA-256', label = new Uint8Array([]), nodeCrypto){
   const keyObj = new Key('jwk', publicJwk);
   if(keyObj.isPrivate) throw new Error('NotPublicKeyForRSAEncrypt');
@@ -71,6 +109,16 @@ export async function encrypt(msg, publicJwk, hash = 'SHA-256', label = new Uint
   return new Uint8Array(encrypted);
 }
 
+/**
+ * RSA Decryption via NodeCrypto.
+ * @param {Uint8Array} data - encrypted message byte array.
+ * @param {JsonWebKey} privateJwk - Private key in JWK format.
+ * @param {String} hash - Name of hash algorithm like 'SHA-256'
+ * @param {Uint8Array} label - RSA-OAEP label.
+ * @param {Object} nodeCrypto - NodeCrypto object.
+ * @return {Promise<Uint8Array>} - Decrypted message.
+ * @throws {Error} - Throws if NotPrivateKeyForRSADecrypt.
+ */
 export async function decrypt(data, privateJwk, hash = 'SHA-256', label = new Uint8Array([]), nodeCrypto){
   const keyObj = new Key('jwk', privateJwk);
   if(!keyObj.isPrivate) throw new Error('NotPrivateKeyForRSADecrypt');

@@ -7,7 +7,8 @@ Universal Module for RSA Cryptography (RSA-OAEP and RSASSA-PSS/PKCS1-V1_5) in Ja
 > **WARNING**: At this time this solution should be considered suitable for research and experimentation, further code and security review is needed before utilization in a production application.
 
 # Introduction and Overview
-This library is designed to be 'universal' as an RSA cryptography library, i.e., it works both on most browsers and on Node.js just by importing from npm/source code. Note that in the design principle, the library fully utilizes native APIs like WebCrypto API to accelerate its operation if available. This library provides APIs to employ RSA-OAEP, RSA-PSS/RSASSA-PKCS1-v1_5 and their key generation, i.e., `sign`, `verify`, `encrypt` and `decrypt`.
+
+This library is designed to 'universally' provide an RSA cryptographic functions, i.e., it works both on most modern browsers and on Node.js just by importing from NPM/source code. The original specification is given in RFC5869 (https://tools.ietf.org/html/rfc5869). Note that in the design principle, the library fully utilizes native APIs like WebCrypto API to accelerate its operation if available. This library provides APIs to employ RSA-OAEP, RSA-PSS/RSASSA-PKCS1-v1_5 and their key generation, i.e., `sign`, `verify`, `encrypt` and `decrypt`.
 
 # Installation
 At your project directory, do either one of the following.
@@ -19,19 +20,27 @@ At your project directory, do either one of the following.
   ```
 - From GitHub:
   ```shell
-  $ git clone https://github.com/junkurihara/js-crypto-rsa.git
+  $ git clone https://github.com/junkurihara/js-crypto-utils.git
+  $ cd js-crypto-utils/packages/js-crypto-rsa
+  & yarn build
   ```
 
 Then you should import the package as follows.
+
 ```shell
 import rsa from 'js-crypto-rsa'; // for npm
-import rsa from 'js-crypto-rsa/dist/index.js'; // for github/npm
+import rsa from 'path/to/js-crypto-rsa/dist/index.js'; // for github
 ```
-  
+
+The bundled file is also given as `js-crypt-rsa/dist/jscrsa.js` for a use case where the module is imported as a `window.jscrsa` object via `script` tags.
+
+    
 # Usage
+
 This library always uses JWK-formatted keys ([RFC7517](https://tools.ietf.org/html/rfc7517)) to do any operations. If you utilize keys of other format, like PEM, please use [`js-crypto-key-utils`](https://github.com/junkurihara/js-crypto-key-utils) to convert them to JWK.
 
 ## Key generation
+
 ```javascript
 rsa.generateKey(2048).then( (key) => {
   // now you get the JWK public and private keys
@@ -41,9 +50,10 @@ rsa.generateKey(2048).then( (key) => {
 ```
 
 ## Sign and verify
+
 ```javascript
 const publicJwk = {kty: 'RSA', n: '...', e: '...'}; // public key
-const privateJwk = {ktyp: 'RSA', n: 'P-256', e: '...', p: '...', q: '...', dp: '...', dq: '...', qi: '...'}; // paired private key
+const privateJwk = {kty: 'RSA', n: '...', e: '...', p: '...', q: '...', dp: '...', dq: '...', qi: '...'}; // paired private key
 const msg = ...; // Uint8Array
 
 // sign
@@ -73,6 +83,7 @@ rsa.sign(
 ```
 
 ## Encrypt and decrypt
+
 ```javascript
 const publicJwk = {kty: 'RSA', n: '...', e: '...'}; // public key
 const privateJwk = {ktyp: 'RSA', n: 'P-256', e: '...', p: '...', q: '...', dp: '...', dq: '...', qi: '...'}; // paired private key
@@ -107,7 +118,7 @@ This library has the following limitations at this point.
 
 - Node.js must be >= v10.12.0 to generate RSA keys.
 
-- Some functions does not work in IE11. In particular, RSA-PSS scheme does not work due to lack of native implementation in IE, and the label for RSA-OAEP encryption cannot be employed since IE does not support it. This library heavily relies on the native (but standardized) implementation of RSA cryptographic modules in browsers and Node.js and it does not employ pure-JS RSA implementations for compatibility yet. Currently, we strongly recommend you to use this library in slightly modern environments, and, honestly, you should discard the IE ASAP.
+- Some functions does not work in legacy browsers like MS Edge and IE11. In particular, RSA-PSS scheme does not work due to lack of native implementation in IE, and the label for RSA-OAEP encryption cannot be employed since IE does not support it. Also MS Edge is incompatible with RSA-OAEP and more and more. This library heavily relies on the native (but standardized) implementation of RSA cryptographic modules in browsers and Node.js and it does not employ pure-JS RSA implementations for compatibility yet. Currently, we strongly recommend you to use this library in more modern environments, and, honestly, you should discard the IE and Edge ASAP.
 
 # License
 Licensed under the MIT license, see `LICENSE` file.
