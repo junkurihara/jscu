@@ -37,7 +37,7 @@
   ],
   "devDependencies": {
     "js-crypto-random": "^0.2.5",
-    "js-encoding-utils": "0.3.0"
+    "js-encoding-utils": "0.3.1"
   },
   "dependencies": {
     "@babel/plugin-transform-regenerator": "^7.0.0",
