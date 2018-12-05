@@ -147,7 +147,7 @@ const testHtmlTemplate =
   '  <meta charset="UTF-8">\n' +
   '  <title>Title</title>\n' +
   '  <link href="https://cdn.rawgit.com/mochajs/mocha/2.2.5/mocha.css" rel="stylesheet" />\n' +
-  '  <script src="../../node_modules/@babel/polyfill/browser.js"></script>\n' +
+  '  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-polyfill/7.0.0/polyfill.min.js"></script>\n' +
   '</head>\n' +
   '<body>\n' +
   '<div id="mocha"></div>\n' +

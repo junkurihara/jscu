@@ -8,10 +8,12 @@ import md5 from 'md5';
 import jsHash from 'hash.js';
 
 /**
- * Compute Hash
- * @param hash
- * @param msg
- * @return {Promise<Uint8Array>}
+ * Compute Hash value.
+ * @param {Uint8Array} msg - Byte array of message to be hashed.
+ * @param {String} [hash = 'SHA-256'] - Name of hash algorithm like 'SHA-256'.
+ * @return {Promise<Uint8Array>} - Hash value
+ * @throws {Error} - Throws if UnsupportedHashAlgorithm, UnsupportedMessageType,
+ *  or UnsupportedEnvironment, i.e., a case where even pure js implementation won't work.
  */
 export async function compute(msg, hash = 'SHA-256') {
   if(Object.keys(params.hashes).indexOf(hash) < 0) throw new Error('UnsupportedHashAlgorithm');
@@ -32,28 +34,14 @@ export async function compute(msg, hash = 'SHA-256') {
   }
   else if (typeof nodeCrypto !== 'undefined' ){ // for node
     try {
-      const alg = params.hashes[hash].nodeName;
-      const hashFunc = nodeCrypto.createHash(alg);
-      hashFunc.update(msg);
-      msgHash = hashFunc.digest();
+      msgHash = nodedigest(hash, msg, nodeCrypto);
     } catch (e) {
       errMsg = e.message;
       native = false;
     }
   }
   else if (typeof msCrypto !== 'undefined' && typeof msCrypto.digest === 'function') { // for legacy ie 11
-    // WTF IE!!!
-    const msdigest = (alg, m) => new Promise((resolve, reject) => {
-      const op = window.msCrypto.subtle.digest(alg, m);
-      op.oncomplete = (evt) => {
-        resolve(evt.target.result);
-      };
-      op.onerror = (e) => {
-        reject(e);
-      };
-    });
-
-    msgHash = await msdigest(hash, msg).catch( (e) => {
+    msgHash = await msdigest(hash, msg, msCrypto).catch( (e) => {
       errMsg = e.message;
       native = false;
     });
@@ -72,15 +60,52 @@ export async function compute(msg, hash = 'SHA-256') {
   return new Uint8Array(msgHash);
 }
 
-function purejs(hash, msg){
+/**
+ * Compute hash using MsCrypto implementation
+ * @param {String} hash - Name of hash algorithm like SHA-256
+ * @param {Uint8Array} msg - Byte array of message to be hashed.
+ * @param {Object} msCrypto - msCrypto object.
+ * @return {Promise<Uint8Array>} - Hash value.
+ * @throws {Error} - Throws if hashing failed.
+ */
+const msdigest = (hash, msg, msCrypto) => new Promise((resolve, reject) => {
+  const op = msCrypto.digest(hash, msg);
+  op.oncomplete = (evt) => {
+    resolve(evt.target.result);
+  };
+  op.onerror = (e) => {
+    reject(e);
+  };
+});
+
+/**
+ * Compute hash using Node.js implementation
+ * @param {String} hash - Name of hash algorithm like SHA-256
+ * @param {Uint8Array} msg - Byte array of message to be hashed.
+ * @param {Object} nodeCrypto - Node.js crypto object.
+ * @return {Uint8Array} - Hash value.
+ */
+const nodedigest = (hash, msg, nodeCrypto) => {
+  const alg = params.hashes[hash].nodeName;
+  const hashFunc = nodeCrypto.createHash(alg);
+  hashFunc.update(msg);
+  return hashFunc.digest();
+};
+
+/**
+ * Compute hash using pure js implementations
+ * @param {String} hash - Name of hash algorithm like SHA-256
+ * @param {Uint8Array} msg - Byte array of message to be hashed.
+ * @return {Uint8Array} - Hash value.
+ */
+const purejs = (hash, msg) => {
   let h;
   if(hash === 'MD5'){
     h = md5(Array.from(msg), {asBytes: true});
   }
-  else if (Object.keys(params.hashes).indexOf(hash) >= 0){
+  else {
     h = jsHash[params.hashes[hash].nodeName]().update(msg).digest();
   }
-  else throw new Error('UnsupportedHashInPureJs');
 
   return new Uint8Array(h);
-}
+};
