@@ -8,6 +8,12 @@ import BufferMod from 'buffer';
 const Buffer = BufferMod.Buffer;
 const BN = asn.bignum;
 
+/**
+ * Decode ASN.1 encoded signature byte array.
+ * @param {Uint8Array} asn1sig - Byte array of ASN.1 encoded signature.
+ * @param {String} namedCurve - Name of curve like 'P-256'.
+ * @return {Uint8Array} - Decoded raw signature.
+ */
 export function decodeAsn1Signature(asn1sig, namedCurve){
   const asn1sigBuffer = Buffer.from(asn1sig); // This must be Buffer object to get decoded;
   const decoded = ECDSASignature.decode(asn1sigBuffer, 'der');
@@ -20,6 +26,12 @@ export function decodeAsn1Signature(asn1sig, namedCurve){
   return signature;
 }
 
+/**
+ * Encode raw signature and obtain ASN.1-encoded signature.
+ * @param {Uint8Array} signature - Byte array of raw signature.
+ * @param {String} namedCurve - Name of curve like 'P-256'.
+ * @return {Uint8Array} - Encoded ASN.1 signature.
+ */
 export function encodeAsn1Signature(signature, namedCurve){
   const len = params.namedCurves[namedCurve].payloadSize;
   const r = signature.slice(0, len);

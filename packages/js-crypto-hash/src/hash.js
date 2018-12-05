@@ -2,7 +2,7 @@
  * hash.js
  */
 
-import * as util from './util.js';
+import * as util from 'js-crypto-env';
 import params from './params.js';
 import md5 from 'md5';
 import jsHash from 'hash.js';

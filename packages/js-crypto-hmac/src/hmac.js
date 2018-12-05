@@ -3,7 +3,7 @@
  */
 
 import params from './params.js';
-import * as util from './util.js';
+import * as util from 'js-crypto-env';
 import jschash from 'js-crypto-hash';
 
 

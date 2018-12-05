@@ -43,6 +43,7 @@
     "asn1.js": "^5.0.1",
     "buffer": "^5.2.1",
     "elliptic": "^6.4.1",
+    "js-crypto-env": "^0.1.0",
     "js-crypto-hash": "^0.3.2",
     "js-crypto-key-utils": "^0.5.5",
     "js-crypto-random": "^0.2.5",

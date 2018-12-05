@@ -2,7 +2,7 @@
  * random.js
  */
 
-import * as util from './util.js';
+import * as util from 'js-crypto-env';
 
 /**
  * Secure random 'ASCII' string generator based on getRandomBytes;
@@ -30,7 +30,7 @@ export function getRandomAsciiString(len) {
  * @throws {Error} - Throws if UnsupportedEnvironment.
  */
 export function getRandomBytes(len) {
-  const webCrypto = util.getWebCryptoAll(); // web crypto api or ms crypto
+  const webCrypto = util.getRootWebCryptoAll(); // web crypto api or ms crypto
   const nodeCrypto = util.getNodeCrypto(); // implementation on node.js
 
   let array;

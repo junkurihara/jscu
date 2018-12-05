@@ -8,13 +8,15 @@ import jschmac from 'js-crypto-hmac';
 import params from './params.js';
 
 /**
- * Password-based key derivation function 2
- * @param p {Uint8Array|String}: password buffer. if string, it will be converted to Uint8Array
- * @param s {Uint8Array}: salt
- * @param c {Number}: iteration count
- * @param dkLen {Number}: intended output key length in octet
- * @param hash {String}: name of underlying hash function for HMAC like 'SHA-256', used as a pseudorandom function
- * @return {Promise<Uint8Array>}: the derived key
+ * Password-based key derivation function 2.
+ * Detailed specification is given in RFC8018 Section 5.2 {@link https://tools.ietf.org/html/rfc8018#section-5.2}.
+ * @param {Uint8Array|String} p - Byte array or string of password. if string is given, it will be converted to Uint8Array.
+ * @param {Uint8Array} s - Byte array of salt.
+ * @param {Number} c - Iteration count.
+ * @param {Number} dkLen - Intended output key length in octet.
+ * @param {String} hash - Name of underlying hash function for HMAC like 'SHA-256', used as a pseudorandom function.
+ * @return {Promise<Uint8Array>}: Derived key.
+ * @throws {Error} - Throws if the intended key length is too long.
  */
 export async function pbkdf2(p, s, c, dkLen, hash) {
   assertPbkdf(p, s, c, dkLen, hash);
@@ -59,13 +61,15 @@ const nwbo = (num, len) => {
 
 
 /**
- * Password-based key derivation function 1
- * @param p {Uint8Array|String}: password buffer. if string, it will be converted to Uint8Array
- * @param s {Uint8Array}: salt
- * @param c {Number}: iteration count
- * @param dkLen {Number}: intended output key length
- * @param hash {String}: name of underlying hash function like 'SHA-256'
- * @return {Promise<Uint8Array>}: the derived key
+ * Password-based key derivation function 1.
+ * Detailed specification is given in RFC8018 Section 5.1 {@link https://tools.ietf.org/html/rfc8018#section-5.1}.
+ * @param {Uint8Array|String} p - Byte array or string of password. if string is given, it will be converted to Uint8Array.
+ * @param {Uint8Array} s - Byte array of salt.
+ * @param {Number} c - Iteration count.
+ * @param {Number} dkLen - Intended output key length in octet.
+ * @param {String} hash - Name of underlying hash function for HMAC like 'SHA-256'
+ * @return {Promise<Uint8Array>}: Derived key.
+ * @throws {Error} - Throws if the intended key length is too long.
  */
 export async function pbkdf1(p, s, c, dkLen, hash){
   assertPbkdf(p, s, c, dkLen, hash);
@@ -82,7 +86,15 @@ export async function pbkdf1(p, s, c, dkLen, hash){
   return seed.slice(0, dkLen);
 }
 
-// assertion
+/** Assertion for PBKDF 1 and 2
+ * @param {Uint8Array|String} p - Byte array or string of password. if string is given, it will be converted to Uint8Array.
+ * @param {Uint8Array} s - Byte array of salt.
+ * @param {Number} c - Iteration count.
+ * @param {Number} dkLen - Intended output key length in octet.
+ * @param {String} hash - Name of underlying hash function for HMAC like 'SHA-256'
+ * @return {boolean} - True if given params pass the assertion check. Otherwise, throw (not false).
+ * @throws {Error} - Throws if the params doesn't pass the assertion checks for given conditions.
+ */
 function assertPbkdf(p, s, c, dkLen, hash){
   if (typeof p !== 'string' && !(p instanceof Uint8Array)) throw new Error('PasswordIsNotUint8ArrayNorString');
   if (!(s instanceof Uint8Array)) throw new Error('SaltMustBeUint8Array');

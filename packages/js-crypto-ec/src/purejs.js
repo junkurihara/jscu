@@ -11,6 +11,12 @@ import jseu from 'js-encoding-utils';
 import elliptic from 'elliptic';
 const Ec = elliptic.ec;
 
+/**
+ * Generate elliptic curve cryptography public/private key pair. Generated keys are in JWK.
+ * @param {String} namedCurve - Name of curve like 'P-256'.
+ * @return {Promise<{publicKey: JsonWebKey, privateKey: JsonWebKey}>} - The generated keys.
+ * @throws {Error} - Throws if NotPublic/PrivateKeyForECCKeyGenPureJS
+ */
 export async function generateKey(namedCurve){
 
   const curve = params.namedCurves[namedCurve].indutnyName;
@@ -34,6 +40,15 @@ export async function generateKey(namedCurve){
   return {publicKey: publicJwk, privateKey: privateJwk};
 }
 
+/**
+ * Sign message with ECDSA.
+ * @param {Uint8Array} msg - Byte array of message to be signed.
+ * @param {JsonWebKey} privateJwk - Private key object in JWK format.
+ * @param {String} hash - Name of hash algorithm used in singing, like 'SHA-256'.
+ * @param {String} signatureFormat - Signature format, 'raw' or 'der'
+ * @return {Promise<Uint8Array>} - Output signature byte array in raw or der format.
+ * @throws {Error} - Throws if NotPrivateKeyForECCSIgnPureJS
+ */
 export async function sign(msg, privateJwk, hash, signatureFormat) {
   const namedCurve = privateJwk.crv;
   const curve = params.namedCurves[namedCurve].indutnyName;
@@ -61,6 +76,16 @@ export async function sign(msg, privateJwk, hash, signatureFormat) {
   return (signatureFormat === 'raw') ? concat : asn1enc.encodeAsn1Signature(concat, namedCurve);
 }
 
+/**
+ * Verify signature with ECDSA.
+ * @param {Uint8Array} msg - Byte array of message that have been signed.
+ * @param {Uint8Array} signature - Byte array of signature for the given message.
+ * @param {JsonWebKey} publicJwk - Public key object in JWK format.
+ * @param {String} hash - Name of hash algorithm used in singing, like 'SHA-256'.
+ * @param {String} signatureFormat - Signature format,'raw' or 'der'.
+ * @return {Promise<boolean>} - The result of verification.
+ * @throws {Error} - Throws if NotPublicKeyForEccVerifyPureJS.
+ */
 export async function verify(msg, signature, publicJwk, hash, signatureFormat){
   const namedCurve = publicJwk.crv;
   const curve = params.namedCurves[namedCurve].indutnyName;
@@ -85,6 +110,13 @@ export async function verify(msg, signature, publicJwk, hash, signatureFormat){
   return await ecKey.verify(md, {s: sigS, r: sigR});
 }
 
+/**
+ * Key Derivation for ECDH, Elliptic Curve Diffie-Hellman Key Exchange.
+ * @param {JsonWebKey} publicJwk - Remote public key object in JWK format.
+ * @param {JsonWebKey} privateJwk - Local (my) private key object in JWK format.
+ * @return {Promise<Uint8Array>} - The derived master secret via ECDH.
+ * @throws {Error} - Throws if NotPublic/PrivateKeyForECCSDeriveKeyPureJS.
+ */
 export async function deriveSecret(publicJwk, privateJwk){
   const namedCurve = privateJwk.crv;
   const curve = params.namedCurves[namedCurve].indutnyName;
