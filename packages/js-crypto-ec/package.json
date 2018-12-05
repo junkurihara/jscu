@@ -1,6 +1,6 @@
 {
   "name": "js-crypto-ec",
-  "version": "0.4.4",
+  "version": "0.4.5",
   "description": "Universal Module for Elliptic Curve Cryptography (ECDSA and ECDH) in JavaScript",
   "main": "dist/index.js",
   "scripts": {
@@ -9,7 +9,7 @@
     "karma": "cross-env TEST_ENV=source karma start",
     "karma:bundle": "npm run webpack && cross-env TEST_ENV=bundle karma start",
     "karma:window": "npm run webpack && cross-env TEST_ENV=window karma start",
-    "html": "npm run html:source && npm run html:bundle && npm run html:window",
+    "html": "npm run webpack && npm run html:source && npm run html:bundle && npm run html:window",
     "html:source": "cross-env TEST_ENV=source NODE_ENV=html npm run webpack",
     "html:bundle": "cross-env TEST_ENV=bundle NODE_ENV=html npm run webpack",
     "html:window": "cross-env TEST_ENV=window NODE_ENV=html npm run webpack",
@@ -17,8 +17,8 @@
     "webpack:prod": "cross-env NODE_ENV=production webpack --optimize-minimize --mode production --config webpack.prod.js",
     "analyze": "cross-env NODE_ENV=production webpack --mode production --optimize-minimize --json --config webpack.prod.js | webpack-bundle-size-analyzer",
     "babel": "cross-env NODE_ENV=production babel src -d dist/ --keep-file-extension",
-    "build": "npm run babel && npm run webpack:prod",
-    "cleanup": "rm -rf ./dist coverage .nyc_output"
+    "build": "rm -rf ./dist && npm run babel && npm run webpack:prod",
+    "cleanup": "rm -rf ./dist coverage .nyc_output; rm -rf ./test/html/*.bundle.js; rm -rf ./test/html/test.html"
   },
   "author": "Jun Kurihara",
   "license": "MIT",
@@ -43,9 +43,10 @@
     "asn1.js": "^5.0.1",
     "buffer": "^5.2.1",
     "elliptic": "^6.4.1",
-    "js-crypto-hash": "^0.3.2",
-    "js-crypto-key-utils": "^0.5.5",
-    "js-crypto-random": "^0.2.5",
+    "js-crypto-env": "^0.1.1",
+    "js-crypto-hash": "^0.3.3",
+    "js-crypto-key-utils": "^0.5.6",
+    "js-crypto-random": "^0.2.6",
     "js-encoding-utils": "^0.3.0"
   }
 }

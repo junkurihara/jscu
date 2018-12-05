@@ -2,7 +2,7 @@
  * aes.js
  */
 
-import * as util from './util.js';
+import * as util from 'js-crypto-env';
 import * as nodeapi from './nodeapi.js';
 import * as webapi from './webapi.js';
 import params from './params.js';

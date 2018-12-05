@@ -7,9 +7,12 @@ Universal Module for Elliptic Curve Cryptography (ECDSA and ECDH) in JavaScript
 > **WARNING**: At this time this solution should be considered suitable for research and experimentation, further code and security review is needed before utilization in a production application.
 
 # Introduction and Overview
-This library is designed to be 'universal' as an elliptic curve cryptography library, i.e., it works both on most browsers and on Node.js just by importing from npm/source code. Note that in the design principle, the library fully utilizes native APIs like WebCrypto API to accelerate its operation if available. This library provides APIs to employ ECDSA, ECDH and their key generation, i.e., `sign`, `verify`, `generateKey` and `deriveSecret`.
+
+
+This library is designed to 'universally' provide an elliptic curve cryptography functions, i.e., it works both on most modern browsers and on Node.js just by importing from NPM/source code. Note that in the design principle, the library fully utilizes native APIs like WebCrypto API to accelerate its operation if available. This library provides APIs to employ ECDSA, ECDH and their key generation, i.e., `sign`, `verify`, `generateKey` and `deriveSecret`.
 
 # Installation
+
 At your project directory, do either one of the following.
 
 - From npm/yarn:
@@ -19,19 +22,26 @@ At your project directory, do either one of the following.
   ```
 - From GitHub:
   ```shell
-  $ git clone https://github.com/junkurihara/js-crypto-ec.git
+  $ git clone https://github.com/junkurihara/js-crypto-utils.git
+  $ cd js-crypto-utils/packages/js-crypto-ec
+  & yarn build
   ```
 
 Then you should import the package as follows.
+
 ```shell
 import ec from 'js-crypto-ec'; // for npm
-import ec from 'js-crypto-ec/dist/index.js'; // for github
+import ec from 'path/to/js-crypto-ec/dist/index.js'; // for github
 ```
+
+The bundled file is also given as `js-crypt-ec/dist/jscec.js` for a use case where the module is imported as a `window.jscec` object via `script` tags.
+
   
 # Usage
 This library always uses JWK-formatted keys ([RFC7517](https://tools.ietf.org/html/rfc7517)) to do any operations. If you utilize keys of other format, like PEM, please use [`js-crypto-key-utils`](https://github.com/junkurihara/js-crypto-key-utils) to convert them to JWK.
 
 ## Key generation
+
 ```javascript
 elliptic.generateKey('P-256').then( (key) => {
   // now you get the JWK public and private keys
@@ -41,6 +51,7 @@ elliptic.generateKey('P-256').then( (key) => {
 ```
 
 ## Sign and verify
+
 ```javascript
 const publicJwk = {kty: 'EC', crv: 'P-256', x: '...', y: '...'}; // public key
 const privateJwk = {ktyp: 'EC', crv: 'P-256', x: '...', y: '...', d: '...'}; // paired private key
@@ -65,7 +76,9 @@ ec.sign(
   // now you get the result of verification in boolean
 });
 ```
+
 ## Derive shared secret
+
 ```javascript
 const publicJwkA = {kty: 'EC', crv: 'P-256', x: '...', y: '...'}; // public key of player A
 const privateJwkA = {ktyp: 'EC', crv: 'P-256', x: '...', y: '...', d: '...'}; // paired private key of player A
@@ -83,9 +96,11 @@ const sharedAtPlayerB = ec.deriveSecret(publicJwkA, privateJwkB).then( (secretAt
   // now you get the shared secret from my (player B's) private key and player A's public key
 })
 ```
+
 **NOTE:** We SHOULD NOT use the derived secret as an encryption key directly. We should employ an appropriate key derivation procedure like HKDF to use the secret for symmetric key encryption.
 
 # Note
+
 At this point, this library supports the following curve for elliptic curve cryptography.
 - P-256 (secp256r1)
 - P-384 (secp384r1)
@@ -93,4 +108,5 @@ At this point, this library supports the following curve for elliptic curve cryp
 - P-256K (secp256k1)
 
 # License
+
 Licensed under the MIT license, see `LICENSE` file.

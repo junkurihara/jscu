@@ -5,6 +5,12 @@
 import jseu from 'js-encoding-utils';
 import * as asn1enc from './asn1enc.js';
 
+/**
+ * Generate elliptic curve cryptography public/private key pair. Generated keys are in JWK.
+ * @param {String} namedCurve - Name of curve like 'P-256'.
+ * @param {Object} webCrypto - WebCryptoSubtle object.
+ * @return {Promise<{publicKey: JsonWebKey, privateKey: JsonWebKey}>} - The generated keys.
+ */
 export async function generateKey(namedCurve, webCrypto){
   // generate ecdsa key
   // hash is used for signing and verification. never be used for key generation
@@ -23,6 +29,15 @@ export async function generateKey(namedCurve, webCrypto){
   return {publicKey, privateKey};
 }
 
+/**
+ * Sign message with ECDSA.
+ * @param {Uint8Array} msg - Byte array of message to be signed.
+ * @param {JsonWebKey} privateJwk - Private key object in JWK format.
+ * @param {String} hash - Name of hash algorithm used in singing, like 'SHA-256'.
+ * @param {String} signatureFormat - Signature format, 'raw' or 'der'
+ * @param {Object} webCrypto - WebCryptoSubtle object.
+ * @return {Promise<Uint8Array>} - Output signature byte array in raw or der format.
+ */
 export async function sign(msg, privateJwk, hash, signatureFormat, webCrypto){
   const algo = {name: 'ECDSA', namedCurve: privateJwk.crv, hash: {name: hash}};
   const key = await webCrypto.importKey('jwk', privateJwk, algo, false, ['sign']);
@@ -32,6 +47,16 @@ export async function sign(msg, privateJwk, hash, signatureFormat, webCrypto){
     : asn1enc.encodeAsn1Signature(new Uint8Array(signature), privateJwk.crv);
 }
 
+/**
+ * Verify signature with ECDSA.
+ * @param {Uint8Array} msg - Byte array of message that have been signed.
+ * @param {Uint8Array} signature - Byte array of signature for the given message.
+ * @param {JsonWebKey} publicJwk - Public key object in JWK format.
+ * @param {String} hash - Name of hash algorithm used in singing, like 'SHA-256'.
+ * @param {String} signatureFormat - Signature format,'raw' or 'der'.
+ * @param {Object} webCrypto - WebCryptoSubtle object.
+ * @return {Promise<boolean>} - The result of verification.
+ */
 export async function verify(msg, signature, publicJwk, hash, signatureFormat, webCrypto){
   const algo = {name: 'ECDSA', namedCurve: publicJwk.crv, hash: {name: hash}};
   const key = await webCrypto.importKey('jwk', publicJwk, algo, false, ['verify']);
@@ -41,6 +66,13 @@ export async function verify(msg, signature, publicJwk, hash, signatureFormat, w
   return await webCrypto.verify(algo, key, rawSignature, msg);
 }
 
+/**
+ * Key Derivation for ECDH, Elliptic Curve Diffie-Hellman Key Exchange.
+ * @param {JsonWebKey} publicJwk - Remote public key object in JWK format.
+ * @param {JsonWebKey} privateJwk - Local (my) private key object in JWK format.
+ * @param {Object} webCrypto - WebCryptoSubtle object.
+ * @return {Promise<Uint8Array>} - The derived master secret via ECDH.
+ */
 export async function deriveSecret(publicJwk, privateJwk, webCrypto){
   const algo = {name: 'ECDH', namedCurve: privateJwk.crv};
   const privateKey = await webCrypto.importKey('jwk', privateJwk, algo, false, ['deriveBits']);

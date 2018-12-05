@@ -7,6 +7,13 @@ import * as asn1enc from './asn1enc.js';
 import {Key} from 'js-crypto-key-utils';
 import jseu from 'js-encoding-utils';
 
+/**
+ * Generate elliptic curve cryptography public/private key pair. Generated keys are in JWK.
+ * @param {String} namedCurve - Name of curve like 'P-256'.
+ * @param {Object} nodeCrypto - NodeCrypto object.
+ * @return {Promise<{publicKey: JsonWebKey, privateKey: JsonWebKey}>} - The generated keys.
+ * @throws {Error} - Throws if NotPublic/PrivateKeyForECCKeyGenNode
+ */
 export async function generateKey(namedCurve, nodeCrypto){
   const ecdh = nodeCrypto.ECDH(params.namedCurves[namedCurve].nodeName);
   ecdh.generateKeys();
@@ -23,6 +30,17 @@ export async function generateKey(namedCurve, nodeCrypto){
   return {publicKey: publicJwk, privateKey: privateJwk};
 }
 
+
+/**
+ * Sign message with ECDSA.
+ * @param {Uint8Array} msg - Byte array of message to be signed.
+ * @param {JsonWebKey} privateJwk - Private key object in JWK format.
+ * @param {String} hash - Name of hash algorithm used in singing, like 'SHA-256'.
+ * @param {String} signatureFormat - Signature format, 'raw' or 'der'
+ * @param {Object} nodeCrypto - NodeCrypto object.
+ * @return {Promise<Uint8Array>} - Output signature byte array in raw or der format.
+ * @throws {Error} - Throws if NotPrivateKeyForECCSignNode.
+ */
 export async function sign(msg, privateJwk, hash, signatureFormat, nodeCrypto){
   const privateKey = new Key('jwk', privateJwk);
   if (!privateKey.isPrivate) throw new Error('NotPrivateKeyForECCSignNode');
@@ -34,6 +52,17 @@ export async function sign(msg, privateJwk, hash, signatureFormat, nodeCrypto){
   return (signatureFormat === 'raw') ? asn1enc.decodeAsn1Signature(asn1sig, privateJwk.crv) : asn1sig;
 }
 
+/**
+ * Verify signature with ECDSA.
+ * @param {Uint8Array} msg - Byte array of message that have been signed.
+ * @param {Uint8Array} signature - Byte array of signature for the given message.
+ * @param {JsonWebKey} publicJwk - Public key object in JWK format.
+ * @param {String} hash - Name of hash algorithm used in singing, like 'SHA-256'.
+ * @param {String} signatureFormat - Signature format,'raw' or 'der'.
+ * @param {Object} nodeCrypto - NodeCrypto object.
+ * @return {Promise<boolean>} - The result of verification.
+ * @throws {Error} - Throws if NotPublicKeyForEccVerifyNode.
+ */
 export async function verify(msg, signature, publicJwk, hash, signatureFormat, nodeCrypto){
   const publicKey = new Key('jwk', publicJwk);
   if (!publicKey.isPrivate) throw new Error('NotPrivateKeyForECCVerifyNode');
@@ -45,6 +74,13 @@ export async function verify(msg, signature, publicJwk, hash, signatureFormat, n
   return verify.verify(publicPem, asn1sig);
 }
 
+/**
+ * Key Derivation for ECDH, Elliptic Curve Diffie-Hellman Key Exchange.
+ * @param {JsonWebKey} publicJwk - Remote public key object in JWK format.
+ * @param {JsonWebKey} privateJwk - Local (my) private key object in JWK format.
+ * @param {Object} nodeCrypto - NodeCrypto object.
+ * @return {Uint8Array} - The derived master secret via ECDH.
+ */
 export function deriveSecret(publicJwk, privateJwk, nodeCrypto){
   const curve = params.namedCurves[privateJwk.crv].nodeName;
   const payloadSize = params.namedCurves[privateJwk.crv].payloadSize;

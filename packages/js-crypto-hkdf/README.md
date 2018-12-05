@@ -7,9 +7,10 @@ Universal Module for RFC5869 HKDF (Hash-based Key Derivation Function) in JavaSc
 > **WARNING**: At this time this solution should be considered suitable for research and experimentation, further code and security review is needed before utilization in a production application.
 
 # Introduction and Overview
-This library is designed to be 'universal' as an HKDF (Hash-based Key Derivation Function), i.e., it works both on most browsers and on Node.js just by importing from npm/source code. The original specification is given in RFC5869 (https://tools.ietf.org/html/rfc5869). Note that in the design principle, the library fully utilizes native APIs like WebCrypto API to accelerate its operation if available. 
+This library is designed to 'universally' provide an HKDF (Hash-based Key Derivation Function), i.e., it works both on most modern browsers and on Node.js just by importing from NPM/source code. The original specification is given in RFC5869 (https://tools.ietf.org/html/rfc5869). Note that in the design principle, the library fully utilizes native APIs like WebCrypto API to accelerate its operation if available. 
 
 # Installation
+
 At your project directory, do either one of the following.
 
 - From npm/yarn:
@@ -19,17 +20,25 @@ At your project directory, do either one of the following.
   ```
 - From GitHub:
   ```shell
-  $ git clone https://github.com/junkurihara/js-crypto-hkdf.git
+  $ git clone https://github.com/junkurihara/js-crypto-utils.git
+  $ cd js-crypto-utils/packages/js-crypto-hkdf
+  & yarn build
   ```
 
 Then you should import the package as follows.
+
 ```shell
-import hmac from 'js-crypto-hkdf'; // for npm
-import hmac from 'js-crypto-hkdf/dist/index.js'; // for github
+import hkdf from 'js-crypto-hkdf'; // for npm
+import hkdf from 'path/to/js-crypto-hkdf/dist/index.js'; // for github
 ```
+
+The bundled file is also given as `js-crypt-hkdf/dist/jschkdf.js` for a use case where the module is imported as a `window.jschkdf` object via `script` tags.
+
   
 # Usage
+
 ## Derive key from a master secret with salt
+
 ```javascript
 const masterSecret = ...; // Uint8Array of arbitrary length
 const hash = 'SHA-256';
@@ -41,6 +50,7 @@ hmac.compute(masterSecret, hash, length, info).then( (derivedKey) => {
 ```
 
 ## Derive key from a master secret without salt (salt is randomly generated inside the function)
+
 ```javascript
 const masterSecret = ...; // Uint8Array of arbitrary length
 const hash = 'SHA-256';
@@ -53,4 +63,5 @@ hmac.compute(masterSecret, hash, length, info, salt).then( (derivedKey) => {
 ``` 
 
 # License
+
 Licensed under the MIT license, see `LICENSE` file.

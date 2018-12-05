@@ -21,7 +21,7 @@ module.exports = (env, argv) => {
   if(argv.mode !== 'production') throw new Error('Not production mode!!');
 
   const config = merge.smart(common.webpackConfig, webpackConfig);
-  // config.output.filename = common.webpackConfig.output.filename.replace(/\.js$/, '.min.js');
+  config.output.filename = common.webpackConfig.output.filename.replace(/\.js$/, '.min.js');
 
   return config;
 };

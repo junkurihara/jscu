@@ -3,7 +3,7 @@
  */
 
 import params from './params.js';
-import * as util from './util.js';
+import * as util from 'js-crypto-env';
 
 import random from 'js-crypto-random';
 import hmac  from 'js-crypto-hmac';
@@ -11,13 +11,13 @@ import hmac  from 'js-crypto-hmac';
 /**
  * Hash-based Key Derivation Function computing from given master secret and salt.
  * If salt is not given, salt would be automatically generated inside.
- * Specification: https://tools.ietf.org/html/rfc5869
- * @param master
- * @param hash
- * @param length
- * @param info
- * @param salt
- * @return {Promise<{key: *, salt: *}>}
+ * Specification is given in RFC5869 {@link https://tools.ietf.org/html/rfc5869}.
+ * @param {Uint8Array} master - Master secret to derive the key.
+ * @param {String} [hash='SHA-256] - Name of hash algorithm used to derive the key.
+ * @param {Number} [length = 32] - Intended length of derived key.
+ * @param {String} [info=''] - String for information field of HKDF.
+ * @param {Uint8Array} [salt=null] - Byte array of salt.
+ * @return {Promise<{key: Uint8Array, salt: Uint8Array}>} - Derived key and salt used to derive the key.
  */
 export async function compute(master, hash = 'SHA-256', length = 32, info = '', salt = null){
   if(!info) info = '';
@@ -31,8 +31,8 @@ export async function compute(master, hash = 'SHA-256', length = 32, info = '', 
     && typeof webCrypto.deriveBits === 'function'
     && typeof window.msCrypto === 'undefined') {
     try { // modern browsers supporting HKDF
-      const masterObj = await webCrypto.subtle.importKey('raw', master, {name: 'HKDF'}, false, ['deriveKey', 'deriveBits']);
-      key = await webCrypto.subtle.deriveBits({
+      const masterObj = await webCrypto.importKey('raw', master, {name: 'HKDF'}, false, ['deriveKey', 'deriveBits']);
+      key = await webCrypto.deriveBits({
         name: 'HKDF',
         salt,
         info: new Uint8Array(info),
@@ -41,11 +41,11 @@ export async function compute(master, hash = 'SHA-256', length = 32, info = '', 
       key = new Uint8Array(key);
     }
     catch (e) { // fall back to pure js implementation
-      key = await rfc5869(master, salt, hash, info, length);
+      key = await rfc5869(master, hash, length, info, salt);
     }
   }
   else { // node and IE
-    key = await rfc5869(master, salt, hash, info, length);
+    key = await rfc5869(master, hash, length, info, salt);
   }
 
   return {key, salt};
@@ -53,14 +53,14 @@ export async function compute(master, hash = 'SHA-256', length = 32, info = '', 
 
 /**
  * Naive implementation of RFC5869 in PureJavaScript
- * @param master
- * @param salt
- * @param hash
- * @param info
- * @param length
- * @return {Promise<Uint8Array>}
+ * @param {Uint8Array} master - Master secret to derive the key.
+ * @param {String} hash - Name of hash algorithm used to derive the key.
+ * @param {Number} length - Intended length of derived key.
+ * @param {String} info - String for information field of HKDF.
+ * @param {Uint8Array} salt - Byte array of salt.
+ * @return {Promise<Uint8Array>} - Derived key.
  */
-async function rfc5869(master, salt, hash, info, length){
+async function rfc5869(master, hash, length, info, salt){
   const len = params.hashes[hash].hashSize;
 
   // RFC5869 Step 1 (Extract)

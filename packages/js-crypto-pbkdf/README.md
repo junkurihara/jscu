@@ -7,9 +7,11 @@ Universal Module for Password-based Key Derivation Function (PBKDF) in JavaScrip
 > **WARNING**: At this time this solution should be considered suitable for research and experimentation, further code and security review is needed before utilization in a production application.
 
 # Introduction and Overview
-This library is designed to be 'universal' as a module for password-based key derivation function (PBKDF), i.e., it works both on most browsers and on Node.js just by importing from npm/source code. This key utility library provides both PBKDF1 and PBKDF2 specified in PKCS#5 v2.1 ([RFC8018](https://tools.ietf.org/html/rfc8018)).
+
+This library is designed to 'universally' provide PBKDF (Password-based Key Derivation Function) functions, i.e., it works both on most modern browsers and on Node.js just by importing from NPM/source code. This key utility library provides both PBKDF1 and PBKDF2 specified in PKCS#5 v2.1 ([RFC8018](https://tools.ietf.org/html/rfc8018)).
 
 # Installation
+
 At your project directory, do either one of the following.
 
 - From npm/yarn:
@@ -19,18 +21,27 @@ At your project directory, do either one of the following.
   ```
 - From GitHub:
   ```shell
-  $ git clone https://github.com/junkurihara/js-crypto-pbkdf.git
+  $ git clone https://github.com/junkurihara/js-crypto-utils.git
+  $ cd js-crypto-utils/packages/js-crypto-pbkdf
+  & yarn build
   ```
 
 Then you should import the package as follows.
+
 ```shell
 import pbkdf from 'js-crypto-pbkdf'; // for npm
-import pbkdf from 'js-crypto-pbkdf/dist/index.js'; // or jscpbkdf.bundle.js for github
+import pbkdf from 'path/to/js-crypto-pbkdf/dist/index.js'; // for github
 ```
+
+The bundled file is also given as `js-crypt-pbkdf/dist/jscpbkdf.js` for a use case where the module is imported as a `window.jscpbkdf` object via `script` tags.
+
   
 # Usage
+
 ## PBKDF2
+
 See [RFC8018 Section 5.2](https://tools.ietf.org/html/rfc8018#section-5.2) for detailed specification.
+
 ```javascript
 const password = 'password'; // string or Uint8Array
 const salt = ...; // Uint8Array
@@ -50,7 +61,9 @@ pbkdf.pbkdf2(
 ```
 
 ## PBKDF1
+
 See [RFC8018 Section 5.1](https://tools.ietf.org/html/rfc8018#section-5.1) for detailed specification.
+
 ```javascript
 const password = 'password'; // string or Uint8Array
 const salt = ...; // Uint8Array
@@ -68,5 +81,7 @@ pbkdf.pbkdf1(
   // now you get the derived key of intended length
 });
 ```
+
 # License
+
 Licensed under the MIT license, see `LICENSE` file.

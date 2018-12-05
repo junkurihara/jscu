@@ -7,9 +7,11 @@ Universal Module for HMAC (Hash-based Message Authentication Code) in JavaScript
 > **WARNING**: At this time this solution should be considered suitable for research and experimentation, further code and security review is needed before utilization in a production application.
 
 # Introduction and Overview
-This library is designed to be 'universal' as an HMAC (Hash-based Message Authentication Code), i.e., it works both on most browsers and on Node.js just by importing from npm/source code. Note that in the design principle, the library fully utilizes native APIs like WebCrypto API to accelerate its operation if available. 
+
+This library is designed to 'universally' provide HMAC (Hash-based Message Authentication Code) functions, i.e., it works both on most modern browsers and on Node.js just by importing from NPM/source code. Note that in the design principle, the library fully utilizes native APIs like WebCrypto API to accelerate its operation if available. 
 
 # Installation
+
 At your project directory, do either one of the following.
 
 - From npm/yarn:
@@ -19,17 +21,25 @@ At your project directory, do either one of the following.
   ```
 - From GitHub:
   ```shell
-  $ git clone https://github.com/junkurihara/js-crypto-hmac.git
+  $ git clone https://github.com/junkurihara/js-crypto-utils.git
+  $ cd js-crypto-utils/packages/js-crypto-hmac
+  & yarn build
   ```
 
 Then you should import the package as follows.
+
 ```shell
-import hmac from 'js-crypto-hmacn'; // for npm
-import hmac from 'js-crypto-hmac/dist/index.js'; // for github
+import hmac from 'js-crypto-hmac'; // for npm
+import hmac from 'path/to/js-crypto-hmac/dist/index.js'; // for github
 ```
+
+The bundled file is also given as `js-crypt-hmac/dist/jschmac.js` for a use case where the module is imported as a `window.jschmac` object via `script` tags.
+
   
 # Usage
-## Compute Keyed-Hash of a Message
+
+## Compute Keyed-Hash (Message Authentication Code) of a Message
+
 ```javascript
 const msg = ...; // Uint8Array of arbitrary length
 const key = ...; // Uint8Array of 32 bytes (since SHA-256 is used)  
@@ -39,7 +49,8 @@ hmac.compute(key, msg, hash).then( (hmac) => {
 });
 ```
 
-## Verify Keyed Hash
+## Verify Keyed-Hash
+
 ```javascript
 const msg = ...; // Uint8Array of arbitrary length
 const key = ...; // Uint8Array of 32 bytes (since SHA-256 is used)
@@ -51,4 +62,5 @@ hmac.verify(key, msg, mac, hash).then( (result) => {
 ```
 
 # License
+
 Licensed under the MIT license, see `LICENSE` file.

@@ -5,7 +5,7 @@ thumbs.db
 yarn-error.log
 .idea
 .vscode
-.coverage
+coverage
 .nyc_output
 dist
 esdocs

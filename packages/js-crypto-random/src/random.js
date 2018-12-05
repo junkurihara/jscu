@@ -2,12 +2,12 @@
  * random.js
  */
 
-import * as util from './util.js';
+import * as util from 'js-crypto-env';
 
 /**
- * secure random 'ASCII' string generator based on getRandomBytes;
- * @param len
- * @return {string}
+ * Secure random 'ASCII' string generator based on getRandomBytes;
+ * @param {Number} len - Length of ASCII string.
+ * @return {String} - Generated random ASCII string.
  */
 export function getRandomAsciiString(len) {
   const array = getRandomBytes(len);
@@ -24,12 +24,13 @@ export function getRandomAsciiString(len) {
 
 
 /**
- * secure random generator that returns uint 8 array filled with cryptographically secure random bytes
- * @param len
- * @return {Uint8Array}
+ * Secure random generator that returns a byte array filled with cryptographically secure random bytes
+ * @param {Number} len - Byte length of random sequence.
+ * @return {Uint8Array} - Generated random sequence.
+ * @throws {Error} - Throws if UnsupportedEnvironment.
  */
 export function getRandomBytes(len) {
-  const webCrypto = util.getWebCryptoAll(); // web crypto api or ms crypto
+  const webCrypto = util.getRootWebCryptoAll(); // web crypto api or ms crypto
   const nodeCrypto = util.getNodeCrypto(); // implementation on node.js
 
   let array;

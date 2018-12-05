@@ -18,6 +18,18 @@ describe(`${envName}: HMAC test`, () => {
     for(let i = 0; i < 32; i++) msg[i] = 0xFF & i;
   });
 
+  it('HMAC successfully generates and verify a MAC', async function () {
+    this.timeout(20000);
+    const array = await Promise.all(hashes.map( async (hash) => {
+      const key = await random.getRandomBytes(32);
+      const d = await hmac.compute(key, msg, hash);
+      expect(d).to.be.a('Uint8Array');
+      return hmac.verify(key, msg, d, hash);
+    }));
+    console.log(array);
+    expect(array.every((a) => (a === true))).to.be.true;
+  });
+
   it('HMAC successfully generates unique MAC for unique key', async function () {
     this.timeout(20000);
     const array = await Promise.all(hashes.map( async (hash) => {

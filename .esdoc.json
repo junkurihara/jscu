@@ -21,9 +21,11 @@
           "includes": [".*\\/test\\/.+\\.spec\\.js$"]
         },
         "manual": {
-          "index": "./packages/js-crypto-utils/README.md",
+          "index": "./docs/js-crypto-utils.md",
           "globalIndex": false,
-          "files": [ "./packages/js-crypto-utils/README.md" ]
+          "files": [
+            "./docs/js-crypto-utils.md"
+          ]
         }
       }
     }

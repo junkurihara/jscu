@@ -2,7 +2,7 @@
  * rsa.js
  */
 
-import * as util from './util.js';
+import * as util from 'js-crypto-env';
 import * as webapi from './webapi.js';
 import * as nodeapi from './nodeapi.js';
 import params from './params.js';

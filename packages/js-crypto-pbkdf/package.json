@@ -1,6 +1,6 @@
 {
   "name": "js-crypto-pbkdf",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Universal Module for Password-based Key Derivation Function (PBKDF) in JavaScript",
   "main": "dist/index.js",
   "scripts": {
@@ -9,7 +9,7 @@
     "karma": "cross-env TEST_ENV=source karma start",
     "karma:bundle": "npm run webpack && cross-env TEST_ENV=bundle karma start",
     "karma:window": "npm run webpack && cross-env TEST_ENV=window karma start",
-    "html": "npm run html:source && npm run html:bundle && npm run html:window",
+    "html": "npm run webpack && npm run html:source && npm run html:bundle && npm run html:window",
     "html:source": "cross-env TEST_ENV=source NODE_ENV=html npm run webpack",
     "html:bundle": "cross-env TEST_ENV=bundle NODE_ENV=html npm run webpack",
     "html:window": "cross-env TEST_ENV=window NODE_ENV=html npm run webpack",
@@ -17,8 +17,8 @@
     "webpack:prod": "cross-env NODE_ENV=production webpack --optimize-minimize --mode production --config webpack.prod.js",
     "analyze": "cross-env NODE_ENV=production webpack --mode production --optimize-minimize --json --config webpack.prod.js | webpack-bundle-size-analyzer",
     "babel": "cross-env NODE_ENV=production babel src -d dist/ --keep-file-extension",
-    "build": "npm run babel && npm run webpack:prod",
-    "cleanup": "rm -rf ./dist coverage .nyc_output"
+    "build": "rm -rf ./dist && npm run babel && npm run webpack:prod",
+    "cleanup": "rm -rf ./dist coverage .nyc_output; rm -rf ./test/html/*.bundle.js; rm -rf ./test/html/test.html"
   },
   "author": "Jun Kurihara",
   "license": "MIT",
@@ -40,8 +40,8 @@
   "dependencies": {
     "@babel/plugin-transform-regenerator": "^7.0.0",
     "@babel/runtime": "^7.1.5",
-    "js-crypto-hash": "^0.3.2",
-    "js-crypto-hmac": "^0.3.2",
+    "js-crypto-hash": "^0.3.3",
+    "js-crypto-hmac": "^0.3.3",
     "js-encoding-utils": "^0.3.0"
   }
 }

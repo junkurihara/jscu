@@ -58,8 +58,10 @@ function getEntryName () {
 }
 
 module.exports = {
-  webpackConfig,
-  libName,
+  // eslint-disable-next-line object-shorthand
+  webpackConfig: webpackConfig,
+  // eslint-disable-next-line object-shorthand
+  libName: libName,
   entryName: getEntryName(),
   bundleName: getBundleName(),
 };

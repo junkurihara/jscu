@@ -22,8 +22,8 @@ At your project directory, do either one of the following.
   ```
 - From GitHub:
   ```shell
-  $ git clone https://github.com/junkurihara/js-crypto-aes.git
-  $ cd js-crypto-aes
+  $ git clone https://github.com/junkurihara/js-crypto-utils.git
+  $ cd js-crypto-utils/packages/js-crypto-aes
   & yarn build
   ```
 

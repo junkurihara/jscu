@@ -7,9 +7,11 @@ Universal Module for Secure Random Generator in JavaScript
 > **WARNING**: At this time this solution should be considered suitable for research and experimentation, further code and security review is needed before utilization in a production application.
 
 # Introduction and Overview
-This library is designed to be 'universal' as a random sequence generator, i.e., it works both on most browsers and on Node.js just by importing from npm/source code. Note that in the design principle, the library fully utilizes native APIs like WebCrypto API to accelerate its operation if available. 
+
+This library is designed to 'universally' provide functions of random sequence generators, i.e., it works both on most modern browsers and on Node.js just by importing from NPM/source code. Note that in the design principle, the library fully utilizes native APIs like WebCrypto API to accelerate its operation if available. 
 
 # Installation
+
 At your project directory, do either one of the following.
 
 - From npm/yarn:
@@ -19,27 +21,36 @@ At your project directory, do either one of the following.
   ```
 - From GitHub:
   ```shell
-  $ git clone https://github.com/junkurihara/js-crypto-random.git
+  $ git clone https://github.com/junkurihara/js-crypto-utils.git
+  $ cd js-crypto-utils/packages/js-crypto-random
+  & yarn build
   ```
 
 Then you should import the package as follows.
+
 ```shell
-import random from 'js-crypto-random'; // for npm
-import random from 'js-crypto-random/dist/index.js'; // for github
+import aes from 'js-crypto-random'; // for npm
+import aes from 'path/to/js-crypto-random/dist/index.js'; // for github
 ```
+
+The bundled file is also given as `js-crypt-random/dist/jscaes.js` for a use case where the module is imported as a `window.jscrandom` object via `script` tags.
   
 # Usage
+
 ## Generate random byte sequence
+
 ```javascript
 // now you get an Uint8Array of 32 bytes filled with randomly generated values
 const randomBytes = random.getRandomBytes(32);
 ```
 
 ## Generate random ascii sequence
+
 ```javascript
 // now you get a string of 32 ASCII characters generated in a cryptographically random manner
 const randomAscii = random.getRandomAsciiString(32);
 ```
 
 # License
+
 Licensed under the MIT license, see `LICENSE` file.
