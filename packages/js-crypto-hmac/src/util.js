@@ -2,6 +2,10 @@
  * util.js
  */
 
+/**
+ * Obtain window.crypto.subtle or window.msCrypto.subtle object in browser environments.
+ * @return {undefined|Object} - WebCrypto API object
+ */
 export function getWebCryptoAll () {
   if (typeof window === 'undefined') return undefined;
   else {
@@ -10,6 +14,10 @@ export function getWebCryptoAll () {
   }
 }
 
+/**
+ * Obtain require(crypto) in Node.js environment.
+ * @return {undefined|Object} - Node.js crypto object
+ */
 export function getNodeCrypto(){
   if(typeof window !== 'undefined') return undefined;
   else return require('crypto');

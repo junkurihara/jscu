@@ -7,9 +7,11 @@ Universal Module for Hash Function in JavaScript
 > **WARNING**: At this time this solution should be considered suitable for research and experimentation, further code and security review is needed before utilization in a production application.
 
 # Introduction and Overview
-This library is designed to be 'universal' as a hash function module, i.e., it works both on most browsers and on Node.js just by importing from npm/source code. Note that in the design principle, the library fully utilizes native APIs like WebCrypto API to accelerate its operation if available. 
+
+This library is designed to 'universally' provide hash functions, i.e., it works both on most modern browsers and on Node.js just by importing from NPM/source code. Note that in the design principle, the library fully utilizes native APIs like WebCrypto API to accelerate its operation if available. 
 
 # Installation
+
 At your project directory, do either one of the following.
 
 - From npm/yarn:
@@ -19,21 +21,28 @@ At your project directory, do either one of the following.
   ```
 - From GitHub:
   ```shell
-  $ git clone https://github.com/junkurihara/js-crypto-hash.git
+  $ git clone https://github.com/junkurihara/js-crypto-utils.git
+  $ cd js-crypto-utils/packages/js-crypto-hash
+  & yarn build
   ```
 
 Then you should import the package as follows.
+
 ```shell
 import hash from 'js-crypto-hash'; // for npm
-import hash from 'js-crypto-hash/dist/index.js'; // for github
+import hash from 'path/to/js-crypto-hash/dist/index.js'; // for github
 ```
+
+The bundled file is also given as `js-crypt-hash/dist/jschash.js` for a use case where the module is imported as a `window.jschash` object via `script` tags.
   
 # Usage
+
 ## Compute hash value
+
 ```javascript
 const msg = ...; // Uint8Array of arbitrary length  
-const hash = 'SHA-256';
-hmac.compute(msg, hash).then( (digest) => {
+const algo = 'SHA-256';
+hash.compute(msg, algo).then( (digest) => {
   // now you get a hash of msg in Uint8Array
 });
 ```
