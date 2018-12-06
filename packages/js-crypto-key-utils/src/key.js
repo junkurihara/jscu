@@ -13,9 +13,13 @@ import {getJwkType, getSec1KeyType, isAsn1Encrypted, isAsn1Public} from './util.
 export class Key {
   /**
    * @constructor
-   * @param format
-   * @param key
-   * @param options
+   * @classdesc - Key class to abstract public and private key objects in string or binary.
+   *   This class provides functions to interchangeably convert key formats,
+   *   and key objects will be used for the root package, js-crypto-utils, as inputs to exposed APIs.
+   * @param {String} format - Key format: 'jwk', 'der', 'pem' or 'oct' (only for ECC key).
+   * @param {JsonWebKey|Uint8Array} key - Key object in the specified format.
+   * @param {Object} [options={}] - Required if format='oct', and then it is {namedCurve: String}.
+   * @throws {Error} - Throws if the input format and key are incompatible to the constructor.
    */
   constructor(format, key, options={}){
     const localKey = cloneDeep(key);
@@ -45,6 +49,11 @@ export class Key {
   ///////////////////////////////////////////////////////////
   // private method handling instance variables
   // all instance variables must be set via these methods
+  /**
+   * Set a key in JWK to the Key object.
+   * @param {JsonWebKey} jwkey - The Json Web Key.
+   * @private
+   */
   _setJwk(jwkey){
     this._type = getJwkType(jwkey); // this also check key format
     this._jwk = jwkey;
@@ -53,6 +62,12 @@ export class Key {
     this._setCurrentStatus();
   }
 
+  /**
+   * Set a key in DER or PEM to the Key object.
+   * @param {Uint8Array|String} asn1key - The DER key byte array or PEM key string.
+   * @param {String} format - 'der' or 'pem' specifying the format.
+   * @private
+   */
   _setAsn1(asn1key, format){
     this._type = (isAsn1Public(asn1key, format)) ? 'public' : 'private'; // this also check key format
     this._isEncrypted = isAsn1Encrypted(asn1key, format);
@@ -64,6 +79,12 @@ export class Key {
     this._setCurrentStatus();
   }
 
+  /**
+   * Set a key in SEC1 = Octet format to the Key Object.
+   * @param {Uint8Array} sec1key - The Octet SEC1 key byte array.
+   * @param {String} namedCurve - Name of curve like 'P-256'.
+   * @private
+   */
   _setSec1(sec1key, namedCurve){
     this._type = getSec1KeyType(sec1key, namedCurve);  // this also check key format
     this._oct = { namedCurve, key: sec1key };
@@ -72,6 +93,10 @@ export class Key {
     this._setCurrentStatus();
   }
 
+  /**
+   * Set the current internal status. In particular, manage what the object is based on.
+   * @private
+   */
   _setCurrentStatus() {
     this._current.jwk = (
       typeof this._jwk.kty === 'string'
@@ -92,22 +117,19 @@ export class Key {
   ///////////////////////////////////////////////////////////
   // (pseudo) public methods allowed to be accessed from outside
   /**
-   * Wrapper of converter. Imported key must be basically decrypted except the case where the key is exported as-is.
-   * @param format {string}: 'jwk', 'pem', 'der' or 'oct'
-   * @param options {object}:
-   * - options.outputPublic {boolean}: (optional) [format = *]
-   *     derive public key from private key when options.outputPublic = true.
-   * - options.compact {boolean}: (optional) [format = 'der', 'pem' or 'oct', only for EC key]
-   *     generate compressed EC public key.
-   * - options.encryptParams {object}: (optional) [format = 'der' or 'pem'] options to generate encrypted der/pem private key.
-   *     * encryptParams.passphrase {string}: (mandatory if encOption is specified).
-   *          (re-)generate encrypted der/pem with the given passphrase
-   *     * encryptParams.algorithm {string}: (optional) 'pbes2' (default), 'pbeWithMD5AndDES-CBC' or 'pbeWithSHA1AndDES'
-   *     * encryptParams.prf {string}: (optional) [encOptions.algorithm = 'pbes2'],
-   *         'hmacWithSHA256' (default), 'hmacWithSHA384', 'hmacWithSHA512' or 'hmacWithSHA1'
-   *     * encryptParams.iterationCount {integer}: 2048 (default)
-   *     * encryptParams.cipher {string}: 'aes256-cbc' (default), 'aes128-cbc' or 'des-ede3-cbc'
-   * @return {Promise<*>}
+   * Convert the stored key and export the key in desired format.
+   * Imported key must be basically decrypted except the case where the key is exported as-is.
+   * @param {String} format - Intended format of exported key. 'jwk', 'pem', 'der' or 'oct'
+   * @param {Object} [options={}] - Optional arguments.
+   * - `options.outputPublic`: boolean - (optional) Derive public key from private key when options.outputPublic = true.
+   * - `options.compact`: boolean - (optional) Generate compressed EC public key when format = 'der', 'pem' or 'oct', only for EC key.
+   * - `options.encryptParams`: Object - (optional) Generate encrypted der/pem private key when format = 'der' or 'pem'.
+   *     * `encryptParams.passphrase`: String - (mandatory if encOption is specified). (Re-)generate encrypted der/pem with the given passphrase
+   *     * `encryptParams.algorithm`: String - (optional) 'pbes2' (default), 'pbeWithMD5AndDES-CBC' or 'pbeWithSHA1AndDES'
+   *     * `encryptParams.prf`: String - (optional) 'hmacWithSHA256' (default), 'hmacWithSHA384', 'hmacWithSHA512' or 'hmacWithSHA1' when encOptions.algorithm = 'pbes2'.
+   *     * `encryptParams.iterationCount`: Number - 2048 (default)
+   *     * `encryptParams.cipher`: String - 'aes256-cbc' (default), 'aes128-cbc' or 'des-ede3-cbc'
+   * @return {Promise<JsonWebKey|Uint8Array|String>} - Exported key object.
    */
   async export(format = 'jwk', options={}){
     // global assertion
@@ -162,8 +184,9 @@ export class Key {
 
   /**
    * Encrypt stored key and set the encrypted key to this instance.
-   * @param passphrase {string}
-   * @return {Promise<boolean>}
+   * @param {String} passphrase - String passphrase.
+   * @return {Promise<boolean>} - Always true otherwise thrown.
+   * @throws {Error} - Throws if AlreadyEncrypted.
    */
   async encrypt (passphrase){
     if(this._isEncrypted) throw new Error('AlreadyEncrypted');
@@ -175,8 +198,9 @@ export class Key {
 
   /**
    * Decrypted stored key and set the decrypted key in JWK to this instance.
-   * @param passphrase {string}
-   * @return {Promise<boolean>}
+   * @param {String} passphrase - String passphrase.
+   * @return {Promise<boolean>} - Always true otherwise thrown.
+   * @throws {Error} - Throws if NotEncrypted or FailedToDecrypt.
    */
   async decrypt (passphrase){
     if(!this._isEncrypted) throw new Error('NotEncrypted');
@@ -190,12 +214,24 @@ export class Key {
     return true;
   }
 
+  /**
+   * Conpute JWK thumbprint specified in RFC7638 {@link https://tools.ietf.org/html/rfc7638}.
+   * @param {String} [alg='SHA-256'] - Name of hash algorithm for thumbprint computation like 'SHA-256'.
+   * @param {String} [output='binary'] - Output format of JWK thumbprint. 'binary', 'hex' or 'base64'.
+   * @return {Promise<Uint8Array|String>} - Computed thumbprint.
+   * @throws {Error} - Throws if DecryptionRequired.
+   */
   async getJwkThumbprint(alg='SHA-256', output='binary'){
     if(this._isEncrypted) throw new Error('DecryptionRequired');
     return await getJwkThumbprint(await this.export('jwk'), alg, output);
   }
 
   // getters
+  /**
+   * Get keyType in JWK format
+   * @return {Promise<String>} - 'RSA' or 'EC'
+   * @throws {Error} - Throws if DecryptionRequired.
+   */
   get keyType(){
     if(this._isEncrypted) throw new Error('DecryptionRequired');
     return new Promise( async (resolve, reject) => {
@@ -204,19 +240,47 @@ export class Key {
     });
   }
 
+  /**
+   * Get jwkThumbprint of this key.
+   * @return {Promise<Uint8Array|String>}
+   */
   get jwkThumbprint(){
     return this.getJwkThumbprint();
   }
 
+  /**
+   * Check if this is encrypted.
+   * @return {boolean}
+   */
   get isEncrypted(){ return this._isEncrypted; }
 
+  /**
+   * Check if this is a private key.
+   * @return {boolean}
+   */
   get isPrivate(){ return this._type === 'private'; }
 
+  /**
+   * Returns the key in DER format.
+   * @return {Promise<Uint8Array>}
+   */
   get der(){ return this.export('der'); }
 
+  /**
+   * Returns the key in PEM format.
+   * @return {Promise<String>}
+   */
   get pem(){ return this.export('pem'); }
 
+  /**
+   * Returns the key in JWK format
+   * @return {Promise<JsonWebKey>}
+   */
   get jwk(){ return this.export('jwk'); }
 
+  /**
+   * Returns the 'EC' key in Octet SEC1 format.
+   * @return {Promise<Uint8Array>}
+   */
   get oct(){ return this.export('oct', {output: 'string'});  }
 }
