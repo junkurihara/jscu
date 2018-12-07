@@ -15,7 +15,13 @@ const Buffer = BufferMod.Buffer;
 const BN = asn.bignum;
 
 ///////////////////////////////////////////////////////////////////
-export async function encryptEncryptedPrivateKeyInfo(binKey, passphrase, options = {}){
+/**
+ * Generate EncryptedPrivateKeyInfo ASN.1 object.
+ * @param {DER} binKey - Binary key in DER format.
+ * @param {AsnEncryptOptionsWithPassphrase} [options={passphrase: ''}] - Encryption options for ASN.1 private key.
+ * @return {Promise<DER>} - Encrypted private key in DER.
+ */
+export async function encryptEncryptedPrivateKeyInfo(binKey, options = {passphrase:''}){
   // default params
   if(typeof options.algorithm === 'undefined') options.algorithm = 'pbes2';
   if(typeof options.iterationCount === 'undefined') options.iterationCount = 2048;
@@ -26,17 +32,23 @@ export async function encryptEncryptedPrivateKeyInfo(binKey, passphrase, options
     if(typeof options.prf === 'undefined') options.prf = 'hmacWithSHA256';
     const kdfAlgorithm = 'pbkdf2'; // TODO: currently only pbkdf2 is available
 
-    const encryptedPBES2 = await encryptPBES2(binKey, passphrase, kdfAlgorithm, options.prf, options.iterationCount, options.cipher);
+    const encryptedPBES2 = await encryptPBES2(binKey, options.passphrase, kdfAlgorithm, options.prf, options.iterationCount, options.cipher);
     return await encodePBES2(encryptedPBES2);
   }
   else {
-    const encryptedPBES1 = await encryptPBES1(binKey, passphrase, options.algorithm, options.iterationCount);
+    const encryptedPBES1 = await encryptPBES1(binKey, options.passphrase, options.algorithm, options.iterationCount);
     encryptedPBES1.encryptionAlgorithm.algorithm = params.passwordBasedEncryptionSchemes[encryptedPBES1.encryptionAlgorithm.algorithm].oid;
     encryptedPBES1.encryptionAlgorithm.parameters = PBEParameter.encode(encryptedPBES1.encryptionAlgorithm.parameters, 'der');
     return EncryptedPrivateKeyInfo.encode(encryptedPBES1, 'der');
   }
 }
 
+/**
+ * Decrypt EncryptedPrivateKeyInfo
+ * @param {Object} epki - Parsed encrypted
+ * @param {String} passphrase - Passphrase to decyrpt the object.
+ * @return {Promise<Object>} - Decrypted object.
+ */
 export async function decryptEncryptedPrivateKeyInfo(epki, passphrase){
   const decoded = {};
 

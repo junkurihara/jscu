@@ -43,10 +43,11 @@ export function fromJWK(jwk, type, compact=false){
 
 
 /**
- * Convert parsed ASN.1 EC key object to JWK
- * @param decoded
- * @param type
- * @return {{kty, crv, x, y}}
+ * Convert parsed ASN.1 EC key object to JWK.
+ * @param {Object} decoded - Parsed ASN.1 EC key object.
+ * @param {String} type - 'public' or 'private'
+ * @return {JsonWebKey} - Converted key objects in JWK format.
+ * @throws {Error} - Throws if UnsupportedCurve.
  */
 export function toJWK(decoded, type){
   if (type === 'public'){ // SPKI
@@ -74,14 +75,20 @@ export function toJWK(decoded, type){
 }
 
 /////////////////////////
-// https://tools.ietf.org/html/rfc5480
+/**
+ * ECParameters specified in RFC 5480 {@link https://tools.ietf.org/html/rfc5480}.
+ * @type {AsnObject}
+ */
 const ECParameters = asn.define('ECParameters', function() {
   this.choice({
     namedCurve: this.objid()
   });
 });
 
-// https://tools.ietf.org/html/rfc5915
+/**
+ * ECPrivateKey specified in RFC 5915 {@link https://tools.ietf.org/html/rfc5915}.
+ * @type {AsnObject}
+ */
 const ECPrivateKey = asn.define('ECPrivateKey', function() {
   this.seq().obj(
     this.key('version').int(),
@@ -91,6 +98,10 @@ const ECPrivateKey = asn.define('ECPrivateKey', function() {
   );
 });
 
+/**
+ * ECPrivateKey Alternative for an work around...
+ * @type {AsnObject}
+ */
 const ECPrivateKeyAlt = asn.define('ECPrivateKey', function() {
   this.seq().obj(
     this.key('version').int(),

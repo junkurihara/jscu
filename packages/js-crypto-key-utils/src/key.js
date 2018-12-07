@@ -16,7 +16,7 @@ export class Key {
   /**
    * @constructor
    * @param {String} format - Key format: 'jwk', 'der', 'pem' or 'oct' (only for ECC key).
-   * @param {JsonWebKey|Uint8Array} key - Key object in the specified format.
+   * @param {JsonWebKey|PEM|DER|OctetEC} key - Key object in the specified format.
    * @param {Object} [options={}] - Required if format='oct', and then it is {namedCurve: String}.
    * @throws {Error} - Throws if the input format and key are incompatible to the constructor.
    */
@@ -63,7 +63,7 @@ export class Key {
 
   /**
    * Set a key in DER or PEM to the Key object.
-   * @param {Uint8Array|String} asn1key - The DER key byte array or PEM key string.
+   * @param {DER|PEM} asn1key - The DER key byte array or PEM key string.
    * @param {String} format - 'der' or 'pem' specifying the format.
    * @private
    */
@@ -80,7 +80,7 @@ export class Key {
 
   /**
    * Set a key in SEC1 = Octet format to the Key Object.
-   * @param {Uint8Array} sec1key - The Octet SEC1 key byte array.
+   * @param {OctetEC} sec1key - The Octet SEC1 key byte array.
    * @param {String} namedCurve - Name of curve like 'P-256'.
    * @private
    */
@@ -119,16 +119,8 @@ export class Key {
    * Convert the stored key and export the key in desired format.
    * Imported key must be basically decrypted except the case where the key is exported as-is.
    * @param {String} format - Intended format of exported key. 'jwk', 'pem', 'der' or 'oct'
-   * @param {Object} [options={}] - Optional arguments.
-   * - `options.outputPublic`: boolean - (optional) Derive public key from private key when options.outputPublic = true.
-   * - `options.compact`: boolean - (optional) Generate compressed EC public key when format = 'der', 'pem' or 'oct', only for EC key.
-   * - `options.encryptParams`: Object - (optional) Generate encrypted der/pem private key when format = 'der' or 'pem'.
-   *     * `encryptParams.passphrase`: String - (mandatory if encOption is specified). (Re-)generate encrypted der/pem with the given passphrase
-   *     * `encryptParams.algorithm`: String - (optional) 'pbes2' (default), 'pbeWithMD5AndDES-CBC' or 'pbeWithSHA1AndDES'
-   *     * `encryptParams.prf`: String - (optional) 'hmacWithSHA256' (default), 'hmacWithSHA384', 'hmacWithSHA512' or 'hmacWithSHA1' when encOptions.algorithm = 'pbes2'.
-   *     * `encryptParams.iterationCount`: Number - 2048 (default)
-   *     * `encryptParams.cipher`: String - 'aes256-cbc' (default), 'aes128-cbc' or 'des-ede3-cbc'
-   * @return {Promise<JsonWebKey|Uint8Array|String>} - Exported key object.
+   * @param {KeyExportOptions} [options={}] - Optional arguments.
+   * @return {Promise<JsonWebKey|PEM|DER|OctetEC>} - Exported key object.
    */
   async export(format = 'jwk', options={}){
     // global assertion
@@ -164,14 +156,14 @@ export class Key {
       return await fromJwkTo(format, jwkey, {
         outputPublic: options.outputPublic,
         compact: options.compact,
-        passphrase: options.encryptParams.passphrase,
-        encOptions: options.encryptParams
+        //passphrase: options.encryptParams.passphrase,
+        encryptParams: options.encryptParams
       });
     }
     else if (format === 'oct') {
       return await fromJwkTo(format, jwkey, {
         outputPublic: options.outputPublic,
-        format: options.output,
+        output: options.output,
         compact: options.compact
       });
     }
@@ -258,13 +250,13 @@ export class Key {
 
   /**
    * Returns the key in DER format.
-   * @return {Promise<Uint8Array>}
+   * @return {Promise<DER>}
    */
   get der(){ return this.export('der'); }
 
   /**
    * Returns the key in PEM format.
-   * @return {Promise<String>}
+   * @return {Promise<PEM>}
    */
   get pem(){ return this.export('pem'); }
 
@@ -276,7 +268,7 @@ export class Key {
 
   /**
    * Returns the 'EC' key in Octet SEC1 format.
-   * @return {Promise<Uint8Array>}
+   * @return {Promise<OctetEC>}
    */
   get oct(){ return this.export('oct', {output: 'string'});  }
 }

@@ -43,7 +43,7 @@ export async function generateKey(modulusLength, publicExponent, webCrypto){
  * @param {Uint8Array} msg - Byte array of message to be signed.
  * @param {JsonWebKey} privateJwk - Private key for signing in JWK format.
  * @param {String} hash - Name of hash algorithm like 'SHA-256'.
- * @param {Object} algorithm - Object to specify algorithm parameters.
+ * @param {RSASignAlgorithm} algorithm - Object to specify algorithm parameters.
  * @param {Object} webCrypto - WebCryptoSubtle object
  * @return {Promise<Uint8Array>} - Byte array of raw signature.
  * @throws {Error} - if RSA-PSS in IE.
@@ -70,7 +70,7 @@ export async function sign(msg, privateJwk, hash, algorithm, webCrypto) {
  * @param {Uint8Array} signature - Byte array of raw signature.
  * @param {JsonWebKey} publicJwk - public key for signing in JWK format.
  * @param {String} hash - Name of hash algorithm like 'SHA-256'.
- * @param {Object} algorithm - Object to specify algorithm parameters.
+ * @param {RSASignAlgorithm} algorithm - Object to specify algorithm parameters.
  * @param {Object} webCrypto - WebCryptoSubtle object
  * @return {Promise<boolean>} - Result of verification.
  * @throws {Error} - if RSA-PSS in IE.

@@ -4,11 +4,6 @@
 
 import asn from 'asn1.js';
 
-/**
- * @typedef {Entity} AsnObject - asn1.js Entity object
- */
-
-
 ///////////////////////////////////////////////////////////////////////////////////////////
 /**
  * This is either one of subjectPublicKeyInfo, oneAsymmetricKey or encryptedPrivateKeyInfo in ASN.1 format.

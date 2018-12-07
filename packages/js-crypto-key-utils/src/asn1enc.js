@@ -14,15 +14,15 @@ const Buffer = BufferMod.Buffer;
 
 /**
  * Convert jwk to spki/pkcs8 in string or binary format.
- * @param jwkey
- * @param outputPublic {boolean} : derive public key from private key when true
- * @param format {string} : 'pem' or 'der'
- * @param compact {boolean} : 'true' or 'false' for EC public key compressed representation in der/pem
- * @param passphrase
- * @param encOptions
- * @return {Uint8Array}
+ * @param {JsonWebKey} jwkey - A key object in JWK format to be encoded.
+ * @param {boolean} outputPublic - Derive public key from private key when true
+ * @param {string} format - 'pem' or 'der'
+ * @param {boolean} compact - 'true' or 'false' for EC public key compressed representation in der/pem
+ * @param {String} passphrase - if passphrase is given and the given key is private key, it will be encoded with the passphrase.
+ * @param {AsnEncryptOptionsWithPassphrase} encOptions - ASN.1 encryption options
+ * @return {Uint8Array|String} - Encoded private key in DER or PEM
  */
-export async function fromJwk(jwkey, format, {outputPublic, compact=false, passphrase = '', encOptions}){
+export async function fromJwk(jwkey, format, {outputPublic, compact=false, encOptions}){
   const orgType = getJwkType(jwkey);
   let type = (typeof outputPublic === 'boolean' && outputPublic) ? 'public' : orgType;
 
@@ -40,8 +40,8 @@ export async function fromJwk(jwkey, format, {outputPublic, compact=false, passp
   }
   else {
     binKey = OneAsymmetricKey.encode(decoded, 'der');
-    if(passphrase.length > 0){
-      binKey = await encryptEncryptedPrivateKeyInfo(binKey, passphrase, encOptions);
+    if(typeof encOptions.passphrase !== 'undefined' && encOptions.passphrase.length > 0){
+      binKey = await encryptEncryptedPrivateKeyInfo(binKey, encOptions);
       type = 'encryptedPrivate';
     }
   }
@@ -51,12 +51,13 @@ export async function fromJwk(jwkey, format, {outputPublic, compact=false, passp
 }
 
 /**
- * Convert spki/pkcs8 key in string or binary format to jwk.
- * @param key
- * @param format
- * @param outputPublic {boolean} (optional)
- * @param passphrase
- * @return {*|void}
+ * Convert SPKI/PKCS8 key in string or binary format to JWK.
+ * @param {PEM|DER} key - Key object.
+ * @param {String} format - 'pem' or 'der'
+ * @param {boolean} [outputPublic] - Export public key even from private key if true.
+ * @param {String} [passphrase] - Encrypt private key if passphrase is given.
+ * @return {JsonWebKey} - Obtained key object in JWK format.
+ * @throws {Error} Throws if UnsupportedKeyStructure, UnsupportedKey or InvalidKeyType.
  */
 export async function toJwk(key, format, {outputPublic, passphrase}){
   // Peel the pem strings

@@ -44,7 +44,7 @@ export async function generateKey(modulusLength = 2048, publicExponent = new Uin
  * @param {Uint8Array} msg - Byte array of message to be signed.
  * @param {JsonWebKey} jwkey - Private/Public key for signing/verifying in JWK format.
  * @param {String} hash - Name of hash algorithm like 'SHA-256'.
- * @param {Object} algorithm - Object to specify algorithm parameters.
+ * @param {RSASignAlgorithm} algorithm - Object to specify algorithm parameters.
  * @param {String} mode - 'sign' or 'verify' for PSS parameter check.
  * @return {boolean} - Always true unless thrown.
  * @throws {Error} - Throws if InvalidAlgorithm, UnsupportedHash, InvalidMessageFormat or InvalidJwkRsaKey
@@ -65,9 +65,7 @@ function assertSignVerify(msg, jwkey, hash, algorithm, mode){
  * @param {Uint8Array} msg - Byte array of message to be signed.
  * @param {JsonWebKey} privateJwk - Private key for signing in JWK format.
  * @param {String} [hash='SHA-256'] - Name of hash algorithm like 'SHA-256'.
- * @param {Object} [algorithm={name: 'RSA-PSS', saltLength: params.hashes[hash].hashSize}] - Object to specify algorithm parameters.
- *   For RSA-PSS, algorithm.name = 'RSA-PSS' and algorithm.saltLength: Number must be specified.
- *   For RSASSA-PKCS1-v1_5, algorithm.name = 'RSASSA-PKCS1-v1_5' must be specified.
+ * @param {RSASignAlgorithm} [algorithm={name: 'RSA-PSS', saltLength: params.hashes[hash].hashSize}] - Object to specify algorithm parameters.
  * @return {Promise<Uint8Array>} - Byte array of raw signature.
  * @throws {Error} - Throws if UnsupportedEnvironment.
  */
@@ -103,9 +101,7 @@ export async function sign(msg, privateJwk, hash = 'SHA-256', algorithm = {name:
  * @param {Uint8Array} signature - Byte array of raw signature.
  * @param {JsonWebKey} publicJwk - public key for signing in JWK format.
  * @param {String} [hash='SHA-256'] - Name of hash algorithm like 'SHA-256'.
- * @param {Object} [algorithm={name: 'RSA-PSS', saltLength: params.hashes[hash].hashSize}] - Object to specify algorithm parameters.
- *   For RSA-PSS, algorithm.name = 'RSA-PSS' and algorithm.saltLength: Number must be specified.
- *   For RSASSA-PKCS1-v1_5, algorithm.name = 'RSASSA-PKCS1-v1_5' must be specified.
+ * @param {RSASignAlgorithm} [algorithm={name: 'RSA-PSS', saltLength: params.hashes[hash].hashSize}] - Object to specify algorithm parameters.
  * @return {Promise<boolean>} - Result of verification.
  * @throws {Error} - Throws if InvalidSignatureFormat, or UnsupportedEnvironment.
  */
