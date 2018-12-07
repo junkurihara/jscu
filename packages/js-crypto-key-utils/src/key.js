@@ -8,14 +8,13 @@ import jseu from 'js-encoding-utils';
 import {getJwkType, getSec1KeyType, isAsn1Encrypted, isAsn1Public} from './util.js';
 
 /**
- * Key class
+ * Key class to abstract public and private key objects in string or binary.
+ *   This class provides functions to interchangeably convert key formats,
+ *   and key objects will be used for the root package, js-crypto-utils, as inputs to exposed APIs.
  */
 export class Key {
   /**
    * @constructor
-   * @classdesc - Key class to abstract public and private key objects in string or binary.
-   *   This class provides functions to interchangeably convert key formats,
-   *   and key objects will be used for the root package, js-crypto-utils, as inputs to exposed APIs.
    * @param {String} format - Key format: 'jwk', 'der', 'pem' or 'oct' (only for ECC key).
    * @param {JsonWebKey|Uint8Array} key - Key object in the specified format.
    * @param {Object} [options={}] - Required if format='oct', and then it is {namedCurve: String}.
@@ -137,30 +136,27 @@ export class Key {
 
     // return 'as is' without passphrase when nothing is given as 'options'
     // only for the case to export der key from der key (considering encrypted key). expect to be called from getter
-    if((format === 'der' || format === 'pem') && Object.keys(options).length === 0
-      && this._isEncrypted === true && this._type === 'private' && this._current.der)
-    {
-      return (format === 'pem') ? jseu.formatter.binToPem(this._der, 'encryptedPrivate') : this._der;
+    if(this._isEncrypted && this._type === 'private'){
+      if((format === 'der' || format === 'pem') && Object.keys(options).length === 0 && this._current.der) {
+        return (format === 'pem') ? jseu.formatter.binToPem(this._der, 'encryptedPrivate') : this._der;
+      }
+      else throw new Error('DecryptionRequired');
     }
-    if(this._isEncrypted) throw new Error('DecryptionRequired');
 
-    let jwkey;
     // first converted to jwk
+    let jwkey;
     if(this._current.jwk){
       jwkey = this._jwk;
     }
-    else {
-      // options.type is not specified here to import jwk
-      if(this._current.oct) {
-        jwkey = await toJwkFrom('oct', this._oct.key, {namedCurve: this._oct.namedCurve});
-      }
-      else if(this._current.der){
-        jwkey = await toJwkFrom('der', this._der);
-      }
-      else throw new Error('InvalidStatus');
-
-      this._setJwk(jwkey); // store jwk if the exiting private key is not encrypted
+    else if(this._current.oct) { // options.type is not specified here to import jwk
+      jwkey = await toJwkFrom('oct', this._oct.key, {namedCurve: this._oct.namedCurve});
     }
+    else if(this._current.der) {
+      jwkey = await toJwkFrom('der', this._der);
+    }
+    else throw new Error('InvalidStatus');
+
+    this._setJwk(jwkey); // store jwk if the exiting private key is not encrypted
 
     // then export as the key in intended format
     if (format === 'der' || format === 'pem') {
@@ -242,7 +238,7 @@ export class Key {
 
   /**
    * Get jwkThumbprint of this key.
-   * @return {Promise<Uint8Array|String>}
+   * @return {Promise<Uint8Array>} - Returns binary thumbprint.
    */
   get jwkThumbprint(){
     return this.getJwkThumbprint();

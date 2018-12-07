@@ -9,10 +9,10 @@ import {octKeyObjToJwk, octKeyObjFromJwk} from './octenc.js';
 
 /**
  * Convert JWK to parsed ASN.1 EC key object
- * @param jwk
- * @param type
- * @param compact
- * @return {object}
+ * @param {JsonWebKey} jwk - A key object in JWK format.
+ * @param {String} type - 'public' or 'private'
+ * @param {boolean} [compact=false] - *Only for EC public keys*, the compact form of public key is given as ASN.1 object if true.
+ * @return {Object} - Parsed ASN.1 object.
  */
 export function fromJWK(jwk, type, compact=false){
   if (Object.keys(params.namedCurves).indexOf(jwk.crv) < 0) throw new Error('UnsupportedCurve');
