@@ -22,7 +22,7 @@ At your project directory, do either one of the following.
   ```
 - From GitHub:
   ```shell
-  $ git clone https://github.com/junkurihara/js-crypto-utils.git
+  $ git clone https://github.com/junkurihara/jscu.git
   $ cd js-crypto-utils/packages/js-crypto-aes
   & yarn build
   ```
@@ -34,7 +34,7 @@ import aes from 'js-crypto-aes'; // for npm
 import aes from 'path/to/js-crypto-aes/dist/index.js'; // for github
 ```
 
-The bundled file is also given as `js-crypt-aes/dist/jscaes.js` for a use case where the module is imported as a `window.jscaes` object via `script` tags.
+The bundled file is also given as `js-crypto-aes/dist/jscaes.bundle.js` for a use case where the module is imported as a `window.jscaes` object via `script` tags.
   
 # Usage
 

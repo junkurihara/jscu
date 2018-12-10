@@ -11,11 +11,18 @@ import rfc5280 from 'asn1.js-rfc5280';
 import BufferMod from 'buffer';
 const Buffer = BufferMod.Buffer;
 
-
-export async function getSignature(encodedTbsCertificate, privateJwk, algorithm, hash, saltLength){
+/**
+ * Sign TBSCertificate under the issuer's RSA private key in JWK format.
+ * @param {Uint8Array} encodedTbsCertificate - Message body to be signed.
+ * @param {JsonWebKey} privateJwk - A RSA signing key in JWK format.
+ * @param {String} algorithm - Name of signing algorithm like 'sha256WithRSAEncryption'.
+ * @param {RSAPSSObject} [pssParams] - Effective only for RSASSA-PSS.
+ * @returns {Promise<{data: Buffer, unused: number}>} - ASN.1 parsed signature object.
+ */
+export async function getSignature(encodedTbsCertificate, privateJwk, algorithm, pssParams){
   let signature;
   if(algorithm === 'rsassaPss'){
-    signature = await rsa.sign( encodedTbsCertificate, privateJwk, hash, { name: 'RSA-PSS', saltLength });
+    signature = await rsa.sign( encodedTbsCertificate, privateJwk, pssParams.hash, { name: 'RSA-PSS', saltLength: pssParams.saltLength });
   }
   else {
     signature = await rsa.sign( encodedTbsCertificate, privateJwk, params.signatureAlgorithms[algorithm].hash, { name: 'RSASSA-PKCS1-v1_5' });
@@ -23,6 +30,11 @@ export async function getSignature(encodedTbsCertificate, privateJwk, algorithm,
   return {unused: 0, data: Buffer.from(signature)};
 }
 
+/**
+ * Encode RSA-PSS parsed params to ASN.1 Uint8Array binary
+ * @param {RSAPSSObject} options - RSA-PSS params as a parsed object.
+ * @returns {DER} - Encoded RSA-PSS object.
+ */
 export function encodeRsassaPssParams(options){
   if (options.hash === 'SHA-1' && options.saltLength === 20 && options.explicit === false) return Buffer.from([0x30, 0x00]);
   else {
@@ -47,6 +59,12 @@ export function encodeRsassaPssParams(options){
 }
 
 
+/**
+ * Parse encoded RSA-PSS parameters represented in Uint8Array.
+ * @param {Buffer|Uint8Array} pssParams - Extracted RSA-PSS parameter byte sequence.
+ * @returns {{hashForMgf: string, saltLength: number, mgf: string, hash: string}}
+ * @throws {Error} - Throws if InvalidCertificateFormat.
+ */
 export function decodeRsassaPssParams(pssParams){
   let returnParams;
   if((new Uint8Array(pssParams)).toString() !== (new Uint8Array([0x30, 0x00]).toString())){

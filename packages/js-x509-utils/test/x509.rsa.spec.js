@@ -115,11 +115,10 @@ describe(`${envName}: RSA: Generated JWK public key should be successfully conve
         'pem',
         {
           signature: 'rsassaPss',
-          saltLength: constantSaltLen,
-          hash,
           days: 365,
           issuer: name,
-          subject: name
+          subject: name,
+          pssParams: {saltLength: constantSaltLen, hash}
         }
       );
       const parsed = await x509.parse(crt, 'pem');

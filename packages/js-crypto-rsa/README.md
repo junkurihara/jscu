@@ -20,7 +20,7 @@ At your project directory, do either one of the following.
   ```
 - From GitHub:
   ```shell
-  $ git clone https://github.com/junkurihara/js-crypto-utils.git
+  $ git clone https://github.com/junkurihara/jscu.git
   $ cd js-crypto-utils/packages/js-crypto-rsa
   & yarn build
   ```
@@ -32,7 +32,7 @@ import rsa from 'js-crypto-rsa'; // for npm
 import rsa from 'path/to/js-crypto-rsa/dist/index.js'; // for github
 ```
 
-The bundled file is also given as `js-crypt-rsa/dist/jscrsa.js` for a use case where the module is imported as a `window.jscrsa` object via `script` tags.
+The bundled file is also given as `js-crypto-rsa/dist/jscrsa.bundle.js` for a use case where the module is imported as a `window.jscrsa` object via `script` tags.
 
     
 # Usage

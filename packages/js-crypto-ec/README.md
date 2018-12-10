@@ -22,7 +22,7 @@ At your project directory, do either one of the following.
   ```
 - From GitHub:
   ```shell
-  $ git clone https://github.com/junkurihara/js-crypto-utils.git
+  $ git clone https://github.com/junkurihara/jscu.git
   $ cd js-crypto-utils/packages/js-crypto-ec
   & yarn build
   ```
@@ -34,7 +34,7 @@ import ec from 'js-crypto-ec'; // for npm
 import ec from 'path/to/js-crypto-ec/dist/index.js'; // for github
 ```
 
-The bundled file is also given as `js-crypt-ec/dist/jscec.js` for a use case where the module is imported as a `window.jscec` object via `script` tags.
+The bundled file is also given as `js-crypto-ec/dist/jscec.bundle.js` for a use case where the module is imported as a `window.jscec` object via `script` tags.
 
   
 # Usage

@@ -15,12 +15,13 @@ import BufferMod from 'buffer';
 const Buffer = BufferMod.Buffer;
 
 /**
- * Convert jwk to X509 pem
- * @param publicJwk
- * @param privateJwk
- * @param format
- * @param options
- * @return {Promise<*>}
+ * Convert public key in JWK format to X.509 PEM or DER object.
+ * @param {JsonWebKey} publicJwk - A public key object in JWK format to be encoded and signed to X.509
+ * @param {JsonWebKey} privateJwk - A private key object in JWK format by which would be used to sign the public key.
+ * @param {AsnFormat} [format='pem'] - Output format of X.509 certificate, 'pem' or 'der'
+ * @param {X509EncodingOptions} [options={}] - X.509 encoding options
+ * @return {Promise<DER|PEM>} - Generated X.509 public key certificate in intended format.
+ * @throws {Error} - Throws if InvalidFormatSpecification or UnsupportedKeyType.
  */
 export async function fromJwk(publicJwk, privateJwk, format = 'pem', options = {}) {
   // default values
@@ -30,9 +31,10 @@ export async function fromJwk(publicJwk, privateJwk, format = 'pem', options = {
   if (typeof options.subject === 'undefined') options.subject = {organizationName: 'Self'};
 
   // default params for RSA-PSS
-  if (typeof options.saltLength === 'undefined' && options.signature === 'rsassaPss') options.saltLength = 20;
-  if (typeof options.hash === 'undefined' && options.signature === 'rsassaPss') options.hash = 'SHA-1';
-  if (typeof options.explicit === 'undefined' && options.signature === 'rsassaPss') options.explicit = true;
+  if (typeof options.pssParams === 'undefined') options.pssParams = {};
+  if (typeof options.pssParams.saltLength === 'undefined' && options.signature === 'rsassaPss') options.pssParams.saltLength = 20;
+  if (typeof options.pssParams.hash === 'undefined' && options.signature === 'rsassaPss') options.pssParams.hash = 'SHA-1';
+  if (typeof options.pssParams.explicit === 'undefined' && options.signature === 'rsassaPss') options.pssParams.explicit = true;
 
   ///////////////////////////////
   // elements of TBSCertificate
@@ -47,7 +49,7 @@ export async function fromJwk(publicJwk, privateJwk, format = 'pem', options = {
   // TODO: throw exception if private jwk keytype doesn't match signatureAlgorithm
   const signature = { algorithm: params.signatureAlgorithms[options.signature].oid };
   if (options.signature === 'rsassaPss') {
-    signature.parameters = rsa.encodeRsassaPssParams(options);
+    signature.parameters = rsa.encodeRsassaPssParams(options.pssParams);
   } else signature.parameters = Buffer.from(params.ans1null);
 
   const issuer = {type: 'rdnSequence', value: setRDNSequence(options.issuer)};
@@ -75,7 +77,7 @@ export async function fromJwk(publicJwk, privateJwk, format = 'pem', options = {
     signatureValue = await ecdsa.getAsn1Signature(encodedTbsCertificate, privateJwk, options.signature);
   } else if (privateJwk.kty === 'RSA') {
     signatureValue = await rsa.getSignature(
-      encodedTbsCertificate, privateJwk, options.signature, options.hash, options.saltLength
+      encodedTbsCertificate, privateJwk, options.signature, options.pssParams
     );
   } else throw new Error ('UnsupportedKeyType');
 
@@ -88,16 +90,15 @@ export async function fromJwk(publicJwk, privateJwk, format = 'pem', options = {
   else if (format === 'der') {
     return certBin;
   }
-  else {
-    throw new Error('InvalidFormatSpecification');
-  }
+  else throw new Error('InvalidFormatSpecification');
 }
 
 /**
- * Convert X.509 certificate to JWK
- * @param certX509
- * @param format
- * @return {Promise<void>}
+ * Convert X.509 certificate to a JWK object.
+ * @param {PEM|DER} certX509 - X.509 public key certificate in DER or PEM format.
+ * @param {AsnFormat} format - 'der' or 'pem'
+ * @return {Promise<JsonWebKey>} - Extracted key object in JWK format.
+ * @throws {Error} - Throws if InvalidFormatSpecification.
  */
 export async function toJwk(certX509, format = 'pem'){
   let x509bin;
@@ -116,9 +117,10 @@ export async function toJwk(certX509, format = 'pem'){
 
 /**
  * Parse X.509 certificate and return DER-encoded TBSCertificate and DER encoded signature
- * @param certX509
- * @param format
- * @return {{tbsCertificate: *, signatureValue: *, signatureAlgorithm: *}}
+ * @param {DER|PEM} certX509 - X.509 public key certificate in DER or PEM format.
+ * @param {AsnFormat} format - 'der' or 'pem'
+ * @return {{tbsCertificate: Uint8Array, signatureValue: Uint8Array, signatureAlgorithm: String}} - Parsed object.
+ * @throws {Error} - Throws if UnsupportedSignatureAlgorithm or InvalidFormatSpecification.
  */
 export function parse(certX509, format = 'pem'){
 
@@ -155,8 +157,9 @@ export function parse(certX509, format = 'pem'){
 
 /**
  * Set RDN sequence for issuer and subject fields
- * @param options
+ * @param {Object} options - RDN Sequence
  * @return {{type: *, value: *}[][]}
+ * @throws {Error} - throws if InvalidOptionSpecification or InvalidCountryNameCode.
  */
 function setRDNSequence(options) {
   const encodedArray = Object.keys(options).map((k) => {
