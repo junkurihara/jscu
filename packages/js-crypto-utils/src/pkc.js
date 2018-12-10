@@ -11,9 +11,9 @@ import params from './params.js';
 
 /**
  * Generate key pair in JWK format
- * @param keyType
- * @param options
- * @return {Promise<{publicKey: *, privateKey: *}>}
+ * @param {'EC'|'RSA'} [keyType='EC'] - Type of public/private key.
+ * @param {ECKeyGenerationOption|RSAKeyGenerationOption} [options={}] - Key generation options.
+ * @return {Promise<{publicKey: JsonWebKey, privateKey: JsonWebKey}>} - Generated key pair in JWK format.
  */
 export async function generateKey(keyType = 'EC', options = {}){
   const localOpt = cloneDeep(options);
@@ -39,11 +39,12 @@ export async function generateKey(keyType = 'EC', options = {}){
 
 /**
  * Sign message with given private key in jwk
- * @param privateKey
- * @param msg
- * @param hash
- * @param options
- * @return {Promise<ArrayBuffer>}
+ * @param {Uint8Array} msg - Message byte array to be signed.
+ * @param {Key} privateKey - Private key object for signing.
+ * @param {String} [hash='SHA-256'] - Name of hash algorithm like 'SHA-256'.
+ * @param {RSASigningOption|ECSigningOption} [options={}] - Signing options.
+ * @return {Promise<Uint8Array>} - Signature byte array.
+ * @throws {Error} - Throws if NonKeyObject or UnsupportedKeyType.
  */
 export async function sign(msg, privateKey, hash = 'SHA-256', options = {}){
   if(!(privateKey instanceof Key)) throw new Error('NonKeyObject');
@@ -66,13 +67,14 @@ export async function sign(msg, privateKey, hash = 'SHA-256', options = {}){
 }
 
 /**
- * Verify message with given public key in jwk
- * @param msg
- * @param sig
- * @param publicKey
- * @param hash
- * @param options
- * @return {Promise<boolean>}
+ * Verify message with given public key
+ * @param {Uint8Array} msg - A plaintext message to be verified.
+ * @param {Uint8Array} sig - Signature byte array.
+ * @param {Key} publicKey - Public key object for verification.
+ * @param {String} [hash='SHA-256'] - Name of hash algorithm like 'SHA-256'.
+ * @param {RSASigningOption|ECSigningOption} [options={}] - Signing options.
+ * @return {Promise<boolean>} - Result of verification.
+ * @throws {Error} - Throws if NonKeyObject or UnsupportedKeyType.
  */
 export async function verify(msg, sig, publicKey, hash = 'SHA-256', options = {}){
   if(!(publicKey instanceof Key)) throw new Error('NonKeyObject');
@@ -99,10 +101,11 @@ export async function verify(msg, sig, publicKey, hash = 'SHA-256', options = {}
 /**
  * Encryption with public key algorithm. in case of ECDH.
  * Session key is derived from HKDF and the data itself will be encrypted by symmetric cipher.
- * @param msg
- * @param publicKey
- * @param options
- * @return {Promise<{data: Uint8Array, salt: Uint8Array, iv: Uint8Array}>}
+ * @param {Uint8Array} msg - Plaintext message to be encrypted.
+ * @param {Key} publicKey - Public key object.
+ * @param {RSAEncryptionOption|ECEncryptionOptions} [options={}] - Encryption options.
+ * @return {Promise<PKCCiphertextObject>} - Encrypted message object.
+ * @throws {Error} - Throws if NonKeyObject, MissingOrInvalidPrivateKeyForECDH, or UnsupportedKeyType.
  */
 export async function encrypt(msg, publicKey, options = {}){
   if(!(publicKey instanceof Key)) throw new Error('NonKeyObject');
@@ -129,10 +132,11 @@ export async function encrypt(msg, publicKey, options = {}){
 /**
  * Decryption with public key algorithm. in case of ECDH
  * Session key is derived from HKDF and the data itself will be decrypted by symmetric cipher.
- * @param data
- * @param privateKey
- * @param options
- * @return {Promise<Uint8Array>}
+ * @param {Uint8Array} data - Encrypted message body, i.e., PKCCiphertextObject.data.
+ * @param {Key} privateKey - Private key object
+ * @param {RSAEncryptionOption|ECDecryptionOptions} [options={}] - Decryption Options.
+ * @return {Promise<Uint8Array>} - Decrypted message byte array.
+ * @throws {Error} - Throws if NonKeyObject, MissingPublicKeyForECDH, or UnsupportedKeyType.
  */
 export async function decrypt(data, privateKey, options = {}){
   if(!(privateKey instanceof Key)) throw new Error('NonKeyObject');

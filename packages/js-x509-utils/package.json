@@ -1,6 +1,6 @@
 {
   "name": "js-x509-utils",
-  "version": "0.3.9",
+  "version": "0.3.10",
   "description": "Universal Module of X.509 Certificate Utilities in JavaScript",
   "main": "dist/index.js",
   "scripts": {

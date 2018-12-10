@@ -72,19 +72,24 @@ At your project directory, do either one of the following.
 - From npm/yarn:
   ```shell
   $ npm install --save js-crypto-utils // npm
-  $ yarn add js-crypt-utils // yarn
+  $ yarn add js-crypto-utils // yarn
   ```
-  
 - From GitHub:
   ```shell
   $ git clone https://github.com/junkurihara/jscu.git
-  ``` 
-  
+  $ cd js-crypto-utils/packages/js-crypto-utils
+  & yarn build
+  ```
+
 Then you should import the package as follows.
-```javascript
+
+```shell
 import jscu from 'js-crypto-utils'; // for npm
-import jscu from 'js-crypto-utils/dist/index.js'; // for npm/github
+import jscu from 'path/to/js-crypto-utils/dist/index.js'; // for github
 ```
+
+The bundled file is also given as `js-crypto-utils/dist/jscu.bundle.js` for a use case where the module is imported as a `window.jscu` object via `script` tags.
+
 
 # Usage
 **NOTE:** This library always uses `jscu.Key` objects as instances of public and private keys, and the `Key` object can be instantiated from and can export ones in various formats. For the detailed usage of `Key` object, please refer to [another GitHub repo](https://github.com/junkurihara/js-crypto-key-utils).

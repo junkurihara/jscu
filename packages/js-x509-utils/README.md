@@ -19,14 +19,19 @@ At your project directory, do either one of the following.
   ```
 - From GitHub:
   ```shell
-  $ git clone https://github.com/junkurihara/js-x509-utils.git
+  $ git clone https://github.com/junkurihara/jscu.git
+  $ cd js-crypto-utils/packages/js-x509-utils
+  & yarn build
   ```
 
 Then you should import the package as follows.
+
 ```shell
-import x509 from 'js-x509-utils'; // for npm
-import x509 from 'js-x509-utils/dist/index.js'; // for github
+import rsa from 'js-x509-utils'; // for npm
+import rsa from 'path/to/js-x509-utils/dist/index.js'; // for github
 ```
+
+The bundled file is also given as `js-x509-utils/dist/x509.bundle.js` for a use case where the module is imported as a `window.x509` object via `script` tags.
   
 # Usage
 This library always uses JWK-formatted keys ([RFC7517](https://tools.ietf.org/html/rfc7517)) to do any operations. If you utilize keys of other format, like PEM, please use [`js-crypto-key-utils`](https://github.com/junkurihara/js-crypto-key-utils) to convert them to JWK.
@@ -84,11 +89,13 @@ x509.fromJwk(
   'pem',
   {
     signature: 'rsassaPss',
-    saltLength: 32, // if unspecified, 20 will be applied as default value
-    hash: 'SHA-256', // if unspecified, 'SHA-1' will be applied as default value (but I do not not recommend SHA-1)
     days: 365,
     issuer: name,
-    subject: name
+    subject: name,
+    pssParams: {
+      saltLength: 32, // if unspecified, 20 will be applied as default value
+      hash: 'SHA-256' // if unspecified, 'SHA-1' will be applied as default value (but I do not not recommend SHA-1)
+    }
   }
 ).then( (crt) => {
   // now you get a certificate

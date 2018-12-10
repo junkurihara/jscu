@@ -21,7 +21,7 @@ At your project directory, do either one of the following.
   ```
 - From GitHub:
   ```shell
-  $ git clone https://github.com/junkurihara/js-crypto-utils.git
+  $ git clone https://github.com/junkurihara/jscu.git
   $ cd js-crypto-utils/packages/js-crypto-random
   & yarn build
   ```
@@ -33,7 +33,7 @@ import aes from 'js-crypto-random'; // for npm
 import aes from 'path/to/js-crypto-random/dist/index.js'; // for github
 ```
 
-The bundled file is also given as `js-crypt-random/dist/jscaes.js` for a use case where the module is imported as a `window.jscrandom` object via `script` tags.
+The bundled file is also given as `js-crypto-random/dist/jscrandom.bundle.js` for a use case where the module is imported as a `window.jscrandom` object via `script` tags.
   
 # Usage
 
