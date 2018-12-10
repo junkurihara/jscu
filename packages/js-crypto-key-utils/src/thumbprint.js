@@ -12,7 +12,7 @@ const Buffer = BufferMod.Buffer;
  * https://tools.ietf.org/html/rfc7638
  * @param {JsonWebKey} jwkey - A key object in JWK format
  * @param {String} [alg='SHA-256'] - Name of hash algorithm to compute the thumbprint.
- * @param {String} [output='binary'] - Output format, 'binary', 'hex' or 'base64'
+ * @param {JwkThumbpirntFormat} [output='binary'] - Output format, 'binary', 'hex' or 'base64'
  * @return {Promise<String|Uint8Array>} - The computed JWK thumbprint.
  */
 export async function getJwkThumbprint(jwkey, alg='SHA-256', output='binary'){

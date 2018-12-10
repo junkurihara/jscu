@@ -14,7 +14,7 @@
  * @typedef {Object} KeyExportOptions - Export options for Key Class.
  * @property {boolean} [outputPublic] - Derive public key from private key if true.
  * @property {boolean} [compact] - Generate compressed EC public key when format = 'der', 'pem' or 'oct', only for EC key if true.
- * @property {String} [output='binary'] - Active only for OctetEC key. 'binary' or 'string'. Default value would be 'binary'.
+ * @property {OctetFormat} [output='binary'] - Active only for OctetEC key. 'binary' or 'string'. Default value would be 'binary'.
  * @property {AsnEncryptOptionsWithPassphrase} [encryptParams] - Generate encrypted der/pem private key when format = 'der' or 'pem'.
  */
 
@@ -35,5 +35,22 @@
  */
 
 /**
- * @typedef {Entity} AsnObject - asn1.js Entity object
+ * @typedef {Entity} AsnObject - asn1.js Entity object.
+ */
+
+/**
+ * @typedef {'pem'|'der'} AsnFormat - Key format of ASN.1 encoded key object.
+ */
+
+
+/**
+ * @typedef {'string'|'binary'} OctetFormat - Representation of SEC1 Octet EC key.
+ */
+
+/**
+ * @typedef {'public'|'private'} PublicOrPrivate - Key type of public or private.
+ */
+
+/**
+ * @typedef {'binary'|'hex'|'base64'} JwkThumbpirntFormat - Representation of JWK thumbprint.
  */

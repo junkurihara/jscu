@@ -8,7 +8,7 @@ Universal Module for Cryptographic Key Utilities in JavaScript
 > **WARNING**: At this time this solution should be considered suitable for research and experimentation, further code and security review is needed before utilization in a production application.
 
 # Introduction and Overview
-This library is designed to be 'universal' as a cryptographic key utilities, i.e., it works both on most browsers and on Node.js just by importing from npm/source code. This key utility library provides useful converters for EC/RSA keys in PEM/DER<->JWK, octet form of EC keys <-> JWK, and computation of JWK thumbprints. Especially for the conversion PEM/DER <->JWK, encryption and decryption of private key in DER/PEM are supported. 
+This library is designed to 'universally' provide several functions for a cryptographic key handling, which means it works both on most browsers and on Node.js just by importing from npm/source code. This key utility library provides converters for EC/RSA keys in PEM/DER<->JWK, octet form of EC keys <-> JWK, and computation of JWK thumbprints. Especially for the conversion PEM/DER <->JWK, encryption and decryption of private key in DER/PEM are supported. 
 
 # Installation
 At your project directory, do either one of the following.
@@ -20,14 +20,20 @@ At your project directory, do either one of the following.
   ```
 - From GitHub:
   ```shell
-  $ git clone https://github.com/junkurihara/js-crypto-key-utils.git
+  $ git clone https://github.com/junkurihara/js-crypto-utils.git
+  $ cd js-crypto-utils/packages/js-crypto-key-utils
+  & yarn build
   ```
 
 Then you should import the package as follows.
+
 ```shell
-import keyutils from 'js-crypto-key-utils'; // for npm
-import keyutils from 'js-crypto-key-utils/dist/index.js'; // or jsckeyutil.bundle.js for github
+import keyutil from 'js-crypto-key-utils'; // for npm
+import keyutil from 'path/to/js-crypto-key-utils/dist/index.js'; // for github
 ```
+
+The bundled file is also given as `js-crypt-key-utils/dist/jsckey.js` for a use case where the module is imported as a `window.jsckey` object via `script` tags.
+
   
 # Usage
 Supported key types are Json Web Key (JWK, [RFC7517](https://tools.ietf.org/html/rfc7517)), and PEM/DER. Octet-Formatted Key ([SECG SEC1](http://www.secg.org/sec1-v2.pdf) 2.3.3 and 2.3.4, link to PDF) is also available for elliptic curve cryptography keys. Note that for PEM/DER, public keys are encoded to the form of `SubjectPublicKeyInfo` (SPKI) defined as a part of X.509 public key certificate ([RFC5280](https://tools.ietf.org/html/rfc5280)). The detailed encoding rule for elliptic curve cryptographic keys is given in [RFC5480](https://tools.ietf.org/html/rfc5480). On the other hand, private keys are encoded to hte form of `PrivateKeyInfo` defined in PKCS#8 ([RFC5958](https://tools.ietf.org/html/rfc5958)). The detailed encoding rule for elliptic curve cryptographic keys is given in [RFC5915](https://tools.ietf.org/html/rfc5915) as well as SPKI. Please refer to [RFC3447](https://tools.ietf.org/html/rfc3447) for the detailed encoding rule of RSA public and private keys.

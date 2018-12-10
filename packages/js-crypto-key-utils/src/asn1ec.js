@@ -5,21 +5,21 @@
 import asn from 'asn1.js';
 
 import params, {getAlgorithmFromOid} from './params.js';
-import {octKeyObjToJwk, octKeyObjFromJwk} from './octenc.js';
+import {toJwk as octKeyToJwk, fromJwk as octKeyFromJwk} from './octenc.js';
 
 /**
  * Convert JWK to parsed ASN.1 EC key object
  * @param {JsonWebKey} jwk - A key object in JWK format.
- * @param {String} type - 'public' or 'private'
+ * @param {PublicOrPrivate} type - 'public' or 'private'
  * @param {boolean} [compact=false] - *Only for EC public keys*, the compact form of public key is given as ASN.1 object if true.
  * @return {Object} - Parsed ASN.1 object.
  */
 export function fromJWK(jwk, type, compact=false){
   if (Object.keys(params.namedCurves).indexOf(jwk.crv) < 0) throw new Error('UnsupportedCurve');
-  const octkeyObj = octKeyObjFromJwk(jwk, type, compact);
+  const octetPublicKey = octKeyFromJwk(jwk, {outputFormat: 'binary', outputPublic: true, compact});
 
   const publicKeyAlgorithmOid = params.publicKeyAlgorithms['EC'].oid;
-  const publicKey = {unused: 0, data: Array.from(octkeyObj.publicKey)};//Buffer.from(octkeyObj.publicKey)};
+  const publicKey = {unused: 0, data: Array.from(octetPublicKey)};//Buffer.from(octkeyObj.publicKey)};
   const parameters = ECParameters.encode({ type: 'namedCurve', value: params.namedCurves[jwk.crv].oid }, 'der');
   const algorithm = { algorithm: publicKeyAlgorithmOid, parameters };
 
@@ -29,11 +29,12 @@ export function fromJWK(jwk, type, compact=false){
     decoded.algorithm = algorithm;
   }
   else if (type === 'private') { // PKCS8
+    const octetPrivateKey = octKeyFromJwk(jwk, {outputFormat: 'binary', outputPublic: false, compact});
     decoded.version = 0; // no public key presents for v2 (0)
     decoded.privateKeyAlgorithm = algorithm;
     decoded.privateKey = ECPrivateKey.encode({
       version: 1,
-      privateKey: Array.from(octkeyObj.privateKey), //Buffer.from(octkeyObj.privateKey),
+      privateKey: Array.from(octetPrivateKey), //Buffer.from(octkeyObj.privateKey),
       parameters,
       publicKey
     }, 'der');
@@ -45,7 +46,7 @@ export function fromJWK(jwk, type, compact=false){
 /**
  * Convert parsed ASN.1 EC key object to JWK.
  * @param {Object} decoded - Parsed ASN.1 EC key object.
- * @param {String} type - 'public' or 'private'
+ * @param {PublicOrPrivate} type - 'public' or 'private'
  * @return {JsonWebKey} - Converted key objects in JWK format.
  * @throws {Error} - Throws if UnsupportedCurve.
  */
@@ -56,7 +57,7 @@ export function toJWK(decoded, type){
     const namedCurves = getAlgorithmFromOid(decoded.algorithm.parameters.value, params.namedCurves);
     if(namedCurves.length < 1) throw new Error('UnsupportedCurve');
 
-    return octKeyObjToJwk({publicKey: octPubKey}, type, namedCurves[0]);
+    return octKeyToJwk(octPubKey, namedCurves[0], {outputPublic: true});
   }
   else if (type === 'private'){ // PKCS8
     decoded.privateKeyAlgorithm.parameters = ECParameters.decode(decoded.privateKeyAlgorithm.parameters, 'der');
@@ -64,13 +65,12 @@ export function toJWK(decoded, type){
     try{ decoded.privateKey = ECPrivateKey.decode(decoded.privateKey, 'der'); }
     catch(e){ decoded.privateKey = ECPrivateKeyAlt.decode(decoded.privateKey, 'der'); }
 
-    const octPubKey = new Uint8Array(decoded.privateKey.publicKey.data);
     const octPrivKey = new Uint8Array(decoded.privateKey.privateKey);
 
     const namedCurves = getAlgorithmFromOid(decoded.privateKeyAlgorithm.parameters.value, params.namedCurves);
     if(namedCurves.length < 1) throw new Error('UnsupportedCurve');
 
-    return octKeyObjToJwk({publicKey: octPubKey, privateKey: octPrivKey}, type, namedCurves[0]);
+    return octKeyToJwk(octPrivKey, namedCurves[0], {outputPublic: false});
   }
 }
 

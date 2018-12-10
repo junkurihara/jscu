@@ -7,10 +7,10 @@ import params from './params.js';
 import {KeyStructure} from './asn1def.js';
 
 /**
- * Check if the given key is encrypted
- * @param key
- * @param format : pem or der
- * @return {boolean}
+ * Check if the given key is encrypted.
+ * @param {DER|PEM} key - Private key object in ASN.1 encoding.
+ * @param {AsnFormat} [format='pem'] - pem or der
+ * @return {boolean} - True if encrypted.
  */
 export function isAsn1Encrypted(key, format='pem'){
   let keyType;
@@ -18,12 +18,25 @@ export function isAsn1Encrypted(key, format='pem'){
   return keyType === 'encryptedPrivate';
 }
 
+/**
+ * Check if the given key is public.
+ * @param {DER|PEM} key - Public key object in ASN.1 encoding.
+ * @param {AsnFormat} format - pem or der
+ * @return {boolean} - True if public.
+ */
 export function isAsn1Public(key, format='pem'){
   let keyType;
   try{ keyType = getAsn1KeyType(key, format);} catch(e) {return false;}
   return (keyType === 'public');
 }
 
+/**
+ * Retrieve the key type of public or private in ASN.1 format
+ * @param {DER|PEM} key - Key object in ASN.1 encoding.
+ * @param {AsnFormat} format - pem or der
+ * @return {'public'|'private'|'encryptedPrivate'} - The key type of the given key.
+ * @throws {Error} - Throws if NotSpkiNorPkcs8Key.
+ */
 export function getAsn1KeyType(key, format='pem'){
   // Peel the pem strings
   const binKey = (format === 'pem') ? jseu.formatter.pemToBin(key, 'private') : key;
@@ -35,6 +48,13 @@ export function getAsn1KeyType(key, format='pem'){
   else throw new Error('NotSpkiNorPkcs8Key');
 }
 
+/**
+ * Retrieve the type of SEC1 octet key.
+ * @param {OctetEC} sec1key - Key object in OctetEC encoding in String (hex string) or Uint8Array.
+ * @param {String} namedCurve - Name of elliptic curve like 'P-256'.
+ * @return {PublicOrPrivate} - public or private
+ * @throws {Error} - Throws if UnsupportedKeyStructure.
+ */
 export function getSec1KeyType(sec1key, namedCurve){
   let format;
   if (sec1key instanceof Uint8Array) format = 'binary';
@@ -54,6 +74,12 @@ export function getSec1KeyType(sec1key, namedCurve){
   else throw new Error('UnsupportedKeyStructure');
 }
 
+/**
+ * Check key type of JWK.
+ * @param {JsonWebKey} jwkey - Key object in JWK format.
+ * @return {PublicOrPrivate} - public or private
+ * @throws {Error} - Throws if InvalidECKey, InvalidRSAKey or UnsupportedJWKType.
+ */
 export function getJwkType(jwkey){
   if(jwkey.kty === 'EC'){
     if (jwkey.x && jwkey.y && jwkey.d) return 'private';
@@ -68,8 +94,13 @@ export function getJwkType(jwkey){
   else throw new Error('UnsupportedJWKType');
 }
 
-// for jwk formatting of RSA
-// https://tools.ietf.org/html/rfc7518#section-6.3
+/**
+ * Prune leading zeros of an octet sequence in Uint8Array for jwk formatting of RSA.
+ * https://tools.ietf.org/html/rfc7518#section-6.3
+ * @param {Uint8Array} array - The octet sequence.
+ * @return {Uint8Array} - An octet sequence pruned leading zeros of length equal to or shorter than the input array.
+ * @throws {Error} - Throws if NonUint8Array.
+ */
 export function pruneLeadingZeros(array){
   if(!(array instanceof Uint8Array)) throw new Error('NonUint8Array');
 
@@ -85,6 +116,13 @@ export function pruneLeadingZeros(array){
 }
 
 // for pem/oct/der formatting from jwk of RSA
+/**
+ * Append leading zeros and generate an octet sequence of fixed length.
+ * @param {Uint8Array} array - An octet sequence.
+ * @param {Number} len - Intended length of output sequence.
+ * @returns {Uint8Array} - An octet sequence with leading zeros.
+ * @throws {Error} - Throws if NonUint8Array or InvalidLength.
+ */
 export function appendLeadingZeros(array, len){
   if(!(array instanceof Uint8Array)) throw new Error('NonUint8Array');
   if(array.length > len) throw new Error('InvalidLength');

@@ -205,7 +205,7 @@ export class Key {
   /**
    * Conpute JWK thumbprint specified in RFC7638 {@link https://tools.ietf.org/html/rfc7638}.
    * @param {String} [alg='SHA-256'] - Name of hash algorithm for thumbprint computation like 'SHA-256'.
-   * @param {String} [output='binary'] - Output format of JWK thumbprint. 'binary', 'hex' or 'base64'.
+   * @param {JwkThumbpirntFormat} [output='binary'] - Output format of JWK thumbprint. 'binary', 'hex' or 'base64'.
    * @return {Promise<Uint8Array|String>} - Computed thumbprint.
    * @throws {Error} - Throws if DecryptionRequired.
    */

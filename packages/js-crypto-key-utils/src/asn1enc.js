@@ -16,7 +16,7 @@ const Buffer = BufferMod.Buffer;
  * Convert jwk to spki/pkcs8 in string or binary format.
  * @param {JsonWebKey} jwkey - A key object in JWK format to be encoded.
  * @param {boolean} outputPublic - Derive public key from private key when true
- * @param {string} format - 'pem' or 'der'
+ * @param {AsnFormat} format - 'pem' or 'der'
  * @param {boolean} compact - 'true' or 'false' for EC public key compressed representation in der/pem
  * @param {String} passphrase - if passphrase is given and the given key is private key, it will be encoded with the passphrase.
  * @param {AsnEncryptOptionsWithPassphrase} encOptions - ASN.1 encryption options
@@ -53,7 +53,7 @@ export async function fromJwk(jwkey, format, {outputPublic, compact=false, encOp
 /**
  * Convert SPKI/PKCS8 key in string or binary format to JWK.
  * @param {PEM|DER} key - Key object.
- * @param {String} format - 'pem' or 'der'
+ * @param {AsnFormat} format - 'pem' or 'der'
  * @param {boolean} [outputPublic] - Export public key even from private key if true.
  * @param {String} [passphrase] - Encrypt private key if passphrase is given.
  * @return {JsonWebKey} - Obtained key object in JWK format.
