@@ -10,13 +10,13 @@ const Ec = elliptic.ec;
 
 
 /**
- * Convert JWK EC public/private keys to octet form
- * compressed form of ec public key: https://tools.ietf.org/html/rfc5480
- * @param jwkey
- * @param outputPublic {boolean} (optional)
- * @param outputFormat
- * @param compact
- * @return {*}
+ * Convert JWK EC public/private keys to octet form.
+ * Compressed form of EC public key is referred to RFC 5480 {@link https://tools.ietf.org/html/rfc5480}.
+ * @param {JsonWebKey} jwkey - A key object in JWK format to be encoded to SEC1 octet format key.
+ * @param {boolean} [outputPublic] - Export public key even from private key if true.
+ * @param {OctetFormat} [outputFormat='binary'] - 'binary' or 'string'.
+ * @param {boolean} [compact=false] - Export compressed form of public key if true.
+ * @return {JsonWebKey} - Encoded key object in JWK format.
  */
 export function fromJwk(jwkey, {outputPublic, outputFormat='binary', compact=false}){
   // original key type
@@ -52,11 +52,11 @@ export function fromJwk(jwkey, {outputPublic, outputFormat='binary', compact=fal
 }
 
 /**
- * Convert Octet form of EC public/private keys to JWK
- * @param octkey
- * @param outputPublic {boolean} (optional)
- * @param namedCurve
- * @return {{kty: string, crv: *, x, y}}
+ * Convert Octet form of EC public/private keys to JWK.
+ * @param {String|Uint8Array} octkey - OctetEC key object in hex string format or Uint8Array.
+ * @param {String} namedCurve - Name of elliptic curve like 'P-256'.
+ * @param {boolean} [outputPublic] - Export public key even from private key if true.
+ * @return {JsonWebKey} - Derived key object in JWK format.
  */
 export function toJwk(octkey, namedCurve, {outputPublic}){
   if (Object.keys(params.namedCurves).indexOf(namedCurve) < 0) throw new Error('UnsupportedCurve');
@@ -93,23 +93,4 @@ export function toJwk(octkey, namedCurve, {outputPublic}){
     jwKey.d = jseu.encoder.encodeBase64Url(binKey);
   }
   return jwKey;
-}
-
-
-
-export function octKeyObjFromJwk(jwkey, type, compact=false){
-  const octKeyObj = {};
-  octKeyObj.publicKey = fromJwk(jwkey, {outputFormat: 'binary', outputPublic: true, compact});
-  if(jwkey.d && type === 'private') octKeyObj.privateKey = fromJwk(jwkey, {outputFormat: 'binary', outputPublic: false, compact});
-
-  return octKeyObj;
-}
-
-export function octKeyObjToJwk(octKeyObj, type, namedCurve) {
-  if (type !== 'public' && type !== 'private') throw new Error('InvalidType');
-  if (Object.keys(params.namedCurves).indexOf(namedCurve) < 0) throw new Error('UnsupportedCurve');
-
-  return (type === 'public')
-    ? toJwk(octKeyObj.publicKey, namedCurve, {outputPublic: true})
-    : toJwk(octKeyObj.privateKey, namedCurve, {outputPublic: false});
 }

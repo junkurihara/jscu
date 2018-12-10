@@ -6,13 +6,14 @@ import jseu from 'js-encoding-utils';
 import hash from 'js-crypto-hash';
 import BufferMod from 'buffer';
 const Buffer = BufferMod.Buffer;
+
 /**
- * Compute jwk public key thumprint specified in RFC7638
+ * Compute JWK public key thumbprint specified in RFC7638
  * https://tools.ietf.org/html/rfc7638
- * @param jwkey
- * @param alg
- * @param output
- * @return {Promise<*>}
+ * @param {JsonWebKey} jwkey - A key object in JWK format
+ * @param {String} [alg='SHA-256'] - Name of hash algorithm to compute the thumbprint.
+ * @param {JwkThumbpirntFormat} [output='binary'] - Output format, 'binary', 'hex' or 'base64'
+ * @return {Promise<String|Uint8Array>} - The computed JWK thumbprint.
  */
 export async function getJwkThumbprint(jwkey, alg='SHA-256', output='binary'){
   // assertion

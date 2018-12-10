@@ -9,6 +9,12 @@ const Buffer = BufferMod.Buffer;
 import params from './params.js';
 import {appendLeadingZeros, pruneLeadingZeros} from './util';
 
+/**
+ * Encode RSA JWK key to ASN.1 DER or PEM of SPKI/OneAsymmetricKey.
+ * @param {JsonWebKey} jwk - A key object in JWK format to be encoded.
+ * @param {PublicOrPrivate} type - 'public' or 'private'.
+ * @returns {Object} - Parsed object of ASN.1 encoded key object.
+ */
 export function fromJwk(jwk, type){
 
   const publicKeyAlgorithmOid = params.publicKeyAlgorithms['RSA'].oid;
@@ -53,9 +59,9 @@ export function fromJwk(jwk, type){
 
 /**
  * Convert RSA spki/pkcs8 public/private keys to JWK
- * @param decoded
- * @param type
- * @return {*}
+ * @param {Object} decoded - Parsed object of RSA key to be encoded.
+ * @param {PublicOrPrivate} type - 'public' or 'private'
+ * @return {JsonWebKey} - Encoded RSA key object in JWK format.
  */
 export function toJwk(decoded, type){
 

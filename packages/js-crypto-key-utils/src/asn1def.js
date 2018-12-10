@@ -5,6 +5,10 @@
 import asn from 'asn1.js';
 
 ///////////////////////////////////////////////////////////////////////////////////////////
+/**
+ * This is either one of subjectPublicKeyInfo, oneAsymmetricKey or encryptedPrivateKeyInfo in ASN.1 format.
+ * @type {AsnObject}
+ */
 export const KeyStructure = asn.define('KeyStructure', function (){
   this.choice({
     subjectPublicKeyInfo: this.use(SubjectPublicKeyInfo),
@@ -13,7 +17,10 @@ export const KeyStructure = asn.define('KeyStructure', function (){
   });
 });
 
-// https://tools.ietf.org/html/rfc5280
+/**
+ * SubjectPublicKeyInfo specified in RFC 5280 {@link https://tools.ietf.org/html/rfc5280}.
+ * @type {AsnObject}
+ */
 export const SubjectPublicKeyInfo = asn.define('SubjectPublicKeyInfo', function () {
   this.seq().obj(
     this.key('algorithm').use(AlgorithmIdentifier),
@@ -22,8 +29,11 @@ export const SubjectPublicKeyInfo = asn.define('SubjectPublicKeyInfo', function 
 });
 
 ///////////////////////////////////////////////////////////////////////////////////////////
-// ( old version PrivateKeyInfo https://tools.ietf.org/html/rfc5208 )
-// RFC5958 https://tools.ietf.org/html/rfc5958
+/**
+ * OneAsymmetricKey specified in RFC5958 {@link https://tools.ietf.org/html/rfc5958}.
+ * (old version PrivateKeyInfo {@link https://tools.ietf.org/html/rfc5208}.)
+ * @type {AsnObject}
+ */
 export const OneAsymmetricKey = asn.define('OneAsymmetricKey', function () {
   this.seq().obj(
     this.key('version').use(Version),
@@ -42,7 +52,10 @@ export const EncryptedPrivateKeyInfo = asn.define('EncryptedPrivateKeyInfo', fun
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////
-// https://tools.ietf.org/html/rfc8018
+/**
+ * PBEParameter, parameter for password-based encryption, specified in RFC 8018 {@link https://tools.ietf.org/html/rfc8018}.
+ * @type {AsnObject}
+ */
 export const PBEParameter = asn.define('PBEParameter', function(){
   this.seq().obj(
     this.key('salt').octstr(8),
@@ -50,6 +63,10 @@ export const PBEParameter = asn.define('PBEParameter', function(){
   );
 });
 
+/**
+ * PBES2Params, parameter for password-based encryption scheme 2, specified in RFC 8018 {@link https://tools.ietf.org/html/rfc8018}.
+ * @type {AsnObject}
+ */
 export const PBES2Params = asn.define('PBES2Params', function(){
   this.seq().obj(
     this.key('keyDerivationFunc').use(AlgorithmIdentifier),
@@ -68,6 +85,10 @@ export const PBES2Params = asn.define('PBES2Params', function(){
 //        prf AlgorithmIdentifier {{PBKDF2-PRFs}} DEFAULT
 //        algid-hmacWithSHA1
 //    }
+/**
+ * PBKDF2Params, parameter for PBKDF2, specified in RFC 8018 {@link https://tools.ietf.org/html/rfc8018}.
+ * @type {AsnObject}
+ */
 export const PBKDF2Params = asn.define('PBKDF2Params', function(){
   this.seq().obj(
     this.key('salt').choice({
@@ -84,6 +105,10 @@ export const PBKDF2Params = asn.define('PBKDF2Params', function(){
 });
 
 ///////////////////////////////////////////////////////////////////////////////////////////
+/**
+ * PBES2ESParams specified in RFC 8018 {@link https://tools.ietf.org/html/rfc8018}.
+ * @type {{'aes192-cbc': AsnObject, 'aes128-cbc': AsnObject, 'des-ede3-cbc': Object, 'aes256-cbc': AsnObject}}
+ */
 export const PBES2ESParams = {
   'des-ede3-cbc': asn.define('DesEde3CbcParams', function(){
     this.octstr();
@@ -101,7 +126,10 @@ export const PBES2ESParams = {
 
 
 ////////////////////////////////////////////////////////////////////////////////////
-// https://tools.ietf.org/html/rfc5280
+/**
+ * AlgorithmIdentifier given in RFC 5280 {@link https://tools.ietf.org/html/rfc5280}
+ * @type AsnObject
+ */
 const AlgorithmIdentifier = asn.define('AlgorithmIdentifier', function () {
   this.seq().obj(
     this.key('algorithm').objid(),
@@ -109,6 +137,10 @@ const AlgorithmIdentifier = asn.define('AlgorithmIdentifier', function () {
   );
 });
 
+/**
+ * Version
+ * @type {AsnObject}
+ */
 const Version = asn.define('Version', function () {
   this.int();
 });
