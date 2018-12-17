@@ -7,7 +7,7 @@ JavaScript Cryptographic Utilities for Browsers and Node.js Crypto-Suite Compati
 > **WARNING**: At this time this solution should be considered suitable for research and experimentation, further code and security review is needed before utilization in a production application.
 
 # Overview
-This library is being developed to provide unified (and specific) cryptographic APIs for browsers and Node.js. There currently exist various sophisticated cryptographic suites for JavaScript that are implemented as native functions, e.g., WebCrypto API and `crypto` in Node.js. However, they have different interfaces and are NOT supported at all platforms. For instance, FireFox cannot be fed PKCS8-formatted private key in WebCrypto API but Chrome does. On the other hand, such suites have not been designed to keep compatibility to existing non-Web cryptographic suites like OpenSSL. This can be seen from the fact that WebCrypto API does not support PEM-formatted keys. Hence we (actually I!) need to write ugly codes so as to enable apps to work in various environments. From this observation, we aim that this library provides support functions to fill such gaps among JS cryptographic suites and that between JavaScript and other popular crypto suites.
+This library is being developed to provide unified cryptographic APIs for browsers and Node.js. There currently exist various sophisticated cryptographic suites for JavaScript that are implemented as native functions, e.g., WebCrypto API and `crypto` in Node.js. However, they have different interfaces and are NOT supported at all platforms. For instance, FireFox cannot be fed PKCS8-formatted private key in WebCrypto API but Chrome does. On the other hand, such suites have not been designed to keep compatibility to existing non-Web cryptographic suites like OpenSSL. This can be seen from the fact that WebCrypto API does not support PEM-formatted keys. Hence we (actually I!) need to write ugly codes so as to enable apps to work in various environments. From this observation, we aim that this library provides support functions to fill such gaps among JS cryptographic suites and that between JavaScript and other popular crypto suites.
 
 Firstly, this library provides following functions that works in most modern browsers and Node.js.
 - ECDSA signing, verification, key generation (P-256/P-384/P-521/P-256K)
@@ -50,16 +50,16 @@ The module structure of this library can be illustrated as follows.
 
 We should note that most of this library's functions are independently available through NPM and GitHub as modules. In other words, this library is being developed as an integrated wrapper of those independent modules. The independent modules are listed as follows:
 
-- `Key`: https://github.com/junkurihara/js-crypto-key-utils
-- `pkc` (EC): https://github.com/junkurihara/js-crypto-ec
-- `pkc` (RSA): https://github.com/junkurihara/js-crypto-rsa
-- `x509`: https://github.com/junkurihara/js-x509-utils
-- `aes`: https://github.com/junkurihara/js-crypto-aes
-- `random`: https://github.com/junkurihara/js-crypto-random
-- `hash`: https://github.com/junkurihara/js-crypto-hash
-- `hkdf`: https://github.com/junkurihara/js-crypto-hkdf
-- `pbkdf`: https://github.com/junkurihara/js-crypto-pbkdf
-- `hmac`: https://github.com/junkurihara/js-crypto-hmac
+- `Key`: https://github.com/junkurihara/jscu/tree/develop/packages/js-crypto-key-utils
+- `pkc` (EC): https://github.com/junkurihara/jscu/tree/develop/packages/js-crypto-ec
+- `pkc` (RSA): https://github.com/junkurihara/jscu/tree/develop/packages/js-crypto-rsa
+- `x509`: https://github.com/junkurihara/jscu/tree/develop/packages/js-x509-utils
+- `aes`: https://github.com/junkurihara/jscu/tree/develop/packages/js-crypto-aes
+- `random`: https://github.com/junkurihara/jscu/tree/develop/packages/js-crypto-random
+- `hash`: https://github.com/junkurihara/jscu/tree/develop/packages/js-crypto-hash
+- `hkdf`: https://github.com/junkurihara/jscu/tree/develop/packages/js-crypto-hkdf
+- `pbkdf`: https://github.com/junkurihara/jscu/tree/develop/packages/js-crypto-pbkdf
+- `hmac`: https://github.com/junkurihara/jscu/tree/develop/packages/js-crypto-hmac
 
 Please refer to the above repos for further information.
 

@@ -53,10 +53,23 @@ export default {
   }
 };
 
+/**
+ * Get algorithm name from ObjectIdentifier array loosely.
+ * @param {Array} oid - ObjectIdentifier.
+ * @param {Object} oidDict - Dictionary of ObjectIdentifier.
+ * @return {Array} - Array of ObjectIdentifier array.
+ */
 export function getAlgorithmFromOid(oid, oidDict){
   return Object.keys(oidDict).filter( (k) => oidDict[k].oid.toString() === oid.toString());
 }
 
+/**
+ * Get algorithm name from ObjectIdentifier array strictly.
+ * @param {Array} oid - ObjectIdentifier.
+ * @param {Object} dict - Dictionary of ObjectIdentifier.
+ * @return {Array} - Exactly one ObjectIdentifier.
+ * @throws {Error} - Throws if UnsupportedAlgorithm.
+ */
 export const getAlgorithmFromOidStrict = (oid, dict) => {
   const array = getAlgorithmFromOid(oid, dict);
   if (array.length === 0) throw new Error('UnsupportedAlgorithm');

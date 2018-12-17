@@ -43,6 +43,10 @@ export const OneAsymmetricKey = asn.define('OneAsymmetricKey', function () {
     this.key('publicKey').implicit(1).optional().bitstr()
   );
 });
+/**
+ * EncryptedPrivateKeyInfo specified in RFC5958 {@link https://tools.ietf.org/html/rfc5958}.
+ * @type {AsnObject}
+ */
 export const EncryptedPrivateKeyInfo = asn.define('EncryptedPrivateKeyInfo', function () {
   this.seq().obj(
     this.key('encryptionAlgorithm').use(AlgorithmIdentifier),

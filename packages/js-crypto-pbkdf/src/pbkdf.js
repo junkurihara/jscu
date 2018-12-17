@@ -15,7 +15,7 @@ import params from './params.js';
  * @param {Number} c - Iteration count.
  * @param {Number} dkLen - Intended output key length in octet.
  * @param {String} hash - Name of underlying hash function for HMAC like 'SHA-256', used as a pseudorandom function.
- * @return {Promise<Uint8Array>}: Derived key.
+ * @return {Promise<Uint8Array>} - Derived key.
  * @throws {Error} - Throws if the intended key length is too long.
  */
 export async function pbkdf2(p, s, c, dkLen, hash) {
@@ -68,7 +68,7 @@ const nwbo = (num, len) => {
  * @param {Number} c - Iteration count.
  * @param {Number} dkLen - Intended output key length in octet.
  * @param {String} hash - Name of underlying hash function for HMAC like 'SHA-256'
- * @return {Promise<Uint8Array>}: Derived key.
+ * @return {Promise<Uint8Array>} - Derived key.
  * @throws {Error} - Throws if the intended key length is too long.
  */
 export async function pbkdf1(p, s, c, dkLen, hash){
