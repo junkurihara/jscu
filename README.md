@@ -10,10 +10,11 @@ jscu: A Universal Cryptographic Library for JavaScript
 
 > **NOTE**: This repository is a *monorepo* of a universal cryptographic library for JavaScript called `js-crypto-utils` (`jscu`), which is designed so as to work in most modern browsers and Node.js. The detailed explanation would be given in each package repository. The root package is given [here](https://github.com/junkurihara/jscu/tree/develop/packages/js-crypto-utils) (in `develop` branch).
 
-# Introduction and Overview
+# Introduction and Overview of this monorepo
 This project called `jscu` is being developed to provide unified cryptographic APIs for browsers and Node.js. There currently exist various sophisticated cryptographic suites for JavaScript that are implemented as native functions, e.g., WebCrypto API and `crypto` in Node.js. However, they have different interfaces and are NOT supported at all platforms. For instance, FireFox cannot be fed PKCS8-formatted private key in WebCrypto API but Chrome does. On the other hand, such suites have not been designed to keep compatibility to existing non-Web cryptographic suites like OpenSSL. This can be seen from the fact that WebCrypto API does not support PEM-formatted keys. Hence we (actually I!) need to write ugly codes so as to enable apps to work in various environments. From this observation, we aim that this library provides support functions to fill such gaps among JS cryptographic suites and that between JavaScript and other popular crypto suites.
 
-Firstly, this library provides following functions that works in most modern browsers and Node.js.
+In particular, this library provides unified APIs of the following cryptographic functions that works in most modern browsers and Node.js.
+
 - ECDSA signing, verification, key generation (P-256/P-384/P-521/P-256K)
 - RSA-PSS/RSASSA-PKCS1-v1_5 signing, verification, key generation.
 - Encryption using ECDH and HKDF.
@@ -21,8 +22,22 @@ Firstly, this library provides following functions that works in most modern bro
 - Public/private key format conversion between JWK and PEM/DER (SPKI for public/PKCS8 for private)
 - Generation of JWK Thumbprint
 - Generation of X.509 public key certificate from JWK and extraction of JWK public key from X.509 public key certificate.
-Additionally, this library provides random, hash, AES, HMAC, HKDF, and PBKDF functions. 
 
+Additionally, this library provides random, hash, AES, HMAC, HKDF, and PBKDF functions. This implies the `jscu` is composed of the several subpackages and can be seen as a cryptographic suite like [`openpgpjs`](https://openpgpjs.org/). The root package, `js-crypto-utils`, of the suite and its subpackages are listed as follows.
+
+- [`crypto-utils`](https://github.com/junkurihara/jscu/tree/develop/packages/js-crypt-utils): Root cryptographic package providing unified APIs.
+- [`x509-utils`](https://github.com/junkurihara/jscu/tree/develop/packages/js-x509-utils): Subpackage handling X509 certificates.
+- [`key-utils`](https://github.com/junkurihara/jscu/tree/develop/packages/js-crypto-key-utils): Subpackage handling various key formats like PEM, DER, and JWK.
+- [`ec`](https://github.com/junkurihara/jscu/tree/develop/packages/js-crypto-ec): Subpackage providing naive encryption and signing of elliptic curve cryptography.
+- [`rsa`](https://github.com/junkurihara/jscu/tree/develop/packages/js-crypto-rsa): Subpackage providing naive encryption and signing of RSA cryptography. 
+- [`aes`](https://github.com/junkurihara/jscu/tree/develop/packages/js-crypto-aes): Subpackage for AES encryption.
+- [`random`](https://github.com/junkurihara/jscu/tree/develop/packages/js-crypto-random): Subpackage for cryptographic random generator.
+- [`hash`](https://github.com/junkurihara/jscu/tree/develop/packages/js-crypto-hash): Subpackage providing hash functions including SHA-2.
+- [`hkdf`](https://github.com/junkurihara/jscu/tree/develop/packages/js-crypto-hkdf): Subpackage providing hash-based key derivation function.
+- [`pbkdf`](https://github.com/junkurihara/jscu/tree/develop/packages/js-crypto-pbkdf): Subpackage providing password-based key derivation function 1 and 2.
+- [`hmac`](https://github.com/junkurihara/jscu/tree/develop/packages/js-crypto-hmac): Subpackage providing hash-based message authentication code.
+
+The structure of the package is described in the README.md of the root package, and hence we should start from there. But we can use various cryptographic functions not only via the root package, `js-crypto-utils`, but also by directly importing subpackages of intended functions. We should refer to README.md of each subpackage for detailed usage.
 
 # For Developers
 
