@@ -36,7 +36,6 @@
     "webcrypto"
   ],
   "dependencies": {
-    "@babel/plugin-transform-regenerator": "^7.0.0",
     "@babel/runtime": "^7.1.5",
     "hash.js": "^1.1.5",
     "js-crypto-env": "^0.1.1",

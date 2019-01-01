@@ -39,7 +39,6 @@
     "js-crypto-random": "^0.2.6"
   },
   "dependencies": {
-    "@babel/plugin-transform-regenerator": "^7.0.0",
     "@babel/runtime": "^7.1.5",
     "js-crypto-env": "^0.1.1"
   }

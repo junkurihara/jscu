@@ -1,1 +1,0 @@
-../packages/js-crypto-env/README.md
