@@ -69,9 +69,15 @@ jobs:
     - run:
         name: Publish package
         command: bash scripts/publish.sh
+
+  webpage:
+    <<: *defaults
+    steps:
+    - attach_workspace:
+        at: ~/repo
     - run:
         name: Build API documentation webpage
-        command: npm run docs
+        command: yarn docs
     - run:
         name: Publish webpage
         command: mkdir -p ~/jscu-webpage && cd ~/jscu-webpage && git clone https://github.com/junkurihara/jscu-webpage.git . && git config user.email "junkurihara@users.noreply.github.com" && git config user.name "Circle CI" && rm -rf docs && mv ~/repo/esdocs docs && git add . && git commit -am 'Updated via CircleCI' && git push -q https://${GITHUB_PERSONAL_TOKEN}@github.com/junkurihara/jscu-webpage.git master
@@ -93,22 +99,9 @@ workflows:
             only: /^v[0-9]+(\.[0-9]+)*/
           branches:
             ignore: /.*/
-
-
-
-workflows:
-  version: 2
-  test-publish:
-    jobs:
-    - test:
-        filters:
-          tags:
-            only: /^v[0-9]+(\.[0-9]+)*/
-    - publish:
+    - webpage:
         requires:
-        - test
+          - test
         filters:
-          tags:
-            only: /^v[0-9]+(\.[0-9]+)*/
           branches:
-            ignore: /.*/
+            only: master
