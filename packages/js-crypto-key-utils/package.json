@@ -1,6 +1,6 @@
 {
   "name": "js-crypto-key-utils",
-  "version": "0.5.9",
+  "version": "0.5.10",
   "description": "Universal Module for Cryptographic Key Utilities in JavaScript, including PEM-JWK converters",
   "main": "dist/index.js",
   "scripts": {
@@ -59,9 +59,9 @@
     "elliptic": "^6.4.1",
     "js-crypto-aes": "^0.4.5",
     "js-crypto-hash": "^0.3.4",
-    "js-crypto-pbkdf": "^0.2.4",
+    "js-crypto-pbkdf": "^0.2.5",
     "js-crypto-random": "^0.2.7",
-    "js-encoding-utils": "^0.3.0",
+    "js-encoding-utils": "^0.3.3",
     "lodash.clonedeep": "^4.5.0"
   }
 }

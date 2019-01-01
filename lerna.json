@@ -5,7 +5,6 @@
     "publish": {
       "ignoreChanges": [
         "*.md",
-        "*.json",
         "*.txt",
         "**/test/**",
         "**/coverage/**",
