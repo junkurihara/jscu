@@ -1,6 +1,6 @@
 {
   "name": "js-crypto-hkdf",
-  "version": "0.4.2",
+  "version": "0.4.3",
   "description": "Universal Module for HKDF (Hash-based Key Derivation Function) in JavaScript",
   "main": "dist/index.js",
   "scripts": {
@@ -39,8 +39,8 @@
   "dependencies": {
     "@babel/plugin-transform-regenerator": "^7.0.0",
     "@babel/runtime": "^7.1.5",
-    "js-crypto-env": "^0.1.1",
-    "js-crypto-hmac": "^0.3.3",
-    "js-crypto-random": "^0.2.6"
+    "js-crypto-env": "^0.1.2",
+    "js-crypto-hmac": "^0.3.4",
+    "js-crypto-random": "^0.2.7"
   }
 }
