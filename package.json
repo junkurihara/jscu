@@ -51,7 +51,7 @@
     "lerna": "3.12.0",
     "mocha": "5.2.0",
     "mocha-sinon": "2.1.0",
-    "nyc": "13.2.0",
+    "nyc": "13.3.0",
     "webpack": "4.29.3",
     "webpack-cli": "3.2.3",
     "webpack-common-shake": "2.1.0",
