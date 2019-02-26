@@ -1,6 +1,6 @@
 {
   "name": "js-crypto-random",
-  "version": "0.2.7",
+  "version": "0.2.8",
   "description": "Universal Module for Secure Random Generator in JavaScript",
   "main": "dist/index.js",
   "scripts": {
@@ -37,6 +37,6 @@
   ],
   "dependencies": {
     "@babel/runtime": "^7.3.4",
-    "js-crypto-env": "^0.1.2"
+    "js-crypto-env": "^0.1.3"
   }
 }
