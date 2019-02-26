@@ -40,7 +40,7 @@
     "js-encoding-utils": "0.3.3"
   },
   "dependencies": {
-    "@babel/runtime": "^7.1.5",
+    "@babel/runtime": "^7.3.4",
     "js-crypto-env": "^0.1.2",
     "js-crypto-hash": "^0.3.4"
   }

@@ -39,7 +39,7 @@
     "js-crypto-random": "^0.2.7"
   },
   "dependencies": {
-    "@babel/runtime": "^7.1.5",
+    "@babel/runtime": "^7.3.4",
     "js-crypto-env": "^0.1.2"
   }
 }

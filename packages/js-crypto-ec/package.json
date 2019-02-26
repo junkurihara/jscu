@@ -38,7 +38,7 @@
     "ecdh"
   ],
   "dependencies": {
-    "@babel/runtime": "^7.1.5",
+    "@babel/runtime": "^7.3.4",
     "asn1.js": "^5.0.1",
     "buffer": "^5.2.1",
     "elliptic": "^6.4.1",
@@ -46,6 +46,6 @@
     "js-crypto-hash": "^0.3.4",
     "js-crypto-key-utils": "^0.5.10",
     "js-crypto-random": "^0.2.7",
-    "js-encoding-utils": "^0.3.3"
+    "js-encoding-utils": "^0.3.4"
   }
 }
