@@ -37,11 +37,11 @@ Additionally, this library provides random, hash, AES, HMAC, HKDF, and PBKDF fun
 - [`pbkdf`](https://github.com/junkurihara/jscu/tree/develop/packages/js-crypto-pbkdf): Subpackage providing password-based key derivation function 1 and 2.
 - [`hmac`](https://github.com/junkurihara/jscu/tree/develop/packages/js-crypto-hmac): Subpackage providing hash-based message authentication code.
 
-The structure of the package is described in the README.md of the root package, and hence we should start from there. But we can use various cryptographic functions not only via the root package, `js-crypto-utils`, but also by directly importing subpackages of intended functions. We should refer to README.md of each subpackage for detailed usage.
+The structure of the package is described in the README.md of the [root package](https://github.com/junkurihara/jscu/tree/develop/packages/js-crypt-utils), and hence we should start from there. But we can use various cryptographic functions not only via the root package, [`js-crypto-utils`](https://github.com/junkurihara/jscu/tree/develop/packages/js-crypt-utils), but also by directly importing subpackages of intended functions. We should refer to README.md of each subpackage for its detailed usage.
 
-# For Developers
+# For Developers and Contributors
 
-Usage of this monorepo and procedures for NPM deployment are summarized as follows.
+Using `npm` package is the simplest way to fully leverage `jscu` functions. Considering you fork, develop, and update `jscu` packages themselves, i.e., as developers and contributors, usage of this monorepo and procedures for NPM deployment are summarized as follows.
 
 - This monorepo is managed via [Yarn Workspace](https://yarnpkg.com/en/docs/workspaces) and [Lerna](https://github.com/lerna/lerna). After cloning this Git repo, just do `yarn install` at the root of the cloned folder. Then the setup is all done.
 - Versioning pattern of each package is completely independent, but the version of this Git repository specified in the root `package.json` is tied with the root package, i.e., `packages/js-crypto-utils`. The name of root package is also given in the root `package.json`.
@@ -50,3 +50,14 @@ Usage of this monorepo and procedures for NPM deployment are summarized as follo
   2. Add final changes for release at the level of GitHub repo. Then, commit changes and then execute `yarn release:start` to start release process on a release branch. Here we note the release version will be the updated Git repo version.
   3. To finalize the release operation, execute `yarn release:finish` to merge the release branch to `master`, and then merge `master` to `develop`. It will also tag the `master` branch with the updated Git repo version, i.e., the root package (`packages/js-crypto-utils`) version.
   4. Execute `yarn release:push` and push all branches and the generated tag of Git repo version to GitHub.
+
+# Contributing
+
+`jscu` is free, open source software licensed under MIT License.
+
+You can open issues for bugs you've found or features you think are missing. You can also submit pull requests to this repository, or submit translations using Weblate.
+
+Contributors are more than welcome!
+
+# Documentation
+The [`jscu` documentation](https://junkurihara.github.io/jscu-webpage/) is a dynamically generated site from this monorepo via [esdoc](https://esdoc.org/). You can submit pull requests to 'docs' of this monorepo for document update.

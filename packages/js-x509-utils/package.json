@@ -1,6 +1,6 @@
 {
   "name": "js-x509-utils",
-  "version": "0.3.13",
+  "version": "0.3.14",
   "description": "Universal Module of X.509 Certificate Utilities in JavaScript",
   "main": "dist/index.js",
   "scripts": {
@@ -37,15 +37,15 @@
     "rfc5280"
   ],
   "dependencies": {
-    "@babel/runtime": "^7.1.5",
+    "@babel/runtime": "^7.3.4",
     "asn1.js": "^5.0.1",
     "asn1.js-rfc5280": "^3.0.0",
     "bn.js": "^4.11.8",
     "buffer": "^5.2.1",
-    "js-crypto-ec": "^0.4.9",
-    "js-crypto-key-utils": "^0.5.10",
-    "js-crypto-random": "^0.2.7",
-    "js-crypto-rsa": "^0.4.11",
-    "js-encoding-utils": "^0.3.3"
+    "js-crypto-ec": "^0.4.10",
+    "js-crypto-key-utils": "^0.5.11",
+    "js-crypto-random": "^0.2.8",
+    "js-crypto-rsa": "^0.4.12",
+    "js-encoding-utils": "^0.3.4"
   }
 }
