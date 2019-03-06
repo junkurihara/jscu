@@ -20,4 +20,11 @@ describe(`${envName}: Random generation test`, () => {
     expect(r).to.be.a('String');
     expect(r).to.be.length(32);
   });
+
+  it('Random string (uppercase, lowercase and alphanumeric chars) of desired length should be generated successfully', () => {
+    const r = random.getRandomString(32);
+    console.log(r);
+    expect(r).to.be.a('String');
+    expect(r).to.be.length(32);
+  });
 });
