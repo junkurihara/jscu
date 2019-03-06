@@ -5,6 +5,32 @@
 import * as util from 'js-crypto-env';
 
 /**
+ * Secure random string generator based on getRandomBytes,
+ * which is composed of uppercase or lowercase alphanumeric characters;
+ * @param {Number} len - Length of string.
+ * @return {String} - Generated random ASCII string.
+ */
+export function getRandomString(len) {
+  const array = getRandomBytes(len);
+  const types = getRandomBytes(len); // indicating alphanumeric, upper, lower
+  let finalString = '';
+
+  // Ascii code
+  // 1-0: 0x30 -- 0x39, 10 chars
+  // A-Z: 0x41 -- 0x5a,
+  // a-z: 0x61 -- 0x7a
+  for (let i = 0; i < len; i++) {
+    types[i] = (types[i] % 3);
+    array[i] = (types[i] === 0) ?
+      (array[i] % 10) + 0x30 :
+      (array[i] % 26) + ((types[i] === 1) ? 0x41 : 0x61);
+    finalString += String.fromCharCode(array[i]);
+  }
+
+  return finalString;
+}
+
+/**
  * Secure random 'ASCII' string generator based on getRandomBytes;
  * @param {Number} len - Length of ASCII string.
  * @return {String} - Generated random ASCII string.

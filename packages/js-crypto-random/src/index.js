@@ -2,7 +2,7 @@
  * index.js
  */
 
-import {getRandomBytes, getRandomAsciiString} from './random.js';
+import {getRandomBytes, getRandomAsciiString, getRandomString} from './random.js';
 
-export default {getRandomBytes, getRandomAsciiString};
-export {getRandomBytes, getRandomAsciiString};
+export default {getRandomBytes, getRandomAsciiString, getRandomString};
+export {getRandomBytes, getRandomAsciiString, getRandomString};
