@@ -24,12 +24,12 @@
     "html": "lerna run html"
   },
   "devDependencies": {
-    "@babel/cli": "7.2.3",
-    "@babel/core": "7.4.0",
-    "@babel/plugin-transform-runtime": "7.4.0",
-    "@babel/plugin-transform-regenerator": "7.4.0",
-    "@babel/polyfill": "7.4.0",
-    "@babel/preset-env": "7.4.2",
+    "@babel/cli": "7.4.3",
+    "@babel/core": "7.4.3",
+    "@babel/plugin-transform-runtime": "7.4.3",
+    "@babel/plugin-transform-regenerator": "7.4.3",
+    "@babel/polyfill": "7.4.3",
+    "@babel/preset-env": "7.4.3",
     "@babel/register": "7.4.0",
     "babel-eslint": "10.0.1",
     "babel-loader": "8.0.5",
