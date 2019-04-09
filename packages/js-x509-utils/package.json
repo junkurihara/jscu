@@ -46,6 +46,6 @@
     "js-crypto-key-utils": "^0.5.13",
     "js-crypto-random": "^0.2.9",
     "js-crypto-rsa": "^0.4.14",
-    "js-encoding-utils": "^0.3.4"
+    "js-encoding-utils": "^0.3.6"
   }
 }

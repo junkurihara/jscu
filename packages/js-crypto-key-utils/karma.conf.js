@@ -27,7 +27,8 @@ module.exports = function(config) {
     // list of files / patterns to load in the browser
     files: [
       `./dist/${common.bundleName}`,
-      './test/**/*.spec.js'
+      //'./test/**/*.spec.js'
+      './test/encryptedPrivateKey.spec.js'
     ],
 
 
