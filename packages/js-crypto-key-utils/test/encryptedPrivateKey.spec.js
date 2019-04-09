@@ -61,7 +61,8 @@ describe(`${envName}: RSA/EC Key conversion from/to JWK test.`, () => {
 
 
         return result && (objectSort(jwkpri).toString() === objectSort(jwkpri2).toString());
-      }));
+      }))
+        .catch( (e) => {console.log(e.message);});
       console.log(elem);
       return elem.every( (x) => x);
     }));
@@ -129,7 +130,8 @@ describe(`${envName}: RSA/EC Key conversion from/to JWK test.`, () => {
 
 
         return result && (objectSort(jwkpri).toString() === objectSort(jwkpri2).toString());
-      }));
+      }))
+        .catch( (e) => {console.log(e.message);});
       console.log(elem);
       return elem.every( (x) => x);
     }));
