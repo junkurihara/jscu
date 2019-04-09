@@ -37,7 +37,7 @@
     "rfc5280"
   ],
   "dependencies": {
-    "@babel/runtime": "^7.3.4",
+    "@babel/runtime": "^7.4.3",
     "asn1.js": "^5.0.1",
     "asn1.js-rfc5280": "^3.0.0",
     "bn.js": "^4.11.8",
