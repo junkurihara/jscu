@@ -5620,10 +5620,10 @@ istanbul@^0.4.0:
     which "^1.1.1"
     wordwrap "^1.0.0"
 
-js-encoding-utils@0.3.6, js-encoding-utils@^0.3.6:
-  version "0.3.6"
-  resolved "https://registry.yarnpkg.com/js-encoding-utils/-/js-encoding-utils-0.3.6.tgz#dba234c4a6ef35989f271fea0328ec5d7bdea7c3"
-  integrity sha512-uFSwaIhtY2KyuP6GMEzEnEqESdP6LuyGTKepf9w5l1r/c5Lcybon38OZDILn8Q4D1A6aCr5HRd4e4Rg0UysV8g==
+js-encoding-utils@0.4.0, js-encoding-utils@^0.4.0:
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/js-encoding-utils/-/js-encoding-utils-0.4.0.tgz#bc6ccd65ef0e1d7fbf12bfb7819fee9d191d04a1"
+  integrity sha512-jJlfCAAXwhEHsxMfbqFj/F4eNxN9yu1xqmYA3aRGMXGVD7Ao9HaBaKpQoUkW27b+VKo7zk52daX3/HEdT1nyhg==
   dependencies:
     "@babel/runtime" "^7.4.3"
 
