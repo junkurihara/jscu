@@ -21,7 +21,7 @@ const BN = asn.bignum;
  * @param {AsnEncryptOptionsWithPassphrase} [options={passphrase: ''}] - Encryption options for ASN.1 private key.
  * @return {Promise<DER>} - Encrypted private key in DER.
  */
-export async function encryptEncryptedPrivateKeyInfo(binKey, options = {passphrase:''}){
+export const encryptEncryptedPrivateKeyInfo = async (binKey, options = {passphrase:''}) => {
   // default params
   if(typeof options.algorithm === 'undefined') options.algorithm = 'pbes2';
   if(typeof options.iterationCount === 'undefined') options.iterationCount = 2048;
@@ -41,7 +41,7 @@ export async function encryptEncryptedPrivateKeyInfo(binKey, options = {passphra
     encryptedPBES1.encryptionAlgorithm.parameters = PBEParameter.encode(encryptedPBES1.encryptionAlgorithm.parameters, 'der');
     return EncryptedPrivateKeyInfo.encode(encryptedPBES1, 'der');
   }
-}
+};
 
 /**
  * Decrypt EncryptedPrivateKeyInfo
@@ -49,7 +49,7 @@ export async function encryptEncryptedPrivateKeyInfo(binKey, options = {passphra
  * @param {String} passphrase - Passphrase to decyrpt the object.
  * @return {Promise<Object>} - Decrypted object.
  */
-export async function decryptEncryptedPrivateKeyInfo(epki, passphrase){
+export const decryptEncryptedPrivateKeyInfo = async (epki, passphrase) => {
   const decoded = {};
 
   // encryptionAlgorithm.algorithm
@@ -70,10 +70,10 @@ export async function decryptEncryptedPrivateKeyInfo(epki, passphrase){
     return await decryptPBES2(decoded, passphrase);
   }
   else return await decryptPBES1(decoded, passphrase);
-}
+};
 
 //////////////////////////////
-function encodePBES2(decoded){
+const encodePBES2 = (decoded) => {
   const epki = { encryptionAlgorithm: {} };
 
   // algorithm
@@ -100,9 +100,9 @@ function encodePBES2(decoded){
   // encoded data
   epki.encryptedData = decoded.encryptedData;
   return EncryptedPrivateKeyInfo.encode(epki, 'der');
-}
+};
 
-function decodePBES2(rawParams){
+const decodePBES2 = (rawParams) => {
   const pbes2Params = PBES2Params.decode(rawParams, 'der');
 
   // keyDerivationFunc
@@ -138,12 +138,12 @@ function decodePBES2(rawParams){
       parameters: encryptionParams
     }
   };
-}
+};
 
 
 //////////////////////
 // PBES2 RFC8018 Section 6.2.1
-async function encryptPBES2(binKey, passphrase, kdfAlgorithm, prf, iterationCount, cipher){
+const encryptPBES2 = async (binKey, passphrase, kdfAlgorithm, prf, iterationCount, cipher) => {
   // kdf
   const pBuffer = jseu.encoder.stringToArrayBuffer(passphrase);
   const salt = await jscrandom.getRandomBytes(
@@ -191,11 +191,11 @@ async function encryptPBES2(binKey, passphrase, kdfAlgorithm, prf, iterationCoun
       }
     }
   };
-}
+};
 
 //////////////////////////////
 // PBES2 RFC8018 Section 6.2.2
-async function decryptPBES2(decoded, passphrase){
+const decryptPBES2 = async (decoded, passphrase) => {
   const kdf = decoded.encryptionAlgorithm.parameters.keyDerivationFunc;
   const eS = decoded.encryptionAlgorithm.parameters.encryptionScheme;
 
@@ -229,11 +229,11 @@ async function decryptPBES2(decoded, passphrase){
   } else throw new Error('UnsupportedEncryptionAlgorithm');
 
   return OneAsymmetricKey.decode(out, 'der');
-}
+};
 
 //////////////////////////////
 // PBES1 RFC8018 Section 6.1.1
-async function encryptPBES1(binKey, passphrase, algorithm, iterationCount){
+const encryptPBES1 = async (binKey, passphrase, algorithm, iterationCount) => {
   // pbkdf1
   const pBuffer = jseu.encoder.stringToArrayBuffer(passphrase);
   const salt = await jscrandom.getRandomBytes(8); // defined as 8 octet
@@ -263,11 +263,11 @@ async function encryptPBES1(binKey, passphrase, algorithm, iterationCount){
     },
     encryptedData: out
   };
-}
+};
 
 //////////////////////////////
 // PBES1 RFC8018 Section 6.1.2
-async function decryptPBES1(decoded, passphrase){
+const decryptPBES1 = async (decoded, passphrase) => {
   // pbkdf1
   const pBuffer = jseu.encoder.stringToArrayBuffer(passphrase);
   const salt = new Uint8Array(decoded.encryptionAlgorithm.parameters.salt);
@@ -289,4 +289,4 @@ async function decryptPBES1(decoded, passphrase){
   else throw new Error('UnsupportedEncryptionAlgorithm');
 
   return OneAsymmetricKey.decode(out, 'der');
-}
+};

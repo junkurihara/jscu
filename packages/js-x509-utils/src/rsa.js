@@ -19,7 +19,7 @@ const Buffer = BufferMod.Buffer;
  * @param {RSAPSSObject} [pssParams] - Effective only for RSASSA-PSS.
  * @returns {Promise<{data: Buffer, unused: number}>} - ASN.1 parsed signature object.
  */
-export async function getSignature(encodedTbsCertificate, privateJwk, algorithm, pssParams){
+export const getSignature = async (encodedTbsCertificate, privateJwk, algorithm, pssParams) => {
   let signature;
   if(algorithm === 'rsassaPss'){
     signature = await rsa.sign( encodedTbsCertificate, privateJwk, pssParams.hash, { name: 'RSA-PSS', saltLength: pssParams.saltLength });
@@ -28,14 +28,14 @@ export async function getSignature(encodedTbsCertificate, privateJwk, algorithm,
     signature = await rsa.sign( encodedTbsCertificate, privateJwk, params.signatureAlgorithms[algorithm].hash, { name: 'RSASSA-PKCS1-v1_5' });
   }
   return {unused: 0, data: Buffer.from(signature)};
-}
+};
 
 /**
  * Encode RSA-PSS parsed params to ASN.1 Uint8Array binary
  * @param {RSAPSSObject} options - RSA-PSS params as a parsed object.
  * @returns {DER} - Encoded RSA-PSS object.
  */
-export function encodeRsassaPssParams(options){
+export const encodeRsassaPssParams = (options) => {
   if (options.hash === 'SHA-1' && options.saltLength === 20 && options.explicit === false) return Buffer.from([0x30, 0x00]);
   else {
     const pssParams = {
@@ -56,7 +56,7 @@ export function encodeRsassaPssParams(options){
 
     return RSASSAPSSParams.encode(pssParams, 'der');
   }
-}
+};
 
 
 /**
@@ -65,7 +65,7 @@ export function encodeRsassaPssParams(options){
  * @returns {{hashForMgf: string, saltLength: number, mgf: string, hash: string}}
  * @throws {Error} - Throws if InvalidCertificateFormat.
  */
-export function decodeRsassaPssParams(pssParams){
+export const decodeRsassaPssParams = (pssParams) => {
   let returnParams;
   if((new Uint8Array(pssParams)).toString() !== (new Uint8Array([0x30, 0x00]).toString())){
     // non empty params
@@ -88,7 +88,7 @@ export function decodeRsassaPssParams(pssParams){
   }
 
   return returnParams;
-}
+};
 
 /////////////////////////////////////////////////////////////////////////////////////////
 // RFC4055 https://tools.ietf.org/html/rfc4055

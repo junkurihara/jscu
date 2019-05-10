@@ -16,7 +16,7 @@ import params from './params.js';
  * @return {Uint8Array} - Encrypted message byte array.
  * @throws {Error} - Throws error if UnsupportedCipher.
  */
-export function encrypt(msg, key, {name, iv, additionalData, tagLength}, nodeCrypto){
+export const encrypt = (msg, key, {name, iv, additionalData, tagLength}, nodeCrypto) => {
   let alg = params.ciphers[name].nodePrefix;
   alg = `${alg}-${(key.byteLength*8).toString()}-`;
   alg = alg + params.ciphers[name].nodeSuffix;
@@ -45,7 +45,7 @@ export function encrypt(msg, key, {name, iv, additionalData, tagLength}, nodeCry
   data.set(tag, body.length + final.length);
 
   return data;
-}
+};
 
 
 /**
@@ -60,7 +60,7 @@ export function encrypt(msg, key, {name, iv, additionalData, tagLength}, nodeCry
  * @return {Uint8Array} - Decrypted message byte array.
  * @throws {Error} - Throws error if UnsupportedCipher or DecryptionFailure.
  */
-export function decrypt(data, key, {name, iv, additionalData, tagLength}, nodeCrypto) {
+export const decrypt = (data, key, {name, iv, additionalData, tagLength}, nodeCrypto) => {
   let alg = params.ciphers[name].nodePrefix;
   alg = `${alg}-${(key.byteLength*8).toString()}-`;
   alg = alg + params.ciphers[name].nodeSuffix;
@@ -96,4 +96,4 @@ export function decrypt(data, key, {name, iv, additionalData, tagLength}, nodeCr
   msg.set(final, decryptedBody.length);
 
   return msg;
-}
+};

@@ -14,7 +14,7 @@
  * @return {Promise<Uint8Array>} - Encrypted data byte array.
  * @throws {Error} - Throws if UnsupportedCipher.
  */
-export async function encrypt(msg, key, {name = 'AES-GCM', iv, additionalData, tagLength}, webCrypto) {
+export const encrypt = async (msg, key, {name = 'AES-GCM', iv, additionalData, tagLength}, webCrypto) => {
   const encryptionConfig = setCipherParams({name, iv, additionalData, tagLength});
 
   if (typeof window.msCrypto === 'undefined') {
@@ -34,7 +34,7 @@ export async function encrypt(msg, key, {name = 'AES-GCM', iv, additionalData, t
       return data;
     } else return new Uint8Array(encryptedObj);
   }
-}
+};
 
 /**
  * Decrypt data through AES of WebCrypto API.
@@ -48,7 +48,7 @@ export async function encrypt(msg, key, {name = 'AES-GCM', iv, additionalData, t
  * @return {Promise<Uint8Array>} - Decrypted plaintext message.
  * @throws {Error} - Throws if UnsupportedCipher or DecryptionFailure.
  */
-export async function decrypt(data, key, {name, iv, additionalData, tagLength}, webCrypto) {
+export const decrypt = async (data, key, {name, iv, additionalData, tagLength}, webCrypto) => {
   const decryptionConfig = setCipherParams({name, iv, additionalData, tagLength});
 
   if (!window.msCrypto) {
@@ -75,7 +75,7 @@ export async function decrypt(data, key, {name, iv, additionalData, tagLength}, 
       return new Uint8Array(msg);
     }
   }
-}
+};
 
 /**
  * Set params for encryption algorithms.

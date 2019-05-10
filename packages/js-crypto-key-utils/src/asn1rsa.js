@@ -15,7 +15,7 @@ import {appendLeadingZeros, pruneLeadingZeros} from './util';
  * @param {PublicOrPrivate} type - 'public' or 'private'.
  * @returns {Object} - Parsed object of ASN.1 encoded key object.
  */
-export function fromJwk(jwk, type){
+export const fromJwk = (jwk, type) => {
 
   const publicKeyAlgorithmOid = params.publicKeyAlgorithms['RSA'].oid;
   // Parameters is always null Ox0500 in ASN.1 as shown in the Section 2.3.1 https://tools.ietf.org/html/rfc3279
@@ -63,7 +63,7 @@ export function fromJwk(jwk, type){
  * @param {PublicOrPrivate} type - 'public' or 'private'
  * @return {JsonWebKey} - Encoded RSA key object in JWK format.
  */
-export function toJwk(decoded, type){
+export const toJwk = (decoded, type) => {
 
   if (type === 'public'){ // SPKI
     // algorithm.algorithm.parameters is always null Ox0500 in ASN.1

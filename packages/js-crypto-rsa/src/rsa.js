@@ -17,7 +17,7 @@ import jseu from 'js-encoding-utils';
  * @return {Promise<{publicKey: JsonWebKey, privateKey: JsonWebKey}>}
  * @throws {Error} - Throws if UnsupportedEnvironment.
  */
-export async function generateKey(modulusLength = 2048, publicExponent = new Uint8Array([0x01, 0x00, 0x01])){
+export const generateKey = async (modulusLength = 2048, publicExponent = new Uint8Array([0x01, 0x00, 0x01])) => {
   const webCrypto = util.getWebCryptoAll(); // web crypto api
   const nodeCrypto = util.getNodeCrypto(); // implementation on node.js
 
@@ -37,7 +37,7 @@ export async function generateKey(modulusLength = 2048, publicExponent = new Uin
   if (errMsg) throw new Error(`UnsupportedEnvironment: ${errMsg}`); // TODO: fallback to purejs implementation
 
   return keyPair;
-}
+};
 
 /**
  * RSA Signing parameter check.
@@ -49,7 +49,7 @@ export async function generateKey(modulusLength = 2048, publicExponent = new Uin
  * @return {boolean} - Always true unless thrown.
  * @throws {Error} - Throws if InvalidAlgorithm, UnsupportedHash, InvalidMessageFormat or InvalidJwkRsaKey
  */
-function assertSignVerify(msg, jwkey, hash, algorithm, mode){
+const assertSignVerify = (msg, jwkey, hash, algorithm, mode) => {
   if (algorithm.name !== 'RSA-PSS' && algorithm.name !== 'RSASSA-PKCS1-v1_5') throw new Error('InvalidAlgorithm');
   if (Object.keys(params.hashes).indexOf(hash) < 0) throw new Error('UnsupportedHash');
   if (!(msg instanceof Uint8Array)) throw new Error('InvalidMessageFormat');
@@ -58,7 +58,7 @@ function assertSignVerify(msg, jwkey, hash, algorithm, mode){
     checkPssLength(mode, {k: jseu.encoder.decodeBase64Url(jwkey.n).length, hash, saltLength: algorithm.saltLength});
   }
   return true;
-}
+};
 
 /**
  * RSA signing via RSA-PSS or RSASSA-PKCS1-v1_5.
@@ -69,7 +69,7 @@ function assertSignVerify(msg, jwkey, hash, algorithm, mode){
  * @return {Promise<Uint8Array>} - Byte array of raw signature.
  * @throws {Error} - Throws if UnsupportedEnvironment.
  */
-export async function sign(msg, privateJwk, hash = 'SHA-256', algorithm = {name: 'RSA-PSS', saltLength: params.hashes[hash].hashSize}) {
+export const sign = async (msg, privateJwk, hash = 'SHA-256', algorithm = {name: 'RSA-PSS', saltLength: params.hashes[hash].hashSize}) => {
   // assertion
   assertSignVerify(msg, privateJwk, hash, algorithm, 'sign');
 
@@ -93,7 +93,7 @@ export async function sign(msg, privateJwk, hash = 'SHA-256', algorithm = {name:
 
   return signature;
 
-}
+};
 
 /**
  * Verification of RSA signature via RSA-PSS or RSASSA-PKCS1-v1_5.
@@ -105,7 +105,7 @@ export async function sign(msg, privateJwk, hash = 'SHA-256', algorithm = {name:
  * @return {Promise<boolean>} - Result of verification.
  * @throws {Error} - Throws if InvalidSignatureFormat, or UnsupportedEnvironment.
  */
-export async function verify(msg, signature, publicJwk, hash = 'SHA-256', algorithm = {name: 'RSA-PSS', saltLength: params.hashes[hash].hashSize}) {
+export const verify = async (msg, signature, publicJwk, hash = 'SHA-256', algorithm = {name: 'RSA-PSS', saltLength: params.hashes[hash].hashSize}) => {
   // assertion
   assertSignVerify(msg, publicJwk, hash, algorithm, 'verify');
   if (!(signature instanceof Uint8Array)) throw new Error('InvalidSignatureFormat');
@@ -129,7 +129,7 @@ export async function verify(msg, signature, publicJwk, hash = 'SHA-256', algori
   if (errMsg) throw new Error(`UnsupportedEnvironment: ${errMsg}`); // TODO: fallback to purejs implementation
 
   return valid;
-}
+};
 
 /**
  * RSA Encryption/Decryption Parameter Check.
@@ -141,7 +141,7 @@ export async function verify(msg, signature, publicJwk, hash = 'SHA-256', algori
  * @return {boolean} - Always true, otherwise thrown.
  * @throws {Error} - Throws if UnsuppotedHash, InvalidMessageFormat, InvalidLabelFormat or InvalidJwkRsaKey.
  */
-function assertEncryptDecrypt(data, jwkey, hash, label, mode){
+const assertEncryptDecrypt = (data, jwkey, hash, label, mode) => {
   if (Object.keys(params.hashes).indexOf(hash) < 0) throw new Error('UnsupportedHash');
   if (!(data instanceof Uint8Array)) throw new Error('InvalidMessageFormat');
   if (!(label instanceof Uint8Array)) throw new Error('InvalidLabelFormat');
@@ -152,7 +152,7 @@ function assertEncryptDecrypt(data, jwkey, hash, label, mode){
   );
 
   return true;
-}
+};
 /**
  * RSA-OAEP Encryption
  * @param {Uint8Array} msg - Byte array of message to be encrypted.
@@ -198,7 +198,7 @@ export async function encrypt(msg, publicJwk, hash = 'SHA-256', label = new Uint
  * @return {Promise<Uint8Array>} - Decrypted message.
  * @throws {Error} - Throws if UnsupportedEnvironment.
  */
-export async function decrypt(data, privateJwk, hash = 'SHA-256', label = new Uint8Array([])){
+export const decrypt = async (data, privateJwk, hash = 'SHA-256', label = new Uint8Array([])) => {
   // assertion
   assertEncryptDecrypt(data, privateJwk, hash, label, 'decrypt');
 
@@ -224,4 +224,4 @@ export async function decrypt(data, privateJwk, hash = 'SHA-256', label = new Ui
   if (errMsg) throw new Error(`UnsupportedEnvironment: ${errMsg}`);
 
   return decrypted;
-}
+};

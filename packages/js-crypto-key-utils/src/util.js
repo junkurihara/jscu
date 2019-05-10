@@ -12,11 +12,11 @@ import {KeyStructure} from './asn1def.js';
  * @param {AsnFormat} [format='pem'] - pem or der
  * @return {boolean} - True if encrypted.
  */
-export function isAsn1Encrypted(key, format='pem'){
+export const isAsn1Encrypted = (key, format='pem') => {
   let keyType;
   try{ keyType = getAsn1KeyType(key, format);} catch(e) {return false;}
   return keyType === 'encryptedPrivate';
-}
+};
 
 /**
  * Check if the given key is public.
@@ -24,11 +24,11 @@ export function isAsn1Encrypted(key, format='pem'){
  * @param {AsnFormat} format - pem or der
  * @return {boolean} - True if public.
  */
-export function isAsn1Public(key, format='pem'){
+export const isAsn1Public = (key, format='pem') => {
   let keyType;
   try{ keyType = getAsn1KeyType(key, format);} catch(e) {return false;}
   return (keyType === 'public');
-}
+};
 
 /**
  * Retrieve the key type of public or private in ASN.1 format
@@ -37,7 +37,7 @@ export function isAsn1Public(key, format='pem'){
  * @return {'public'|'private'|'encryptedPrivate'} - The key type of the given key.
  * @throws {Error} - Throws if NotSpkiNorPkcs8Key.
  */
-export function getAsn1KeyType(key, format='pem'){
+export const getAsn1KeyType = (key, format='pem') => {
   // Peel the pem strings
   const binKey = (format === 'pem') ? jseu.formatter.pemToBin(key, 'private') : key;
 
@@ -46,7 +46,7 @@ export function getAsn1KeyType(key, format='pem'){
   else if (decoded.type === 'oneAsymmetricKey') return 'private';
   else if (decoded.type === 'subjectPublicKeyInfo') return 'public';
   else throw new Error('NotSpkiNorPkcs8Key');
-}
+};
 
 /**
  * Retrieve the type of SEC1 octet key.
@@ -55,7 +55,7 @@ export function getAsn1KeyType(key, format='pem'){
  * @return {PublicOrPrivate} - public or private
  * @throws {Error} - Throws if UnsupportedKeyStructure.
  */
-export function getSec1KeyType(sec1key, namedCurve){
+export const getSec1KeyType = (sec1key, namedCurve)=> {
   let format;
   if (sec1key instanceof Uint8Array) format = 'binary';
   else if (typeof sec1key === 'string') format = 'string';
@@ -72,7 +72,7 @@ export function getSec1KeyType(sec1key, namedCurve){
     || (binKey.length === len+1 && (binKey[0] === 0x02 || binKey[0] === 0x03))
   ) return 'public';
   else throw new Error('UnsupportedKeyStructure');
-}
+};
 
 /**
  * Check key type of JWK.
@@ -80,7 +80,7 @@ export function getSec1KeyType(sec1key, namedCurve){
  * @return {PublicOrPrivate} - public or private
  * @throws {Error} - Throws if InvalidECKey, InvalidRSAKey or UnsupportedJWKType.
  */
-export function getJwkType(jwkey){
+export const getJwkType = (jwkey) => {
   if(jwkey.kty === 'EC'){
     if (jwkey.x && jwkey.y && jwkey.d) return 'private';
     else if (jwkey.x && jwkey.y) return 'public';
@@ -92,7 +92,7 @@ export function getJwkType(jwkey){
     else throw new Error('InvalidRSAKey');
   }
   else throw new Error('UnsupportedJWKType');
-}
+};
 
 /**
  * Prune leading zeros of an octet sequence in Uint8Array for jwk formatting of RSA.
@@ -101,7 +101,7 @@ export function getJwkType(jwkey){
  * @return {Uint8Array} - An octet sequence pruned leading zeros of length equal to or shorter than the input array.
  * @throws {Error} - Throws if NonUint8Array.
  */
-export function pruneLeadingZeros(array){
+export const pruneLeadingZeros = (array) => {
   if(!(array instanceof Uint8Array)) throw new Error('NonUint8Array');
 
   let offset = 0;
@@ -113,7 +113,7 @@ export function pruneLeadingZeros(array){
   const returnArray = new Uint8Array(array.length - offset);
   returnArray.set(array.slice(offset, array.length));
   return returnArray;
-}
+};
 
 // for pem/oct/der formatting from jwk of RSA
 /**
@@ -123,11 +123,11 @@ export function pruneLeadingZeros(array){
  * @returns {Uint8Array} - An octet sequence with leading zeros.
  * @throws {Error} - Throws if NonUint8Array or InvalidLength.
  */
-export function appendLeadingZeros(array, len){
+export const appendLeadingZeros = (array, len) => {
   if(!(array instanceof Uint8Array)) throw new Error('NonUint8Array');
   if(array.length > len) throw new Error('InvalidLength');
 
   const returnArray = new Uint8Array(len); // initialized with zeros
   returnArray.set(array, len - array.length);
   return returnArray;
-}
+};

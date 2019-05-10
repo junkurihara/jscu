@@ -14,7 +14,7 @@ import {toJwk as octKeyToJwk, fromJwk as octKeyFromJwk} from './octenc.js';
  * @param {boolean} [compact=false] - *Only for EC public keys*, the compact form of public key is given as ASN.1 object if true.
  * @return {Object} - Parsed ASN.1 object.
  */
-export function fromJWK(jwk, type, compact=false){
+export const fromJWK = (jwk, type, compact=false) => {
   if (Object.keys(params.namedCurves).indexOf(jwk.crv) < 0) throw new Error('UnsupportedCurve');
   const octetPublicKey = octKeyFromJwk(jwk, {outputFormat: 'binary', outputPublic: true, compact});
 
@@ -40,7 +40,7 @@ export function fromJWK(jwk, type, compact=false){
     }, 'der');
   }
   return decoded;
-}
+};
 
 
 /**
@@ -50,7 +50,7 @@ export function fromJWK(jwk, type, compact=false){
  * @return {JsonWebKey} - Converted key objects in JWK format.
  * @throws {Error} - Throws if UnsupportedCurve.
  */
-export function toJWK(decoded, type){
+export const toJWK = (decoded, type) => {
   if (type === 'public'){ // SPKI
     decoded.algorithm.parameters = ECParameters.decode(decoded.algorithm.parameters, 'der'); // overwrite nested binary object as parsed object
     const octPubKey = new Uint8Array(decoded.subjectPublicKey.data); // convert oct key to jwk
@@ -72,7 +72,7 @@ export function toJWK(decoded, type){
 
     return octKeyToJwk(octPrivKey, namedCurves[0], {outputPublic: false});
   }
-}
+};
 
 /////////////////////////
 /**

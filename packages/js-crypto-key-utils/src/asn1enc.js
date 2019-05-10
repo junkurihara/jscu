@@ -22,7 +22,7 @@ const Buffer = BufferMod.Buffer;
  * @param {AsnEncryptOptionsWithPassphrase} encOptions - ASN.1 encryption options
  * @return {Uint8Array|String} - Encoded private key in DER or PEM
  */
-export async function fromJwk(jwkey, format, {outputPublic, compact=false, encOptions}){
+export const fromJwk = async (jwkey, format, {outputPublic, compact=false, encOptions}) => {
   const orgType = getJwkType(jwkey);
   let type = (typeof outputPublic === 'boolean' && outputPublic) ? 'public' : orgType;
 
@@ -48,7 +48,7 @@ export async function fromJwk(jwkey, format, {outputPublic, compact=false, encOp
   binKey = new Uint8Array(binKey);
 
   return (format === 'pem') ? jseu.formatter.binToPem(binKey, type) : binKey;
-}
+};
 
 /**
  * Convert SPKI/PKCS8 key in string or binary format to JWK.
@@ -59,7 +59,7 @@ export async function fromJwk(jwkey, format, {outputPublic, compact=false, encOp
  * @return {JsonWebKey} - Obtained key object in JWK format.
  * @throws {Error} Throws if UnsupportedKeyStructure, UnsupportedKey or InvalidKeyType.
  */
-export async function toJwk(key, format, {outputPublic, passphrase}){
+export const toJwk = async (key, format, {outputPublic, passphrase}) => {
   // Peel the pem strings
   const binKey = (format === 'pem') ? jseu.formatter.pemToBin(key) : key;
 
@@ -94,6 +94,6 @@ export async function toJwk(key, format, {outputPublic, passphrase}){
     return asn1rsa.toJwk(decoded, type);
   }
   else throw new Error('InvalidKeyType');
-}
+};
 
 

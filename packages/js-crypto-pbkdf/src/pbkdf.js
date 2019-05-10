@@ -18,7 +18,7 @@ import params from './params.js';
  * @return {Promise<Uint8Array>} - Derived key.
  * @throws {Error} - Throws if the intended key length is too long.
  */
-export async function pbkdf2(p, s, c, dkLen, hash) {
+export const pbkdf2 = async (p, s, c, dkLen, hash) => {
   assertPbkdf(p, s, c, dkLen, hash);
   if(typeof p === 'string') p = jseu.encoder.stringToArrayBuffer(p);
 
@@ -50,7 +50,7 @@ export async function pbkdf2(p, s, c, dkLen, hash) {
   });
 
   return DK;
-}
+};
 
 // network byte order
 const nwbo = (num, len) => {
@@ -71,7 +71,7 @@ const nwbo = (num, len) => {
  * @return {Promise<Uint8Array>} - Derived key.
  * @throws {Error} - Throws if the intended key length is too long.
  */
-export async function pbkdf1(p, s, c, dkLen, hash){
+export const pbkdf1 = async (p, s, c, dkLen, hash) => {
   assertPbkdf(p, s, c, dkLen, hash);
   if(typeof p === 'string') p = jseu.encoder.stringToArrayBuffer(p);
 
@@ -84,7 +84,7 @@ export async function pbkdf1(p, s, c, dkLen, hash){
     seed = await jschash.compute(seed, hash);
   }
   return seed.slice(0, dkLen);
-}
+};
 
 /** Assertion for PBKDF 1 and 2
  * @param {Uint8Array|String} p - Byte array or string of password. if string is given, it will be converted to Uint8Array.
@@ -95,11 +95,11 @@ export async function pbkdf1(p, s, c, dkLen, hash){
  * @return {boolean} - True if given params pass the assertion check. Otherwise, throw (not false).
  * @throws {Error} - Throws if the params doesn't pass the assertion checks for given conditions.
  */
-function assertPbkdf(p, s, c, dkLen, hash){
+const assertPbkdf = (p, s, c, dkLen, hash) => {
   if (typeof p !== 'string' && !(p instanceof Uint8Array)) throw new Error('PasswordIsNotUint8ArrayNorString');
   if (!(s instanceof Uint8Array)) throw new Error('SaltMustBeUint8Array');
   if (typeof c !== 'number' || c <= 0)throw new Error('InvalidIterationCount');
   if (typeof dkLen !== 'number' || dkLen <= 0) throw new Error('InvalidDerivedKeyLength');
   if (Object.keys(params.hashes).indexOf(hash) < 0) throw new Error('UnsupportedHashAlgorithm');
   return true;
-}
+};

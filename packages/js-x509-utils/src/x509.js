@@ -23,7 +23,7 @@ const Buffer = BufferMod.Buffer;
  * @return {Promise<DER|PEM>} - Generated X.509 public key certificate in intended format.
  * @throws {Error} - Throws if InvalidFormatSpecification or UnsupportedKeyType.
  */
-export async function fromJwk(publicJwk, privateJwk, format = 'pem', options = {}) {
+export const fromJwk = async (publicJwk, privateJwk, format = 'pem', options = {})  => {
   // default values
   if (typeof options.signature === 'undefined') options.signature = 'ecdsa-with-sha256';
   if (typeof options.days === 'undefined') options.days = 3650;
@@ -91,7 +91,7 @@ export async function fromJwk(publicJwk, privateJwk, format = 'pem', options = {
     return certBin;
   }
   else throw new Error('InvalidFormatSpecification');
-}
+};
 
 /**
  * Convert X.509 certificate to a JWK object.
@@ -100,7 +100,7 @@ export async function fromJwk(publicJwk, privateJwk, format = 'pem', options = {
  * @return {Promise<JsonWebKey>} - Extracted key object in JWK format.
  * @throws {Error} - Throws if InvalidFormatSpecification.
  */
-export async function toJwk(certX509, format = 'pem'){
+export const toJwk = async (certX509, format = 'pem') => {
   let x509bin;
   if (format === 'pem') x509bin = jseu.formatter.pemToBin(certX509);
   else if (format === 'der') x509bin = certX509;
@@ -112,7 +112,7 @@ export async function toJwk(certX509, format = 'pem'){
   const binSpki = rfc5280.SubjectPublicKeyInfo.encode(decoded.tbsCertificate.subjectPublicKeyInfo, 'der');
   const publicObj = new Key('der', binSpki);
   return await publicObj.export('jwk', {outputPublic: true});
-}
+};
 
 
 /**
@@ -122,7 +122,7 @@ export async function toJwk(certX509, format = 'pem'){
  * @return {{tbsCertificate: Uint8Array, signatureValue: Uint8Array, signatureAlgorithm: String}} - Parsed object.
  * @throws {Error} - Throws if UnsupportedSignatureAlgorithm or InvalidFormatSpecification.
  */
-export function parse(certX509, format = 'pem'){
+export const parse = (certX509, format = 'pem') =>{
 
   let x509bin;
   if (format === 'pem') x509bin = jseu.formatter.pemToBin(certX509);
@@ -151,7 +151,7 @@ export function parse(certX509, format = 'pem'){
     signatureValue: new Uint8Array(decoded.signature.data),
     signatureAlgorithm
   };
-}
+};
 
 
 
@@ -161,7 +161,7 @@ export function parse(certX509, format = 'pem'){
  * @return {{type: *, value: *}[][]}
  * @throws {Error} - throws if InvalidOptionSpecification or InvalidCountryNameCode.
  */
-function setRDNSequence(options) {
+const setRDNSequence = (options) => {
   const encodedArray = Object.keys(options).map((k) => {
     if (Object.keys(attributeTypeOIDMap).indexOf(k) < 0) throw new Error('InvalidOptionSpecification');
 
@@ -177,7 +177,7 @@ function setRDNSequence(options) {
   });
 
   return [encodedArray];
-}
+};
 
 // https://tools.ietf.org/html/rfc5280#appendix-A
 const attributeTypeOIDMap = {
