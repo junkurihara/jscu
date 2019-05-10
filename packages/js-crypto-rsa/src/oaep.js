@@ -35,7 +35,7 @@ import random from 'js-crypto-random';
  * @param {Number} cLen - the length of ciphertext
  * @throws {Error} - Throws if LabelTooLong, MessageTooLong, DecryptionError or InvalidMode.
  */
-export function checkLength(mode, {k, label, hash, mLen, cLen}){
+export const checkLength = (mode, {k, label, hash, mLen, cLen}) => {
   if (mode === 'encrypt') {
     if (label.length > (1 << params.hashes[hash].maxInput) - 1) throw new Error('LabelTooLong');
     if (mLen > k - 2 * params.hashes[hash].hashSize - 2) throw new Error('MessageTooLong');
@@ -45,7 +45,7 @@ export function checkLength(mode, {k, label, hash, mLen, cLen}){
     if (cLen !== k || k < 2 * params.hashes[hash].hashSize + 2) throw new Error('DecryptionError');
   }
   else throw new Error('InvalidMode');
-}
+};
 
 
 /*
@@ -86,7 +86,7 @@ export function checkLength(mode, {k, label, hash, mLen, cLen}){
  * @param {String} hash - Name of hash function.
  * @return {Promise<Uint8Array>} - OAEP encoded message.
  */
-export async function emeOaepEncode(msg, label, k, hash='SHA-256'){
+export const emeOaepEncode = async (msg, label, k, hash='SHA-256') => {
   const hashSize = params.hashes[hash].hashSize;
 
   let ps = new Uint8Array(k - msg.length - (2*hashSize) - 2);
@@ -116,7 +116,7 @@ export async function emeOaepEncode(msg, label, k, hash='SHA-256'){
   em.set(maskedDb, hashSize + 1);
 
   return em;
-}
+};
 
 
 /*
@@ -158,7 +158,7 @@ export async function emeOaepEncode(msg, label, k, hash='SHA-256'){
  * @return {Promise<Uint8Array>} - OAEP decoded message.
  * @throws {Error} - Throws if DecryptionError.
  */
-export async function emeOaepDecode(em, label, k, hash='SHA-256'){
+export const emeOaepDecode = async (em, label, k, hash='SHA-256') => {
   const hashSize = params.hashes[hash].hashSize;
 
   const lHash = await jschash.compute(label, hash); // must be equal to lHashPrime
@@ -190,7 +190,7 @@ export async function emeOaepDecode(em, label, k, hash='SHA-256'){
   if(separator !== 0x01) throw new Error('DecryptionError');
 
   return db.slice(offset+1, db.length);
-}
+};
 
 
 /**
@@ -200,7 +200,7 @@ export async function emeOaepDecode(em, label, k, hash='SHA-256'){
  * @param {String} [hash='SHA-256'] - Name of hash algorithm.
  * @return {Promise<Uint8Array>}: Generated mask.
  */
-async function mgf1(seed, len, hash = 'SHA-256'){
+const mgf1 = async (seed, len, hash = 'SHA-256') => {
   const hashSize = params.hashes[hash].hashSize;
   const blockLen = Math.ceil(len/ hashSize);
 
@@ -215,7 +215,7 @@ async function mgf1(seed, len, hash = 'SHA-256'){
     t.set(y, i * hashSize);
   }
   return t.slice(0, len);
-}
+};
 
 /**
  * I2OSP function
@@ -223,11 +223,11 @@ async function mgf1(seed, len, hash = 'SHA-256'){
  * @param {Number} len - Length of byte array
  * @return {Uint8Array} - Encoded number.
  */
-function i2osp(x, len){
+const i2osp = (x, len) => {
   const r = new Uint8Array(len);
   r.forEach( (elem, idx) => {
     const y = 0xFF & (x >> (idx*8));
     r[len - idx - 1] = y;
   });
   return r;
-}
+};

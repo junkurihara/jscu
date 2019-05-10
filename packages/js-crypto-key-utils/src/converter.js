@@ -19,7 +19,7 @@ import * as octenc from './octenc.js';
  *   For both: outputPublic (optional) : boolean. derived key type. from private key, public key can be derived when true.
  * @return {PEM|DER|OctetEC} - Output key object.
  */
-export async function fromJwkTo(output = 'pem', jwkey, options={}){
+export const fromJwkTo = async (output = 'pem', jwkey, options={}) => {
   // assertion
   if (['pem', 'der', 'oct'].indexOf(output) < 0) throw new Error('InvalidOutputForm');
   if (typeof jwkey !== 'object') throw new Error('InvalidJWKAsObject');
@@ -45,7 +45,7 @@ export async function fromJwkTo(output = 'pem', jwkey, options={}){
   }
   else throw new Error('UnsupportedConversion');
 
-}
+};
 
 
 /**
@@ -56,7 +56,7 @@ export async function fromJwkTo(output = 'pem', jwkey, options={}){
  * @return {JsonWebKey} - Obtained key object in JWK format.
  * @throws {Error} - Throws if InvalidInputForm, InappropriateOptions, outputPublicMustBeBoolean or UnsupportedConversion
  */
-export async function toJwkFrom(input, key, options={}){
+export const toJwkFrom = async (input, key, options={}) => {
   // assertion
   if (['pem', 'der', 'oct'].indexOf(input) < 0) throw new Error('InvalidInputForm');
   if (input === 'oct' && !options.namedCurve ) throw new Error('InappropriateOptions');
@@ -74,4 +74,4 @@ export async function toJwkFrom(input, key, options={}){
     return octenc.toJwk(key, options.namedCurve, {outputPublic: options.outputPublic});
   }
   else throw new Error('UnsupportedConversion');
-}
+};

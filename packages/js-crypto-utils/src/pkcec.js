@@ -9,10 +9,10 @@ import aes from 'js-crypto-aes';
 
 import params from './params.js';
 
-export async function encrypt(
+export const encrypt = async (
   msg, publicKey,
   { privateKey, hash='SHA-256', encrypt='AES-GCM', keyLength=32, iv=null, info='' }
-) {
+) => {
   const sharedSecret = await ec.deriveSecret(publicKey, privateKey);
   const sessionKeySalt = await hkdf.compute(sharedSecret, hash, keyLength, info);
 
@@ -31,13 +31,13 @@ export async function encrypt(
   const data = await aes.encrypt(msg, sessionKeySalt.key, {name: encrypt, iv}); // no specification of tagLength and additionalData
 
   return {data, salt: sessionKeySalt.salt, iv};
-}
+};
 
 
-export async function decrypt(
+export const decrypt = async (
   data, privateKey,
   { publicKey, hash='SHA-256', encrypt='AES-GCM', keyLength=32, info='', salt=null, iv=null }
-) {
+) => {
   const sharedSecret = await ec.deriveSecret(publicKey, privateKey);
   const sessionKeySalt = await hkdf.compute(sharedSecret, hash, keyLength, info, salt);
 
@@ -48,4 +48,4 @@ export async function decrypt(
   else throw new Error('UnsupportedSessionKeyAlgorithm');
 
   return msg;
-}
+};

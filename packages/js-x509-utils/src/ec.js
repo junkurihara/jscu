@@ -14,7 +14,7 @@ const Buffer = BufferMod.Buffer;
  * @param {String} signatureAlgorithm - Signature algorithm name like 'ecdsa-with-sha256'.
  * @returns {Promise<{data: Buffer, unused: Number}>} - ASN.1 encoded signature.
  */
-export async function getAsn1Signature(encodedTbsCertificate, privateJwk, signatureAlgorithm){
+export const getAsn1Signature = async (encodedTbsCertificate, privateJwk, signatureAlgorithm) => {
   const asn1sig = await ec.sign(
     encodedTbsCertificate,
     privateJwk,
@@ -22,4 +22,4 @@ export async function getAsn1Signature(encodedTbsCertificate, privateJwk, signat
     'der'
   );
   return {unused: 0, data: Buffer.from(asn1sig)};
-}
+};

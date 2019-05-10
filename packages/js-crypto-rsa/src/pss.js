@@ -29,7 +29,7 @@ import params from './params.js';
  * @param {Number} saltLength - Length of salt.
  * @throws {Error} - Throws if Inconsistent, EncodingError, or InvalidMode.
  */
-export function checkLength(mode, {k, hash, saltLength}){
+export const checkLength = (mode, {k, hash, saltLength}) => {
   if(mode === 'sign'){
     if (k > (1 << params.hashes[hash].maxInput) - 1) throw new Error('Inconsistent');
     if (k < params.hashes[hash].hashSize + saltLength + 2 || saltLength < 0) throw new Error('EncodingError');
@@ -39,4 +39,4 @@ export function checkLength(mode, {k, hash, saltLength}){
     if (k < params.hashes[hash].hashSize + saltLength + 2 || saltLength < 0) throw new Error('Inconsistent');
   }
   else throw new Error('InvalidMode');
-}
+};

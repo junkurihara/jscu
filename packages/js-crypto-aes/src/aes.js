@@ -14,7 +14,7 @@ import params from './params.js';
  * @param {Number} tagLength - Authentication tag length if required
  * @throws {Error} - Throws if UnsupportedAlgorithm, InvalidArguments, InvalidIVLength, or InvalidTagLength.
  */
-function assertAlgorithms({name, iv, tagLength}){
+const assertAlgorithms = ({name, iv, tagLength}) => {
   if(Object.keys(params.ciphers).indexOf(name) < 0) throw new Error('UnsupportedAlgorithm');
   if(params.ciphers[name].ivLength){
     if(!(iv instanceof Uint8Array)) throw new Error('InvalidArguments');
@@ -25,7 +25,7 @@ function assertAlgorithms({name, iv, tagLength}){
     if(!Number.isInteger(tagLength)) throw new Error('InvalidArguments');
     if(tagLength < 4 || tagLength > 16) throw new Error('InvalidTagLength');
   }
-}
+};
 
 /**
  * Encrypt data with AES
@@ -38,7 +38,7 @@ function assertAlgorithms({name, iv, tagLength}){
  * @return {Promise<Uint8Array>} - Encrypted message.
  * @throws {Error} - Throws if InvalidArguments, FaildToEncryptWeb/Node, or UnsupportedEnvironment (no webcrypto/nodecrypto).
  */
-export async function encrypt(msg, key, {name = 'AES-GCM', iv, additionalData=new Uint8Array([]), tagLength}){
+export const encrypt = async (msg, key, {name = 'AES-GCM', iv, additionalData=new Uint8Array([]), tagLength}) => {
   // assertion and sanitizing
   if(!(msg instanceof Uint8Array) || !(key instanceof Uint8Array)) throw new Error('InvalidArguments');
   assertAlgorithms({name, iv, tagLength});
@@ -65,7 +65,7 @@ export async function encrypt(msg, key, {name = 'AES-GCM', iv, additionalData=ne
   }
 
   return data;
-}
+};
 
 
 /**
@@ -79,7 +79,7 @@ export async function encrypt(msg, key, {name = 'AES-GCM', iv, additionalData=ne
  * @return {Promise<Uint8Array>} - Decrypted plaintext message.
  * @throws {Error} - Throws if InvalidArguments, FaildToDecryptWeb/Node, or UnsupportedEnvironment (no webcrypto/nodecrypto).
  */
-export async function decrypt(data, key, {name='AES-GCM', iv, additionalData=new Uint8Array([]), tagLength}){
+export const decrypt = async (data, key, {name='AES-GCM', iv, additionalData=new Uint8Array([]), tagLength}) => {
   // assertion and sanitizing
   if(!(data instanceof Uint8Array) || !(key instanceof Uint8Array)) throw new Error('InvalidArguments');
   assertAlgorithms({name, iv, tagLength});
@@ -103,4 +103,4 @@ export async function decrypt(data, key, {name='AES-GCM', iv, additionalData=new
   } else throw new Error('UnsupportedEnvironment');
 
   return msg;
-}
+};

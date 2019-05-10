@@ -11,7 +11,7 @@ import jseu from 'js-encoding-utils';
  * @param {Object} webCrypto - WebCryptoSubtle object, i.e., window.crypto.subtle or window.msCrypto.subtle.
  * @return {Promise<{publicKey: JsonWebKey, privateKey: JsonWebKey}>}
  */
-export async function generateKey(modulusLength, publicExponent, webCrypto){
+export const generateKey = async (modulusLength, publicExponent, webCrypto) => {
   // generate rsa key
   // hash is used for signing and verification. never be used for key generation
   let publicKey;
@@ -36,7 +36,7 @@ export async function generateKey(modulusLength, publicExponent, webCrypto){
   });
 
   return {publicKey, privateKey};
-}
+};
 
 /**
  * RSA signing via RSA-PSS or RSASSA-PKCS1-v1_5 in WebAPI.
@@ -75,7 +75,7 @@ export async function sign(msg, privateJwk, hash, algorithm, webCrypto) {
  * @return {Promise<boolean>} - Result of verification.
  * @throws {Error} - if RSA-PSS in IE.
  */
-export async function verify(msg, signature, publicJwk, hash, algorithm, webCrypto){
+export const verify = async (msg, signature, publicJwk, hash, algorithm, webCrypto) => {
   const algo = {name: algorithm.name, hash: {name: hash}, saltLength: algorithm.saltLength};
 
   let valid;
@@ -89,7 +89,7 @@ export async function verify(msg, signature, publicJwk, hash, algorithm, webCryp
     valid = await msVerify(algo, key, signature, msg, webCrypto);
   }
   return valid;
-}
+};
 
 /**
  * RSA Encryption via WebAPI.
@@ -101,7 +101,7 @@ export async function verify(msg, signature, publicJwk, hash, algorithm, webCryp
  * @return {Promise<Uint8Array>} - Encrypted message.
  * @throws {Error} - if RSA-OAEP label is specified in IE.
  */
-export async function encrypt(msg, publicJwk, hash, label, webCrypto){
+export const encrypt = async (msg, publicJwk, hash, label, webCrypto) => {
   const algo = {name: 'RSA-OAEP', hash: {name: hash}, label};
 
   let encrypted;
@@ -115,7 +115,7 @@ export async function encrypt(msg, publicJwk, hash, label, webCrypto){
     encrypted = await msEncrypt(algo, key, msg, webCrypto);
   }
   return new Uint8Array(encrypted);
-}
+};
 
 /**
  * RSA Decryption via WebAPI.
@@ -127,7 +127,7 @@ export async function encrypt(msg, publicJwk, hash, label, webCrypto){
  * @return {Promise<Uint8Array>} - Decrypted message.
  * @throws {Error} - if RSA-OAEP label is specified in IE.
  */
-export async function decrypt(msg, privateJwk, hash, label, webCrypto){
+export const decrypt = async (msg, privateJwk, hash, label, webCrypto) => {
   const algo = {name: 'RSA-OAEP', hash: {name: hash}, label};
 
   let decrypted;
@@ -141,7 +141,7 @@ export async function decrypt(msg, privateJwk, hash, label, webCrypto){
     decrypted = await msDecrypt(algo, key, msg, webCrypto);
   }
   return new Uint8Array(decrypted);
-}
+};
 
 
 /////////////////////////////////////////////

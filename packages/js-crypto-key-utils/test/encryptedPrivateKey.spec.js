@@ -35,7 +35,7 @@ describe(`${envName}: RSA/EC Key conversion from/to JWK test.`, () => {
   });
 
   it('RSA PBES1 and PBES2 PEM keys can be successfully converted and reconverted to/from JWK', async function (){
-    this.timeout(10000);
+    this.timeout(50000);
     const array = await Promise.all(Object.keys(rsaSample).map( async (key) => {
       const elem = await Promise.all(encOptionArray.map( async (encOptions) => {
         let result = true;
@@ -105,7 +105,7 @@ describe(`${envName}: RSA/EC Key conversion from/to JWK test.`, () => {
 
 
   it('EC PBES1 and PBES2 PEM keys can be successfully converted and reconverted to/from JWK', async function() {
-    this.timeout(10000);
+    this.timeout(50000);
     const array = await Promise.all(Object.keys(ecSample).map( async (key) => {
       const elem = await Promise.all(encOptionArray.map( async (encOptions) => {
         let result = true;

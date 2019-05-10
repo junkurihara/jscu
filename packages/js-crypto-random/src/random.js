@@ -10,7 +10,7 @@ import * as util from 'js-crypto-env';
  * @param {Number} len - Length of string.
  * @return {String} - Generated random ASCII string.
  */
-export function getRandomString(len) {
+export const getRandomString = (len) => {
   const array = getRandomBytes(len);
   const types = getRandomBytes(len); // indicating alphanumeric, upper, lower
   let finalString = '';
@@ -28,14 +28,14 @@ export function getRandomString(len) {
   }
 
   return finalString;
-}
+};
 
 /**
  * Secure random 'ASCII' string generator based on getRandomBytes;
  * @param {Number} len - Length of ASCII string.
  * @return {String} - Generated random ASCII string.
  */
-export function getRandomAsciiString(len) {
+export const getRandomAsciiString = (len) => {
   const array = getRandomBytes(len);
   let finalString = '';
 
@@ -46,7 +46,7 @@ export function getRandomAsciiString(len) {
   }
 
   return finalString;
-}
+};
 
 
 /**
@@ -55,7 +55,7 @@ export function getRandomAsciiString(len) {
  * @return {Uint8Array} - Generated random sequence.
  * @throws {Error} - Throws if UnsupportedEnvironment.
  */
-export function getRandomBytes(len) {
+export const getRandomBytes = (len) => {
   const webCrypto = util.getRootWebCryptoAll(); // web crypto api or ms crypto
   const nodeCrypto = util.getNodeCrypto(); // implementation on node.js
 
@@ -72,4 +72,4 @@ export function getRandomBytes(len) {
   }
 
   return array;
-}
+};

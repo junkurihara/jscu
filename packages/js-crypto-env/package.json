@@ -1,6 +1,6 @@
 {
   "name": "js-crypto-env",
-  "version": "0.1.4",
+  "version": "0.2.0",
   "description": "Shared environment modules for jscu",
   "main": "dist/index.js",
   "scripts": {
