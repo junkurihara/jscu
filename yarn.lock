@@ -5639,10 +5639,17 @@ istanbul@^0.4.0:
     which "^1.1.1"
     wordwrap "^1.0.0"
 
-js-encoding-utils@0.4.0, js-encoding-utils@^0.4.0:
+js-encoding-utils@0.4.0:
   version "0.4.0"
   resolved "https://registry.yarnpkg.com/js-encoding-utils/-/js-encoding-utils-0.4.0.tgz#bc6ccd65ef0e1d7fbf12bfb7819fee9d191d04a1"
   integrity sha512-jJlfCAAXwhEHsxMfbqFj/F4eNxN9yu1xqmYA3aRGMXGVD7Ao9HaBaKpQoUkW27b+VKo7zk52daX3/HEdT1nyhg==
+  dependencies:
+    "@babel/runtime" "^7.4.3"
+
+js-encoding-utils@^0.5.0:
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/js-encoding-utils/-/js-encoding-utils-0.5.0.tgz#f08a824867d418f2ff9b869a8cf56c849622c52e"
+  integrity sha512-Tki5qhsGD0ogZMGUkyUa2ho6DG7lO/5Aulp6NRWO5kTStUyKCLqfQ1f7VD9or85ANBUzevWnmqEnHgBe1dBQIA==
   dependencies:
     "@babel/runtime" "^7.4.3"
 
