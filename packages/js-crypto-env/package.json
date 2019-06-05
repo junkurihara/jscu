@@ -27,6 +27,6 @@
     "jscu"
   ],
   "dependencies": {
-    "@babel/runtime": "^7.4.5"
+    "@babel/runtime": "~7.4.5"
   }
 }

@@ -37,9 +37,9 @@
     "webcrypto"
   ],
   "dependencies": {
-    "@babel/runtime": "^7.4.5",
-    "js-crypto-env": "^0.2.1",
-    "js-crypto-hmac": "^0.4.2",
-    "js-crypto-random": "^0.3.1"
+    "@babel/runtime": "~7.4.5",
+    "js-crypto-env": "0.2.1",
+    "js-crypto-hmac": "0.4.2",
+    "js-crypto-random": "0.3.1"
   }
 }
