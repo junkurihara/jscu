@@ -1,6 +1,6 @@
 {
   "name": "js-crypto-rsa",
-  "version": "0.5.2",
+  "version": "0.5.3",
   "description": "Universal Module for RSA Cryptography (RSA-OAEP and RSASSA-PSS/PKCS1-V1_5) in JavaScript",
   "main": "dist/index.js",
   "scripts": {
@@ -44,8 +44,8 @@
     "bn.js": "^4.11.8",
     "js-crypto-env": "^0.2.1",
     "js-crypto-hash": "^0.4.1",
-    "js-crypto-key-utils": "^0.6.2",
+    "js-crypto-key-utils": "^0.6.3",
     "js-crypto-random": "^0.3.1",
-    "js-encoding-utils": "^0.5.0"
+    "js-encoding-utils": "^0.5.1"
   }
 }
