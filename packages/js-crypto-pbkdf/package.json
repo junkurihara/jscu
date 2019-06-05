@@ -41,6 +41,6 @@
     "@babel/runtime": "^7.4.5",
     "js-crypto-hash": "^0.4.1",
     "js-crypto-hmac": "^0.4.1",
-    "js-encoding-utils": "^0.5.0"
+    "js-encoding-utils": "^0.5.1"
   }
 }
