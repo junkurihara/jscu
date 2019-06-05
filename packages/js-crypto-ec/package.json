@@ -1,6 +1,6 @@
 {
   "name": "js-crypto-ec",
-  "version": "0.5.2",
+  "version": "0.5.3",
   "description": "Universal Module for Elliptic Curve Cryptography (ECDSA and ECDH) in JavaScript",
   "main": "dist/index.js",
   "scripts": {
@@ -44,7 +44,7 @@
     "elliptic": "^6.4.1",
     "js-crypto-env": "^0.2.1",
     "js-crypto-hash": "^0.4.1",
-    "js-crypto-key-utils": "^0.6.2",
+    "js-crypto-key-utils": "^0.6.3",
     "js-crypto-random": "^0.3.1",
     "js-encoding-utils": "^0.5.1"
   }
