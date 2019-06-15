@@ -1946,10 +1946,19 @@ asn1.js@^4.0.0:
     inherits "^2.0.1"
     minimalistic-assert "^1.0.0"
 
-asn1.js@^5.0.0, asn1.js@~5.0.1:
+asn1.js@^5.0.0:
   version "5.0.1"
   resolved "https://registry.yarnpkg.com/asn1.js/-/asn1.js-5.0.1.tgz#7668b56416953f0ce3421adbb3893ace59c96f59"
   integrity sha512-aO8EaEgbgqq77IEw+1jfx5c9zTbzvkfuRBuZsSsPnTHMkmd5AI4J6OtITLZFa381jReeaQL67J0GBTUu0+ZTVw==
+  dependencies:
+    bn.js "^4.0.0"
+    inherits "^2.0.1"
+    minimalistic-assert "^1.0.0"
+
+asn1.js@~5.1.0:
+  version "5.1.0"
+  resolved "https://registry.yarnpkg.com/asn1.js/-/asn1.js-5.1.0.tgz#b14a2a76bc6c7d0fcd9a42cac4114fc0d8ad9bbd"
+  integrity sha512-kaJYnE3x2F0UG03mF97T2pPNPLznuXMn5wGKaCWFl95FCGYukliQNtgK6gEP1ojnpEDWuYS8fHbfD0MnYgBtlA==
   dependencies:
     bn.js "^4.0.0"
     inherits "^2.0.1"

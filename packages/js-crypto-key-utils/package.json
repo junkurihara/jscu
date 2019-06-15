@@ -53,7 +53,7 @@
   ],
   "dependencies": {
     "@babel/runtime": "~7.4.3",
-    "asn1.js": "~5.0.1",
+    "asn1.js": "~5.1.0",
     "buffer": "~5.2.1",
     "des.js": "~1.0.0",
     "elliptic": "~6.4.1",
