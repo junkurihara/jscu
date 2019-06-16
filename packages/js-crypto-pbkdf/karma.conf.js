@@ -45,6 +45,12 @@ module.exports = function(config) {
 
     webpack: getWebpackConfig(),
 
+    webpackMiddleware: {
+      // webpack-dev-middleware configuration
+      // i. e.
+      stats: 'errors-only',
+    },
+
     // test results reporter to use
     // possible values: 'dots', 'progress'
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
@@ -80,6 +86,8 @@ module.exports = function(config) {
         flags: ['--headless', '--remote-debugging-port=9222', '--no-sandbox']
       }
     },
+
+
 
     // Continuous Integration mode
     // if true, Karma captures browsers, runs the tests and exits
