@@ -39,7 +39,7 @@
   ],
   "dependencies": {
     "@babel/runtime": "~7.4.5",
-    "asn1.js": "~5.0.1",
+    "asn1.js": "~5.1.0",
     "buffer": "~5.2.1",
     "elliptic": "~6.4.1",
     "js-crypto-env": "^0.2.2",
