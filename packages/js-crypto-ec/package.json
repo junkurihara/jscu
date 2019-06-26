@@ -41,7 +41,7 @@
     "@babel/runtime": "~7.4.5",
     "asn1.js": "~5.1.0",
     "buffer": "~5.2.1",
-    "elliptic": "~6.4.1",
+    "elliptic": "~6.5.0",
     "js-crypto-env": "^0.2.3",
     "js-crypto-hash": "^0.4.3",
     "js-crypto-key-utils": "^0.6.5",
