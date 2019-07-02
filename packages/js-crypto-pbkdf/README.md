@@ -47,7 +47,7 @@ const password = 'password'; // string or Uint8Array
 const salt = ...; // Uint8Array
 const iterationCount = 2048;
 const derivedKeyLen = 32;
-const hash = 'SHA-256'; // 'SHA-384', 'SHA-512', 'SHA-1' or 'MD5' 
+const hash = 'SHA-256'; // 'SHA-384', 'SHA-512', 'SHA-1', 'MD5', 'SHA3-512', 'SHA3-384', 'SHA3-256', or 'SHA3-224' 
 
 pbkdf.pbkdf2(
   password,
@@ -69,7 +69,7 @@ const password = 'password'; // string or Uint8Array
 const salt = ...; // Uint8Array
 const iterationCount = 2048;
 const derivedKeyLen = 32;
-const hash = 'SHA-256'; // 'SHA-384', 'SHA-512', 'SHA-1' or 'MD5' 
+const hash = 'SHA-256'; // 'SHA-384', 'SHA-512', 'SHA-1', 'MD5', 'SHA3-512', 'SHA3-384', 'SHA3-256', or 'SHA3-224'  
 
 pbkdf.pbkdf1(
   password,
