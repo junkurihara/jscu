@@ -9,7 +9,7 @@ import chai from 'chai';
 const expect = chai.expect;
 
 
-let hashes = ['SHA-256', 'SHA-384', 'SHA-512', 'SHA-1', 'MD5'];
+let hashes = ['SHA-256', 'SHA-384', 'SHA-512', 'SHA-1', 'MD5', 'SHA3-224', 'SHA3-256', 'SHA3-384', 'SHA3-512'];
 describe(`${envName}: HKDF test in PureJS environment`, () => {
   let masterSecret;
   const length = 144;

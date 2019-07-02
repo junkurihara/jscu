@@ -276,10 +276,15 @@ One of the listed APIs/libraries is automatically chosen and leveraged for each 
 - AES: (may not work in IE)
   * WebCrypto API for browsers
   * NodeCrypto for Node.js
-- Random, hash, HKDF, HMAC, JWK Thumbprint (SHA-512/SHA-1 does not work in IE, SHA-1 doesn't in Edge)
+- Random, hash, HKDF, HMAC, JWK Thumbprint
   * WebCrypto API for browsers
   * MsCrypto for IE
   * NodeCrypto for Node.js
+  
+  Especially for Hash functions, we shall use the following pure JS implementation for some browsers (WebCrypto does not support SHA-3 yet). SHA-512/SHA-1 does not work in IE, SHA-1 doesn't in Edge. I believe IE/Edge should be discarded ASAP.
+  * [sha3](https://www.npmjs.com/package/sha3) for SHA3-224, SHA3-256, SHA3-384 and SHA3-512 for browsers
+  * [hash.js](https://www.npmjs.com/package/hash.js) for SHA-1, SHA-256, SHA-384, SHA-512 for some legacy browsers
+  * [md5](https://www.npmjs.com/package/md5) for MD5 for some legacy browsers
 
 # License
 Licensed under the MIT license, see `LICENSE` file.

@@ -9,7 +9,7 @@ const hmac = env.library;
 const envName = env.envName;
 
 
-const hashes = ['SHA-256', 'SHA-384', 'SHA-512', 'MD5', 'SHA-1'];
+const hashes = ['SHA-256', 'SHA-384', 'SHA-512', 'MD5', 'SHA-1', 'SHA3-224', 'SHA3-256', 'SHA3-384', 'SHA3-512'];
 describe(`${envName}: HMAC test in PureJS environment`, () => {
   let msg;
   before( async () => {

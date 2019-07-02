@@ -37,8 +37,13 @@
   ],
   "dependencies": {
     "@babel/runtime": "~7.4.5",
+    "buffer": "^5.2.1",
     "hash.js": "~1.1.7",
     "js-crypto-env": "^0.2.3",
-    "md5": "~2.2.1"
+    "md5": "~2.2.1",
+    "sha3": "~2.0.4"
+  },
+  "devDependencies": {
+    "js-encoding-utils": "0.5.1"
   }
 }
