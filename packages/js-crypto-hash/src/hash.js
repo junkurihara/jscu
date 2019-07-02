@@ -5,6 +5,7 @@
 import * as util from 'js-crypto-env';
 import params from './params.js';
 import md5 from 'md5';
+import {SHA3} from 'sha3';
 import jsHash from 'hash.js';
 
 /**
@@ -102,6 +103,13 @@ const purejs = (hash, msg) => {
   let h;
   if(hash === 'MD5'){
     h = md5(Array.from(msg), {asBytes: true});
+  }
+  else if (['SHA3-512', 'SHA3-384', 'SHA3-256', 'SHA3-224'].indexOf(hash) >= 0){
+    // sha3
+    const sha3obj = new SHA3(params.hashes[hash].hashSize * 8);
+    const Buffer = require('buffer/').Buffer;
+    sha3obj.update(Buffer.from(msg));
+    h = sha3obj.digest('binary');
   }
   else {
     h = jsHash[params.hashes[hash].nodeName]().update(msg).digest();

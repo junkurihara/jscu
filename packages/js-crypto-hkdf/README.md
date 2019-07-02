@@ -37,18 +37,6 @@ The bundled file is also given as `js-crypto-hkdf/dist/jschkdf.bundle.js` for a 
   
 # Usage
 
-## Derive key from a master secret with salt
-
-```javascript
-const masterSecret = ...; // Uint8Array of arbitrary length
-const hash = 'SHA-256';
-const length = 32; // derived key length
-const info = ''; // information specified in rfc5869
-hmac.compute(masterSecret, hash, length, info).then( (derivedKey) => {
-  // now you get a automatically-generated salt and a key derived from the masterSecret.
-});
-```
-
 ## Derive key from a master secret without salt (salt is randomly generated inside the function)
 
 ```javascript
@@ -56,8 +44,20 @@ const masterSecret = ...; // Uint8Array of arbitrary length
 const hash = 'SHA-256';
 const length = 32; // derived key length
 const info = ''; // information specified in rfc5869
+hkdf.compute(masterSecret, hash, length, info).then( (derivedKey) => {
+  // now you get a automatically-generated salt and a key derived from the masterSecret.
+});
+```
+
+## Derive key from a master secret with salt
+
+```javascript
+const masterSecret = ...; // Uint8Array of arbitrary length
+const hash = 'SHA-256';
+const length = 32; // derived key length
+const info = ''; // information specified in rfc5869
 const salt = ...; // Uint8Array of arbitrary length
-hmac.compute(masterSecret, hash, length, info, salt).then( (derivedKey) => {
+hkdf.compute(masterSecret, hash, length, info, salt).then( (derivedKey) => {
   // now you get a key derived from the masterSecret
 });
 ``` 
