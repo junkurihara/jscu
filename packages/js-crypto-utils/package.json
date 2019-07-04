@@ -40,7 +40,7 @@
     "openssl"
   ],
   "dependencies": {
-    "@babel/runtime": "~7.4.5",
+    "@babel/runtime": "~7.5.0",
     "js-crypto-aes": "^0.5.3",
     "js-crypto-ec": "^0.5.6",
     "js-crypto-hash": "^0.5.0",
