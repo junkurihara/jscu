@@ -12,7 +12,7 @@
     "release:start": "git flow release start v$npm_package_version",
     "release:finish": "git flow release finish v$npm_package_version",
     "release:push": "git push --all && git push origin v$npm_package_version",
-    "clean": "lerna clean --yes && lerna run cleanup",
+    "clean": "lerna clean --yes && lerna run cleanup && rm -rf ./node_modules",
     "babel": "lerna run babel",
     "build": "lerna run build",
     "docs": "./node_modules/.bin/esdoc -c .esdoc.json",
