@@ -55,7 +55,7 @@ Using `npm` package is the simplest way to fully leverage `jscu` functions. Cons
 
 `jscu` is free, open source software licensed under MIT License.
 
-You can open issues for bugs you've found or features you think are missing. You can also submit pull requests to this repository, or submit translations using Weblate.
+You can open issues for bugs you've found or features you think are missing. You can also submit pull requests to this repository.
 
 Contributors are more than welcome!
 
