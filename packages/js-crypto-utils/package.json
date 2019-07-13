@@ -50,7 +50,7 @@
     "js-crypto-pbkdf": "^0.4.0",
     "js-crypto-random": "^0.3.3",
     "js-crypto-rsa": "^0.5.6",
-    "js-encoding-utils": "0.5.1",
+    "js-encoding-utils": "0.5.2",
     "js-x509-utils": "^0.4.6",
     "lodash.clonedeep": "~4.5.0"
   }

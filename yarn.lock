@@ -5472,10 +5472,10 @@ istanbul@^0.4.0:
     which "^1.1.1"
     wordwrap "^1.0.0"
 
-js-encoding-utils@0.5.1:
-  version "0.5.1"
-  resolved "https://registry.yarnpkg.com/js-encoding-utils/-/js-encoding-utils-0.5.1.tgz#64110c7fd82cad086a928ef7237e17744106db71"
-  integrity sha512-oBxvNEUbrbL+W6sL3Btsxnj3LfHevByyseOX3KDcoJD4Mt18rkmMRtPEY7XBrV4Y1mty/KsfqpKn9IWIXsIPig==
+js-encoding-utils@0.5.2:
+  version "0.5.2"
+  resolved "https://registry.yarnpkg.com/js-encoding-utils/-/js-encoding-utils-0.5.2.tgz#ae898cb9046bff1d906f839b2c1f3652177ba8b3"
+  integrity sha512-/SlP7KS7YL4FUo0vntOG9QSB2XgDVpMA01EkYvfIOcuTy04ZjGvHjaJQ1OTNOox5/Gzoetu8g1oU3BUOQLspzg==
 
 js-levenshtein@^1.1.3:
   version "1.1.6"
