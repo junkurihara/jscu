@@ -32,7 +32,7 @@ Additionally, this library provides random, hash, AES, HMAC, HKDF, and PBKDF fun
 - [`rsa`](https://github.com/junkurihara/jscu/tree/develop/packages/js-crypto-rsa): Subpackage providing naive encryption and signing of RSA cryptography. 
 - [`aes`](https://github.com/junkurihara/jscu/tree/develop/packages/js-crypto-aes): Subpackage for AES encryption.
 - [`random`](https://github.com/junkurihara/jscu/tree/develop/packages/js-crypto-random): Subpackage for cryptographic random generator.
-- [`hash`](https://github.com/junkurihara/jscu/tree/develop/packages/js-crypto-hash): Subpackage providing hash functions including SHA-2.
+- [`hash`](https://github.com/junkurihara/jscu/tree/develop/packages/js-crypto-hash): Subpackage providing hash functions including SHA-2 and SHA-3.
 - [`hkdf`](https://github.com/junkurihara/jscu/tree/develop/packages/js-crypto-hkdf): Subpackage providing hash-based key derivation function.
 - [`pbkdf`](https://github.com/junkurihara/jscu/tree/develop/packages/js-crypto-pbkdf): Subpackage providing password-based key derivation function 1 and 2.
 - [`hmac`](https://github.com/junkurihara/jscu/tree/develop/packages/js-crypto-hmac): Subpackage providing hash-based message authentication code.
@@ -55,7 +55,7 @@ Using `npm` package is the simplest way to fully leverage `jscu` functions. Cons
 
 `jscu` is free, open source software licensed under MIT License.
 
-You can open issues for bugs you've found or features you think are missing. You can also submit pull requests to this repository, or submit translations using Weblate.
+You can open issues for bugs you've found or features you think are missing. You can also submit pull requests to this repository.
 
 Contributors are more than welcome!
 
