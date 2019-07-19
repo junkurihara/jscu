@@ -48,6 +48,26 @@ export const getRandomAsciiString = (len) => {
   return finalString;
 };
 
+/**
+ * Secure random string generator based on getRandomBytes,
+ * which is composed of givin character candidates;
+ * @param {Number} len - Length of string.
+ * @param {String} candidates - Candidates string to sample randomly.
+ * @return {String} - Generated random string.
+ */
+export const getRandomSampledString = (len, candidates) => {
+  const candidate_len = candidates.length;
+  if (candidate_len === 0) return '';
+  const array = getRandomBytes(len);
+  let finalString = '';
+
+  for (let i = 0; i < len; i++) {
+    finalString += candidates[array[i]%candidate_len];
+  }
+
+  return finalString;
+};
+
 
 /**
  * Secure random generator that returns a byte array filled with cryptographically secure random bytes
