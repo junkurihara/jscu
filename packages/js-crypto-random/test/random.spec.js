@@ -21,6 +21,13 @@ describe(`${envName}: Random generation test`, () => {
     expect(r).to.be.length(32);
   });
 
+  it('Random sampling from cadidate string with desired length should be generated successfully', () => {
+    const r = random.getRandomSampledString(32, 'abcdefghijklmnopqrstuvwxyz0123456789');
+    console.log(r);
+    expect(r).to.be.a('String');
+    expect(r).to.be.length(32);
+  });
+
   it('Random string (uppercase, lowercase and alphanumeric chars) of desired length should be generated successfully', () => {
     const r = random.getRandomString(32);
     console.log(r);
