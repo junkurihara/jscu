@@ -40,9 +40,9 @@ jobs:
       - run: yarn babel
       - run: yarn test
       - run: yarn karma
-      - run: yarn add coveralls lcov-result-merger --dev -W
+      - run: yarn add lcov-result-merger --dev -W
       - run: mkdir -p coverage && ./node_modules/.bin/lcov-result-merger './packages/*/coverage/*/lcov.info' ./coverage/merged-lcov.info
-      - run: cat ./coverage/merged-lcov.info | ./node_modules/.bin/coveralls
+      #- run: cat ./coverage/merged-lcov.info | ./node_modules/.bin/coveralls
 
       - save_cache:
           paths:
