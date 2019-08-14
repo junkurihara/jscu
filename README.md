@@ -2,6 +2,7 @@ jscu: A Universal Cryptographic Library for JavaScript
 --
 
 [![CircleCI](https://circleci.com/gh/junkurihara/jscu.svg?style=svg)](https://circleci.com/gh/junkurihara/jscu)
+[![codecov](https://codecov.io/gh/junkurihara/jscu/branch/develop/graph/badge.svg)](https://codecov.io/gh/junkurihara/jscu)
 [![Maintainability](https://api.codeclimate.com/v1/badges/3e20cff0e8e062363a13/maintainability.svg)](https://codeclimate.com/github/junkurihara/jscu/maintainability)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
