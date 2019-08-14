@@ -44,8 +44,6 @@ jobs:
       - run: yarn karma
       - run: yarn add lcov-result-merger --dev -W
       - run: mkdir -p coverage && ./node_modules/.bin/lcov-result-merger './packages/*/coverage/*/lcov.info' ./coverage/merged-lcov.info
-      - codecov/upload:
-          file: ./coverage/merged-lcov.info
       #- run: cat ./coverage/merged-lcov.info | ./node_modules/.bin/coveralls
 
       - save_cache:
