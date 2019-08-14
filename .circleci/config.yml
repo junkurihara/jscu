@@ -14,6 +14,8 @@ defaults: &defaults
     # documented at https://circleci.com/docs/2.0/circleci-images/
     # - image: circleci/mongo:3.4.4
 
+orbs:
+  codecov: codecov/codecov@1.0.5
 
 jobs:
   test:
@@ -42,7 +44,8 @@ jobs:
       - run: yarn karma
       - run: yarn add lcov-result-merger --dev -W
       - run: mkdir -p coverage && ./node_modules/.bin/lcov-result-merger './packages/*/coverage/*/lcov.info' ./coverage/merged-lcov.info
-      #- run: cat ./coverage/merged-lcov.info | ./node_modules/.bin/coveralls
+      - codecov/upload:
+          file: {{ ./coverage/merged-lcov.info }}
 
       - save_cache:
           paths:
