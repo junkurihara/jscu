@@ -2,7 +2,7 @@
 #
 # Check https://circleci.com/docs/2.0/language-javascript/ for more details
 # https://circleci.com/blog/publishing-npm-packages-using-circleci-2-0/
-version: 2
+version: 2.1
 defaults: &defaults
   working_directory: ~/repo
   docker:
