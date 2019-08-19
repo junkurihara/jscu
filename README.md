@@ -25,7 +25,7 @@ In particular, this library provides unified APIs of the following cryptographic
 
 Additionally, this library provides random, hash, AES, HMAC, HKDF, and PBKDF functions. This implies the `jscu` is composed of the several subpackages and can be seen as a cryptographic suite like [`openpgpjs`](https://openpgpjs.org/). The root package, `js-crypto-utils`, of the suite and its subpackages are listed as follows.
 
-- [`crypto-utils`](https://github.com/junkurihara/jscu/tree/develop/packages/js-crypt-utils): Root cryptographic package providing unified APIs.
+- [`crypto-utils`](https://github.com/junkurihara/jscu/tree/develop/packages/js-crypto-utils): Root cryptographic package providing unified APIs.
 - [`x509-utils`](https://github.com/junkurihara/jscu/tree/develop/packages/js-x509-utils): Subpackage handling X509 certificates.
 - [`key-utils`](https://github.com/junkurihara/jscu/tree/develop/packages/js-crypto-key-utils): Subpackage handling various key formats like PEM, DER, and JWK.
 - [`ec`](https://github.com/junkurihara/jscu/tree/develop/packages/js-crypto-ec): Subpackage providing naive encryption and signing of elliptic curve cryptography.
