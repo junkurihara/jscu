@@ -5800,10 +5800,10 @@ karma-cli@2.0.0:
   dependencies:
     resolve "^1.3.3"
 
-karma-coverage@2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/karma-coverage/-/karma-coverage-2.0.0.tgz#60ff767cce44180725ac9dc24e04c7bbe8d562ff"
-  integrity sha512-FFQJPrf0SDjWVVMZxqPz9ry04OjSGYEqY6uvhU9fdBYRo/RNHWayU+Jq/7E55v5zDcwN6orfTDeUrd9zWtZAkg==
+karma-coverage@2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/karma-coverage/-/karma-coverage-2.0.1.tgz#f024f191f0f135dee2403763ac36cc52aac279ac"
+  integrity sha512-SnFkHsnLsaXfxkey51rRN9JDLAEKYW2Lb0qOEvcruukk0NkSNDkjobNDZPt9Ni3kIhLZkLtpGOz661hN7OaZvQ==
   dependencies:
     dateformat "^1.0.6"
     istanbul "^0.4.0"
