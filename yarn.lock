@@ -5772,7 +5772,7 @@ istanbul@^0.4.0:
     which "^1.1.1"
     wordwrap "^1.0.0"
 
-js-encoding-utils@0.5.3, js-encoding-utils@^0.5.3:
+js-encoding-utils@0.5.3:
   version "0.5.3"
   resolved "https://registry.yarnpkg.com/js-encoding-utils/-/js-encoding-utils-0.5.3.tgz#7efe93b0d440fe96352660c8ef0a0f3ebf430fe6"
   integrity sha512-GWEeXCVERJvMX/V8VLaJHIHe5K2m4dCXYujmbipK9NIUVxNS4J/PZfgIE+lveCvZgZpSY5tMUHOkh/ZHhPx84A==
