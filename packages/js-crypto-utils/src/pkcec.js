@@ -20,12 +20,12 @@ export const encrypt = async (
   if(encrypt !== 'AES-KW') {
     iv = (!iv) ? await random.getRandomBytes(params.ciphers[encrypt].ivLength) : iv;
     data = await aes.encrypt(msg, hkdfOutput.key, {name: encrypt, iv}); // no specification of tagLength and additionalData
+    return {data, salt: hkdfOutput.salt, iv};
   }
   else {
     data = await aes.wrapKey(msg, hkdfOutput.key, {name: encrypt});
+    return {data, salt: hkdfOutput.salt};
   }
-
-  return {data, salt: hkdfOutput.salt, iv};
 };
 
 
