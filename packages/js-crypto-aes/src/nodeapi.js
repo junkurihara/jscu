@@ -5,6 +5,37 @@
 import params from './params.js';
 
 /**
+ * Node.js KeyWrapping function simply uses encrypt function.
+ * @param keyToBeWrapped {Uint8Array} - plaintext key
+ * @param wrappingKey {Uint8Array} - wrapping key
+ * @param name {string} - 'AES-KW'
+ * @param iv {Uint8Array} - default is '0xA6A6A6A6A6A6A6A6'
+ * @param nodeCrypto {Object} - NodeCrypto object
+ * @return {Uint8Array} - Unwrapped Key
+ */
+export const wrapKey = (
+  keyToBeWrapped, wrappingKey, {name = 'AES-KW', iv}, nodeCrypto
+) => encrypt(
+  keyToBeWrapped, wrappingKey, {name, iv}, nodeCrypto, true
+);
+
+
+/**
+ * Node.js KeyUnwrapping function as well as keyWrapping
+ * @param wrappedKey {Uint8Array} - Wrapped key
+ * @param unwrappingKey {Uint8Array} - Key used for wrapping
+ * @param name {string} - 'AES-KW'
+ * @param iv {Uint8Array} - default is '0xA6A6A6A6A6A6A6A6'
+ * @param nodeCrypto {Object} - NodeCrypto object
+ * @return {Uint8Array} - Unwrapped Key
+ */
+export const unwrapKey = (
+  wrappedKey, unwrappingKey, {name = 'AES-KW', iv}, nodeCrypto
+) => decrypt(
+  wrappedKey, unwrappingKey, {name, iv}, nodeCrypto, true
+);
+
+/**
  * Encrypt plaintext message via AES Node.js crypto API
  * @param {Uint8Array} msg - Plaintext message to be encrypted.
  * @param {Uint8Array} key - Byte array of symmetric key.
@@ -13,13 +44,12 @@ import params from './params.js';
  * @param {Uint8Array} [additionalData] - Byte array of additional data if required.
  * @param {Number} [tagLength] - Authentication tag length if required.
  * @param {Object} nodeCrypto - NodeCrypto object, i.e., require(crypto) in Node.js.
+ * @param wrapKey {Boolean} [false] - true if called as AES-KW
  * @return {Uint8Array} - Encrypted message byte array.
  * @throws {Error} - Throws error if UnsupportedCipher.
  */
-export const encrypt = (msg, key, {name, iv, additionalData, tagLength}, nodeCrypto) => {
-  let alg = params.ciphers[name].nodePrefix;
-  alg = `${alg}-${(key.byteLength*8).toString()}-`;
-  alg = alg + params.ciphers[name].nodeSuffix;
+export const encrypt = (msg, key, {name, iv, additionalData, tagLength}, nodeCrypto, wrapKey=false) => {
+  const alg = getNodeName(name, key.byteLength, (wrapKey)? params.wrapKeys : params.ciphers);
 
   let cipher;
   switch(name){
@@ -28,16 +58,33 @@ export const encrypt = (msg, key, {name, iv, additionalData, tagLength}, nodeCry
     cipher.setAAD(additionalData);
     break;
   }
-  case 'AES-CBC': {
+  case 'AES-CTR': {
+    if(iv.length === 0 || iv.length > 16) throw new Error('InvalidIVLength');
+    const counter = new Uint8Array(16);
+    counter.set(iv);
+    counter[15] += 1;
+    cipher = nodeCrypto.createCipheriv(alg, key, counter);
+    break;
+  }
+  default: { // AES-CBC or AES-KW
     cipher = nodeCrypto.createCipheriv(alg, key, iv);
     break;
   }}
 
-  const body = new Uint8Array(cipher.update(msg));
-  const final = new Uint8Array(cipher.final());
+  let body;
+  let final;
+  let tag;
 
-  let tag = new Uint8Array([]);
-  if(name === 'AES-GCM') tag = new Uint8Array(cipher.getAuthTag());
+  try {
+    body = new Uint8Array(cipher.update(msg));
+    final = new Uint8Array(cipher.final());
+
+    tag = new Uint8Array([]);
+    if(name === 'AES-GCM') tag = new Uint8Array(cipher.getAuthTag());
+  }
+  catch (e) {
+    throw new Error('NodeCrypto_EncryptionFailure');
+  }
 
   const data = new Uint8Array(body.length + final.length + tag.length);
   data.set(body);
@@ -58,12 +105,11 @@ export const encrypt = (msg, key, {name, iv, additionalData, tagLength}, nodeCry
  * @param {Number} [tagLength] - Authentication tag length if required.
  * @param {Object} nodeCrypto - NodeCrypto object, i.e., require(crypto) in Node.js.
  * @return {Uint8Array} - Decrypted message byte array.
+ * @param unwrapKey {Boolean} [false] - true if called as AES-KW
  * @throws {Error} - Throws error if UnsupportedCipher or DecryptionFailure.
  */
-export const decrypt = (data, key, {name, iv, additionalData, tagLength}, nodeCrypto) => {
-  let alg = params.ciphers[name].nodePrefix;
-  alg = `${alg}-${(key.byteLength*8).toString()}-`;
-  alg = alg + params.ciphers[name].nodeSuffix;
+export const decrypt = (data, key, {name, iv, additionalData, tagLength}, nodeCrypto, unwrapKey=false) => {
+  const alg = getNodeName(name, key.byteLength, (unwrapKey)? params.wrapKeys : params.ciphers);
 
   let decipher;
   let body;
@@ -76,24 +122,47 @@ export const decrypt = (data, key, {name, iv, additionalData, tagLength}, nodeCr
     decipher.setAuthTag(tag);
     break;
   }
-  case 'AES-CBC': {
-    decipher = nodeCrypto.createDecipheriv(alg, key, iv);
+  case 'AES-CTR': {
+    if(iv.length === 0 || iv.length > 16) throw new Error('InvalidIVLength');
+    const counter = new Uint8Array(16);
+    counter.set(iv);
+    counter[15] += 1;
+    decipher = nodeCrypto.createDecipheriv(alg, key, counter);
     body = data;
     break;
   }
-  default: throw new Error('UnsupportedCipher');
-  }
+  default : { // AES-CBC or AES-KW
+    decipher = nodeCrypto.createDecipheriv(alg, key, iv);
+    body = data;
+    break;
+  }}
 
-  const decryptedBody = decipher.update(body);
+  let decryptedBody;
   let final;
   try{
+    decryptedBody = decipher.update(body);
     final = decipher.final();
   } catch (e) {
-    throw new Error('DecryptionFailure');
+    throw new Error('NodeCrypto_DecryptionFailure');
   }
+
   const msg = new Uint8Array(final.length + decryptedBody.length);
   msg.set(decryptedBody);
   msg.set(final, decryptedBody.length);
 
   return msg;
+};
+
+
+/**
+ * get node algorithm name
+ * @param name {string} - name of webcrypto alg like AES-GCM
+ * @param keyLength {number} - aes encryption key
+ * @param dict {object} - params.ciphers or params.wrapKeys
+ * @return {string} - node algorithm name
+ */
+const getNodeName = (name, keyLength, dict) => {
+  let alg = dict[name].nodePrefix;
+  alg = `${alg}${(keyLength * 8).toString()}`;
+  return alg + dict[name].nodeSuffix;
 };

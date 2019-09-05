@@ -26,8 +26,8 @@
   "devDependencies": {
     "@babel/cli": "7.5.5",
     "@babel/core": "7.5.5",
-    "@babel/plugin-transform-runtime": "7.5.5",
     "@babel/plugin-transform-regenerator": "7.4.5",
+    "@babel/plugin-transform-runtime": "7.5.5",
     "@babel/polyfill": "7.4.4",
     "@babel/preset-env": "7.5.5",
     "@babel/register": "7.5.5",
@@ -40,6 +40,7 @@
     "cross-env": "5.2.1",
     "esdoc": "1.1.0",
     "esdoc-standard-plugin": "1.0.0",
+    "eslint": "6.3.0",
     "jsdom": "15.1.1",
     "karma": "4.3.0",
     "karma-chrome-launcher": "3.1.0",

@@ -3,6 +3,7 @@
  */
 
 import {compute} from './hkdf.js';
+import {nistConcatKdf} from './nist-concat-kdf';
 
-export default {compute};
-export {compute};
+export default {compute, nistConcatKdf};
+export {compute, nistConcatKdf};
