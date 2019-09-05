@@ -84,11 +84,59 @@ aes.decrypt(data, key, {name: 'AES-CBC', iv}).then( (decrypted) => {
 });
 ```
 
+## Encryption in AES-CTR
+
+```javascript
+const msg = ...; // arbitrary length of message in Uint8Array
+const key = ...; // 16 bytes or 32 bytes key in Uint8Array
+const iv = ...; // 12 bytes IV in Uint8Array for AES-CTR mode
+aes.encrypt(msg, key, {name: 'AES-CTR', iv}).then( (encrypted) => {
+  // now you get an Uint8Array of encrypted message
+});
+```
+The counter block will be `iv||00...01`. If `iv.length = 16`, it should be `iv + 1`.
+
+## Decryption in AES-CTR
+
+```javascript
+const data = ...; // encryted message in Uint8Array
+const key = ...; // 16 bytes or 32 bytes key in Uint8Array
+const iv = ...; // 12 bytes IV in Uint8Array for AES-CTR mode that is exactly same as the one used in encryption
+aes.decrypt(data, key, {name: 'AES-CTR', iv}).then( (decrypted) => {
+  // now you get an Uint8Array of decrypted message
+});
+```
+
+
+## AES-KW Key Wrapping (RFC3394)
+
+```javascript
+const kEK = ...; // Key Encryption Key in 128, 192, 256 bits (192 only in Node.js)
+const cEK = ...; // Key to be wrapped of 128, 192, 256 bits (192 only in Node.js)
+
+aes.wrapKey(cEK, kEK, {name: 'AES-KW'}).then( (wrapped) => {
+ // wrapped key is here
+});
+```
+
+## AES-KW Key (RFC3394)
+
+```javascript
+const kEK = ...; // Key Encryption Key in 128, 192, 256 bits (192 only in Node.js)
+const wrapped = ...; // Wrapped key in Uint8Array
+
+aes.unwrapKey(wrapped, kEK, {name: 'AES-KW'}).then( (cEK) => {
+ // now you get the plaintext key
+});
+```
+
+
 
 # Note
 
 At this point, this module has the following limitations:
-- Supports only AES-GCM and AES-CBC modes
+- Supports AES-GCM, AES-CBC and AES-CTR modes
+- Supports AES-KW with default initial values (unable to change in WebCrypto)
 - Supports 128 bits and 256 bits keys in Chrome (192 bits key works in Node.js)
 
 # License

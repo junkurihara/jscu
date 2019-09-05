@@ -17,7 +17,7 @@ describe(`${envName}: Encryption test`, () => {
     for(let i = 0; i < 32; i++) msg[i] = 0xFF & i;
   });
 
-  it('ECDH: Encrypted message is successfully generated and decrypted', async () => {
+  it('ECDH: Encrypted message is successfully generated and decrypted with AES-GCM', async () => {
     for (let i = 0; i < curves.length; i++) {
       for (let j = 0; j < hashes.length; j++) {
         let options = {
@@ -41,6 +41,34 @@ describe(`${envName}: Encryption test`, () => {
         const decrypted = await jscu.pkc.decrypt(encrypted.data, ecKeySet[i][0].privateKey, options);
 
         expect(msg.toString() === decrypted.toString()).to.be.true;
+      }
+    }
+  });
+
+  it('ECDH: Encrypted content encryption key is successfully generated and decrypted with AES-KW', async () => {
+    const keyMsg = jscu.random.getRandomBytes(32);
+    for (let i = 0; i < curves.length; i++) {
+      for (let j = 0; j < hashes.length; j++) {
+        let options = {
+          privateKey: ecKeySet[i][1].privateKey,
+          hash: hashes[j],
+          encrypt: 'AES-KW',
+          keyLength: 32,
+          info: ''
+        };
+        const encrypted = await jscu.pkc.encrypt(keyMsg, ecKeySet[i][0].publicKey, options);
+
+        options = {
+          publicKey: ecKeySet[i][1].publicKey,
+          hash: hashes[j],
+          encrypt: 'AES-KW',
+          keyLength: 32,
+          info: '',
+          salt: encrypted.salt
+        };
+        const decrypted = await jscu.pkc.decrypt(encrypted.data, ecKeySet[i][0].privateKey, options);
+
+        expect(keyMsg.toString()).to.equal(decrypted.toString());
       }
     }
   });

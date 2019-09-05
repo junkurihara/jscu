@@ -145,7 +145,7 @@ jscu.pkc.generateKey(  // key generation
   const optionsEncryption = {
     privateKey: keyPair.privateKey, // for ECDH, my private key
     hash: 'SHA-256', // for HKDF
-    encrypt: 'AES-GCM', // for encryption of message
+    encrypt: 'AES-GCM', // for encryption of message, if message is a key, 'AES-KW' can be used as well.
     keyLength: 32, // key length of AES
     info: '' // for HKDF
   };
@@ -158,7 +158,7 @@ jscu.pkc.generateKey(  // key generation
   const optionsDecryption = {
     publicKey: keyPair.publicKey, // for ECDH, my public key
     hash: 'SHA-256', // for HKDF
-    encrypt: 'AES-GCM', // for encryption of message
+    encrypt: 'AES-GCM', // for encryption of message. 'AES-KW' can be used as well
     keyLength: 32, // key length of AES
     info: '', // for HKDF
     salt: encrypted.salt, // for HKDF

@@ -40,5 +40,4 @@ describe(`${envName}: Miscellaneous Test`, () => {
       expect(fail).to.be.true;
     }));
   });
-
 });

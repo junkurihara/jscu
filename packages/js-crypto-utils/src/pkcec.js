@@ -14,23 +14,18 @@ export const encrypt = async (
   { privateKey, hash='SHA-256', encrypt='AES-GCM', keyLength=32, iv=null, info='' }
 ) => {
   const sharedSecret = await ec.deriveSecret(publicKey, privateKey);
-  const sessionKeySalt = await hkdf.compute(sharedSecret, hash, keyLength, info);
+  const hkdfOutput = await hkdf.compute(sharedSecret, hash, keyLength, info); // use HKDF for key derivation
 
-  // TODO: other iv-required algorithms
-  switch (encrypt) {
-  case 'AES-GCM': {
-    iv = (!iv)
-      ? await random.getRandomBytes(params.ciphers[encrypt].ivLength)
-      : iv;
-    break;
+  let data;
+  if(encrypt !== 'AES-KW') {
+    iv = (!iv) ? await random.getRandomBytes(params.ciphers[encrypt].ivLength) : iv;
+    data = await aes.encrypt(msg, hkdfOutput.key, {name: encrypt, iv}); // no specification of tagLength and additionalData
   }
-  default:
-    throw new Error('UnsupportedSessionKeyAlgorithm');
+  else {
+    data = await aes.wrapKey(msg, hkdfOutput.key, {name: encrypt});
   }
 
-  const data = await aes.encrypt(msg, sessionKeySalt.key, {name: encrypt, iv}); // no specification of tagLength and additionalData
-
-  return {data, salt: sessionKeySalt.salt, iv};
+  return {data, salt: hkdfOutput.salt, iv};
 };
 
 
@@ -39,13 +34,13 @@ export const decrypt = async (
   { publicKey, hash='SHA-256', encrypt='AES-GCM', keyLength=32, info='', salt=null, iv=null }
 ) => {
   const sharedSecret = await ec.deriveSecret(publicKey, privateKey);
-  const sessionKeySalt = await hkdf.compute(sharedSecret, hash, keyLength, info, salt);
+  const hkdfOutput = await hkdf.compute(sharedSecret, hash, keyLength, info, salt);
 
-  let msg;
-  if(Object.keys(params.ciphers).indexOf(encrypt) >= 0){
-    msg = await aes.decrypt(data, sessionKeySalt.key, {name: encrypt, iv}); // no specification of tagLength and additionalData
+  if(encrypt !== 'AES-KW') {
+    return aes.decrypt(data, hkdfOutput.key, {name: encrypt, iv}); // no specification of tagLength and additionalData
   }
-  else throw new Error('UnsupportedSessionKeyAlgorithm');
-
-  return msg;
+  else {
+    return aes.unwrapKey(data, hkdfOutput.key, {name: encrypt});
+  }
 };
+

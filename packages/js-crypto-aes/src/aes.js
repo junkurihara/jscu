@@ -47,24 +47,13 @@ export const encrypt = async (msg, key, {name = 'AES-GCM', iv, additionalData=ne
   const webCrypto = await util.getWebCryptoAll(); // web crypto api
   const nodeCrypto = await util.getNodeCrypto(); // node crypto
 
-  let data;
   if (typeof webCrypto !== 'undefined' && typeof webCrypto.importKey === 'function' && typeof webCrypto.encrypt === 'function') {// for web API including IE...
-    data = await webapi.encrypt(msg, key, {name, iv, additionalData, tagLength}, webCrypto)
-      .catch((e) => {
-        throw new Error(`FailedToEncryptWeb: ${e.message}`);
-      });
+    return webapi.encrypt(msg, key, {name, iv, additionalData, tagLength}, webCrypto);
   }
   else if (typeof nodeCrypto !== 'undefined' ) { // for node
-    try{
-      data = nodeapi.encrypt(msg, key, {name, iv, additionalData, tagLength}, nodeCrypto);
-    } catch(e) {
-      throw new Error(`FailedToEncryptNode: ${e.message}`);
-    }
-  } else {
-    throw new Error('UnsupportedEnvironment'); // TODO:fallback to native implementation
-  }
+    return nodeapi.encrypt(msg, key, {name, iv, additionalData, tagLength}, nodeCrypto);
 
-  return data;
+  } else throw new Error('UnsupportedEnvironment'); // TODO:fallback to native implementation
 };
 
 
@@ -77,7 +66,7 @@ export const encrypt = async (msg, key, {name = 'AES-GCM', iv, additionalData=ne
  * @param {Uint8Array} [additionalData = new Uint8Array([])] - Byte array of additional data if required.
  * @param {Number} [tagLength = params.ciphers[name].tagLength] - Authentication tag length if required.
  * @return {Promise<Uint8Array>} - Decrypted plaintext message.
- * @throws {Error} - Throws if InvalidArguments, FaildToDecryptWeb/Node, or UnsupportedEnvironment (no webcrypto/nodecrypto).
+ * @throws {Error} - Throws if InvalidArguments, FailedToDecryptWeb/Node, or UnsupportedEnvironment (no webcrypto/nodecrypto).
  */
 export const decrypt = async (data, key, {name='AES-GCM', iv, additionalData=new Uint8Array([]), tagLength}) => {
   // assertion and sanitizing
@@ -88,19 +77,70 @@ export const decrypt = async (data, key, {name='AES-GCM', iv, additionalData=new
   const webCrypto = await util.getWebCryptoAll(); // web crypto api
   const nodeCrypto = await util.getNodeCrypto(); // node crypto
 
-  let msg;
   if (typeof webCrypto !== 'undefined' && typeof webCrypto.importKey === 'function' && typeof webCrypto.encrypt === 'function') {
-    msg = await webapi.decrypt(data, key, {name, iv, additionalData, tagLength}, webCrypto).catch((e) => {
-      throw new Error(`FailedToDecryptWeb: ${e.message}`);
-    });
+    return webapi.decrypt(data, key, {name, iv, additionalData, tagLength}, webCrypto);
   }
   else if (typeof nodeCrypto !== 'undefined'){
-    try{
-      msg = nodeapi.decrypt(data, key, {name, iv, additionalData, tagLength}, nodeCrypto);
-    } catch(e) {
-      throw new Error(`FailedToDecryptNode: ${e.message}`);
-    }
+    return nodeapi.decrypt(data, key, {name, iv, additionalData, tagLength}, nodeCrypto);
   } else throw new Error('UnsupportedEnvironment');
+};
 
-  return msg;
+
+/**
+ * AES-KW wrapping
+ * @param keyToBeWrapped {Uint8Array} - key bytes to be wrapped
+ * @param wrappingKey {Uint8Array} - wrapping key encryption key
+ * @param name {'AES-KW'} - this is simply for future extension
+ * @return {Promise<Uint8Array>} - output wrapped key
+ */
+export const wrapKey = async (
+  keyToBeWrapped, wrappingKey, {name = 'AES-KW'}
+) => {
+  // assertion
+  if(!(keyToBeWrapped instanceof Uint8Array)) throw new Error('NonUint8ArrayData');
+  if(!(wrappingKey instanceof Uint8Array)) throw new Error('NonUint8ArrayKey');
+  if(keyToBeWrapped.length % 8 > 0) throw new Error('WrappedKeyMustBeMultipleOf8');
+
+  const webCrypto = await util.getWebCryptoAll(); // web crypto api
+  const nodeCrypto = await util.getNodeCrypto(); // node crypto
+
+  const iv = params.wrapKeys['AES-KW'].defaultIV;
+
+  if (typeof webCrypto !== 'undefined' && typeof webCrypto.importKey === 'function' && typeof webCrypto.wrapKey === 'function') {// for web API including IE...
+    return webapi.wrapKey(keyToBeWrapped, wrappingKey, {name, iv}, webCrypto);
+  }
+  else if (typeof nodeCrypto !== 'undefined' ) { // for node
+    return nodeapi.wrapKey(keyToBeWrapped, wrappingKey, {name, iv}, nodeCrypto);
+  } else {
+    throw new Error('UnsupportedEnvironment'); // TODO:fallback to native implementation
+  }
+};
+
+/**
+ * AES-KW unwrapping
+ * @param wrappedKey {Uint8Array} - wrapped key bytes
+ * @param wrappingKey {Uint8Array} - wrapping key encryption key
+ * @param name {'AES-KW'} - this is simply for future extension
+ * @return {Promise<Uint8Array>} - output unwrapped key
+ */
+export const unwrapKey = async (
+  wrappedKey, wrappingKey, {name = 'AES-KW'}
+) => {
+  // assertion
+  if(!(wrappedKey instanceof Uint8Array)) throw new Error('NonUint8ArrayData');
+  if(!(wrappingKey instanceof Uint8Array)) throw new Error('NonUint8ArrayKey');
+
+  const webCrypto = await util.getWebCryptoAll(); // web crypto api
+  const nodeCrypto = await util.getNodeCrypto(); // node crypto
+
+  const iv = params.wrapKeys['AES-KW'].defaultIV;
+
+  if (typeof webCrypto !== 'undefined' && typeof webCrypto.importKey === 'function' && typeof webCrypto.wrapKey === 'function') {// for web API including IE...
+    return webapi.unwrapKey(wrappedKey, wrappingKey, {name, iv}, webCrypto);
+  }
+  else if (typeof nodeCrypto !== 'undefined' ) { // for node
+    return nodeapi.unwrapKey(wrappedKey, wrappingKey, {name, iv}, nodeCrypto);
+  } else {
+    throw new Error('UnsupportedEnvironment'); // TODO:fallback to native implementation
+  }
 };
