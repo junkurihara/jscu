@@ -36,7 +36,7 @@
     "webcrypto"
   ],
   "dependencies": {
-    "@babel/runtime": "~7.5.0",
+    "@babel/runtime": "~7.6.0",
     "js-crypto-env": "^0.2.4"
   }
 }
