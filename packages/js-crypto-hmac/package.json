@@ -37,7 +37,7 @@
   ],
   "devDependencies": {
     "js-crypto-random": "^0.3.5",
-    "js-encoding-utils": "0.5.3"
+    "js-encoding-utils": "0.5.4"
   },
   "dependencies": {
     "@babel/runtime": "~7.6.0",
