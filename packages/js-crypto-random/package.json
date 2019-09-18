@@ -4,21 +4,22 @@
   "description": "Universal Module for Secure Random Generator in JavaScript",
   "main": "dist/index.js",
   "scripts": {
-    "test": "cross-env NODE_ENV=test nyc mocha --recursive $(find test -name '*.spec.js')",
-    "test:bundle": "npm run webpack && cross-env TEST_ENV=bundle npm run test",
+    "test": "nyc mocha --recursive $(find test -name '*.spec.ts')",
+    "test:bundle": "yarn webpack && cross-env TEST_ENV=bundle yarn test",
     "karma": "cross-env TEST_ENV=source karma start",
-    "karma:bundle": "npm run webpack && cross-env TEST_ENV=bundle karma start",
-    "karma:window": "npm run webpack && cross-env TEST_ENV=window karma start",
-    "html": "npm run webpack && npm run html:source && npm run html:bundle && npm run html:window",
-    "html:source": "cross-env TEST_ENV=source NODE_ENV=html npm run webpack",
-    "html:bundle": "cross-env TEST_ENV=bundle NODE_ENV=html npm run webpack",
-    "html:window": "cross-env TEST_ENV=window NODE_ENV=html npm run webpack",
-    "webpack": "webpack --optimize-minimize --mode development --config webpack.dev.js",
+    "karma:bundle": "yarn webpack && cross-env TEST_ENV=bundle karma start",
+    "karma:window": "yarn webpack && cross-env TEST_ENV=window karma start",
+    "tsc": "tsc --build ./tsconfig.json",
+    "html": "yarn webpack && yarn html:source && yarn html:bundle && yarn html:window",
+    "html:source": "cross-env TEST_ENV=source NODE_ENV=html yarn webpack",
+    "html:bundle": "cross-env TEST_ENV=bundle NODE_ENV=html yarn webpack",
+    "html:window": "cross-env TEST_ENV=window NODE_ENV=html yarn webpack",
+    "webpack": "webpack --mode development --config webpack.dev.js",
     "webpack:prod": "cross-env NODE_ENV=production webpack --optimize-minimize --mode production --config webpack.prod.js",
+    "build": "rm -rf ./dist && cross-env NODE_ENV=production yarn tsc && yarn webpack:prod",
     "analyze": "cross-env NODE_ENV=production webpack --mode production --optimize-minimize --json --config webpack.prod.js | webpack-bundle-size-analyzer",
-    "babel": "cross-env NODE_ENV=production babel src -d dist/ --keep-file-extension",
-    "build": "rm -rf ./dist && npm run babel && npm run webpack:prod",
-    "cleanup": "rm -rf ./dist coverage .nyc_output; rm -rf ./test/html/*.bundle.js; rm -rf ./test/html/test.html"
+    "cleanup": "rm -rf ./dist coverage .nyc_output ./node_modules ./test/html/*.bundle.js ./test/html/test.html",
+    "babel": "cross-env NODE_ENV=production yarn tsc"
   },
   "author": "Jun Kurihara",
   "license": "MIT",
@@ -35,8 +36,19 @@
     "random",
     "webcrypto"
   ],
+  "devDependencies": {
+    "@types/chai": "4.2.3",
+    "@types/mocha": "5.2.7",
+    "@types/node": "10.14.18",
+    "@typescript-eslint/eslint-plugin": "2.3.0",
+    "istanbul-instrumenter-loader": "3.0.1",
+    "karma-coverage-istanbul-reporter": "2.1.0",
+    "ts-loader": "6.1.0",
+    "ts-node": "8.4.1",
+    "tsc": "1.20150623.0",
+    "typescript": "3.6.3"
+  },
   "dependencies": {
-    "@babel/runtime": "~7.6.0",
     "js-crypto-env": "^0.2.4"
   }
 }

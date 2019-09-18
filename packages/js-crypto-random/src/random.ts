@@ -10,10 +10,10 @@ import * as util from 'js-crypto-env';
  * @param {Number} len - Length of string.
  * @return {String} - Generated random ASCII string.
  */
-export const getRandomString = (len) => {
-  const array = getRandomBytes(len);
-  const types = getRandomBytes(len); // indicating alphanumeric, upper, lower
-  let finalString = '';
+export const getRandomString = (len: number): string => {
+  const array: Uint8Array = getRandomBytes(len);
+  const types: Uint8Array = getRandomBytes(len); // indicating alphanumeric, upper, lower
+  let finalString: string = '';
 
   // Ascii code
   // 1-0: 0x30 -- 0x39, 10 chars
@@ -35,9 +35,9 @@ export const getRandomString = (len) => {
  * @param {Number} len - Length of ASCII string.
  * @return {String} - Generated random ASCII string.
  */
-export const getRandomAsciiString = (len) => {
-  const array = getRandomBytes(len);
-  let finalString = '';
+export const getRandomAsciiString = (len: number) : string => {
+  const array: Uint8Array = getRandomBytes(len);
+  let finalString: string = '';
 
   // Ascii code excluding control characters are in 0x20 -- 0x7e
   for (let i = 0; i < len; i++) {
@@ -55,14 +55,14 @@ export const getRandomAsciiString = (len) => {
  * @param {String} candidates - Candidates string to sample randomly.
  * @return {String} - Generated random string.
  */
-export const getRandomSampledString = (len, candidates) => {
-  const candidate_len = candidates.length;
-  if (candidate_len === 0) return '';
+export const getRandomSampledString = (len: number, candidates: string) => {
+  const candidateLen = candidates.length;
+  if (candidateLen === 0) return '';
   const array = getRandomBytes(len);
-  let finalString = '';
+  let finalString: string = '';
 
   for (let i = 0; i < len; i++) {
-    finalString += candidates[array[i]%candidate_len];
+    finalString += candidates[array[i] % candidateLen];
   }
 
   return finalString;
@@ -75,21 +75,18 @@ export const getRandomSampledString = (len, candidates) => {
  * @return {Uint8Array} - Generated random sequence.
  * @throws {Error} - Throws if UnsupportedEnvironment.
  */
-export const getRandomBytes = (len) => {
+export const getRandomBytes = (len: number) : Uint8Array => {
   const webCrypto = util.getRootWebCryptoAll(); // web crypto api or ms crypto
   const nodeCrypto = util.getNodeCrypto(); // implementation on node.js
 
-  let array;
-
   if (typeof webCrypto !== 'undefined' && typeof webCrypto.getRandomValues === 'function') {
-    array = new Uint8Array(len);
+    const array = new Uint8Array(len);
     webCrypto.getRandomValues(array); // for modern browsers or legacy ie 11
+    return array;
   }
   else if (typeof nodeCrypto !== 'undefined' ) { // for node
-    array = new Uint8Array(nodeCrypto.randomBytes(len));
+    return new Uint8Array(nodeCrypto.randomBytes(len));
   } else {
     throw new Error('UnsupportedEnvironment');
   }
-
-  return array;
 };
