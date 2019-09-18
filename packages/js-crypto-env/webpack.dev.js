@@ -7,6 +7,8 @@ const webpack = require('webpack');
 const merge = require('webpack-merge');
 const jsdom = require('jsdom');
 
+const path = require('path');
+
 // webpack main configration
 const webpackConfig = {
   mode: 'development',
@@ -19,6 +21,19 @@ const webpackConfig = {
       }
     })
   ],
+  module: {
+    rules: [
+      {
+        test: /\.ts$/,
+        exclude: [ path.resolve(__dirname, 'test') ],
+        enforce: 'post',
+        use: {
+          loader: 'istanbul-instrumenter-loader',
+          options: { esModules: true }
+        }
+      }
+    ]
+  },
   devtool: 'inline-source-map' // add inline source map
 };
 
@@ -44,7 +59,7 @@ module.exports = (env, argv) => {
     // for require through dynamic variables in webpack
     config.plugins.push(
       new webpack.ContextReplacementPlugin(
-        RegExp('./src'), RegExp(common.entryName)// only src/index.js is allowed to get imported.
+        RegExp('./src'), RegExp(common.entryName)// only src/index.ts is allowed to get imported.
       ),
       new webpack.ContextReplacementPlugin(
         RegExp('./dist'), RegExp(common.bundleName)// only dist/xxx.bundle.js is allowed to get imported.
@@ -65,7 +80,7 @@ const testHtmlName = './test/html/test.html';
 // get test file names for test with static html
 function getEntriesForHTMLTest (config) {
   const parentDir = './test';
-  const testFiles = getFilteredFileList(parentDir, new RegExp('.*\\.spec\\.js$'));
+  const testFiles = getFilteredFileList(parentDir, new RegExp('.*\\.spec\\.ts$'));
 
   config.entry = {};
   testFiles.map( (file) => {
@@ -147,7 +162,7 @@ const testHtmlTemplate =
   '  <meta charset="UTF-8">\n' +
   '  <title>Title</title>\n' +
   '  <link href="https://cdn.rawgit.com/mochajs/mocha/2.2.5/mocha.css" rel="stylesheet" />\n' +
-  '  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-polyfill/7.0.0/polyfill.min.js"></script>\n' +
+  '  <script src="../../node_modules/@babel/polyfill/browser.js"></script>\n' +
   '</head>\n' +
   '<body>\n' +
   '<div id="mocha"></div>\n' +
