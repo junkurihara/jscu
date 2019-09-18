@@ -4,7 +4,7 @@
 //////////////////////////////////////////////////////////////////////////
 // Base Config of Your Library
 const libName = 'jscenv';
-const entry = './src/index.js';
+const entry = './src/index.ts';
 
 //////////////////////////////////////////////////////////////////////////
 const path = require('path');
@@ -23,25 +23,25 @@ const webpackConfig = {
     globalObject: 'this' // for node js import
   },
   resolve: {
-    extensions: ['.js', '.jsx', '.mjs'],
+    extensions: ['.ts', '.tsx', '.js', '.jsx' ],
     modules: ['node_modules']
   },
   module: {
     rules: [
       {
-        test: /\.(m|)js$/,
+        test: /\.ts$/,
         use: [{
-          loader: 'babel-loader'
+          loader: 'ts-loader'
         }],
         exclude: path.join(__dirname, 'node_modules') // exclude: /node_modules/
-      }
+      },
     ]
   },
-  externals: {
-    'crypto': true
-  },
+  // https://github.com/webpack/webpack/issues/4240
+  externals: { Buffer: 'root buffer', buffer: 'root Buffer' },
   node: {
-    fs: 'empty'
+    fs: 'empty',
+    Buffer: false
   }
 };
 
@@ -81,4 +81,3 @@ module.exports = {
 //   babelrc.plugins = babelrc.plugins.filter( (elem) => pluginExclude.indexOf(elem) < 0);
 //   return babelrc;
 // }
-

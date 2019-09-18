@@ -10,6 +10,7 @@ const getWebpackConfig = () => {
 
   return config;
 };
+const path = require('path');
 
 
 module.exports = function(config) {
@@ -27,7 +28,7 @@ module.exports = function(config) {
     // list of files / patterns to load in the browser
     files: [
       `./dist/${common.bundleName}`,
-      './test/**/*.spec.js'
+      './test/**/*.spec.ts'
     ],
 
 
@@ -39,8 +40,8 @@ module.exports = function(config) {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
-      './src/**/*.js': ['coverage'],
-      './test/**/*.spec.js': ['webpack']
+      './src/**/*.ts': [],
+      './test/**/*.spec.ts': ['webpack']
     },
 
     webpack: getWebpackConfig(),
@@ -54,9 +55,15 @@ module.exports = function(config) {
     // test results reporter to use
     // possible values: 'dots', 'progress'
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-    reporters: ['mocha', 'coverage'],
-    coverageReporter: { type: 'lcov' },
-
+    reporters: ['coverage-istanbul'],
+    coverageIstanbulReporter: {
+      reports: [ 'lcov', 'text-summary' ],
+      dir: path.join(__dirname, 'coverage'),
+      fixWebpackSourcePaths: true,
+      'report-config': {
+        html: { outdir: 'html' }
+      }
+    },
 
     // web server port
     port: 9876,
@@ -79,9 +86,9 @@ module.exports = function(config) {
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
     // browsers: ['ChromeHeadless'],
     // browsers: ['Chrome'],
-    browsers: ["Chrome-headless"],
+    browsers: ['Chrome-headless'],
     customLaunchers: {
-      "Chrome-headless": {
+      'Chrome-headless': {
         base: 'Chrome',
         flags: ['--headless', '--remote-debugging-port=9222', '--no-sandbox']
       }
@@ -98,4 +105,3 @@ module.exports = function(config) {
     concurrency: Infinity
   });
 };
-
