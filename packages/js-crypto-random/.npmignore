@@ -18,3 +18,5 @@ webpack.prod.js
 .nyc_output/
 .nycrc
 renovate.json
+tsconfig.json
+typings/

@@ -37,11 +37,11 @@ const webpackConfig = {
       },
     ]
   },
-  // https://github.com/webpack/webpack/issues/4240
-  externals: { Buffer: 'root buffer', buffer: 'root Buffer' },
+  externals: { // for random just in playground
+    'crypto': true
+  },
   node: {
-    fs: 'empty',
-    Buffer: false
+    fs: 'empty'
   }
 };
 

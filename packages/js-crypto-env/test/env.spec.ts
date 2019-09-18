@@ -1,7 +1,6 @@
 import env from '../src';
 
-// @ts-ignore
-import chai from 'chai';
+import * as chai from 'chai';
 // const should = chai.should();
 const expect = chai.expect;
 

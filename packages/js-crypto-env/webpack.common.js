@@ -37,11 +37,9 @@ const webpackConfig = {
       },
     ]
   },
-  // https://github.com/webpack/webpack/issues/4240
-  externals: { Buffer: 'root buffer', buffer: 'root Buffer' },
+  externals: { },
   node: {
-    fs: 'empty',
-    Buffer: false
+    fs: 'empty'
   }
 };
 

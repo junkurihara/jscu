@@ -1,35 +1,40 @@
 /**
- * prepare.js
+ * prepare.ts
  */
 const common = require('../webpack.common.js');
 
-export function getTestEnv(){
-  let envName;
-  let message;
-  let library;
+import lib from '../src/index';
+
+interface TestEnv {
+  envName: 'Bundle'|'Window'|'Source'|'Source (Not Window)',
+  library: typeof lib,
+  message: string
+}
+
+export const getTestEnv = () : TestEnv => {
+  const env: TestEnv = {
+    envName: 'Source',
+    library: require(`../src/${common.entryName}`),
+    message: '**This is a test with source codes in src.**'
+  };
+
   if(process.env.TEST_ENV === 'bundle'){
-    envName = 'Bundle';
-    message = '**This is a test with a bundled library';
-    library = require(`../dist/${common.bundleName}`);
+    env.envName = 'Bundle';
+    env.message = '**This is a test with a bundled library**';
+    env.library = require(`../dist/${common.bundleName}`);
   }
   else if (process.env.TEST_ENV === 'window'){
-    if(typeof window !== 'undefined' && typeof window[common.libName] !== 'undefined'){
-      envName = 'Window';
-      library = window[common.libName];
-      message = '**This is a test with a library imported from window.**';
+    if(typeof window !== 'undefined' && typeof (<any>window)[common.libName] !== 'undefined'){
+      env.envName = 'Window';
+      env.library = (<any>window)[common.libName];
+      env.message = '**This is a test with a library imported from window.**';
     }
     else{
-      envName = 'Source (Not Window)';
-      library = require(`../src/${common.entryName}`);
-      message = '**This is a test with source codes in src.**';
+      env.envName = 'Source (Not Window)';
+      env.library = require(`../src/${common.entryName}`);
+      env.message = '**This is a test with source codes in src.**';
     }
   }
-  else {
-    envName = 'Source';
-    library = require(`../src/${common.entryName}`);
-    message = '**This is a test with source codes in src.**';
 
-  }
-
-  return {library, envName, message};
-}
+  return env;
+};

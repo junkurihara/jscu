@@ -1,11 +1,10 @@
-import chai from 'chai';
+import * as chai from 'chai';
 // const should = chai.should();
 const expect = chai.expect;
-import {getTestEnv} from './prepare.js';
+import {getTestEnv} from './prepare';
 const env = getTestEnv();
 const random = env.library;
 const envName = env.envName;
-
 
 describe(`${envName}: Random generation test`, () => {
 
