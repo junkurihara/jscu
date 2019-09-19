@@ -1,13 +1,13 @@
-import {getTestEnv} from './prepare.js';
+import {getTestEnv} from './prepare';
 const env = getTestEnv();
 const hash = env.library;
 const envName = env.envName;
 
 import {testVectors} from './test-vector'
 import jseu from 'js-encoding-utils';
-import params from '../src/params.js';
-import chai from 'chai';
-//const should = chai.should();
+import params from '../src/params';
+import * as chai from 'chai';
+// const should = chai.should();
 const expect = chai.expect;
 
 
@@ -18,8 +18,10 @@ describe(`${envName}: Hash generation test`, () => {
     const str = Object.keys(testVectors)[0];
     const msg = jseu.encoder.stringToArrayBuffer(str);
     await Promise.all(hashes.map( async (alg) => {
+
+      // @ts-ignore
       const d = await hash.compute(msg, alg).catch( (e) => console.error(e));
-      const hex = jseu.encoder.arrayBufferToHexString(d);
+      const hex = jseu.encoder.arrayBufferToHexString(<Uint8Array>d);
       console.log(`${alg}: ${hex}`);
       expect(d, `failed at ${alg}`).to.be.a('Uint8Array');
       const len = params.hashes[alg].hashSize;
