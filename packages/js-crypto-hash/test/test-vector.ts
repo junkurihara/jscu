@@ -1,6 +1,10 @@
 // test vectors from
 // https://www.di-mgt.com.au/sha_testvectors.html
-export const testVectors = {
+export const testVectors : {
+  [index: string]: {
+    [index: string]: string
+  } }
+= {
   'abcdbcdecdefdefgefghfghighijhijkijkljklmklmnlmnomnopnopq': {
     'MD5':      '8215ef0796a20bcaaae116d3876c664a',
     'SHA-1':    '84983e441c3bd26ebaae4aa1f95129e5e54670f1',
