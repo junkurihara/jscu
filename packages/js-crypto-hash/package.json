@@ -47,7 +47,7 @@
     "@types/chai": "4.2.3",
     "@types/mocha": "5.2.7",
     "@types/node": "10.14.18",
-    "@typescript-eslint/eslint-plugin": "2.3.0",
+    "@typescript-eslint/eslint-plugin": "2.3.1",
     "istanbul-instrumenter-loader": "3.0.1",
     "js-encoding-utils": "0.5.4",
     "karma-coverage-istanbul-reporter": "2.1.0",
