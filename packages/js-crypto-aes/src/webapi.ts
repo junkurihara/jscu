@@ -2,16 +2,25 @@
  * webapi.js
  */
 
+import {cipherOptions} from './params';
+
+
 /**
  * WebCrypto KeyWrapping function simply uses encrypt function.
  * @param keyToBeWrapped {Uint8Array} - plaintext key
  * @param wrappingKey {Uint8Array} - wrapping key
  * @param name {string} - 'AES-KW'
  * @param iv {Uint8Array} - default is '0xA6A6A6A6A6A6A6A6'
- * @param nodeCrypto {Object} - crypto.subtle object
+ * @param webCrypto {Object} - crypto.subtle object
  * @return {Uint8Array} - Unwrapped Key
  */
-export const wrapKey = async (keyToBeWrapped, wrappingKey, {name = 'AES-KW', iv}, webCrypto) => {
+export const wrapKey = async (
+  keyToBeWrapped: Uint8Array,
+  wrappingKey: Uint8Array,
+  {name, iv}: {name: 'AES-KW', iv: Uint8Array},
+  webCrypto: any
+): Promise<Uint8Array> => {
+  // @ts-ignore
   if (typeof window.msCrypto === 'undefined') {
     // modern browsers
     try {
@@ -32,10 +41,16 @@ export const wrapKey = async (keyToBeWrapped, wrappingKey, {name = 'AES-KW', iv}
  * @param unwrappingKey {Uint8Array} - Key used for wrapping
  * @param name {string} - 'AES-KW'
  * @param iv {Uint8Array} - default is '0xA6A6A6A6A6A6A6A6'
- * @param nodeCrypto {Object} - crypto.subtle object
+ * @param webCrypto {Object} - crypto.subtle object
  * @return {Uint8Array} - Unwrapped Key
  */
-export const unwrapKey = async (wrappedKey, unwrappingKey, {name = 'AES-KW', iv}, webCrypto) => {
+export const unwrapKey = async (
+  wrappedKey: Uint8Array,
+  unwrappingKey: Uint8Array,
+  {name, iv}: {name: 'AES-KW', iv: Uint8Array},
+  webCrypto: any
+): Promise<Uint8Array> => {
+  // @ts-ignore
   if (typeof window.msCrypto === 'undefined') {
     // modern browsers
     try {
@@ -61,9 +76,15 @@ export const unwrapKey = async (wrappedKey, unwrappingKey, {name = 'AES-KW', iv}
  * @return {Promise<Uint8Array>} - Encrypted data byte array.
  * @throws {Error} - Throws if UnsupportedCipher.
  */
-export const encrypt = async (msg, key, {name = 'AES-GCM', iv, additionalData, tagLength}, webCrypto) => {
+export const encrypt = async (
+  msg: Uint8Array,
+  key: Uint8Array,
+  {name = 'AES-GCM', iv, additionalData, tagLength}: cipherOptions,
+  webCrypto: any
+): Promise<Uint8Array> => {
   const encryptionConfig = setCipherParams({name, iv, additionalData, tagLength});
 
+  // @ts-ignore
   if (typeof window.msCrypto === 'undefined') {
     // modern browsers
     try {
@@ -80,11 +101,11 @@ export const encrypt = async (msg, key, {name = 'AES-GCM', iv, additionalData, t
       const encryptedObj = await msEncrypt(encryptionConfig, sessionKeyObj, msg, webCrypto);
 
       if (name === 'AES-GCM') {
-        const data = new Uint8Array(encryptedObj.ciphertext.byteLength + encryptedObj.tag.byteLength);
-        data.set(new Uint8Array(encryptedObj.ciphertext));
-        data.set(new Uint8Array(encryptedObj.tag), encryptedObj.ciphertext.byteLength);
+        const data = new Uint8Array((<any>encryptedObj).ciphertext.byteLength + (<any>encryptedObj).tag.byteLength);
+        data.set(new Uint8Array((<any>encryptedObj).ciphertext));
+        data.set(new Uint8Array((<any>encryptedObj).tag), (<any>encryptedObj).ciphertext.byteLength);
         return data;
-      } else return new Uint8Array(encryptedObj);
+      } else return new Uint8Array(<any>encryptedObj);
     } catch (e) {
       throw new Error(`ThrowAwayMsIeAsap: ${e.message}`);
     }
@@ -103,9 +124,15 @@ export const encrypt = async (msg, key, {name = 'AES-GCM', iv, additionalData, t
  * @return {Promise<Uint8Array>} - Decrypted plaintext message.
  * @throws {Error} - Throws if UnsupportedCipher or DecryptionFailure.
  */
-export const decrypt = async (data, key, {name, iv, additionalData, tagLength}, webCrypto) => {
+export const decrypt = async (
+  data: Uint8Array,
+  key: Uint8Array,
+  {name, iv, additionalData, tagLength}: cipherOptions,
+  webCrypto: any
+): Promise<Uint8Array> => {
   const decryptionConfig = setCipherParams({name, iv, additionalData, tagLength});
 
+  // @ts-ignore
   if (!window.msCrypto) {
     // modern browsers
     try {
@@ -121,19 +148,21 @@ export const decrypt = async (data, key, {name, iv, additionalData, tagLength}, 
       const sessionKeyObj = await msImportKey('raw', key, decryptionConfig, false, ['encrypt', 'decrypt'], webCrypto);
       let msg;
       if (name === 'AES-GCM') {
-        const ciphertext = data.slice(0, data.length - tagLength);
-        const tag = data.slice(data.length - tagLength, data.length);
+        const ciphertext = data.slice(0, data.length - <number>tagLength);
+        const tag = data.slice(data.length - <number>tagLength, data.length);
         msg = await msDecrypt(Object.assign(decryptionConfig, {tag}), sessionKeyObj, ciphertext, webCrypto);
       } else {
         msg = await msDecrypt(decryptionConfig, sessionKeyObj, data, webCrypto);
       }
-      return new Uint8Array(msg);
+      return new Uint8Array(<any>msg);
     } catch (e) {
       throw new Error(`ThrowAwayMsIeAsap: ${e.message}`);
     }
   }
 };
 
+
+interface webcryptoParams extends cipherOptions { counter?: Uint8Array, length?: number}
 /**
  * Set params for encryption algorithms.
  * @param {String} name - Name of AES algorithm like 'AES-GCM'.
@@ -141,25 +170,21 @@ export const decrypt = async (data, key, {name, iv, additionalData, tagLength}, 
  * @param {Uint8Array} [additionalData] - Byte array of additional data if required.
  * @param {Number} [tagLength] - Authentication tag length if required.
  */
-const setCipherParams = ({name, iv, additionalData, tagLength}) => {
-  const alg = {};
+const setCipherParams = ({name, iv, additionalData, tagLength}: cipherOptions): webcryptoParams => {
+  const alg: webcryptoParams = {name, iv, additionalData, tagLength};
 
   switch(name){
   case 'AES-GCM': {
-    Object.assign(alg, {name, iv, tagLength: tagLength * 8});
-    Object.assign(alg, (additionalData.length > 0) ? {additionalData} : {});
+    alg.tagLength = <number>tagLength * 8;
     break;
   }
   case 'AES-CBC': {
-    alg.name = name;
-    alg.iv = iv;
     break;
   }
   case 'AES-CTR': {
-    if(iv.length === 0 || iv.length > 16) throw new Error('InvalidIVLength');
-    alg.name = name;
+    if((<Uint8Array>iv).length === 0 || (<Uint8Array>iv).length > 16) throw new Error('InvalidIVLength');
     alg.counter = new Uint8Array(16);
-    alg.counter.set(iv);
+    alg.counter.set(<Uint8Array>iv);
     alg.counter[15] += 1;
     alg.length = 128; // todo: this might be  (16 - iv.length) * 8.
     break;
@@ -169,18 +194,19 @@ const setCipherParams = ({name, iv, additionalData, tagLength}) => {
 };
 
 // function definitions for IE
-const msImportKey = (type, key, alg, ext, use, webCrypto) => new Promise ( (resolve, reject) => {
+// should die asap
+const msImportKey = (type: any, key: any, alg: any, ext: any, use: any, webCrypto:any) => new Promise ( (resolve, reject) => {
   const op = webCrypto.importKey(type, key, alg, ext, use);
-  op.oncomplete = (evt) => { resolve(evt.target.result); };
+  op.oncomplete = (evt: any) => { resolve(evt.target.result); };
   op.onerror = () => { reject('KeyImportingFailed'); };
 });
-const msEncrypt = (alg, key, msg, webCrypto) => new Promise ( (resolve, reject) => {
+const msEncrypt = (alg: any, key: any, msg: any, webCrypto:any) => new Promise ( (resolve, reject) => {
   const op = webCrypto.encrypt(alg, key, msg);
-  op.oncomplete = (evt) => { resolve(evt.target.result); };
+  op.oncomplete = (evt: any) => { resolve(evt.target.result); };
   op.onerror = () => { reject('EncryptionFailure'); };
 });
-const msDecrypt = (alg, key, data, webCrypto) => new Promise ( (resolve, reject) => {
+const msDecrypt = (alg: any, key: any, data: any, webCrypto:any) => new Promise ( (resolve, reject) => {
   const op = webCrypto.decrypt(alg, key, data);
-  op.oncomplete = (evt) => { resolve(evt.target.result); };
+  op.oncomplete = (evt: any) => { resolve(evt.target.result); };
   op.onerror = () => { reject('DecryptionFailure'); };
 });

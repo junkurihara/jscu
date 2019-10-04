@@ -1,10 +1,10 @@
-import {getTestEnv} from './prepare.js';
+import {getTestEnv} from './prepare';
 const env = getTestEnv();
 const aes = env.library;
 const envName = env.envName;
 
 import jseu from 'js-encoding-utils';
-import chai from 'chai';
+import * as chai from 'chai';
 // const should = chai.should();
 const expect = chai.expect;
 

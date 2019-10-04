@@ -2,7 +2,7 @@
  * nodeapi.js
  */
 
-import params from './params.js';
+import params, {cipherOptions, cipherParams, cipherTypes} from './params';
 
 /**
  * Node.js KeyWrapping function simply uses encrypt function.
@@ -14,8 +14,11 @@ import params from './params.js';
  * @return {Uint8Array} - Unwrapped Key
  */
 export const wrapKey = (
-  keyToBeWrapped, wrappingKey, {name = 'AES-KW', iv}, nodeCrypto
-) => encrypt(
+  keyToBeWrapped: Uint8Array,
+  wrappingKey: Uint8Array,
+  {name, iv}: {name: 'AES-KW', iv: Uint8Array},
+  nodeCrypto: any
+): Uint8Array => encrypt(
   keyToBeWrapped, wrappingKey, {name, iv}, nodeCrypto, true
 );
 
@@ -30,7 +33,10 @@ export const wrapKey = (
  * @return {Uint8Array} - Unwrapped Key
  */
 export const unwrapKey = (
-  wrappedKey, unwrappingKey, {name = 'AES-KW', iv}, nodeCrypto
+  wrappedKey: Uint8Array,
+  unwrappingKey: Uint8Array,
+  {name, iv}: {name: 'AES-KW', iv: Uint8Array},
+  nodeCrypto: any
 ) => decrypt(
   wrappedKey, unwrappingKey, {name, iv}, nodeCrypto, true
 );
@@ -48,7 +54,13 @@ export const unwrapKey = (
  * @return {Uint8Array} - Encrypted message byte array.
  * @throws {Error} - Throws error if UnsupportedCipher.
  */
-export const encrypt = (msg, key, {name, iv, additionalData, tagLength}, nodeCrypto, wrapKey=false) => {
+export const encrypt = (
+  msg: Uint8Array,
+  key: Uint8Array,
+  {name, iv, additionalData, tagLength}: cipherOptions,
+  nodeCrypto: any,
+  wrapKey: boolean = false
+): Uint8Array => {
   const alg = getNodeName(name, key.byteLength, (wrapKey)? params.wrapKeys : params.ciphers);
 
   let cipher;
@@ -59,9 +71,9 @@ export const encrypt = (msg, key, {name, iv, additionalData, tagLength}, nodeCry
     break;
   }
   case 'AES-CTR': {
-    if(iv.length === 0 || iv.length > 16) throw new Error('InvalidIVLength');
+    if((<Uint8Array>iv).length === 0 || (<Uint8Array>iv).length > 16) throw new Error('InvalidIVLength');
     const counter = new Uint8Array(16);
-    counter.set(iv);
+    counter.set((<Uint8Array>iv));
     counter[15] += 1;
     cipher = nodeCrypto.createCipheriv(alg, key, counter);
     break;
@@ -108,7 +120,13 @@ export const encrypt = (msg, key, {name, iv, additionalData, tagLength}, nodeCry
  * @param unwrapKey {Boolean} [false] - true if called as AES-KW
  * @throws {Error} - Throws error if UnsupportedCipher or DecryptionFailure.
  */
-export const decrypt = (data, key, {name, iv, additionalData, tagLength}, nodeCrypto, unwrapKey=false) => {
+export const decrypt = (
+  data: Uint8Array,
+  key: Uint8Array,
+  {name, iv, additionalData, tagLength}: cipherOptions,
+  nodeCrypto: any,
+  unwrapKey: boolean =false
+): Uint8Array => {
   const alg = getNodeName(name, key.byteLength, (unwrapKey)? params.wrapKeys : params.ciphers);
 
   let decipher;
@@ -117,15 +135,15 @@ export const decrypt = (data, key, {name, iv, additionalData, tagLength}, nodeCr
   case 'AES-GCM': {
     decipher = nodeCrypto.createDecipheriv(alg, key, iv, {authTagLength: tagLength});
     decipher.setAAD(additionalData);
-    body = data.slice(0, data.length - tagLength);
-    const tag = data.slice(data.length - tagLength);
+    body = data.slice(0, data.length - <number> tagLength);
+    const tag = data.slice(data.length - <number> tagLength);
     decipher.setAuthTag(tag);
     break;
   }
   case 'AES-CTR': {
-    if(iv.length === 0 || iv.length > 16) throw new Error('InvalidIVLength');
+    if((<Uint8Array>iv).length === 0 || (<Uint8Array>iv).length > 16) throw new Error('InvalidIVLength');
     const counter = new Uint8Array(16);
-    counter.set(iv);
+    counter.set(<Uint8Array>iv);
     counter[15] += 1;
     decipher = nodeCrypto.createDecipheriv(alg, key, counter);
     body = data;
@@ -161,7 +179,7 @@ export const decrypt = (data, key, {name, iv, additionalData, tagLength}, nodeCr
  * @param dict {object} - params.ciphers or params.wrapKeys
  * @return {string} - node algorithm name
  */
-const getNodeName = (name, keyLength, dict) => {
+const getNodeName = (name: cipherTypes, keyLength: number, dict: {[index: string]: cipherParams}) => {
   let alg = dict[name].nodePrefix;
   alg = `${alg}${(keyLength * 8).toString()}`;
   return alg + dict[name].nodeSuffix;
