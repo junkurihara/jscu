@@ -1,11 +1,16 @@
 {
-  "parser": "babel-eslint",
+  "parser": "@typescript-eslint/parser",
   "env": {
     "node": true,
     "es6": true,
     "mocha": true
   },
-  "extends": "eslint:recommended",
+  "extends": [
+    "eslint:recommended"
+  ],
+  "plugins": [
+    "@typescript-eslint"
+  ],
   "parserOptions": {
     "sourceType": "module"
   },
@@ -43,7 +48,18 @@
     "prefer-template": "error",
     "rest-spread-spacing": "error",
     "template-curly-spacing": "error",
-    "yield-star-spacing": "error"
+    "yield-star-spacing": "error",
+
+    // for ts
+    "no-unused-vars": "off",
+    "@typescript-eslint/no-unused-vars": "error",
+    "no-array-constructor": "off",
+    "@typescript-eslint/no-array-constructor": "error"
+  },
+  "settings": {
+    "node": {
+      "tryExtensions": [".ts", ".tsx", ".js", ".jsx", ".json", ".node"]
+    }
   },
   "globals": {
     "window": false,

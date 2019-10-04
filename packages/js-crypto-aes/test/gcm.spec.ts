@@ -1,18 +1,18 @@
-import {getTestEnv} from './prepare.js';
+import {getTestEnv} from './prepare';
 const env = getTestEnv();
 const aes = env.library;
 const envName = env.envName;
 
 import random from 'js-crypto-random';
-import chai from 'chai';
+import * as chai from 'chai';
 // const should = chai.should();
 const expect = chai.expect;
 
 
 describe(`${envName}: Encryption and Decryption with AES-GCM Test`, () => {
   const keyLength = [16, 32]; // 24 bytes (192 bits) AES key is not supported in Chrome at this point
-  let msg;
-  let iv;
+  let msg: Uint8Array;
+  let iv: Uint8Array;
   before( async () => {
     msg = new Uint8Array(1024);
     iv = new Uint8Array(12);
@@ -54,7 +54,7 @@ describe(`${envName}: Encryption and Decryption with AES-GCM Test`, () => {
     let result = true;
     const key = await random.getRandomBytes(16);
     const ivz = new Uint8Array(16);
-    await aes.encrypt(msg, key, {name: 'AES-GCM', ivz}).catch( () => {result = false; });
+    await aes.encrypt(msg, key, {name: 'AES-GCM', iv: ivz}).catch( () => {result = false; });
     expect(result).to.be.false;
   });
 });
