@@ -44,7 +44,7 @@
     "sha3": "~2.0.4"
   },
   "devDependencies": {
-    "@types/chai": "4.2.3",
+    "@types/chai": "4.2.4",
     "@types/mocha": "5.2.7",
     "@types/node": "10.14.22",
     "istanbul-instrumenter-loader": "3.0.1",
