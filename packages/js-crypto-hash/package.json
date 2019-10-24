@@ -46,7 +46,7 @@
   "devDependencies": {
     "@types/chai": "4.2.4",
     "@types/mocha": "5.2.7",
-    "@types/node": "10.14.22",
+    "@types/node": "10.17.0",
     "istanbul-instrumenter-loader": "3.0.1",
     "js-encoding-utils": "0.5.4",
     "karma-coverage-istanbul-reporter": "2.1.0",
