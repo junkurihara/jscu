@@ -10,7 +10,7 @@ jscu: A Universal Cryptographic Library for JavaScript
 
 > **NOTE**: This repository is a *monorepo* of a universal cryptographic library for JavaScript called `js-crypto-utils` (`jscu`), which is designed so as to work in most modern browsers and Node.js. The detailed explanation would be given in each package repository. The root package is given [here](https://github.com/junkurihara/jscu/tree/develop/packages/js-crypto-utils) (in `develop` branch).
 
-> **CURRENT STATUS**: Now we are struggling to rewrite JavaScript codes of every subpackage in `jscu` to TypeScript for maintainability. We have done it for the following packages at this point (Oct. 4, 2019).
+> **CURRENT STATUS**: Now we are struggling to rewrite JavaScript codes of every subpackage in `jscu` to TypeScript for maintainability. We have done it for the following packages at this point (Oct. 31, 2019).
 > - `js-crypto-env`
 > - `js-crypto-random`
 > - `js-crypto-hash`
