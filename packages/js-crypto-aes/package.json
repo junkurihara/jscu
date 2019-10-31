@@ -37,10 +37,10 @@
     "webcrypto"
   ],
   "devDependencies": {
-    "js-crypto-random": "0.3.5"
+    "js-crypto-random": "0.3.5",
+    "js-encoding-utils": "0.5.4"
   },
   "dependencies": {
-    "js-crypto-env": "0.2.4",
-    "js-encoding-utils": "0.5.4"
+    "js-crypto-env": "0.2.4"
   }
 }
