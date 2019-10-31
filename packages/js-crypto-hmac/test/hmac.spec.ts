@@ -1,10 +1,11 @@
 import random from 'js-crypto-random';
 import jseu from 'js-encoding-utils';
-import chai from 'chai';
+import * as chai from 'chai';
 // const should = chai.should();
 const expect = chai.expect;
 
-import {getTestEnv} from './prepare.js';
+import {getTestEnv} from './prepare';
+import {HashTypes} from '../src/params';
 const env = getTestEnv();
 const hmac = env.library;
 const envName = env.envName;
@@ -23,13 +24,9 @@ const testVectors = {
   'SHA3-512': '6379a3fdebee97d298ba4a1ac63379e81e90b70277ec2770c48f841777789bee5c1f49c33812af4ac5d478413e5c0ffe89dabbea5f46c9f3acdb8952992b9202'
 };
 
-const hashes = ['SHA-256', 'SHA-384', 'SHA-512', 'MD5', 'SHA-1', 'SHA3-224', 'SHA3-256', 'SHA3-384', 'SHA3-512'];
+const hashes: Array<HashTypes> = ['SHA-256', 'SHA-384', 'SHA-512', 'SHA-1', 'MD5', 'SHA3-512', 'SHA3-384', 'SHA3-256', 'SHA3-224'];
 describe(`${envName}: HMAC test`, () => {
-  let msg;
-  before( async () => {
-    msg = new Uint8Array(32);
-    for(let i = 0; i < 32; i++) msg[i] = 0xFF & i;
-  });
+  before( () => {});
 
   it('HMAC successfully generates and verify a MAC', async function () {
     this.timeout(20000);
@@ -46,6 +43,7 @@ describe(`${envName}: HMAC test`, () => {
 
   it('HMAC successfully generates unique MAC for unique key', async function () {
     this.timeout(20000);
+    const msg = random.getRandomBytes(32);
     const array = await Promise.all(hashes.map( async (hash) => {
       const keya = await random.getRandomBytes(32);
       const keyb = await random.getRandomBytes(32);
@@ -61,6 +59,7 @@ describe(`${envName}: HMAC test`, () => {
 
   it('If msg is overwritten, it can be detected via MAC', async function () {
     this.timeout(20000);
+    const msg = random.getRandomBytes(32);
     const key = await random.getRandomBytes(32);
     const newMsg = new Uint8Array(msg);
     newMsg[1] = 0xFF&0x33;

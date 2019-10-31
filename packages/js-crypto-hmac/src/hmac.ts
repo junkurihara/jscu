@@ -2,7 +2,7 @@
  * hmac.js
  */
 
-import params from './params.js';
+import params, {HashTypes} from './params';
 import * as util from 'js-crypto-env';
 import jschash from 'js-crypto-hash';
 
@@ -11,59 +11,49 @@ import jschash from 'js-crypto-hash';
  * Compute keyed hash value
  * @param {Uint8Array} key - ByteArray of symmetric key.
  * @param {Uint8Array} data - Byte array of message to be hashed.
- * @param {String} [hash='SHA-256'] - Name of hash algorithm like 'SHA-256'.
+ * @param {HashTypes} [hash='SHA-256'] - Name of hash algorithm like 'SHA-256'.
  * @return {Promise<Uint8Array>} - Keyed-hash value.
  * @throws {Error} - Throws if UnsupportedEnvironment, i.e., even neither WebCrypto, NodeCrypto nor PureJS is available.
  */
-export const compute = async (key, data, hash = 'SHA-256') => {
-  const webCrypto = util.getWebCryptoAll(); // web crypto api
+export const compute = async (key: Uint8Array, data: Uint8Array, hash: HashTypes = 'SHA-256'): Promise<Uint8Array> => {
+  const webCrypto = util.getWebCrypto(); // web crypto api
   const nodeCrypto = util.getNodeCrypto(); // node crypto
+  const msCrypto = util.getMsCrypto(); // damn ms crypto
 
+  let msgKeyedHash;
   let native = true;
   if (typeof webCrypto !== 'undefined' && typeof webCrypto.importKey === 'function' && typeof webCrypto.sign === 'function') {
-    if (typeof window.msCrypto === 'undefined'){
-      try {
-        // standard web api / modern browsers supporting HMAC
-        const keyObj = await webCrypto.importKey('raw', key, { name: 'HMAC', hash: {name: hash} }, false, ['sign', 'verify']);
-        const mac = await webCrypto.sign({name: 'HMAC', hash: {name: hash}}, keyObj, data);
-        return new Uint8Array(mac);
-      } catch (e) { native = false; }
-    }
-    else {
-      try{
-      // function definitions
-        const msImportKey = (type, key, alg, ext, use) => new Promise ( (resolve, reject) => {
-          const op = webCrypto.importKey(type, key, alg, ext, use);
-          op.oncomplete = (evt) => { resolve(evt.target.result); };
-          op.onerror = () => { reject('KeyImportingFailed'); };
-        });
-        const msHmac = (hash, k, d) => new Promise ( (resolve, reject) => {
-          const op = webCrypto.sign({name: 'HMAC', hash: {name: hash}}, k, d);
-          op.oncomplete = (evt) => { resolve(new Uint8Array(evt.target.result)); };
-          op.onerror = () => { reject('ComputingHMACFailed'); };
-        });
-
-        const keyObj = await msImportKey('raw', key, {name: 'HMAC', hash: {name: hash}}, false, ['sign', 'verify']);
-        const rawPrk = await msHmac(hash, keyObj, data);
-        return new Uint8Array(rawPrk);
-      } catch (e) { native = false; }
-    }
+    try { // standard web api / modern browsers supporting HMAC
+      const keyObj = await webCrypto.importKey('raw', key, {
+        name: 'HMAC',
+        hash: {name: hash}
+      }, false, ['sign', 'verify']);
+      msgKeyedHash = await webCrypto.sign({name: 'HMAC', hash: {name: hash}}, keyObj, data);
+    } catch (e) { native = false; }
+  }
+  else if (typeof msCrypto !== 'undefined') {
+    try{
+      const keyObj = await msImportKey('raw', key, {name: 'HMAC', hash: {name: hash}}, false, ['sign', 'verify'], msCrypto);
+      msgKeyedHash = await msHmac(hash, keyObj, data, msCrypto);
+    } catch (e) { native = false; }
   }
   else if (typeof nodeCrypto !== 'undefined'){ // for node
     try {
       const f = nodeCrypto.createHmac(params.hashes[hash].nodeName, key);
-      return new Uint8Array(f.update(data).digest());
+      msgKeyedHash = f.update(data).digest();
     } catch (e) { native = false; }
   }
   else native = false;
 
   if (!native){
     try {
-      return await purejs(key, data, hash);
+      msgKeyedHash = await purejs(key, data, hash);
     } catch (e) {
       throw new Error('UnsupportedEnvironments');
     }
   }
+
+  return new Uint8Array(msgKeyedHash);
 };
 
 
@@ -71,10 +61,10 @@ export const compute = async (key, data, hash = 'SHA-256') => {
  * PureJS implementation of HMAC algorithm specified in RFC 2104 {@link https://tools.ietf.org/html/rfc2104}.
  * @param {Uint8Array} key - ByteArray of symmetric key.
  * @param {Uint8Array} data - Byte array of message to be hashed.
- * @param {String} hash - Name of hash algorithm like 'SHA-256'.
+ * @param {HashTypes} hash - Name of hash algorithm like 'SHA-256'.
  * @return {Promise<Uint8Array>} - Keyed-hash value.
  */
-const purejs = async (key, data, hash) => {
+const purejs = async (key: Uint8Array, data: Uint8Array, hash: HashTypes): Promise<Uint8Array> => {
   const B = params.hashes[hash].blockSize;
   const L = params.hashes[hash].hashSize;
 
@@ -103,13 +93,24 @@ const purejs = async (key, data, hash) => {
  * @param {Uint8Array} key - ByteArray of symmetric key.
  * @param {Uint8Array} data - Byte array of message to be hashed.
  * @param {Uint8Array} mac - Given keyed-hash value.
- * @param {String} [hash='SHA-256'] - Name of hash algorithm like 'SHA-256'.
+ * @param {HashTypes} [hash='SHA-256'] - Name of hash algorithm like 'SHA-256'.
  * @return {Promise<boolean>} - Result of verification.
  * @throws {Error} - Throws if InvalidInputMac
  */
-export const verify = async (key, data, mac, hash = 'SHA-256') => {
-  if (!(mac instanceof Uint8Array)) throw new Error('InvalidInputMac');
-
+export const verify = async (key: Uint8Array, data: Uint8Array, mac: Uint8Array, hash: HashTypes = 'SHA-256') => {
   const newMac = await compute(key, data, hash);
   return (mac.toString() === newMac.toString());
 };
+
+
+// function definitions for damn ms ie
+const msImportKey = (type: any, key: any, alg: any, ext: any, use: any, webCrypto: any) => new Promise ( (resolve, reject) => {
+  const op = webCrypto.importKey(type, key, alg, ext, use);
+  op.oncomplete = (evt: any) => { resolve(evt.target.result); };
+  op.onerror = () => { reject('KeyImportingFailed'); };
+});
+const msHmac = (hash: HashTypes, k: any, d: Uint8Array, webCrypto: any) => new Promise ( (resolve, reject) => {
+  const op = webCrypto.sign({name: 'HMAC', hash: {name: hash}}, k, d);
+  op.oncomplete = (evt: any) => { resolve(new Uint8Array(evt.target.result)); };
+  op.onerror = () => { reject('ComputingHMACFailed'); };
+});

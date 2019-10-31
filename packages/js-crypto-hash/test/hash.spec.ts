@@ -3,7 +3,7 @@ const env = getTestEnv();
 const hash = env.library;
 const envName = env.envName;
 
-import {testVectors} from './test-vector'
+import {testVectors} from './test-vector';
 import jseu from 'js-encoding-utils';
 import params from '../src/params';
 import * as chai from 'chai';
