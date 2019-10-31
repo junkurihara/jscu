@@ -1,22 +1,24 @@
 import random from 'js-crypto-random';
-import chai from 'chai';
+import * as chai from 'chai';
 // const should = chai.should();
 const expect = chai.expect;
 
-import {getTestEnv} from './prepare.js';
+import {getTestEnv} from './prepare';
+import {HashTypes} from '../src/params';
 const env = getTestEnv();
 const hmac = env.library;
 const envName = env.envName;
 
 
-const hashes = ['SHA-256', 'SHA-384', 'SHA-512', 'MD5', 'SHA-1', 'SHA3-224', 'SHA3-256', 'SHA3-384', 'SHA3-512'];
+interface Window { crypto: { subtle: {sign: any}}; msCrypto: { subtle: {sign: any}}; }
+declare const window: Window;
+
+const hashes: Array<HashTypes> = ['SHA-256', 'SHA-384', 'SHA-512', 'MD5', 'SHA-1', 'SHA3-224', 'SHA3-256', 'SHA3-384', 'SHA3-512'];
 describe(`${envName}: HMAC test in PureJS environment`, () => {
-  let msg;
+  const msg = random.getRandomBytes(32);
   before( async () => {
     if (typeof window !== 'undefined' && typeof window.crypto !== 'undefined') window.crypto.subtle.sign = undefined;
     if (typeof window !== 'undefined' && typeof window.msCrypto !== 'undefined') window.msCrypto.subtle.sign = undefined;
-    msg = new Uint8Array(32);
-    for(let i = 0; i < 32; i++) msg[i] = 0xFF & i;
   });
 
   it('HMAC successfully generates and verify a MAC in PureJS environment', async function () {

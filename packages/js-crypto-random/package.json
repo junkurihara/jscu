@@ -36,18 +36,8 @@
     "random",
     "webcrypto"
   ],
-  "devDependencies": {
-    "@types/chai": "4.2.4",
-    "@types/mocha": "5.2.7",
-    "@types/node": "10.17.2",
-    "istanbul-instrumenter-loader": "3.0.1",
-    "karma-coverage-istanbul-reporter": "2.1.0",
-    "ts-loader": "6.2.1",
-    "ts-node": "8.4.1",
-    "tsc": "1.20150623.0",
-    "typescript": "3.6.4"
-  },
+  "devDependencies": {},
   "dependencies": {
-    "js-crypto-env": "^0.2.4"
+    "js-crypto-env": "0.2.4"
   }
 }
