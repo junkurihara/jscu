@@ -1,4 +1,4 @@
-import params from './params';
+import params, {HashTypes} from './params';
 import digest from 'js-crypto-hash';
 
 // Deriving KEK
@@ -13,10 +13,10 @@ import digest from 'js-crypto-hash';
  * @return {Promise<Uint8Array>}
  */
 export const nistConcatKdf = async (
-  sharedSecret,
-  otherInfoBytes,
-  keyDataLen = 32,
-  hash = 'SHA-256'
+  sharedSecret: Uint8Array,
+  otherInfoBytes: Uint8Array,
+  keyDataLen: number = 32,
+  hash: HashTypes = 'SHA-256'
 ) => {
   const reps = Math.ceil(keyDataLen / params.hashes[hash].hashSize);
   if(reps > (Math.pow(2, 32) - 1)) throw new Error('TooLongKeyDataIndicated');
@@ -37,7 +37,7 @@ export const nistConcatKdf = async (
 };
 
 
-const increment = (counter) => {
+const increment = (counter: Uint8Array) => {
   counter[3] += 1;
   let up = true;
   let i = 3;

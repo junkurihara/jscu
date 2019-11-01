@@ -1,0 +1,10 @@
+{
+  "include": [ "src/**/*.ts" ],
+  "exclude": [ "**/*.d.ts/", "webpack.*.js", "**/dist/**", "**/obsolete/**", "**/node_modules/**", "**/test/**" ],
+  "reporter": [ "lcov", "text-summary" ],
+  "require": [ "ts-node/register" ],
+  "report-dir": "./coverage/nyc",
+  "extension": [ ".ts", ".tsx" ],
+  "sourceMap": true,
+  "all": true
+}

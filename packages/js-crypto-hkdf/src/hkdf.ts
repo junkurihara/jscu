@@ -2,11 +2,12 @@
  * hkdf.js
  */
 
-import params from './params.js';
+import params, {HashTypes} from './params';
 import * as util from 'js-crypto-env';
 
 import random from 'js-crypto-random';
 import hmac  from 'js-crypto-hmac';
+import jseu from 'js-encoding-utils';
 
 /**
  * Hash-based Key Derivation Function computing from given master secret and salt.
@@ -19,25 +20,29 @@ import hmac  from 'js-crypto-hmac';
  * @param {Uint8Array} [salt=null] - Byte array of salt.
  * @return {Promise<{key: Uint8Array, salt: Uint8Array}>} - Derived key and salt used to derive the key.
  */
-export const compute = async (master, hash = 'SHA-256', length = 32, info = '', salt = null) => {
-  if(!info) info = '';
+export const compute = async (
+  master: Uint8Array,
+  hash: HashTypes = 'SHA-256',
+  length: number = 32,
+  info: string = '',
+  salt: Uint8Array|null = null
+): Promise<{key: Uint8Array, salt: Uint8Array}> => {
   const webCrypto = util.getWebCrypto(); // web crypto api
+  const msCrypto = util.getMsCrypto();
 
   let key;
-  if(!salt) salt = await random.getRandomBytes(length);
+  if(!salt) salt = random.getRandomBytes(length);
 
   if (typeof webCrypto !== 'undefined'
     && typeof webCrypto.importKey === 'function'
     && typeof webCrypto.deriveBits === 'function'
-    && typeof window.msCrypto === 'undefined') {
+    && typeof msCrypto === 'undefined') {
     try { // modern browsers supporting HKDF
-      const masterObj = await webCrypto.importKey('raw', master, {name: 'HKDF'}, false, ['deriveKey', 'deriveBits']);
-      key = await webCrypto.deriveBits({
-        name: 'HKDF',
-        salt,
-        info: new Uint8Array(info),
-        hash
-      }, masterObj, length * 8);
+      const masterObj = await webCrypto.importKey(
+        'raw', master, {name: 'HKDF'}, false, ['deriveKey', 'deriveBits']
+      );
+      const hkdfCtrParams = { name: 'HKDF', salt, info: jseu.encoder.stringToArrayBuffer(info), hash};
+      key = await webCrypto.deriveBits(hkdfCtrParams, masterObj, length * 8);
       key = new Uint8Array(key);
     }
     catch (e) { // fall back to pure js implementation
@@ -60,7 +65,12 @@ export const compute = async (master, hash = 'SHA-256', length = 32, info = '', 
  * @param {Uint8Array} salt - Byte array of salt.
  * @return {Promise<Uint8Array>} - Derived key.
  */
-const rfc5869 = async (master, hash, length, info, salt) => {
+const rfc5869 = async (
+  master: Uint8Array,
+  hash: HashTypes,
+  length: number,
+  info: string,
+  salt: Uint8Array) => {
   const len = params.hashes[hash].hashSize;
 
   // RFC5869 Step 1 (Extract)
@@ -69,7 +79,7 @@ const rfc5869 = async (master, hash, length, info, salt) => {
   // RFC5869 Step 2 (Expand)
   let t = new Uint8Array([]);
   const okm = new Uint8Array(Math.ceil(length / len) * len);
-  const uintInfo = new Uint8Array(info);
+  const uintInfo = jseu.encoder.stringToArrayBuffer(info);
   for(let i = 0; i < Math.ceil(length / len); i++){
     const concat = new Uint8Array(t.length + uintInfo.length + 1);
     concat.set(t);
