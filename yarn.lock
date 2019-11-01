@@ -1650,10 +1650,24 @@
     universal-user-agent "^3.0.0"
     url-template "^2.0.8"
 
+"@types/bn.js@*":
+  version "4.11.5"
+  resolved "https://registry.yarnpkg.com/@types/bn.js/-/bn.js-4.11.5.tgz#40e36197433f78f807524ec623afcf0169ac81dc"
+  integrity sha512-AEAZcIZga0JgVMHNtl1CprA/hXX7/wPt79AgR4XqaDt7jyj3QWYw6LPoOiznPtugDmlubUnAahMs2PFxGcQrng==
+  dependencies:
+    "@types/node" "*"
+
 "@types/chai@4.2.4":
   version "4.2.4"
   resolved "https://registry.yarnpkg.com/@types/chai/-/chai-4.2.4.tgz#8936cffad3c96ec470a2dc26a38c3ba8b9b6f619"
   integrity sha512-7qvf9F9tMTzo0akeswHPGqgUx/gIaJqrOEET/FCD8CFRkSUHlygQiM5yB6OvjrtdxBVLSyw7COJubsFYs0683g==
+
+"@types/elliptic@^6.4.10":
+  version "6.4.10"
+  resolved "https://registry.yarnpkg.com/@types/elliptic/-/elliptic-6.4.10.tgz#352078ebc911484e30fc0d1eca3e3c865bf0e8f8"
+  integrity sha512-9h+Bw+aNiLzcq9DGstHccNxSsJ5iNId7mzruid7+kwm7F1IGvb4rBOOPo3+twt9ZPhI3y+JJ2m1UfgU8cOEJuQ==
+  dependencies:
+    "@types/bn.js" "*"
 
 "@types/eslint-visitor-keys@^1.0.0":
   version "1.0.0"
@@ -6080,7 +6094,7 @@ istanbul@^0.4.0:
     which "^1.1.1"
     wordwrap "^1.0.0"
 
-js-encoding-utils@0.5.4, js-encoding-utils@^0.5.4:
+js-encoding-utils@0.5.4:
   version "0.5.4"
   resolved "https://registry.yarnpkg.com/js-encoding-utils/-/js-encoding-utils-0.5.4.tgz#875fc07e1a880998d5ec32e84b13a13e0a56233e"
   integrity sha512-/jWPzUCYhCSLa2SSQ7ts9wjIXIxs4aECstqEeT/67H5i/v9jVpNz2bfUzJqmcVOI8FCv2/GVdNNMW1lXDp6RAA==

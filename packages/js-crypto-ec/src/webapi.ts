@@ -3,7 +3,8 @@
  */
 
 import jseu from 'js-encoding-utils';
-import * as asn1enc from './asn1enc.js';
+import * as asn1enc from './asn1enc';
+import {JsonWebKeyPair, CurveTypes, HashTypes, SignatureFormat} from './typedef';
 
 /**
  * Generate elliptic curve cryptography public/private key pair. Generated keys are in JWK.
@@ -11,7 +12,7 @@ import * as asn1enc from './asn1enc.js';
  * @param {Object} webCrypto - WebCryptoSubtle object.
  * @return {Promise<{publicKey: JsonWebKey, privateKey: JsonWebKey}>} - The generated keys.
  */
-export const generateKey = async (namedCurve, webCrypto) => {
+export const generateKey = async (namedCurve: CurveTypes, webCrypto: any): Promise<JsonWebKeyPair> => {
   // generate ecdsa key
   // hash is used for signing and verification. never be used for key generation
   const keys = await webCrypto.generateKey({ name: 'ECDSA', namedCurve, hash: {name: 'SHA-256'} }, true, ['sign', 'verify']);
@@ -38,13 +39,19 @@ export const generateKey = async (namedCurve, webCrypto) => {
  * @param {Object} webCrypto - WebCryptoSubtle object.
  * @return {Promise<Uint8Array>} - Output signature byte array in raw or der format.
  */
-export const sign = async (msg, privateJwk, hash, signatureFormat, webCrypto) => {
+export const sign = async (
+  msg: Uint8Array,
+  privateJwk: JsonWebKey,
+  hash: HashTypes,
+  signatureFormat: SignatureFormat,
+  webCrypto: any
+): Promise<Uint8Array> => {
   const algo = {name: 'ECDSA', namedCurve: privateJwk.crv, hash: {name: hash}};
   const key = await webCrypto.importKey('jwk', privateJwk, algo, false, ['sign']);
   const signature = await webCrypto.sign(algo, key, msg);
   return (signatureFormat === 'raw')
     ? new Uint8Array(signature)
-    : asn1enc.encodeAsn1Signature(new Uint8Array(signature), privateJwk.crv);
+    : asn1enc.encodeAsn1Signature(new Uint8Array(signature), <CurveTypes>privateJwk.crv);
 };
 
 /**
@@ -57,13 +64,19 @@ export const sign = async (msg, privateJwk, hash, signatureFormat, webCrypto) =>
  * @param {Object} webCrypto - WebCryptoSubtle object.
  * @return {Promise<boolean>} - The result of verification.
  */
-export const verify = async (msg, signature, publicJwk, hash, signatureFormat, webCrypto) => {
+export const verify = async (
+  msg: Uint8Array,
+  signature: Uint8Array,
+  publicJwk: JsonWebKey,
+  hash: HashTypes,
+  signatureFormat: SignatureFormat,
+  webCrypto: any) => {
   const algo = {name: 'ECDSA', namedCurve: publicJwk.crv, hash: {name: hash}};
   const key = await webCrypto.importKey('jwk', publicJwk, algo, false, ['verify']);
   const rawSignature = (signatureFormat === 'raw')
     ? signature
-    : asn1enc.decodeAsn1Signature(signature, publicJwk.crv);
-  return await webCrypto.verify(algo, key, rawSignature, msg);
+    : asn1enc.decodeAsn1Signature(signature, <CurveTypes>publicJwk.crv);
+  return webCrypto.verify(algo, key, rawSignature, msg);
 };
 
 /**
@@ -73,11 +86,15 @@ export const verify = async (msg, signature, publicJwk, hash, signatureFormat, w
  * @param {Object} webCrypto - WebCryptoSubtle object.
  * @return {Promise<Uint8Array>} - The derived master secret via ECDH.
  */
-export const deriveSecret = async (publicJwk, privateJwk, webCrypto) => {
+export const deriveSecret = async (
+  publicJwk: JsonWebKey,
+  privateJwk: JsonWebKey,
+  webCrypto: any
+): Promise<Uint8Array> => {
   const algo = {name: 'ECDH', namedCurve: privateJwk.crv};
   const privateKey = await webCrypto.importKey('jwk', privateJwk, algo, false, ['deriveBits']);
   const publicKey = await webCrypto.importKey('jwk', publicJwk, algo, false, []);
-  const bitLen = () => { const arr = jseu.encoder.decodeBase64Url(privateJwk.x); return 8*arr.length; };
+  const bitLen = () => { const arr = jseu.encoder.decodeBase64Url(<string>privateJwk.x); return 8*arr.length; };
   return new Uint8Array(
     await webCrypto.deriveBits(Object.assign(algo, {public: publicKey}), privateKey, bitLen())
   );

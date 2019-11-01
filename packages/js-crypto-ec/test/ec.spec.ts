@@ -1,18 +1,19 @@
-import {getTestEnv} from './prepare.js';
+import {getTestEnv} from './prepare';
 const env = getTestEnv();
 const elliptic = env.library;
 const envName = env.envName;
 
 
-import chai from 'chai';
+import * as chai from 'chai';
+import {JsonWebKeyPair, CurveTypes} from '../src/typedef';
 // const should = chai.should();
 const expect = chai.expect;
 
 
 describe(`${envName}: Elliptic curve cryptography test`, () => {
 
-  const curves = ['P-256', 'P-384', 'P-521', 'P-256K'];
-  const keys = [];
+  const curves: Array<CurveTypes> = ['P-256', 'P-384', 'P-521', 'P-256K'];
+  const keys: Array<JsonWebKeyPair> = [];
   const msgLen = 128;
   const msg = new Uint8Array(msgLen);
   before( async () => {
@@ -23,7 +24,7 @@ describe(`${envName}: Elliptic curve cryptography test`, () => {
     this.timeout(5000);
     const results = await Promise.all(curves.map( async (crv) => {
       let result = true;
-      const key = await elliptic.generateKey(crv).catch( (e) => {result = false;});
+      const key: JsonWebKeyPair = await elliptic.generateKey(crv).catch( () => {result = false; throw new Error('omg!');});
       keys.push(key);
       // console.log(key);
       return result;
@@ -35,11 +36,11 @@ describe(`${envName}: Elliptic curve cryptography test`, () => {
 
   it('Message is successfully signed and verified with generated JWK pairs', async function () {
     this.timeout(5000);
-    const results = await Promise.all(keys.map( async (kp) => {
+    const results = await Promise.all(keys.map( async (kp: JsonWebKeyPair) => {
       let result = true;
-      const sign = await elliptic.sign(msg, kp.privateKey, 'SHA-256').catch( (e) => {result = false;});
+      const sign = await elliptic.sign(msg, kp.privateKey, 'SHA-256').catch( () => {result = false;});
       //console.log(sign);
-      const valid = await elliptic.verify(msg, sign, kp.publicKey, 'SHA-256').catch( (e) => {result = false;});
+      const valid = await elliptic.verify(msg, <Uint8Array>sign, kp.publicKey, 'SHA-256').catch( () => {result = false;});
       expect(result).to.be.true;
 
       return valid;
@@ -50,11 +51,11 @@ describe(`${envName}: Elliptic curve cryptography test`, () => {
 
   it('Shared secret is correctly computed at each side', async function() {
     this.timeout(10000);
-    const results = await Promise.all(keys.map( async (kp) => {
+    const results = await Promise.all(keys.map( async (kp: JsonWebKeyPair) => {
       let result = true;
-      const newKey = await elliptic.generateKey(kp.privateKey.crv).catch( (e) => {result = false;});
-      const shared1 = await elliptic.deriveSecret(kp.publicKey, newKey.privateKey).catch( (e) => {result = false;});
-      const shared2 = await elliptic.deriveSecret(newKey.publicKey, kp.privateKey).catch( (e) => {result = false;});
+      const newKey = await elliptic.generateKey(<CurveTypes>kp.privateKey.crv).catch( () => {result = false;});
+      const shared1: Uint8Array = await elliptic.deriveSecret(kp.publicKey, (<JsonWebKeyPair>newKey).privateKey).catch( () => {result = false; return new Uint8Array([]);});
+      const shared2: Uint8Array = await elliptic.deriveSecret((<JsonWebKeyPair>newKey).publicKey, kp.privateKey).catch( () => {result = false; ; return new Uint8Array([]);});
       expect(result).to.be.true;
 
       return (shared1.toString() === shared2.toString());
@@ -67,9 +68,9 @@ describe(`${envName}: Elliptic curve cryptography test`, () => {
     this.timeout(5000);
     const results = await Promise.all(keys.map( async (kp) => {
       let result = true;
-      const sign = await elliptic.sign(msg, kp.privateKey, 'SHA-256', 'der').catch( (e) => {result = false;});
+      const sign = await elliptic.sign(msg, kp.privateKey, 'SHA-256', 'der').catch( () => {result = false;});
       //console.log(sign);
-      const valid = await elliptic.verify(msg, sign, kp.publicKey, 'SHA-256', 'der').catch( (e) => {result = false;});
+      const valid = await elliptic.verify(msg, <Uint8Array>sign, kp.publicKey, 'SHA-256', 'der').catch( () => {result = false;});
       expect(result).to.be.true;
 
       return valid;
