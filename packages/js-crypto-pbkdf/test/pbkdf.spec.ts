@@ -1,14 +1,15 @@
-import chai from 'chai';
+import * as chai from 'chai';
 // const should = chai.should();
 const expect = chai.expect;
 import jseu from 'js-encoding-utils';
 
-import {getTestEnv} from './prepare.js';
+import {getTestEnv} from './prepare';
+import {HashTypes} from '../src/params';
 const env = getTestEnv();
 const pbkdf = env.library;
 const envName = env.envName;
 
-const hashes = ['SHA-256', 'SHA-384', 'SHA-512', 'SHA-1', 'MD5', 'SHA3-512', 'SHA3-384', 'SHA3-256', 'SHA3-224'];
+const hashes: Array<HashTypes> = ['SHA-256', 'SHA-384', 'SHA-512', 'SHA-1', 'MD5', 'SHA3-512', 'SHA3-384', 'SHA3-256', 'SHA3-224'];
 const sample = {
   pbkdf1: {
     p: 'password',
