@@ -33,7 +33,7 @@
     "@babel/register": "7.6.2",
     "@types/chai": "4.2.4",
     "@types/mocha": "5.2.7",
-    "@types/node": "10.17.3",
+    "@types/node": "10.17.4",
     "@typescript-eslint/eslint-plugin": "2.6.1",
     "@typescript-eslint/parser": "2.6.1",
     "babel-loader": "8.0.6",
