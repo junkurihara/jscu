@@ -116,7 +116,7 @@ export const encrypt = async (msg, publicKey, options = {}) => {
   if (publicJwk.kty === 'EC'){
     if(!localOpt.privateKey || !(localOpt.privateKey instanceof Key)) throw new Error('MissingOrInvalidPrivateKeyForECDH');
     localOpt.privateKey = await localOpt.privateKey.export('jwk');
-    ciphertext = await pkcec.encrypt(msg, publicJwk, localOpt);
+    ciphertext = await pkcec.encryptEc(msg, publicJwk, localOpt);
   }
   else if (publicJwk.kty === 'RSA') {
     if(typeof localOpt.hash !== 'undefined') localOpt.hash = 'SHA-256';
@@ -147,7 +147,7 @@ export const decrypt = async (data, privateKey, options = {}) => {
   if (privateJwk.kty === 'EC'){
     if(!localOpt.publicKey) throw new Error('MissingPublicKeyForECDH');
     localOpt.publicKey = await localOpt.publicKey.export('jwk');
-    msg = await pkcec.decrypt(data, privateJwk, localOpt);
+    msg = await pkcec.decryptEc(data, privateJwk, localOpt);
   }
   else if (privateJwk.kty === 'RSA') {
     if(typeof localOpt.hash !== 'undefined') localOpt.hash = 'SHA-256';

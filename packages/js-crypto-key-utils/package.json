@@ -52,7 +52,7 @@
     "rfc8018"
   ],
   "dependencies": {
-    "@babel/runtime": "~7.6.0",
+    "@babel/runtime": "~7.7.0",
     "asn1.js": "~5.2.0",
     "buffer": "~5.4.0",
     "des.js": "~1.0.0",

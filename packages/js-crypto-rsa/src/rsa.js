@@ -79,12 +79,12 @@ export const sign = async (msg, privateJwk, hash = 'SHA-256', algorithm = {name:
   let errMsg;
   let signature;
   if (typeof webCrypto !== 'undefined' && typeof webCrypto.importKey === 'function' && typeof webCrypto.sign === 'function') { // for web API
-    signature = await webapi.sign(msg, privateJwk, hash, algorithm, webCrypto).catch((e) => {
+    signature = await webapi.signRsa(msg, privateJwk, hash, algorithm, webCrypto).catch((e) => {
       errMsg = e.message;
     });
   }
   else if (typeof nodeCrypto !== 'undefined' ) { // for node
-    signature = await nodeapi.sign(msg, privateJwk, hash, algorithm, nodeCrypto).catch( (e) => {
+    signature = await nodeapi.signRsa(msg, privateJwk, hash, algorithm, nodeCrypto).catch( (e) => {
       errMsg = e.message;
     });
   } else throw new Error('UnsupportedEnvironment');
@@ -116,12 +116,12 @@ export const verify = async (msg, signature, publicJwk, hash = 'SHA-256', algori
   let errMsg;
   let valid;
   if (typeof webCrypto !== 'undefined' && typeof webCrypto.importKey === 'function' && typeof webCrypto.verify === 'function') { // for web API
-    valid = await webapi.verify(msg, signature, publicJwk, hash, algorithm, webCrypto).catch((e) => {
+    valid = await webapi.verifyRsa(msg, signature, publicJwk, hash, algorithm, webCrypto).catch((e) => {
       errMsg = e.message;
     });
   }
   else if (typeof nodeCrypto !== 'undefined') { // for node
-    valid = await nodeapi.verify(msg, signature, publicJwk, hash, algorithm, nodeCrypto).catch( (e) => {
+    valid = await nodeapi.verifyRsa(msg, signature, publicJwk, hash, algorithm, nodeCrypto).catch( (e) => {
       errMsg = e.message;
     });
   } else throw new Error('UnsupportedEnvironment');
@@ -172,13 +172,13 @@ export async function encrypt(msg, publicJwk, hash = 'SHA-256', label = new Uint
   let errMsg;
   let encrypted;
   if (typeof webCrypto !== 'undefined' && typeof webCrypto.importKey === 'function' && typeof webCrypto.encrypt === 'function') { // for web API
-    encrypted = await webapi.encrypt(msg, publicJwk, hash, label, webCrypto).catch((e) => {
+    encrypted = await webapi.encryptRsa(msg, publicJwk, hash, label, webCrypto).catch((e) => {
       errMsg = e.message;
     });
   }
   else if (typeof nodeCrypto !== 'undefined') { // for node
     try {
-      encrypted = nodeapi.encrypt(msg, publicJwk, hash, label, nodeCrypto);
+      encrypted = nodeapi.encryptRsa(msg, publicJwk, hash, label, nodeCrypto);
     } catch(e) {
       errMsg = e.message;
     }
@@ -208,13 +208,13 @@ export const decrypt = async (data, privateJwk, hash = 'SHA-256', label = new Ui
   let errMsg;
   let decrypted;
   if (typeof webCrypto !== 'undefined' && typeof webCrypto.importKey === 'function' && typeof webCrypto.decrypt === 'function') { // for web API
-    decrypted = await webapi.decrypt(data, privateJwk, hash, label, webCrypto).catch((e) => {
+    decrypted = await webapi.decryptRsa(data, privateJwk, hash, label, webCrypto).catch((e) => {
       errMsg = e.message;
     });
   }
   else if (typeof nodeCrypto !== 'undefined') { // for node
     try {
-      decrypted = nodeapi.decrypt(data, privateJwk, hash, label, nodeCrypto);
+      decrypted = nodeapi.decryptRsa(data, privateJwk, hash, label, nodeCrypto);
     } catch(e) {
       errMsg = e.message;
     }

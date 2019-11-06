@@ -9,7 +9,7 @@ import aes from 'js-crypto-aes';
 
 import params from './params.js';
 
-export const encrypt = async (
+export const encryptEc = async (
   msg, publicKey,
   { privateKey, hash='SHA-256', encrypt='AES-GCM', keyLength=32, iv=null, info='' }
 ) => {
@@ -29,7 +29,7 @@ export const encrypt = async (
 };
 
 
-export const decrypt = async (
+export const decryptEc = async (
   data, privateKey,
   { publicKey, hash='SHA-256', encrypt='AES-GCM', keyLength=32, info='', salt=null, iv=null }
 ) => {
