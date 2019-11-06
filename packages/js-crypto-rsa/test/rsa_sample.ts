@@ -1,4 +1,15 @@
-export default {
+const sample: {
+  [index: string] : {
+    publicKey: {
+      jwk: JsonWebKey,
+      pem: string,
+    },
+    privateKey: {
+      jwk: JsonWebKey,
+      pem: string
+    }
+  }
+} = {
   '2048': {
     publicKey:{
       jwk: {
@@ -220,3 +231,5 @@ export default {
     }
   }
 };
+
+export default sample;
