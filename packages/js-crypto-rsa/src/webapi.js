@@ -48,7 +48,7 @@ export const generateKey = async (modulusLength, publicExponent, webCrypto) => {
  * @return {Promise<Uint8Array>} - Byte array of raw signature.
  * @throws {Error} - if RSA-PSS in IE.
  */
-export async function sign(msg, privateJwk, hash, algorithm, webCrypto) {
+export async function signRsa(msg, privateJwk, hash, algorithm, webCrypto) {
   const algo = {name: algorithm.name, hash: {name: hash}, saltLength: algorithm.saltLength};
 
   let signature;
@@ -75,7 +75,7 @@ export async function sign(msg, privateJwk, hash, algorithm, webCrypto) {
  * @return {Promise<boolean>} - Result of verification.
  * @throws {Error} - if RSA-PSS in IE.
  */
-export const verify = async (msg, signature, publicJwk, hash, algorithm, webCrypto) => {
+export const verifyRsa = async (msg, signature, publicJwk, hash, algorithm, webCrypto) => {
   const algo = {name: algorithm.name, hash: {name: hash}, saltLength: algorithm.saltLength};
 
   let valid;
@@ -101,7 +101,7 @@ export const verify = async (msg, signature, publicJwk, hash, algorithm, webCryp
  * @return {Promise<Uint8Array>} - Encrypted message.
  * @throws {Error} - if RSA-OAEP label is specified in IE.
  */
-export const encrypt = async (msg, publicJwk, hash, label, webCrypto) => {
+export const encryptRsa = async (msg, publicJwk, hash, label, webCrypto) => {
   const algo = {name: 'RSA-OAEP', hash: {name: hash}, label};
 
   let encrypted;
@@ -127,7 +127,7 @@ export const encrypt = async (msg, publicJwk, hash, label, webCrypto) => {
  * @return {Promise<Uint8Array>} - Decrypted message.
  * @throws {Error} - if RSA-OAEP label is specified in IE.
  */
-export const decrypt = async (msg, privateJwk, hash, label, webCrypto) => {
+export const decryptRsa = async (msg, privateJwk, hash, label, webCrypto) => {
   const algo = {name: 'RSA-OAEP', hash: {name: hash}, label};
 
   let decrypted;

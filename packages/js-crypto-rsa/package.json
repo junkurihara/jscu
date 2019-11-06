@@ -40,7 +40,7 @@
     "rfc3447"
   ],
   "dependencies": {
-    "@babel/runtime": "~7.6.0",
+    "@babel/runtime": "~7.7.0",
     "bn.js": "~5.0.0",
     "js-crypto-env": "^0.2.4",
     "js-crypto-hash": "^0.5.2",

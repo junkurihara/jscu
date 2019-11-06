@@ -51,7 +51,7 @@ export const generateKey = async (modulusLength, publicExponent, nodeCrypto) => 
  * @return {Promise<Uint8Array>} - Byte array of raw signature.
  * @throws {Error} - Throws if NotPublicKeyForRSASign.
  */
-export const sign = async (msg, privateJwk, hash, algorithm, nodeCrypto) => {
+export const signRsa = async (msg, privateJwk, hash, algorithm, nodeCrypto) => {
   const keyObj = new Key('jwk', privateJwk);
   if(!keyObj.isPrivate) throw new Error('NotPrivateKeyForRSASign');
   const privatePem = await keyObj.export('pem');
@@ -73,7 +73,7 @@ export const sign = async (msg, privateJwk, hash, algorithm, nodeCrypto) => {
  * @return {Promise<boolean>} - Result of verification.
  * @throws {Error} - Throws if NotPublicKeyForRSAVerify.
  */
-export const verify = async (msg, signature, publicJwk, hash, algorithm, nodeCrypto) => {
+export const verifyRsa = async (msg, signature, publicJwk, hash, algorithm, nodeCrypto) => {
   const keyObj = new Key('jwk', publicJwk);
   if(keyObj.isPrivate) throw new Error('NotPublicKeyForRSAVerify');
   const publicPem = await keyObj.export('pem', {outputPublic: true});
@@ -93,7 +93,7 @@ export const verify = async (msg, signature, publicJwk, hash, algorithm, nodeCry
  * @return {Promise<Uint8Array>} - Encrypted message.
  * @throws {Error} - Throws if NotPublicKeyForRSAEncrypt.
  */
-export const encrypt = async (msg, publicJwk, hash = 'SHA-256', label = new Uint8Array([]), nodeCrypto) => {
+export const encryptRsa = async (msg, publicJwk, hash = 'SHA-256', label = new Uint8Array([]), nodeCrypto) => {
   const keyObj = new Key('jwk', publicJwk);
   if(keyObj.isPrivate) throw new Error('NotPublicKeyForRSAEncrypt');
   const publicPem = await keyObj.export('pem', {outputPublic: true});
@@ -119,7 +119,7 @@ export const encrypt = async (msg, publicJwk, hash = 'SHA-256', label = new Uint
  * @return {Promise<Uint8Array>} - Decrypted message.
  * @throws {Error} - Throws if NotPrivateKeyForRSADecrypt.
  */
-export const decrypt = async (data, privateJwk, hash = 'SHA-256', label = new Uint8Array([]), nodeCrypto) => {
+export const decryptRsa = async (data, privateJwk, hash = 'SHA-256', label = new Uint8Array([]), nodeCrypto) => {
   const keyObj = new Key('jwk', privateJwk);
   if(!keyObj.isPrivate) throw new Error('NotPrivateKeyForRSADecrypt');
   const privatePem = await keyObj.export('pem');
