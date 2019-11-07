@@ -1,15 +1,13 @@
-import {getTestEnv} from './prepare.js';
+import {getTestEnv} from './prepare';
+import {CurveTypes, ModulusLength} from '../src/typedef';
+import * as chai from 'chai';
+// const should = chai.should();
+const expect = chai.expect;
 const env = getTestEnv();
 const jscu = env.library;
 const envName = env.envName;
 
-async function ecKeyPairAssert(kp){
-  expect(kp.publicKey instanceof jscu.Key).to.be.true;
-  expect(kp.privateKey instanceof jscu.Key).to.be.true;
-
-  const publicJwk = await kp.publicKey.export('jwk');
-  const privateJwk = await kp.privateKey.export('jwk');
-
+async function ecKeyPairAssert(publicJwk: JsonWebKey, privateJwk: JsonWebKey){
   expect(privateJwk.x).to.be.a('string');
   expect(privateJwk.y).to.be.a('string');
   expect(privateJwk.d).to.be.a('string');
@@ -17,13 +15,7 @@ async function ecKeyPairAssert(kp){
   expect(publicJwk.y).equal(privateJwk.y);
 }
 
-async function rsaKeyPairAssert(kp){
-  expect(kp.publicKey instanceof jscu.Key).to.be.true;
-  expect(kp.privateKey instanceof jscu.Key).to.be.true;
-
-  const publicJwk = await kp.publicKey.export('jwk');
-  const privateJwk = await kp.privateKey.export('jwk');
-
+async function rsaKeyPairAssert(publicJwk: JsonWebKey, privateJwk: JsonWebKey){
   expect(privateJwk.n).to.be.a('string');
   expect(privateJwk.e).to.be.a('string');
   expect(privateJwk.d).to.be.a('string');
@@ -38,32 +30,35 @@ async function rsaKeyPairAssert(kp){
 
 describe(`${envName}: Key generation test via exported api`, () => {
 
-  const curves = ['P-256', 'P-384', 'P-521', 'P-256K'];
+  const curves: Array<CurveTypes> = ['P-256', 'P-384', 'P-521', 'P-256K'];
   it('ECDSA Key Generation should be done successfully', async function () {
     this.timeout(10000);
-    await Promise.all(curves.map( async (crv) => {
+    await Promise.all(curves.map( async (crv: CurveTypes) => {
       const kp = await jscu.pkc.generateKey('EC', {namedCurve: crv});
-      await ecKeyPairAssert(kp);
-    }));
-  });
 
-  it('ECDSA Key Generation should be done unsuccessfully', async function () {
-    this.timeout(10000);
-    const crv = '256'; // unsupported // K-256 is supported sometimes.
-    let err;
-    try {
-      const kp = await jscu.pkc.generateKey('EC', {namedCurve: crv});
-      await ecKeyPairAssert(kp);
-    } catch (e) { err = e; }
-    expect(err).to.be.a('error');
+      expect(kp.publicKey instanceof jscu.Key).to.be.true;
+      expect(kp.privateKey instanceof jscu.Key).to.be.true;
+
+      const publicJwk = await kp.publicKey.export('jwk');
+      const privateJwk = await kp.privateKey.export('jwk');
+
+      await ecKeyPairAssert(publicJwk, privateJwk);
+    }));
   });
 
   it('RSA Key Generation should be done successfully', async function () {
     this.timeout(10000);
     let result = true;
-    await Promise.all([2048, 4096].map( async (nLen) => {
+    const mods: Array<ModulusLength> = [2048, 4096];
+    await Promise.all(mods.map( async (nLen) => {
       const kp = await jscu.pkc.generateKey('RSA', {modulusLength: nLen});
-      await rsaKeyPairAssert(kp);
+
+      expect(kp.publicKey instanceof jscu.Key).to.be.true;
+      expect(kp.privateKey instanceof jscu.Key).to.be.true;
+
+      const publicJwk = await kp.publicKey.export('jwk');
+      const privateJwk = await kp.privateKey.export('jwk');
+      await rsaKeyPairAssert(publicJwk, privateJwk);
     })).catch( () => { result = false; });
     // console.log(keys);
     expect(result).to.be.true;

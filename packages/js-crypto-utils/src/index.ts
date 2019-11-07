@@ -1,5 +1,5 @@
 /**
- * index.js
+ * index.ts
  * Structure of API
  * ---- Key (Key object with methods handling EC and RSA public keys)
  *  |
@@ -32,7 +32,7 @@ import x509 from 'js-x509-utils';
 import pbkdf from 'js-crypto-pbkdf';
 
 import {Key} from 'js-crypto-key-utils';
-import * as pkc from './pkc.js';
+import * as pkc from './pkc';
 
 export {
   Key,

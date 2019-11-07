@@ -2,33 +2,55 @@
  * typedef.js
  */
 
-/**
- * @typedef {Object} PKCCiphertextObject - Ciphertext of public key encryption.
- * @property {Uint8Array} data - Encrypted message body.
- * @property {Uint8Array} [salt] - Active only for ECDH+AES
- * @property {Uint8Array} [iv] - Active only for ECDH+AES
- */
-
+export type KeyTypes = 'EC'|'RSA';
+export type CurveTypes = 'P-256' | 'P-384' | 'P-521' | 'P-256K';
+export type ModulusLength = 1024|2048|3072|4096;
+export type KeyPair = {publicKey: any, privateKey: any}; // TODO rewrite after typescripting jsckeyutils
+export type HashTypes = 'SHA3-512'|'SHA3-384'|'SHA3-256'|'SHA3-224'|'SHA-256'|'SHA-384'|'SHA-512'|'SHA-1'|'MD5';
 /**
  * @typedef {Object} ECKeyGenerationOption - Options for EC key generation.
  * @property {String} [namedCurve='P-256'] - Name of elliptic curve like 'P-256'.
  */
-
+export type ECKeyGenerationOption = {
+  namedCurve: CurveTypes,
+}
 /**
  * @typedef {Object} RSAKeyGenerationOption - Options for RSA key generation.
  * @property {Number} [modulusLength=2048] - Modulus length in bit.
  * @property {Uint8Array} [publicExponent=new Uint8Array([0x01, 0x00, 0x01])] - Public exponent.
  */
+export type RSAKeyGenerationOption = {
+  modulusLength: ModulusLength,
+  publicExponent?: Uint8Array
+};
+
+export type KeyGenOptions = RSAKeyGenerationOption|ECKeyGenerationOption;
 
 /**
  * @typedef {Object} ECSigningOption - Options for EC key signing.
  * @property {'raw'|'der'} format - EC Signature format in DER or Raw.
  */
+export type ECSigningOption = {
+  format: 'raw'|'der'
+};
 
 /**
  * @typedef {Object} RSASigningOption - Options for RSA key signing.
  * @property {'RSA-PSS'|'RSASSA-PKCS1-v1_5'} [name='RSA-PSS'] - 'RSA-PSS' or  'RSASSA-PKCS1-v1_5'.
  * @property {Number} [saltLength] - For RSA-PSS, this must be specified.
+ */
+export type RSASigningOption = {
+  name: 'RSA-PSS'|'RSASSA-PKCS1-v1_5',
+  saltLength?: number
+};
+
+export type SigningOption = ECSigningOption|RSASigningOption|undefined;
+
+/**
+ * @typedef {Object} PKCCiphertextObject - Ciphertext of public key encryption.
+ * @property {Uint8Array} data - Encrypted message body.
+ * @property {Uint8Array} [salt] - Active only for ECDH+AES
+ * @property {Uint8Array} [iv] - Active only for ECDH+AES
  */
 
 /**

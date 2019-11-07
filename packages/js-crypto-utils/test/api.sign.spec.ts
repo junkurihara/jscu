@@ -1,18 +1,23 @@
-import {getTestEnv} from './prepare.js';
+import {getTestEnv} from './prepare';
+import * as chai from 'chai';
+import {CurveTypes, HashTypes, ModulusLength} from '../src/typedef';
+// const should = chai.should();
+const expect = chai.expect;
 const env = getTestEnv();
 const jscu = env.library;
 const envName = env.envName;
 
 describe(`${envName}: Signing and verification test via exported api`, () => {
-  const curves = ['P-256', 'P-384', 'P-521', 'P-256K'];
-  const hashes = [ 'SHA-256', 'SHA-384', 'SHA-512'];
-  let ecKeySet = [];
-  let rsaKeySet = [];
-  let msg;
+  const curves: Array<CurveTypes> = ['P-256', 'P-384', 'P-521', 'P-256K'];
+  const hashes: Array<HashTypes> = [ 'SHA-256', 'SHA-384', 'SHA-512'];
+  let ecKeySet: Array<any> = [];
+  let rsaKeySet: Array<any> = [];
+  let msg: Uint8Array;
   before( async function () {
     this.timeout(10000);
     ecKeySet = await Promise.all(curves.map( async (crv) => await jscu.pkc.generateKey('EC', {namedCurve: crv})));
-    rsaKeySet = await Promise.all([2048, 4096].map( async (nLen) => await jscu.pkc.generateKey('RSA', {modulusLength: nLen})));
+    const mods: Array<ModulusLength> = [2048, 4096];
+    rsaKeySet = await Promise.all(mods.map( async (nLen) => await jscu.pkc.generateKey('RSA', {modulusLength: nLen})));
     msg = new Uint8Array(32);
     for(let i = 0; i < 32; i++) msg[i] = 0xFF & i;
   });
@@ -40,7 +45,7 @@ describe(`${envName}: Signing and verification test via exported api`, () => {
         }
         return result;
       }));
-      expect(array.every( (r) => r)).to.be.true;
+    expect(array.every( (r) => r)).to.be.true;
   });
 
   it('RSASSA-PKCS1-v1_5 Signing and verification should be done successfully', async () => {

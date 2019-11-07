@@ -122,7 +122,7 @@ export const toJwk = async (certX509, format = 'pem') => {
  * @return {{tbsCertificate: Uint8Array, signatureValue: Uint8Array, signatureAlgorithm: String}} - Parsed object.
  * @throws {Error} - Throws if UnsupportedSignatureAlgorithm or InvalidFormatSpecification.
  */
-export const parse = (certX509, format = 'pem') =>{
+export const parse = (certX509, format = 'pem') => {
 
   let x509bin;
   if (format === 'pem') x509bin = jseu.formatter.pemToBin(certX509);
