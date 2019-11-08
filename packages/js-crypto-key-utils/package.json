@@ -51,16 +51,28 @@
     "rfc7638",
     "rfc8018"
   ],
+  "devDependencies": {
+    "@babel/cli": "7.7.0",
+    "@babel/core": "7.7.2",
+    "@babel/plugin-transform-regenerator": "7.7.0",
+    "@babel/plugin-transform-runtime": "7.6.2",
+    "@babel/polyfill": "7.7.0",
+    "@babel/preset-env": "7.7.1",
+    "@babel/register": "7.7.0",
+    "babel-loader": "8.0.6",
+    "babel-plugin-istanbul": "5.2.0",
+    "babel-plugin-transform-remove-console": "6.9.4"
+  },
   "dependencies": {
     "@babel/runtime": "~7.7.0",
     "asn1.js": "~5.2.0",
     "buffer": "~5.4.0",
     "des.js": "~1.0.0",
     "elliptic": "~6.5.0",
-    "js-crypto-aes": "^0.6.1",
-    "js-crypto-hash": "^0.5.2",
-    "js-crypto-pbkdf": "^0.4.3",
-    "js-crypto-random": "^0.3.5",
+    "js-crypto-aes": "0.6.1",
+    "js-crypto-hash": "0.5.2",
+    "js-crypto-pbkdf": "0.4.3",
+    "js-crypto-random": "0.3.5",
     "js-encoding-utils": "0.5.4",
     "lodash.clonedeep": "~4.5.0"
   }

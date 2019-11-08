@@ -1,11 +1,10 @@
 {
-  "include": [ "src/**/*.js", "src/*.js" ],
-  "exclude": [ "webpack.*.js", "**/dist/**", "**/obsolete/**", "**/node_modules/**", "**/test/**" ],
+  "include": [ "src/**/*.ts" ],
+  "exclude": [ "**/*.d.ts/", "webpack.*.js", "**/dist/**", "**/obsolete/**", "**/node_modules/**", "**/test/**" ],
   "reporter": [ "lcov", "text-summary" ],
-  "require": [ "@babel/register" ],
+  "require": [ "ts-node/register" ],
   "report-dir": "./coverage/nyc",
-  "extension": [ ".js", ".jsx", ".mjs" ],
-  "sourceMap": false,
-  "instrument": false,
+  "extension": [ ".ts", ".tsx" ],
+  "sourceMap": true,
   "all": true
 }

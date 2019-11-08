@@ -58,7 +58,7 @@ module.exports = function(config) {
     reporters: ['coverage-istanbul'],
     coverageIstanbulReporter: {
       reports: [ 'lcov', 'text-summary' ],
-      dir: path.join(__dirname, 'coverage'),
+      dir: path.join(__dirname, 'coverage/karma'),
       fixWebpackSourcePaths: true,
       'report-config': {
         html: { outdir: 'html' }
