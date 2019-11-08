@@ -26,7 +26,7 @@
   "devDependencies": {
     "@types/chai": "4.2.4",
     "@types/mocha": "5.2.7",
-    "@types/node": "10.17.4",
+    "@types/node": "10.17.5",
     "@typescript-eslint/eslint-plugin": "2.6.1",
     "@typescript-eslint/parser": "2.6.1",
     "can-npm-publish": "1.3.2",
