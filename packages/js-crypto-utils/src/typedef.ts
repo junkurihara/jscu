@@ -52,6 +52,11 @@ export type SigningOption = ECSigningOption|RSASigningOption|undefined;
  * @property {Uint8Array} [salt] - Active only for ECDH+AES
  * @property {Uint8Array} [iv] - Active only for ECDH+AES
  */
+export type PKCCiphertextObject = {
+  data: Uint8Array,
+  salt?: Uint8Array,
+  iv?: Uint8Array
+};
 
 /**
  * @typedef {Object} ECEncryptionOptions - Options for ECDH+AES encryption.
@@ -62,6 +67,25 @@ export type SigningOption = ECSigningOption|RSASigningOption|undefined;
  * @property {Uint8Array|null} [iv=null] - Initial vector for AES-GCM.
  * @property {String} [info=''] - Info for AES-GCM.
  */
+export type ECEncryptionOption = {
+  privateKey: any,
+  hash?: HashTypes,
+  encrypt?: 'AES-GCM'|'AES-KW',
+  keyLength?: number,
+  info?: string
+};
+
+/**
+ * @typedef {Object} RSAEncryptionOption - Options for RSA-OAEP encryption.
+ * @property {String} [hash='SHA-256'] - Name of hash algorithm like 'SHA-256'
+ * @property {Uint8Array} [label=new Uint8Array([])] - RSA-OAEP label.
+ */
+export type RSAEncryptionOption = {
+  hash?: HashTypes,
+  label?: Uint8Array
+};
+
+export type EncryptionOption = ECEncryptionOption|RSAEncryptionOption|undefined;
 
 /**
  * @typedef {Object} ECDecryptionOptions - Options for ECDH+AES decryption.
@@ -72,9 +96,14 @@ export type SigningOption = ECSigningOption|RSASigningOption|undefined;
  * @property {Uint8Array|null} [iv=null] - Initial vector for AES-GCM.
  * @property {String} [info=''] - Info for AES-GCM.
  */
+export type ECDecryptionOption = {
+  publicKey: any,
+  hash?: HashTypes,
+  encrypt?: 'AES-GCM'|'AES-KW',
+  keyLength?: number,
+  iv?: Uint8Array,
+  salt?: Uint8Array,
+  info?: string
+};
 
-/**
- * @typedef {Object} RSAEncryptionOption - Options for RSA-OAEP encryption.
- * @property {String} [hash='SHA-256'] - Name of hash algorithm like 'SHA-256'
- * @property {Uint8Array} [label=new Uint8Array([])] - RSA-OAEP label.
- */
+export type DecryptionOption = ECDecryptionOption|RSAEncryptionOption|undefined;

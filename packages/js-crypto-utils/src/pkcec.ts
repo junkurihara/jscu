@@ -7,18 +7,20 @@ import ec from 'js-crypto-ec';
 import hkdf from 'js-crypto-hkdf';
 import aes from 'js-crypto-aes';
 
-import params from './params.js';
+import * as params from './params';
+import {ECDecryptionOption, ECEncryptionOption} from './typedef';
 
 export const encryptEc = async (
-  msg, publicKey,
-  { privateKey, hash='SHA-256', encrypt='AES-GCM', keyLength=32, iv=null, info='' }
+  msg: Uint8Array,
+  publicKey: JsonWebKey,
+  { privateKey, hash='SHA-256', encrypt='AES-GCM', keyLength=32, info='' }: ECEncryptionOption
 ) => {
   const sharedSecret = await ec.deriveSecret(publicKey, privateKey);
   const hkdfOutput = await hkdf.compute(sharedSecret, hash, keyLength, info); // use HKDF for key derivation
 
   let data;
   if(encrypt !== 'AES-KW') {
-    iv = (!iv) ? await random.getRandomBytes(params.ciphers[encrypt].ivLength) : iv;
+    const iv = await random.getRandomBytes(<number>params.ciphers[encrypt].ivLength);
     data = await aes.encrypt(msg, hkdfOutput.key, {name: encrypt, iv}); // no specification of tagLength and additionalData
     return {data, salt: hkdfOutput.salt, iv};
   }
@@ -30,8 +32,9 @@ export const encryptEc = async (
 
 
 export const decryptEc = async (
-  data, privateKey,
-  { publicKey, hash='SHA-256', encrypt='AES-GCM', keyLength=32, info='', salt=null, iv=null }
+  data: Uint8Array,
+  privateKey: JsonWebKey,
+  { publicKey, hash='SHA-256', encrypt='AES-GCM', keyLength=32, info='', salt, iv }: ECDecryptionOption
 ) => {
   const sharedSecret = await ec.deriveSecret(publicKey, privateKey);
   const hkdfOutput = await hkdf.compute(sharedSecret, hash, keyLength, info, salt);

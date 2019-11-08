@@ -1,4 +1,7 @@
-import {getTestEnv} from './prepare.js';
+import {getTestEnv} from './prepare';
+import * as chai from 'chai';
+// const should = chai.should();
+const expect = chai.expect;
 const env = getTestEnv();
 //const jscu = env.library;
 const envName = env.envName;
@@ -8,7 +11,7 @@ import aes from 'js-crypto-aes';
 import pbdkf from 'js-crypto-pbkdf';
 
 describe(`${envName}: Symmetric Encryption test with PBKDF2`, () => {
-  let msg;
+  let msg: Uint8Array;
   const password = 'HelloWorldMyPassword';
   before( async function () {
     this.timeout(10000);
@@ -79,14 +82,14 @@ describe(`${envName}: Symmetric Encryption test with PBKDF2`, () => {
       ciphertextObject.pbkdf2params.salt,
       ciphertextObject.pbkdf2params.iterationCount,
       ciphertextObject.pbkdf2params.aesKeyLen,
-      ciphertextObject.pbkdf2params.hash
+      <any>ciphertextObject.pbkdf2params.hash
     );
 
     // encryption
     const decrypted = await aes.decrypt(
       ciphertextObject.data,
       aesKeyReceiver,
-      ciphertextObject.aesParams
+      <any>ciphertextObject.aesParams
     );
     expect(decrypted.toString() === msg.toString()).to.be.true;
   });
