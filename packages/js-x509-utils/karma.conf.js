@@ -11,6 +11,8 @@ const getWebpackConfig = () => {
   return config;
 };
 
+const path = require('path');
+
 
 module.exports = function(config) {
   config.set({
@@ -55,7 +57,11 @@ module.exports = function(config) {
     // possible values: 'dots', 'progress'
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
     reporters: ['mocha', 'coverage'],
-    coverageReporter: { type: 'lcov' },
+    coverageReporter: {
+      type: 'lcov',
+      dir: path.join(__dirname, 'coverage/karma'),
+      subdir: '.'
+    },
 
 
     // web server port
@@ -79,9 +85,9 @@ module.exports = function(config) {
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
     // browsers: ['ChromeHeadless'],
     // browsers: ['Chrome'],
-    browsers: ["Chrome-headless"],
+    browsers: ['Chrome-headless'],
     customLaunchers: {
-      "Chrome-headless": {
+      'Chrome-headless': {
         base: 'Chrome',
         flags: ['--headless', '--remote-debugging-port=9222', '--no-sandbox']
       }
