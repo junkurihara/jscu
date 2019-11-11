@@ -61,7 +61,8 @@
     "@babel/register": "7.7.0",
     "babel-loader": "8.0.6",
     "babel-plugin-istanbul": "5.2.0",
-    "babel-plugin-transform-remove-console": "6.9.4"
+    "babel-plugin-transform-remove-console": "6.9.4",
+    "karma-coverage": "2.0.1"
   },
   "dependencies": {
     "@babel/runtime": "~7.7.0",

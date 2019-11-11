@@ -41,7 +41,7 @@ module.exports = function(config) {
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
       './src/**/*.ts': [],
-      './test/**/*.spec.ts': ['webpack']
+      './test/**/*.spec.ts': ['webpack', 'sourcemap']
     },
 
     webpack: getWebpackConfig(),
@@ -105,3 +105,4 @@ module.exports = function(config) {
     concurrency: Infinity
   });
 };
+
