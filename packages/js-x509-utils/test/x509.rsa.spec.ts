@@ -1,19 +1,19 @@
-import {getTestEnv} from './prepare.js';
+import {getTestEnv} from './prepare';
 const env = getTestEnv();
 const x509 = env.library;
 const envName = env.envName;
 
-import sample from './sample_crt.js';
+import sample from './sample_crt';
 
 import rsa from 'js-crypto-rsa';
 import {Key} from 'js-crypto-key-utils';
-import chai from 'chai';
-import sample_crt from './sample_crt';
+import * as chai from 'chai';
+import {HashTypes, SignatureType} from '../src/typedef';
 // const should = chai.should();
 const expect = chai.expect;
 
-const hashes = ['SHA-256', 'SHA-384', 'SHA-512'];//, 'SHA-1'];
-const pkcs1s = [ 'sha256WithRSAEncryption', 'sha384WithRSAEncryption', 'sha512WithRSAEncryption']; // RSASSA-PKCS1-v1_5
+const hashes: Array<HashTypes> = ['SHA-256', 'SHA-384', 'SHA-512'];//, 'SHA-1'];
+const pkcs1s: Array<SignatureType> = [ 'sha256WithRSAEncryption', 'sha384WithRSAEncryption', 'sha512WithRSAEncryption']; // RSASSA-PKCS1-v1_5
 const constantSaltLen = 32;
 
 describe(`${envName}: RSA: Generated JWK public key should be successfully converted to X509 PEM certificate and vice versa`, () => {
@@ -31,8 +31,8 @@ describe(`${envName}: RSA: Generated JWK public key should be successfully conve
     };
 
     const results = await Promise.all(pkcs1s.map( async (signatureAlgorithm) => {
-      const publicObj = new Key('pem', sample_crt.rsa.publicKey);
-      const privateObj = new Key('pem', sample_crt.rsa.privateKey);
+      const publicObj = new Key('pem', sample.rsa.publicKey);
+      const privateObj = new Key('pem', sample.rsa.privateKey);
       const crt = await x509.fromJwk(
         await publicObj.export('jwk'),
         await privateObj.export('jwk'),
@@ -69,8 +69,8 @@ describe(`${envName}: RSA: Generated JWK public key should be successfully conve
       commonName: 'example.com'
     };
 
-    const publicObj = new Key('pem', sample_crt.rsa.publicKey);
-    const privateObj = new Key('pem', sample_crt.rsa.privateKey);
+    const publicObj = new Key('pem', sample.rsa.publicKey);
+    const privateObj = new Key('pem', sample.rsa.privateKey);
 
     const crt = await x509.fromJwk(
       await publicObj.export('jwk'),
@@ -105,8 +105,8 @@ describe(`${envName}: RSA: Generated JWK public key should be successfully conve
       commonName: 'example.com'
     };
 
-    const publicObj = new Key('pem', sample_crt.rsa.publicKey);
-    const privateObj = new Key('pem', sample_crt.rsa.privateKey);
+    const publicObj = new Key('pem', sample.rsa.publicKey);
+    const privateObj = new Key('pem', sample.rsa.privateKey);
 
     const results = await Promise.all(hashes.map( async (hash) => {
       const crt = await x509.fromJwk(

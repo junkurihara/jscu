@@ -8,6 +8,6 @@
  * @param {Object} dict - dictionary to be searched.
  * @returns {string[]} - Returns array of keys that match the oid.
  */
-export const getKeyFromOid = (oid, dict) => Object.keys(dict).filter(
+export const getKeyFromOid = (oid: number[], dict: any): string[] => Object.keys(dict).filter(
   (key) => dict[key].oid.toString() === oid.toString()
 );

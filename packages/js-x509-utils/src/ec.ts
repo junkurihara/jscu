@@ -2,9 +2,10 @@
  * ec.js
  */
 
-import params from './params.js';
+import * as params from './params';
 import ec from 'js-crypto-ec';
 import BufferMod from 'buffer';
+import {SignatureType} from './typedef';
 const Buffer = BufferMod.Buffer;
 
 /**
@@ -14,7 +15,11 @@ const Buffer = BufferMod.Buffer;
  * @param {String} signatureAlgorithm - Signature algorithm name like 'ecdsa-with-sha256'.
  * @returns {Promise<{data: Buffer, unused: Number}>} - ASN.1 encoded signature.
  */
-export const getAsn1Signature = async (encodedTbsCertificate, privateJwk, signatureAlgorithm) => {
+export const getAsn1Signature = async (
+  encodedTbsCertificate: Uint8Array,
+  privateJwk: JsonWebKey,
+  signatureAlgorithm: SignatureType
+): Promise<{ unused: 0, data: Buffer }> => {
   const asn1sig = await ec.sign(
     encodedTbsCertificate,
     privateJwk,

@@ -1,4 +1,8 @@
-export default {
+const params: {
+  [index: string]: {
+    [index: string]: string
+  }
+} = {
   // the below are given from openssl
   rsa: {
     certificatePKCS1v1_5: '-----BEGIN CERTIFICATE-----\n' +
@@ -60,3 +64,5 @@ export default {
       '-----END PRIVATE KEY-----'
   }
 };
+
+export default params;

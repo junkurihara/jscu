@@ -2,9 +2,9 @@
  * x509.js
  */
 
-import params from './params.js';
-import * as rsa from './rsa.js';
-import * as ecdsa from './ec.js';
+import * as params from './params';
+import * as rsa from './rsa';
+import * as ecdsa from './ec';
 import BN from 'bn.js';
 import rfc5280 from 'asn1.js-rfc5280';
 import jseu from 'js-encoding-utils';
@@ -12,7 +12,9 @@ import random from 'js-crypto-random';
 import {Key} from 'js-crypto-key-utils';
 
 import BufferMod from 'buffer';
+import {AsnFormat, X509EncodingOptions, DER, PEM, SignatureType} from './typedef';
 const Buffer = BufferMod.Buffer;
+
 
 /**
  * Convert public key in JWK format to X.509 PEM or DER object.
@@ -23,9 +25,15 @@ const Buffer = BufferMod.Buffer;
  * @return {Promise<DER|PEM>} - Generated X.509 public key certificate in intended format.
  * @throws {Error} - Throws if InvalidFormatSpecification or UnsupportedKeyType.
  */
-export const fromJwk = async (publicJwk, privateJwk, format = 'pem', options = {})  => {
+export const fromJwk = async (
+  publicJwk: JsonWebKey,
+  privateJwk: JsonWebKey,
+  format: AsnFormat = 'pem',
+  options: X509EncodingOptions = {}
+): Promise<DER|PEM> => {
   // default values
-  if (typeof options.signature === 'undefined') options.signature = 'ecdsa-with-sha256';
+  if (typeof options.signature === 'undefined')
+    options.signature = (privateJwk.kty === 'EC') ? 'ecdsa-with-sha256': 'rsassaPss';
   if (typeof options.days === 'undefined') options.days = 3650;
   if (typeof options.issuer === 'undefined') options.issuer = {organizationName: 'Self'};
   if (typeof options.subject === 'undefined') options.subject = {organizationName: 'Self'};
@@ -47,7 +55,7 @@ export const fromJwk = async (publicJwk, privateJwk, format = 'pem', options = {
   const serialNumber = new BN(rand);
 
   // TODO: throw exception if private jwk keytype doesn't match signatureAlgorithm
-  const signature = { algorithm: params.signatureAlgorithms[options.signature].oid };
+  const signature: {algorithm: number[], parameters?: DER} = { algorithm: params.signatureAlgorithms[options.signature].oid };
   if (options.signature === 'rsassaPss') {
     signature.parameters = rsa.encodeRsassaPssParams(options.pssParams);
   } else signature.parameters = Buffer.from(params.ans1null);
@@ -100,13 +108,16 @@ export const fromJwk = async (publicJwk, privateJwk, format = 'pem', options = {
  * @return {Promise<JsonWebKey>} - Extracted key object in JWK format.
  * @throws {Error} - Throws if InvalidFormatSpecification.
  */
-export const toJwk = async (certX509, format = 'pem') => {
+export const toJwk = async (
+  certX509: PEM|DER,
+  format: AsnFormat = 'pem'
+): Promise<JsonWebKey> => {
   let x509bin;
-  if (format === 'pem') x509bin = jseu.formatter.pemToBin(certX509);
+  if (format === 'pem') x509bin = jseu.formatter.pemToBin(<string>certX509);
   else if (format === 'der') x509bin = certX509;
   else throw new Error('InvalidFormatSpecification');
 
-  const binKeyBuffer = Buffer.from(x509bin); // This must be Buffer object to get decoded;
+  const binKeyBuffer = Buffer.from(<DER>x509bin); // This must be Buffer object to get decoded;
 
   const decoded = rfc5280.Certificate.decode(binKeyBuffer, 'der'); // decode binary x509-formatted public key to parsed object
   const binSpki = rfc5280.SubjectPublicKeyInfo.encode(decoded.tbsCertificate.subjectPublicKeyInfo, 'der');
@@ -122,14 +133,17 @@ export const toJwk = async (certX509, format = 'pem') => {
  * @return {{tbsCertificate: Uint8Array, signatureValue: Uint8Array, signatureAlgorithm: String}} - Parsed object.
  * @throws {Error} - Throws if UnsupportedSignatureAlgorithm or InvalidFormatSpecification.
  */
-export const parse = (certX509, format = 'pem') => {
+export const parse = (
+  certX509: PEM|DER,
+  format: AsnFormat = 'pem'
+) => {
 
   let x509bin;
-  if (format === 'pem') x509bin = jseu.formatter.pemToBin(certX509);
+  if (format === 'pem') x509bin = jseu.formatter.pemToBin(<string>certX509);
   else if (format === 'der') x509bin = certX509;
   else throw new Error('InvalidFormatSpecification');
 
-  const binKeyBuffer = Buffer.from(x509bin); // This must be Buffer object to get decoded;
+  const binKeyBuffer = Buffer.from(<DER>x509bin); // This must be Buffer object to get decoded;
 
   const decoded = rfc5280.Certificate.decode(binKeyBuffer, 'der'); // decode binary x509-formatted public key to parsed object
   const sigOid = decoded.signatureAlgorithm.algorithm;
@@ -139,7 +153,7 @@ export const parse = (certX509, format = 'pem') => {
     (name) => params.signatureAlgorithms[name].oid.toString() === sigOid.toString()
   );
   if(filter.length <= 0) throw new Error('UnsupportedSignatureAlgorithm');
-  const signatureAlgorithm = {algorithm: filter[0]};
+  const signatureAlgorithm: {algorithm: SignatureType, parameters?: any} = {algorithm: <SignatureType>filter[0]};
 
   if (filter[0] === 'rsassaPss') signatureAlgorithm.parameters = rsa.decodeRsassaPssParams(sigParam);
   else signatureAlgorithm.parameters = { hash: params.signatureAlgorithms[signatureAlgorithm.algorithm].hash };
@@ -161,7 +175,7 @@ export const parse = (certX509, format = 'pem') => {
  * @return {{type: *, value: *}[][]}
  * @throws {Error} - throws if InvalidOptionSpecification or InvalidCountryNameCode.
  */
-const setRDNSequence = (options) => {
+const setRDNSequence = (options: any) => {
   const encodedArray = Object.keys(options).map((k) => {
     if (Object.keys(attributeTypeOIDMap).indexOf(k) < 0) throw new Error('InvalidOptionSpecification');
 
@@ -180,7 +194,9 @@ const setRDNSequence = (options) => {
 };
 
 // https://tools.ietf.org/html/rfc5280#appendix-A
-const attributeTypeOIDMap = {
+const attributeTypeOIDMap: {
+  [index: string]: number[]
+} = {
   // X509name DirectoryName
   name: [2, 5, 4, 41],
   surname: [2, 5, 4, 4],

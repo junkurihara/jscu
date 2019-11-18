@@ -1,16 +1,18 @@
-import {getTestEnv} from './prepare.js';
+import {getTestEnv} from './prepare';
 const env = getTestEnv();
 const x509 = env.library;
 const envName = env.envName;
 
 import ec from 'js-crypto-ec';
 
-import chai from 'chai';
+import * as chai from 'chai';
+import {CurveTypes} from 'js-crypto-ec/dist/typedef';
+import {SignatureType} from '../src/typedef';
 // const should = chai.should();
 const expect = chai.expect;
 
-const curves = ['P-256', 'P-384', 'P-521', 'P-256K'];
-const sigopt = ['ecdsa-with-sha256', 'ecdsa-with-sha384', 'ecdsa-with-sha512', 'ecdsa-with-sha1'];
+const curves: Array<CurveTypes> = ['P-256', 'P-384', 'P-521', 'P-256K'];
+const sigopt: Array<SignatureType> = ['ecdsa-with-sha256', 'ecdsa-with-sha384', 'ecdsa-with-sha512', 'ecdsa-with-sha1'];
 const crtsample = '-----BEGIN CERTIFICATE-----\n' +
   'MIIBxjCCAWwCCQCEZlhfc33wtzAKBggqhkjOPQQDAjBrMQswCQYDVQQGEwJKUDEO\n' +
   'MAwGA1UECAwFVG9reW8xEDAOBgNVBAcMB0NoaXlvZGExFjAUBgNVBAoMDVNlbGYg\n' +
@@ -25,7 +27,7 @@ const crtsample = '-----BEGIN CERTIFICATE-----\n' +
   '-----END CERTIFICATE-----';
 
 describe(`${envName}: Generated JWK EC public key should be successfully converted to X509 PEM certificate and vice versa`, () => {
-  let keySet = [];
+  let keySet: Array<any> = [];
   let msg;
   before(async function () {
     this.timeout(20000);
