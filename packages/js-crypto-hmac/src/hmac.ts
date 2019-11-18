@@ -21,35 +21,37 @@ export const compute = async (key: Uint8Array, data: Uint8Array, hash: HashTypes
   const msCrypto = util.getMsCrypto(); // damn ms crypto
 
   let msgKeyedHash;
+  let errMsg;
   let native = true;
-  if (typeof webCrypto !== 'undefined' && typeof webCrypto.importKey === 'function' && typeof webCrypto.sign === 'function') {
-    try { // standard web api / modern browsers supporting HMAC
+
+  try {
+    if (typeof webCrypto !== 'undefined' && typeof webCrypto.importKey === 'function' && typeof webCrypto.sign === 'function') {
       const keyObj = await webCrypto.importKey('raw', key, {
         name: 'HMAC',
         hash: {name: hash}
       }, false, ['sign', 'verify']);
       msgKeyedHash = await webCrypto.sign({name: 'HMAC', hash: {name: hash}}, keyObj, data);
-    } catch (e) { native = false; }
-  }
-  else if (typeof msCrypto !== 'undefined') {
-    try{
-      const keyObj = await msImportKey('raw', key, {name: 'HMAC', hash: {name: hash}}, false, ['sign', 'verify'], msCrypto);
+    } else if (typeof msCrypto !== 'undefined') {
+      const keyObj = await msImportKey('raw', key, {
+        name: 'HMAC',
+        hash: {name: hash}
+      }, false, ['sign', 'verify'], msCrypto);
       msgKeyedHash = await msHmac(hash, keyObj, data, msCrypto);
-    } catch (e) { native = false; }
-  }
-  else if (typeof nodeCrypto !== 'undefined'){ // for node
-    try {
+    } else if (typeof nodeCrypto !== 'undefined') { // for node
       const f = nodeCrypto.createHmac(params.hashes[hash].nodeName, key);
       msgKeyedHash = f.update(data).digest();
-    } catch (e) { native = false; }
+    } else native = false;
+  } catch (e) {
+    errMsg = e.message;
+    native = false;
   }
-  else native = false;
 
   if (!native){
     try {
       msgKeyedHash = await purejs(key, data, hash);
     } catch (e) {
-      throw new Error('UnsupportedEnvironments');
+      errMsg = `${errMsg} => ${e.message}`;
+      throw new Error(`UnsupportedEnvironments: ${errMsg}`);
     }
   }
 
