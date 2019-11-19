@@ -42,8 +42,10 @@ jobs:
       - run: yarn babel
       - run: yarn test
       - run: yarn karma
-      - run: yarn add lcov-result-merger --dev -W
-      - run: mkdir -p coverage && ./node_modules/.bin/lcov-result-merger './packages/*/coverage/*/lcov.info' ./coverage/merged-lcov.info
+      # merge and upload coverage reports
+      - run: sudo apt install lcov
+      - run: mkdir -p coverage
+      - run: find ./packages  -name lcov.info -exec echo -a {} \; | xargs lcov -o ./coverage/merged-lcov.info
       - codecov/upload:
           file: ./coverage/merged-lcov.info
 

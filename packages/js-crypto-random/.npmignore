@@ -8,13 +8,14 @@ yarn-error.log
 .eslintrc.json
 karma.conf.js
 webpack.common.js
-webpack.dev.js
 webpack.prod.js
+webpack.dev.js
 .idea/
 .vscode/
 .git/
 .gitignore
 .circleci/
-.nyc_output/
-.nycrc
+coverage/
+.nyc_output
 renovate.json
+*.map

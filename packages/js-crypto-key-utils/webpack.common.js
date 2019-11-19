@@ -3,8 +3,8 @@
  */
 //////////////////////////////////////////////////////////////////////////
 // Base Config of Your Library
-const libName = 'jsckey'; // TODO: This must be edited for your project.
-const entry = './src/index.js';
+const libName = 'jsckey';
+const entry = './src/index.ts';
 
 //////////////////////////////////////////////////////////////////////////
 const path = require('path');
@@ -23,22 +23,22 @@ const webpackConfig = {
     globalObject: 'this' // for node js import
   },
   resolve: {
-    extensions: ['.js', '.jsx', '.mjs'],
+    extensions: ['.ts', '.tsx', '.js', '.jsx' ],
     modules: ['node_modules']
   },
   module: {
     rules: [
       {
-        test: /\.(m|)js$/,
+        test: /\.ts$/,
         use: [{
-          loader: 'babel-loader'
+          loader: 'ts-loader'
         }],
         exclude: path.join(__dirname, 'node_modules') // exclude: /node_modules/
-      }
+      },
     ]
   },
-  externals: {
-    'crypto': true,
+  externals: { // for random just in playground
+    'crypto': true
   },
   node: {
     fs: 'empty'
