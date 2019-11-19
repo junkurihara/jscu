@@ -2,7 +2,8 @@
  * index.js
  */
 
-import {compute} from './hash';
+import * as hash from './hash';
+
+export const compute = hash.compute;
 
 export default {compute};
-export {compute};
