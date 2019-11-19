@@ -1,23 +1,24 @@
-import {getTestEnv} from './prepare.js';
+import {getTestEnv} from './prepare';
 const env = getTestEnv();
 const keyutils = env.library;
 const envName = env.envName;
 
-import sampleEC from './ec_sample.js';
-import sampleRSA from './rsa_sample.js';
+import sampleEC from './sampleEc';
+import sampleRSA from './sampleRsa';
 
-import chai from 'chai';
+import * as chai from 'chai';
+import {HashTypes} from '../src/typedef';
 // const should = chai.should();
 const expect = chai.expect;
 
-const curves = ['P-256', 'P-384', 'P-521', 'P-256K'];
+//const curves = ['P-256', 'P-384', 'P-521', 'P-256K'];
 const bits = ['2048', '4096'];
-const hashes = [ 'SHA-256', 'SHA-384', 'SHA-512'];
+const hashes: HashTypes[] = [ 'SHA-256', 'SHA-384', 'SHA-512'];
 describe(`${envName}: JWK thumbprint generation test.`, () => {
 
-  let keySet = [];
+  let keySet: any[] = [];
   before(async () => {
-    keySet = sampleEC.ecKey; //await Promise.all(curves.map(async (crv) => await ec.generateKey(crv)));
+    keySet= sampleEC.ecKey; //await Promise.all(curves.map(async (crv) => await ec.generateKey(crv)));
   });
 
   it('EC: JWK thumbprint in array buffer is generated successfully for each curve and hashes', async () => {
@@ -31,6 +32,7 @@ describe(`${envName}: JWK thumbprint generation test.`, () => {
         }
       ))
     ));
+    console.log(tps);
   });
 
   it('EC: JWK thumbprint in hex string is generated successfully for each curve and hashes', async () => {
@@ -44,6 +46,7 @@ describe(`${envName}: JWK thumbprint generation test.`, () => {
         }
       ))
     ));
+    console.log(tps);
   });
 
   it('RSA: JWK thumbprint in array buffer is generated successfully for each bits and hashes', async () => {
@@ -57,6 +60,7 @@ describe(`${envName}: JWK thumbprint generation test.`, () => {
         }
       ))
     ));
+    console.log(tps);
   });
 
   it('RSA: JWK thumbprint in hex string is generated successfully for each bits and hashes', async () => {
@@ -70,6 +74,7 @@ describe(`${envName}: JWK thumbprint generation test.`, () => {
         }
       ))
     ));
+    console.log(tps);
   });
 
 });

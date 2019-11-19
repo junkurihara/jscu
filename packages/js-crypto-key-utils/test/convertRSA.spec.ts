@@ -1,29 +1,29 @@
-import {getTestEnv} from './prepare.js';
+import {getTestEnv} from './prepare';
 const env = getTestEnv();
 const keyutils = env.library;
 const envName = env.envName;
 
-import sampleRSA from './rsa_sample.js';
+import sampleRSA from './sampleRsa';
 
 import jseu from 'js-encoding-utils';
 
-import chai from 'chai';
+import * as chai from 'chai';
 // const should = chai.should();
 const expect = chai.expect;
 
-function objectSort(obj){
+const objectSort = (obj: any) => {
   const keys = Object.keys(obj).sort();
-  const map = {};
+  const map: {[index: string]: any} = {};
   keys.forEach((key) => { map[key] = obj[key]; });
   return map;
-}
+};
 
-function prune(jwk){
+const prune = (jwk: JsonWebKey) => {
   delete jwk.ext;
   delete jwk.alg;
   delete jwk.key_ops;
   return jwk;
-}
+};
 
 
 
@@ -40,7 +40,6 @@ describe(`${envName}: RSA Key conversion from/to JWK test.`, () => {
       // private key
       const privateKey = new keyutils.Key('pem', sampleRSA[bitLen].privateKey.pem);
       const jwkpri = await privateKey.export('jwk');
-
 
       return (JSON.stringify(objectSort(jwkpub)) === JSON.stringify(objectSort(prune(sampleRSA[bitLen].publicKey.jwk))))
         && (JSON.stringify(objectSort(jwkpri)) === JSON.stringify(objectSort(prune(sampleRSA[bitLen].privateKey.jwk))));

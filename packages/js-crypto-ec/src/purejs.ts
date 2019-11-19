@@ -32,11 +32,11 @@ export const generateKey = async (namedCurve: CurveTypes): Promise<JsonWebKeyPai
 
   const publicKey = new Key('oct', publicOct, {namedCurve});
   if (publicKey.isPrivate) throw new Error('NotPublicKeyForECCKeyGenPureJS');
-  const publicJwk = await publicKey.export('jwk', {outputPublic: true});
+  const publicJwk = <JsonWebKey>await publicKey.export('jwk', {outputPublic: true});
 
   const privateKey = new Key('oct', privateOct, {namedCurve});
   if (!privateKey.isPrivate) throw new Error('NotPrivateKeyForECCKeyGenPureJS');
-  const privateJwk = await privateKey.export('jwk');
+  const privateJwk = <JsonWebKey>await privateKey.export('jwk');
 
   return {publicKey: publicJwk, privateKey: privateJwk};
 };
@@ -62,7 +62,7 @@ export const sign = async (
 
   const privateKey = new Key('jwk', privateJwk);
   if (!privateKey.isPrivate) throw new Error('NotPrivateKeyForECCSignPureJS');
-  const privateOct = await privateKey.export('oct');
+  const privateOct = <Uint8Array>await privateKey.export('oct');
 
   const ecKey = ec.keyFromPrivate(privateOct);
 
@@ -105,7 +105,7 @@ export const verify = async (
 
   const publicKey = new Key('jwk', publicJwk);
   if (publicKey.isPrivate) throw new Error('NotPublicKeyForECCVerifyPureJS');
-  const publicOct = await publicKey.export('oct', {compact: false, outputPublic: true});
+  const publicOct = <Uint8Array>await publicKey.export('oct', {compact: false, outputPublic: true});
 
   const ecKey = ec.keyFromPublic(publicOct);
 
@@ -139,11 +139,11 @@ export const deriveSecret = async (
 
   const priKeyObj = new Key('jwk', privateJwk);
   if (!priKeyObj.isPrivate) throw new Error('NotPrivateKeyForECCSDeriveKeyPureJS');
-  const privateOct = await priKeyObj.export('oct');
+  const privateOct = <Uint8Array>await priKeyObj.export('oct');
 
   const pubKeyObj = new Key('jwk', publicJwk);
   if (pubKeyObj.isPrivate) throw new Error('NotPublicKeyForECCDeriveKeyPureJS');
-  const publicOct = await pubKeyObj.export('oct', {compact: false, outputPublic: true});
+  const publicOct = <Uint8Array>await pubKeyObj.export('oct', {compact: false, outputPublic: true});
 
   const privateKey = ec.keyFromPrivate(privateOct);
   const publicKey = ec.keyFromPublic(publicOct);

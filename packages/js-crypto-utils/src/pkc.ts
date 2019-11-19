@@ -69,7 +69,7 @@ export const sign = async (
   options: SigningOption = undefined
 ): Promise<Uint8Array> => {
   if(!(privateKey instanceof Key)) throw new Error('NonKeyObject');
-  const privateJwk = await privateKey.export('jwk');
+  const privateJwk = <JsonWebKey>await privateKey.export('jwk');
 
   let signature;
   if (privateJwk.kty === 'EC'){
@@ -103,7 +103,7 @@ export const verify = async (
   options: SigningOption = undefined
 ): Promise<boolean> => {
   if(!(publicKey instanceof Key)) throw new Error('NonKeyObject');
-  const publicJwk = await publicKey.export('jwk');
+  const publicJwk = <JsonWebKey>await publicKey.export('jwk');
 
   let valid: boolean;
   if (publicJwk.kty === 'EC'){
@@ -136,13 +136,13 @@ export const encrypt = async (
   options: EncryptionOption = undefined
 ): Promise<PKCCiphertextObject> => {
   if(!(publicKey instanceof Key)) throw new Error('NonKeyObject');
-  const publicJwk = await publicKey.export('jwk');
+  const publicJwk = <JsonWebKey>await publicKey.export('jwk');
 
   let ciphertext: PKCCiphertextObject;
   if (publicJwk.kty === 'EC'){
     const localOpt: ECEncryptionOption = cloneDeep(<ECEncryptionOption>options);
     if(!localOpt.privateKey || !(localOpt.privateKey instanceof Key)) throw new Error('MissingOrInvalidPrivateKeyForECDH');
-    localOpt.privateKey = await localOpt.privateKey.export('jwk');
+    localOpt.privateKey = <JsonWebKey>await localOpt.privateKey.export('jwk');
     ciphertext = await pkcec.encryptEc(msg, publicJwk, localOpt);
   }
   else if (publicJwk.kty === 'RSA') {
@@ -172,13 +172,13 @@ export const decrypt = async (
   options: DecryptionOption
 ): Promise<Uint8Array> => {
   if(!(privateKey instanceof Key)) throw new Error('NonKeyObject');
-  const privateJwk = await privateKey.export('jwk');
+  const privateJwk = <JsonWebKey>await privateKey.export('jwk');
 
   let msg;
   if (privateJwk.kty === 'EC'){
     const localOpt: ECDecryptionOption = cloneDeep(<ECDecryptionOption>options);
     if(!localOpt.publicKey) throw new Error('MissingPublicKeyForECDH');
-    localOpt.publicKey = await localOpt.publicKey.export('jwk');
+    localOpt.publicKey = <JsonWebKey>await localOpt.publicKey.export('jwk');
     msg = await pkcec.decryptEc(data, privateJwk, localOpt);
   }
   else if (privateJwk.kty === 'RSA') {

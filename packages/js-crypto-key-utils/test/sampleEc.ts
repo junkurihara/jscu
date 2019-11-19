@@ -1,4 +1,4 @@
-export default {
+const sample: {[index:string]: any} = {
   ecKey: [ { publicKey:
       { kty: 'EC',
         crv: 'P-256',
@@ -43,3 +43,5 @@ export default {
         d:
           'AVM6TTvvZNbW-_cbV-aD1EXK_cwy-ZAKJBXrVvWIvLNpvHD7AnHwUJLxpAqLs1WaZAhP3EaTkO2MhBllyVImmspz' } } ]
 };
+
+export default sample;

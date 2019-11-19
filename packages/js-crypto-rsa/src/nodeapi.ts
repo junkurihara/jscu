@@ -1,5 +1,5 @@
 /**
- * nodeapi.js
+ * nodeapi
  */
 
 import * as params from './params';
@@ -39,8 +39,8 @@ export const generateKey = async (
   const publicObj = new Key('der', new Uint8Array(keyPairDer.publicKey));
   const privateObj = new Key('der', new Uint8Array(keyPairDer.privateKey));
   return {
-    publicKey: await publicObj.export('jwk'),
-    privateKey: await privateObj.export('jwk')
+    publicKey: <JsonWebKey>await publicObj.export('jwk'),
+    privateKey: <JsonWebKey>await privateObj.export('jwk')
   };
 };
 
@@ -63,7 +63,7 @@ export const signRsa = async (
 ): Promise<Uint8Array> => {
   const keyObj = new Key('jwk', privateJwk);
   if(!keyObj.isPrivate) throw new Error('NotPrivateKeyForRSASign');
-  const privatePem: JsonWebKey = await keyObj.export('pem');
+  const privatePem = <string>await keyObj.export('pem');
   const signing = nodeCrypto.createSign(params.hashes[hash].nodeName);
   signing.update(msg);
   const opt = (algorithm.name === 'RSA-PSS') ? {saltLength: algorithm.saltLength, padding: nodeCrypto.constants.RSA_PKCS1_PSS_PADDING} : {};
@@ -92,7 +92,7 @@ export const verifyRsa = async (
 ): Promise<boolean> => {
   const keyObj = new Key('jwk', publicJwk);
   if(keyObj.isPrivate) throw new Error('NotPublicKeyForRSAVerify');
-  const publicPem: JsonWebKey = await keyObj.export('pem', {outputPublic: true});
+  const publicPem = <string>await keyObj.export('pem', {outputPublic: true});
   const verify = nodeCrypto.createVerify(params.hashes[hash].nodeName);
   verify.update(msg);
   const opt = (algorithm.name === 'RSA-PSS') ? {saltLength: algorithm.saltLength, padding: nodeCrypto.constants.RSA_PKCS1_PSS_PADDING} : {};
@@ -150,7 +150,7 @@ export const decryptRsa = async (
 ): Promise<Uint8Array> => {
   const keyObj = new Key('jwk', privateJwk);
   if(!keyObj.isPrivate) throw new Error('NotPrivateKeyForRSADecrypt');
-  const privatePem = await keyObj.export('pem');
+  const privatePem = <string>await keyObj.export('pem');
 
   let decrypted;
   if(hash === 'SHA-1') {

@@ -3,8 +3,9 @@
  */
 
 import jseu from 'js-encoding-utils';
-import params from './params.js';
-import {KeyStructure} from './asn1def.js';
+import * as params from './params';
+import {KeyStructure} from './asn1def';
+import {AsnFormat, CurveTypes, DER, OctetEC, PEM, PublicOrPrivate} from './typedef';
 
 /**
  * Check if the given key is encrypted.
@@ -12,7 +13,7 @@ import {KeyStructure} from './asn1def.js';
  * @param {AsnFormat} [format='pem'] - pem or der
  * @return {boolean} - True if encrypted.
  */
-export const isAsn1Encrypted = (key, format='pem') => {
+export const isAsn1Encrypted = (key: DER|PEM, format: AsnFormat = 'pem') => {
   let keyType;
   try{ keyType = getAsn1KeyType(key, format);} catch(e) {return false;}
   return keyType === 'encryptedPrivate';
@@ -24,7 +25,7 @@ export const isAsn1Encrypted = (key, format='pem') => {
  * @param {AsnFormat} format - pem or der
  * @return {boolean} - True if public.
  */
-export const isAsn1Public = (key, format='pem') => {
+export const isAsn1Public = (key: DER|PEM, format: AsnFormat = 'pem') => {
   let keyType;
   try{ keyType = getAsn1KeyType(key, format);} catch(e) {return false;}
   return (keyType === 'public');
@@ -37,11 +38,11 @@ export const isAsn1Public = (key, format='pem') => {
  * @return {'public'|'private'|'encryptedPrivate'} - The key type of the given key.
  * @throws {Error} - Throws if NotSpkiNorPkcs8Key.
  */
-export const getAsn1KeyType = (key, format='pem') => {
+export const getAsn1KeyType = (key: DER|PEM, format: AsnFormat = 'pem') => {
   // Peel the pem strings
-  const binKey = (format === 'pem') ? jseu.formatter.pemToBin(key, 'private') : key;
+  const binKey = (format === 'pem') ? jseu.formatter.pemToBin(<PEM>key) : key;
 
-  const decoded = KeyStructure.decode(Buffer.from(binKey), 'der');
+  const decoded = KeyStructure.decode(Buffer.from(<Uint8Array>binKey), 'der');
   if (decoded.type === 'encryptedPrivateKeyInfo') return 'encryptedPrivate';
   else if (decoded.type === 'oneAsymmetricKey') return 'private';
   else if (decoded.type === 'subjectPublicKeyInfo') return 'public';
@@ -50,20 +51,15 @@ export const getAsn1KeyType = (key, format='pem') => {
 
 /**
  * Retrieve the type of SEC1 octet key.
- * @param {OctetEC} sec1key - Key object in OctetEC encoding in String (hex string) or Uint8Array.
- * @param {String} namedCurve - Name of elliptic curve like 'P-256'.
+ * @param {OctetEC} sec1key - Key object in OctetEC encoding of Uint8Array.
+ * @param {CurveTypes} namedCurve - Name of elliptic curve like 'P-256'.
  * @return {PublicOrPrivate} - public or private
  * @throws {Error} - Throws if UnsupportedKeyStructure.
  */
-export const getSec1KeyType = (sec1key, namedCurve)=> {
-  let format;
-  if (sec1key instanceof Uint8Array) format = 'binary';
-  else if (typeof sec1key === 'string') format = 'string';
-  else throw new Error('InvalidObjectType');
-
-  const binKey = (format === 'string') ? jseu.encoder.hexStringToArrayBuffer(sec1key): sec1key;
-
+export const getSec1KeyType = (sec1key: OctetEC, namedCurve: CurveTypes): PublicOrPrivate => {
   const len = params.namedCurves[namedCurve].payloadSize;
+
+  const binKey = (sec1key instanceof Uint8Array) ? sec1key : jseu.encoder.hexStringToArrayBuffer(sec1key);
 
   // original key type
   if (binKey.length <= len) return 'private';
@@ -80,7 +76,7 @@ export const getSec1KeyType = (sec1key, namedCurve)=> {
  * @return {PublicOrPrivate} - public or private
  * @throws {Error} - Throws if InvalidECKey, InvalidRSAKey or UnsupportedJWKType.
  */
-export const getJwkType = (jwkey) => {
+export const getJwkType = (jwkey: JsonWebKey): PublicOrPrivate => {
   if(jwkey.kty === 'EC'){
     if (jwkey.x && jwkey.y && jwkey.d) return 'private';
     else if (jwkey.x && jwkey.y) return 'public';
@@ -101,9 +97,7 @@ export const getJwkType = (jwkey) => {
  * @return {Uint8Array} - An octet sequence pruned leading zeros of length equal to or shorter than the input array.
  * @throws {Error} - Throws if NonUint8Array.
  */
-export const pruneLeadingZeros = (array) => {
-  if(!(array instanceof Uint8Array)) throw new Error('NonUint8Array');
-
+export const pruneLeadingZeros = (array: Uint8Array): Uint8Array => {
   let offset = 0;
   for (let i = 0; i < array.length; i++){
     if(array[i] !== 0x00) break;
@@ -123,8 +117,7 @@ export const pruneLeadingZeros = (array) => {
  * @returns {Uint8Array} - An octet sequence with leading zeros.
  * @throws {Error} - Throws if NonUint8Array or InvalidLength.
  */
-export const appendLeadingZeros = (array, len) => {
-  if(!(array instanceof Uint8Array)) throw new Error('NonUint8Array');
+export const appendLeadingZeros = (array: Uint8Array, len: number): Uint8Array => {
   if(array.length > len) throw new Error('InvalidLength');
 
   const returnArray = new Uint8Array(len); // initialized with zeros

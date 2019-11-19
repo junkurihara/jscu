@@ -34,8 +34,8 @@ describe(`${envName}: RSA: Generated JWK public key should be successfully conve
       const publicObj = new Key('pem', sample.rsa.publicKey);
       const privateObj = new Key('pem', sample.rsa.privateKey);
       const crt = await x509.fromJwk(
-        await publicObj.export('jwk'),
-        await privateObj.export('jwk'),
+        <JsonWebKey>await publicObj.export('jwk'),
+        <JsonWebKey>await privateObj.export('jwk'),
         'pem',
         {
           signature: signatureAlgorithm,
@@ -49,7 +49,7 @@ describe(`${envName}: RSA: Generated JWK public key should be successfully conve
       const re = await rsa.verify(
         parsed.tbsCertificate,
         parsed.signatureValue,
-        await publicObj.export('jwk'),
+        <JsonWebKey>await publicObj.export('jwk'),
         parsed.signatureAlgorithm.parameters.hash,
         {name: 'RSASSA-PKCS1-v1_5'}
       );
@@ -73,8 +73,8 @@ describe(`${envName}: RSA: Generated JWK public key should be successfully conve
     const privateObj = new Key('pem', sample.rsa.privateKey);
 
     const crt = await x509.fromJwk(
-      await publicObj.export('jwk'),
-      await privateObj.export('jwk'),
+      <JsonWebKey>await publicObj.export('jwk'),
+      <JsonWebKey>await privateObj.export('jwk'),
       'pem',
       {
         signature: 'rsassaPss',
@@ -87,7 +87,7 @@ describe(`${envName}: RSA: Generated JWK public key should be successfully conve
     const re = await rsa.verify(
       parsed.tbsCertificate,
       parsed.signatureValue,
-      await publicObj.export('jwk'),
+      <JsonWebKey>await publicObj.export('jwk'),
       parsed.signatureAlgorithm.parameters.hash,
       {name: 'RSA-PSS', saltLength: parsed.signatureAlgorithm.parameters.saltLength}
     );
@@ -110,8 +110,8 @@ describe(`${envName}: RSA: Generated JWK public key should be successfully conve
 
     const results = await Promise.all(hashes.map( async (hash) => {
       const crt = await x509.fromJwk(
-        await publicObj.export('jwk'),
-        await privateObj.export('jwk'),
+        <JsonWebKey>await publicObj.export('jwk'),
+        <JsonWebKey>await privateObj.export('jwk'),
         'pem',
         {
           signature: 'rsassaPss',
@@ -126,7 +126,7 @@ describe(`${envName}: RSA: Generated JWK public key should be successfully conve
       const re = await rsa.verify(
         parsed.tbsCertificate,
         parsed.signatureValue,
-        await publicObj.export('jwk'),
+        <JsonWebKey>await publicObj.export('jwk'),
         parsed.signatureAlgorithm.parameters.hash,
         {name: 'RSA-PSS', saltLength: parsed.signatureAlgorithm.parameters.saltLength}
       );

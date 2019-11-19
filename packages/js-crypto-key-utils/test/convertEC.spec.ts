@@ -1,33 +1,34 @@
-import {getTestEnv} from './prepare.js';
+import {getTestEnv} from './prepare';
 const env = getTestEnv();
 const keyutils = env.library;
 const envName = env.envName;
 
-import ecKey from './ec_sample.js';
+import ecKey from './sampleEc';
 
-import chai from 'chai';
+import * as chai from 'chai';
+//import {CurveTypes} from '../src/typedef';
 // const should = chai.should();
 const expect = chai.expect;
 
-function objectSort(obj){
+const objectSort = (obj: any) => {
   const keys = Object.keys(obj).sort();
-  const map = {};
+  const map: {[index: string]: any} = {};
   keys.forEach((key) => { map[key] = obj[key]; });
   return map;
-}
+};
 
-function prune(jwk){
+const prune = (jwk: JsonWebKey) => {
   delete jwk.ext;
   delete jwk.alg;
   delete jwk.key_ops;
   return jwk;
-}
+};
 
 
-const curves = ['P-256', 'P-384', 'P-521'];
+//const curves: CurveTypes[] = ['P-256', 'P-384', 'P-521'];
 describe(`${envName}: EC Key conversion from/to JWK test.`, () => {
   
-  let ECKeySet = [];
+  let ECKeySet: any[] = [];
   before(async function (){
     this.timeout(20000);
     ECKeySet = ecKey.ecKey;//await Promise.all(curves.map(async (crv) => await ec.generateKey(crv)));

@@ -2,14 +2,15 @@
  * asn1enc.js
  */
 
-import * as asn1ec from './asn1ec.js';
-import * as asn1rsa from './asn1rsa.js';
-import params, {getAlgorithmFromOid} from './params.js';
+import * as asn1ec from './asn1ec';
+import * as asn1rsa from './asn1rsa';
+import {publicKeyAlgorithms, getAlgorithmFromOid} from './params';
 import jseu from 'js-encoding-utils';
 import BufferMod from 'buffer';
-import {OneAsymmetricKey, SubjectPublicKeyInfo, KeyStructure} from './asn1def.js';
-import {encryptEncryptedPrivateKeyInfo, decryptEncryptedPrivateKeyInfo} from './rfc8018.js';
-import {getJwkType} from './util.js';
+import {OneAsymmetricKey, SubjectPublicKeyInfo, KeyStructure} from './asn1def';
+import {encryptEncryptedPrivateKeyInfo, decryptEncryptedPrivateKeyInfo} from './rfc8018';
+import {getJwkType} from './util';
+import {AsnEncryptOptionsWithPassphrase, DER, PEM, PublicOrPrivate} from './typedef';
 const Buffer = BufferMod.Buffer;
 
 /**
@@ -22,9 +23,13 @@ const Buffer = BufferMod.Buffer;
  * @param {AsnEncryptOptionsWithPassphrase} encOptions - ASN.1 encryption options
  * @return {Uint8Array|String} - Encoded private key in DER or PEM
  */
-export const fromJwk = async (jwkey, format, {outputPublic, compact=false, encOptions}) => {
+export const fromJwk = async (
+  jwkey: JsonWebKey,
+  format: 'pem'|'der',
+  {outputPublic, compact=false, encOptions}: {outputPublic?: boolean, compact?: boolean, encOptions?: AsnEncryptOptionsWithPassphrase}
+): Promise<PEM|DER> => {
   const orgType = getJwkType(jwkey);
-  let type = (typeof outputPublic === 'boolean' && outputPublic) ? 'public' : orgType;
+  let type: PublicOrPrivate|'encryptedPrivate' = (typeof outputPublic === 'boolean' && outputPublic) ? 'public' : orgType;
 
   let decoded;
   if (jwkey.kty === 'EC') {
@@ -40,7 +45,7 @@ export const fromJwk = async (jwkey, format, {outputPublic, compact=false, encOp
   }
   else {
     binKey = OneAsymmetricKey.encode(decoded, 'der');
-    if(typeof encOptions.passphrase !== 'undefined' && encOptions.passphrase.length > 0){
+    if(typeof encOptions !== 'undefined' && typeof encOptions.passphrase !== 'undefined' && encOptions.passphrase.length > 0){
       binKey = await encryptEncryptedPrivateKeyInfo(binKey, encOptions);
       type = 'encryptedPrivate';
     }
@@ -59,16 +64,20 @@ export const fromJwk = async (jwkey, format, {outputPublic, compact=false, encOp
  * @return {JsonWebKey} - Obtained key object in JWK format.
  * @throws {Error} Throws if UnsupportedKeyStructure, UnsupportedKey or InvalidKeyType.
  */
-export const toJwk = async (key, format, {outputPublic, passphrase}) => {
+export const toJwk = async (
+  key: PEM|DER,
+  format: 'pem'|'der',
+  {outputPublic, passphrase}: {outputPublic?: boolean, passphrase: string}
+): Promise<JsonWebKey> => {
   // Peel the pem strings
-  const binKey = (format === 'pem') ? jseu.formatter.pemToBin(key) : key;
+  const binKey = (format === 'pem') ? jseu.formatter.pemToBin(<PEM>key) : key;
 
   // decode binary spki/pkcs8-formatted key to parsed object
   let decoded;
-  try { decoded = KeyStructure.decode(Buffer.from(binKey), 'der'); }
+  try { decoded = KeyStructure.decode(Buffer.from(<Uint8Array>binKey), 'der'); }
   catch (e) { throw new Error('FailedToDecodeKey'); }
 
-  let type;
+  let type: PublicOrPrivate;
   if(decoded.type === 'subjectPublicKeyInfo'){
     type = 'public';
     decoded = decoded.value;
@@ -83,7 +92,7 @@ export const toJwk = async (key, format, {outputPublic, passphrase}) => {
 
   const keyTypes = getAlgorithmFromOid(
     (type === 'public') ? decoded.algorithm.algorithm : decoded.privateKeyAlgorithm.algorithm,
-    params.publicKeyAlgorithms
+    publicKeyAlgorithms
   );
   if(keyTypes.length < 1) throw new Error('UnsupportedKey');
 

@@ -1,20 +1,20 @@
-import {getTestEnv} from './prepare.js';
+import {getTestEnv} from './prepare';
 const env = getTestEnv();
 const keyutils = env.library;
 const envName = env.envName;
 
-import sample from './encrypted_sample.js';
+import sample from './sampleEncrypted';
 
-import chai from 'chai';
+import * as chai from 'chai';
 // const should = chai.should();
 const expect = chai.expect;
 
-function objectSort(obj){
+const objectSort = (obj: any) => {
   const keys = Object.keys(obj).sort();
-  const map = {};
+  const map: {[index: string]: any} = {};
   keys.forEach((key) => { map[key] = obj[key]; });
   return map;
-}
+};
 
 describe(`${envName}: RSA/EC Key conversion from/to JWK test.`, () => {
   const encOptionArray = [
@@ -43,6 +43,7 @@ describe(`${envName}: RSA/EC Key conversion from/to JWK test.`, () => {
         result = result && privateKey.isEncrypted;
 
         await privateKey.decrypt('kddilabs').catch( () => {result = false;});
+        // eslint-disable-next-line require-atomic-updates
         result = result && !privateKey.isEncrypted;
 
         const jwkpri = await privateKey.export('pem').catch( () => {result = false; });
@@ -52,18 +53,20 @@ describe(`${envName}: RSA/EC Key conversion from/to JWK test.`, () => {
           }
         ).catch( () => {result = false; });
 
-        const privateKey2 = new keyutils.Key('pem', pempri);
+        const privateKey2 = new keyutils.Key('pem', <string>pempri);
+        // eslint-disable-next-line require-atomic-updates
         result = result && privateKey2.isEncrypted;
         await privateKey2.decrypt('kddilabs').catch( () => {result = false;});
+        // eslint-disable-next-line require-atomic-updates
         result = result && !privateKey2.isEncrypted;
 
         const jwkpri2 = await privateKey2.export('pem').catch( () => {result = false;});
-
 
         return result && (objectSort(jwkpri).toString() === objectSort(jwkpri2).toString());
       }))
         .catch( (e) => {console.error(e.message);});
       console.log(elem);
+      // @ts-ignore
       return elem.every( (x) => x);
     }));
     console.log(`result: ${array}`);
@@ -113,6 +116,7 @@ describe(`${envName}: RSA/EC Key conversion from/to JWK test.`, () => {
         result = result && privateKey.isEncrypted;
 
         await privateKey.decrypt('kddilabs').catch( () => {result = false;});
+        // eslint-disable-next-line require-atomic-updates
         result = result && !privateKey.isEncrypted;
 
         const jwkpri = await privateKey.export('pem').catch( () => {result = false; });
@@ -122,9 +126,11 @@ describe(`${envName}: RSA/EC Key conversion from/to JWK test.`, () => {
           }
         ).catch( () => {result = false; });
 
-        const privateKey2 = new keyutils.Key('pem', pempri);
+        const privateKey2 = new keyutils.Key('pem', <string>pempri);
+        // eslint-disable-next-line require-atomic-updates
         result = result && privateKey2.isEncrypted;
         await privateKey2.decrypt('kddilabs').catch( () => {result = false;});
+        // eslint-disable-next-line require-atomic-updates
         result = result && !privateKey2.isEncrypted;
 
         const jwkpri2 = await privateKey2.export('pem').catch( () => {result = false;});
@@ -134,6 +140,7 @@ describe(`${envName}: RSA/EC Key conversion from/to JWK test.`, () => {
       }))
         .catch( (e) => {console.error(e.message);});
       console.log(elem);
+      // @ts-ignore
       return elem.every( (x) => x);
     }));
     console.log(`result: ${array}`);

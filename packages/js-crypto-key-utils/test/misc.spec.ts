@@ -1,29 +1,29 @@
-import {getTestEnv} from './prepare.js';
+import {getTestEnv} from './prepare';
 const env = getTestEnv();
 const Key = env.library.Key;
 const envName = env.envName;
 
 
-import sampleRSA from './rsa_sample.js';
-import sampleEC from './ec_sample.js';
+import sampleRSA from './sampleRsa';
+import sampleEC from './sampleEc';
 import jseu from 'js-encoding-utils';
 
-import chai from 'chai';
+import * as chai from 'chai';
 // const should = chai.should();
 const expect = chai.expect;
 
-function objectSort(obj){
+const objectSort = (obj: any) => {
   const keys = Object.keys(obj).sort();
-  const map = {};
+  const map: {[index: string]: any} = {};
   keys.forEach((key) => { map[key] = obj[key]; });
   return map;
-}
+};
 
 const bits = ['2048', '4096'];
-const curves = ['P-256', 'P-384', 'P-521', 'P-256K'];
+// const curves = ['P-256', 'P-384', 'P-521', 'P-256K'];
 describe(`${envName}: RSA/EC Key conversion from/to JWK test.`, () => {
 
-  let ECKeySet = [];
+  let ECKeySet: any[] = [];
   before(async function (){
     this.timeout(20000);
     ECKeySet = sampleEC.ecKey;//await Promise.all(curves.map(async (crv) => await ec.generateKey(crv)));
@@ -51,14 +51,14 @@ describe(`${envName}: RSA/EC Key conversion from/to JWK test.`, () => {
       ).to.be.true;
 
       const octpemCompact = await keyObj.export('oct', {compact: true, output:'string', outputPublic: true});
-      const ooc = new Key('oct', jseu.encoder.hexStringToArrayBuffer(octpemCompact), {namedCurve: key.publicKey.crv});
+      const ooc = new Key('oct', jseu.encoder.hexStringToArrayBuffer(<string>octpemCompact), {namedCurve: key.publicKey.crv});
       // console.log(getKeyStatus(ooc));
       expect(ooc.isPrivate).to.be.false;
       const oocjwk = await ooc.export('jwk');
 
 
       const octpem = await keyObj.export('oct', {compact: false, output:'string', outputPublic: true}); // export public from private
-      const oo = new Key('oct', jseu.encoder.hexStringToArrayBuffer(octpem), {namedCurve: key.publicKey.crv});
+      const oo = new Key('oct', jseu.encoder.hexStringToArrayBuffer(<string>octpem), {namedCurve: key.publicKey.crv});
       expect(oo.isPrivate).to.be.false;
       const oojwk = await oo.export('jwk');
 
@@ -69,7 +69,7 @@ describe(`${envName}: RSA/EC Key conversion from/to JWK test.`, () => {
 
 
     }));
-    // console.log(array);
+    console.log(array);
     // expect(array.every( (elem) => elem)).to.be.true;
   });
 
@@ -86,6 +86,7 @@ describe(`${envName}: RSA/EC Key conversion from/to JWK test.`, () => {
       ).to.be.true;
 
       const jwk = await key.export('jwk');
+      console.log(jwk);
       status = getKeyStatus(key);
       expect(
         !status.isEncrypted
@@ -105,7 +106,7 @@ describe(`${envName}: RSA/EC Key conversion from/to JWK test.`, () => {
       // console.log(status);
 
       const asis = await key.export('pem');
-      // console.log(asis);
+      console.log(asis);
 
       await key.decrypt('password');
       status = getKeyStatus(key);
@@ -121,7 +122,7 @@ describe(`${envName}: RSA/EC Key conversion from/to JWK test.`, () => {
 
 
     }));
-    // console.log(array);
+    console.log(array);
     // expect( array.every( (a) => a)).to.be.true;
   });
 
@@ -131,13 +132,14 @@ describe(`${envName}: RSA/EC Key conversion from/to JWK test.`, () => {
       const kty = await keyObj.keyType;
       expect(kty === 'EC').to.be.true;
 
-      console.log(jseu.encoder.arrayBufferToHexString(await keyObj.jwkThumbprint));
+      console.log(jseu.encoder.arrayBufferToHexString(<Uint8Array>(await keyObj.jwkThumbprint)));
     }));
+    console.log(array);
   });
 
 });
 
-const getKeyStatus = (k) => ({
+const getKeyStatus = (k: any) => ({
   type: k._type,
   private: k.isPrivate,
   derLength: (k._der) ? k._der.length : 0,

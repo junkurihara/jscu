@@ -1,4 +1,4 @@
-export default {
+const sample: {[index: string]: any} = {
   RSA: {
     PBES1: '-----BEGIN ENCRYPTED PRIVATE KEY-----\n' +
       'MIIE6TAbBgkqhkiG9w0BBQMwDgQIuq8b8/g1edUCAggABIIEyHs38093DaQirJeu\n' +
@@ -80,3 +80,5 @@ export default {
       '-----END ENCRYPTED PRIVATE KEY-----'
   }
 };
+
+export default sample;

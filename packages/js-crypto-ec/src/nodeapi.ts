@@ -21,12 +21,12 @@ export const generateKey = async (namedCurve: NamedCurve, nodeCrypto: any): Prom
   const publicOct = new Uint8Array(ecdh.getPublicKey());
   const privateOct = new Uint8Array(ecdh.getPrivateKey());
 
-  const publicKey = new Key('oct', publicOct, {namedCurve});
+  const publicKey = new Key('oct', publicOct, {namedCurve: <any>namedCurve});
   if (publicKey.isPrivate) throw new Error('NotPublicKeyForECCKeyGenNode');
-  const publicJwk = await publicKey.export('jwk', {outputPublic: true});
-  const privateKey = new Key('oct', privateOct, {namedCurve});
+  const publicJwk = <JsonWebKey>await publicKey.export('jwk', {outputPublic: true});
+  const privateKey = new Key('oct', privateOct, {namedCurve: <any>namedCurve});
   if (!privateKey.isPrivate) throw new Error('NotPrivateKeyForECCKeyGenNode');
-  const privateJwk = await privateKey.export('jwk');
+  const privateJwk = <JsonWebKey>await privateKey.export('jwk');
 
   return {publicKey: publicJwk, privateKey: privateJwk};
 };

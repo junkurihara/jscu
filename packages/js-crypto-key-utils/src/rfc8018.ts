@@ -2,8 +2,8 @@
  * rfc8081
  */
 
-import params, {getAlgorithmFromOidStrict} from './params.js';
-import {PBES2ESParams, PBEParameter, PBES2Params, PBKDF2Params, OneAsymmetricKey, EncryptedPrivateKeyInfo} from './asn1def.js';
+import * as params from './params';
+import {PBES2ESParams, PBEParameter, PBES2Params, PBKDF2Params, OneAsymmetricKey, EncryptedPrivateKeyInfo} from './asn1def';
 import des from 'des.js';
 import BufferMod from 'buffer';
 import asn from 'asn1.js';
@@ -11,6 +11,7 @@ import jseu from 'js-encoding-utils';
 import pbkdf from 'js-crypto-pbkdf';
 import jscaes from 'js-crypto-aes';
 import jscrandom from 'js-crypto-random';
+import {AsnEncryptOptionsWithPassphrase, DER} from './typedef';
 const Buffer = BufferMod.Buffer;
 const BN = asn.bignum;
 
@@ -21,7 +22,10 @@ const BN = asn.bignum;
  * @param {AsnEncryptOptionsWithPassphrase} [options={passphrase: ''}] - Encryption options for ASN.1 private key.
  * @return {Promise<DER>} - Encrypted private key in DER.
  */
-export const encryptEncryptedPrivateKeyInfo = async (binKey, options = {passphrase:''}) => {
+export const encryptEncryptedPrivateKeyInfo = async (
+  binKey: DER,
+  options: AsnEncryptOptionsWithPassphrase = {passphrase:''}
+): Promise<DER> => {
   // default params
   if(typeof options.algorithm === 'undefined') options.algorithm = 'pbes2';
   if(typeof options.iterationCount === 'undefined') options.iterationCount = 2048;
@@ -33,11 +37,11 @@ export const encryptEncryptedPrivateKeyInfo = async (binKey, options = {passphra
     const kdfAlgorithm = 'pbkdf2'; // TODO: currently only pbkdf2 is available
 
     const encryptedPBES2 = await encryptPBES2(binKey, options.passphrase, kdfAlgorithm, options.prf, options.iterationCount, options.cipher);
-    return await encodePBES2(encryptedPBES2);
+    return encodePBES2(encryptedPBES2);
   }
   else {
     const encryptedPBES1 = await encryptPBES1(binKey, options.passphrase, options.algorithm, options.iterationCount);
-    encryptedPBES1.encryptionAlgorithm.algorithm = params.passwordBasedEncryptionSchemes[encryptedPBES1.encryptionAlgorithm.algorithm].oid;
+    encryptedPBES1.encryptionAlgorithm.algorithm = <any>params.passwordBasedEncryptionSchemes[encryptedPBES1.encryptionAlgorithm.algorithm].oid; // work around
     encryptedPBES1.encryptionAlgorithm.parameters = PBEParameter.encode(encryptedPBES1.encryptionAlgorithm.parameters, 'der');
     return EncryptedPrivateKeyInfo.encode(encryptedPBES1, 'der');
   }
@@ -49,12 +53,15 @@ export const encryptEncryptedPrivateKeyInfo = async (binKey, options = {passphra
  * @param {String} passphrase - Passphrase to decyrpt the object.
  * @return {Promise<Object>} - Decrypted object.
  */
-export const decryptEncryptedPrivateKeyInfo = async (epki, passphrase) => {
-  const decoded = {};
+export const decryptEncryptedPrivateKeyInfo = async (
+  epki: {encryptionAlgorithm: any, encryptedData: any},
+  passphrase: string
+) => {
+  const decoded: {[index: string]: any} = {}; // work around
 
   // encryptionAlgorithm.algorithm
   decoded.encryptionAlgorithm = {
-    algorithm: getAlgorithmFromOidStrict(epki.encryptionAlgorithm.algorithm, params.passwordBasedEncryptionSchemes)
+    algorithm: params.getAlgorithmFromOidStrict(epki.encryptionAlgorithm.algorithm, params.passwordBasedEncryptionSchemes)
   };
   if (decoded.encryptionAlgorithm.algorithm === 'pbes2') {
     decoded.encryptionAlgorithm.parameters = decodePBES2(epki.encryptionAlgorithm.parameters);
@@ -67,14 +74,16 @@ export const decryptEncryptedPrivateKeyInfo = async (epki, passphrase) => {
 
   // decrypt
   if(decoded.encryptionAlgorithm.algorithm === 'pbes2') {
-    return await decryptPBES2(decoded, passphrase);
+    return await decryptPBES2(<any>decoded, passphrase); // work around
   }
   else return await decryptPBES1(decoded, passphrase);
 };
 
 //////////////////////////////
-const encodePBES2 = (decoded) => {
-  const epki = { encryptionAlgorithm: {} };
+const encodePBES2 = (
+  decoded: {encryptionAlgorithm: any, encryptedData: any} // work around
+) => {
+  const epki: {[index: string]: any} = { encryptionAlgorithm: {} }; // work around
 
   // algorithm
   epki.encryptionAlgorithm.algorithm = params.passwordBasedEncryptionSchemes[decoded.encryptionAlgorithm.algorithm].oid;
@@ -102,11 +111,11 @@ const encodePBES2 = (decoded) => {
   return EncryptedPrivateKeyInfo.encode(epki, 'der');
 };
 
-const decodePBES2 = (rawParams) => {
+const decodePBES2 = (rawParams: any) => { // work around
   const pbes2Params = PBES2Params.decode(rawParams, 'der');
 
   // keyDerivationFunc
-  const kdfAlgorithm = getAlgorithmFromOidStrict(pbes2Params.keyDerivationFunc.algorithm, params.keyDerivationFunctions);
+  const kdfAlgorithm = params.getAlgorithmFromOidStrict(pbes2Params.keyDerivationFunc.algorithm, params.keyDerivationFunctions);
 
   let iterationCount;
   let salt;
@@ -114,7 +123,7 @@ const decodePBES2 = (rawParams) => {
   if (kdfAlgorithm === 'pbkdf2') {
     const pbkdf2Params = PBKDF2Params.decode(pbes2Params.keyDerivationFunc.parameters, 'der');
     prf = {
-      algorithm: getAlgorithmFromOidStrict(pbkdf2Params.prf.algorithm, params.pbkdf2Prfs),
+      algorithm: params.getAlgorithmFromOidStrict(pbkdf2Params.prf.algorithm, params.pbkdf2Prfs),
       parameters: pbkdf2Params.prf.parameters
     };
     iterationCount = pbkdf2Params.iterationCount;
@@ -122,7 +131,7 @@ const decodePBES2 = (rawParams) => {
   } else throw new Error('UnsupportedKDF');
 
   //encryptionScheme
-  const encryptionScheme = getAlgorithmFromOidStrict(pbes2Params.encryptionScheme.algorithm, params.encryptionSchemes);
+  const encryptionScheme = params.getAlgorithmFromOidStrict(pbes2Params.encryptionScheme.algorithm, params.encryptionSchemes);
   let encryptionParams;
   if(Object.keys(PBES2ESParams).indexOf(encryptionScheme) >= 0){
     encryptionParams = PBES2ESParams[encryptionScheme].decode(pbes2Params.encryptionScheme.parameters, 'der');
@@ -143,7 +152,14 @@ const decodePBES2 = (rawParams) => {
 
 //////////////////////
 // PBES2 RFC8018 Section 6.2.1
-const encryptPBES2 = async (binKey, passphrase, kdfAlgorithm, prf, iterationCount, cipher) => {
+const encryptPBES2 = async (
+  binKey: any,
+  passphrase: string,
+  kdfAlgorithm: string,
+  prf: string,
+  iterationCount: number,
+  cipher: string
+) => {
   // kdf
   const pBuffer = jseu.encoder.stringToArrayBuffer(passphrase);
   const salt = await jscrandom.getRandomBytes(
@@ -153,7 +169,7 @@ const encryptPBES2 = async (binKey, passphrase, kdfAlgorithm, prf, iterationCoun
 
   let key;
   if (kdfAlgorithm === 'pbkdf2') {
-    key = await pbkdf.pbkdf2(pBuffer, salt, iterationCount, keyLength, params.pbkdf2Prfs[prf].hash);
+    key = await pbkdf.pbkdf2(pBuffer, salt, iterationCount, keyLength, <any>params.pbkdf2Prfs[prf].hash); // work around
   } else throw new Error('UnsupportedKDF');
 
   // encrypt
@@ -195,7 +211,10 @@ const encryptPBES2 = async (binKey, passphrase, kdfAlgorithm, prf, iterationCoun
 
 //////////////////////////////
 // PBES2 RFC8018 Section 6.2.2
-const decryptPBES2 = async (decoded, passphrase) => {
+const decryptPBES2 = async (
+  decoded: {encryptionAlgorithm: any, encryptedData: any},
+  passphrase: string
+) => {
   const kdf = decoded.encryptionAlgorithm.parameters.keyDerivationFunc;
   const eS = decoded.encryptionAlgorithm.parameters.encryptionScheme;
 
@@ -208,7 +227,7 @@ const decryptPBES2 = async (decoded, passphrase) => {
     const salt = new Uint8Array(kdf.parameters.salt.value);
     const iterationCount = kdf.parameters.iterationCount.toNumber();
     const prf = kdf.parameters.prf.algorithm;
-    key = await pbkdf.pbkdf2(pBuffer, salt, iterationCount, keyLength, params.pbkdf2Prfs[prf].hash);
+    key = await pbkdf.pbkdf2(pBuffer, salt, iterationCount, keyLength, <any>params.pbkdf2Prfs[prf].hash);
   }
   else throw new Error('UnsupportedKDF');
 
@@ -233,12 +252,17 @@ const decryptPBES2 = async (decoded, passphrase) => {
 
 //////////////////////////////
 // PBES1 RFC8018 Section 6.1.1
-const encryptPBES1 = async (binKey, passphrase, algorithm, iterationCount) => {
+const encryptPBES1 = async (
+  binKey: any,
+  passphrase: string,
+  algorithm: string,
+  iterationCount: number
+) => {
   // pbkdf1
   const pBuffer = jseu.encoder.stringToArrayBuffer(passphrase);
   const salt = await jscrandom.getRandomBytes(8); // defined as 8 octet
   const hash = params.passwordBasedEncryptionSchemes[algorithm].hash;
-  const keyIv = await pbkdf.pbkdf1(pBuffer, salt, iterationCount, 16, hash);
+  const keyIv = await pbkdf.pbkdf1(pBuffer, salt, iterationCount, 16, <any>hash);
   const key = keyIv.slice(0, 8);
   const iv = keyIv.slice(8, 16);
 
@@ -267,13 +291,16 @@ const encryptPBES1 = async (binKey, passphrase, algorithm, iterationCount) => {
 
 //////////////////////////////
 // PBES1 RFC8018 Section 6.1.2
-const decryptPBES1 = async (decoded, passphrase) => {
+const decryptPBES1 = async (
+  decoded: any,
+  passphrase: string
+) => {
   // pbkdf1
   const pBuffer = jseu.encoder.stringToArrayBuffer(passphrase);
   const salt = new Uint8Array(decoded.encryptionAlgorithm.parameters.salt);
   const hash = params.passwordBasedEncryptionSchemes[decoded.encryptionAlgorithm.algorithm].hash;
   const iterationCount = decoded.encryptionAlgorithm.parameters.iterationCount.toNumber();
-  const keyIv = await pbkdf.pbkdf1(pBuffer, salt, iterationCount, 16, hash);
+  const keyIv = await pbkdf.pbkdf1(pBuffer, salt, iterationCount, 16, <any>hash);
   const key = keyIv.slice(0, 8);
   const iv = keyIv.slice(8, 16);
 

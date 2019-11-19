@@ -6,16 +6,20 @@ import asn from 'asn1.js';
 import jseu from 'js-encoding-utils';
 import BufferMod from 'buffer';
 const Buffer = BufferMod.Buffer;
-import params from './params.js';
+import * as params from './params';
 import {appendLeadingZeros, pruneLeadingZeros} from './util';
+import {DecodedAsn1Key, PublicOrPrivate} from './typedef';
 
 /**
  * Encode RSA JWK key to ASN.1 DER or PEM of SPKI/OneAsymmetricKey.
  * @param {JsonWebKey} jwk - A key object in JWK format to be encoded.
  * @param {PublicOrPrivate} type - 'public' or 'private'.
- * @returns {Object} - Parsed object of ASN.1 encoded key object.
+ * @returns {DecodedAsn1Key} - Parsed object of ASN.1 encoded key object.
  */
-export const fromJwk = (jwk, type) => {
+export const fromJwk = (
+  jwk: JsonWebKey,
+  type: PublicOrPrivate
+): DecodedAsn1Key => {
 
   const publicKeyAlgorithmOid = params.publicKeyAlgorithms['RSA'].oid;
   // Parameters is always null Ox0500 in ASN.1 as shown in the Section 2.3.1 https://tools.ietf.org/html/rfc3279
@@ -24,14 +28,14 @@ export const fromJwk = (jwk, type) => {
 
   // to append leading zeros (pruned when making JWK) in order to make binary of intended bit length
   // https://tools.ietf.org/html/rfc7518#section-6.3
-  const modulusBytes = jseu.encoder.decodeBase64Url(jwk.n);
+  const modulusBytes = <Uint8Array>jseu.encoder.decodeBase64Url(<string>jwk.n);
   const nLen = modulusBytes.length;
   const modulusLength = (nLen % 128 === 0) ? nLen : nLen + (128 - (nLen % 128));
 
   const modulus = new asn.bignum(appendLeadingZeros(modulusBytes, modulusLength)); // JWA RFC
-  const publicExponent = new asn.bignum(jseu.encoder.decodeBase64Url(jwk.e));
+  const publicExponent = new asn.bignum(jseu.encoder.decodeBase64Url(<string>jwk.e));
 
-  const decoded = {};
+  const decoded: DecodedAsn1Key = {};
   if(type === 'public'){ // SPKI
     decoded.subjectPublicKey = {
       unused: 0,
@@ -46,16 +50,16 @@ export const fromJwk = (jwk, type) => {
       version: 0,
       modulus,
       publicExponent,
-      privateExponent: new asn.bignum( appendLeadingZeros(jseu.encoder.decodeBase64Url(jwk.d), modulusLength)),
-      prime1: new asn.bignum( appendLeadingZeros(jseu.encoder.decodeBase64Url(jwk.p), modulusLength)),
-      prime2: new asn.bignum( appendLeadingZeros(jseu.encoder.decodeBase64Url(jwk.q), modulusLength)),
-      exponent1: new asn.bignum( appendLeadingZeros(jseu.encoder.decodeBase64Url(jwk.dp), modulusLength)),
-      exponent2: new asn.bignum( appendLeadingZeros(jseu.encoder.decodeBase64Url(jwk.dq), modulusLength)),
-      coefficient: new asn.bignum( appendLeadingZeros(jseu.encoder.decodeBase64Url(jwk.qi), modulusLength))
+      privateExponent: new asn.bignum( appendLeadingZeros(<Uint8Array>jseu.encoder.decodeBase64Url(<string>jwk.d), modulusLength)),
+      prime1: new asn.bignum( appendLeadingZeros(<Uint8Array>jseu.encoder.decodeBase64Url(<string>jwk.p), modulusLength)),
+      prime2: new asn.bignum( appendLeadingZeros(<Uint8Array>jseu.encoder.decodeBase64Url(<string>jwk.q), modulusLength)),
+      exponent1: new asn.bignum( appendLeadingZeros(<Uint8Array>jseu.encoder.decodeBase64Url(<string>jwk.dp), modulusLength)),
+      exponent2: new asn.bignum( appendLeadingZeros(<Uint8Array>jseu.encoder.decodeBase64Url(<string>jwk.dq), modulusLength)),
+      coefficient: new asn.bignum( appendLeadingZeros(<Uint8Array>jseu.encoder.decodeBase64Url(<string>jwk.qi), modulusLength))
     }, 'der');
   }
   return decoded;
-}
+};
 
 /**
  * Convert RSA spki/pkcs8 public/private keys to JWK
@@ -63,7 +67,10 @@ export const fromJwk = (jwk, type) => {
  * @param {PublicOrPrivate} type - 'public' or 'private'
  * @return {JsonWebKey} - Encoded RSA key object in JWK format.
  */
-export const toJwk = (decoded, type) => {
+export const toJwk = (
+  decoded: DecodedAsn1Key,
+  type: PublicOrPrivate
+): JsonWebKey => {
 
   if (type === 'public'){ // SPKI
     // algorithm.algorithm.parameters is always null Ox0500 in ASN.1
@@ -89,14 +96,14 @@ export const toJwk = (decoded, type) => {
       e: jseu.encoder.encodeBase64Url(pruneLeadingZeros(publicExponent))
     };
   }
-  else if (type === 'private'){ // PKCS8
+  else { // type === 'private', PKCS8
     // privateKeyAlgorithm.algorithm.parameters is always null Ox0500 in ASN.1
     // as shown in the Section 2.3.1 https://tools.ietf.org/html/rfc3279
 
     // overwrite nested binary object as parsed object
     decoded.privateKey = RSAPrivateKey.decode(decoded.privateKey, 'der');
 
-    const privateKeyElems = {};
+    const privateKeyElems: {[index: string]: any} = {}; // work around
     privateKeyElems.modulus = decoded.privateKey.modulus;
 
 
@@ -130,41 +137,60 @@ export const toJwk = (decoded, type) => {
       qi: jseu.encoder.encodeBase64Url(pruneLeadingZeros(privateKeyElems.coefficient))
     };
   }
-}
+};
 
 
 ///////////
 // https://tools.ietf.org/html/rfc3447
 const RSAPublicKey = asn.define('RSAPublicKey', function() {
+  // @ts-ignore
   this.seq().obj(
+    // @ts-ignore
     this.key('modulus').int(), // n
+    // @ts-ignore
     this.key('publicExponent').int() // e
   );
 });
 
 const RSAPrivateKey = asn.define('RSAPrivateKey', function(){
+  // @ts-ignore
   this.seq().obj(
+    // @ts-ignore
     this.key('version').int(), // 0
+    // @ts-ignore
     this.key('modulus').int(), // n
+    // @ts-ignore
     this.key('publicExponent').int(), // e
+    // @ts-ignore
     this.key('privateExponent').int(), // d
+    // @ts-ignore
     this.key('prime1').int(), // p
+    // @ts-ignore
     this.key('prime2').int(), // q
+    // @ts-ignore
     this.key('exponent1').int(), // d mod (p-1)
+    // @ts-ignore
     this.key('exponent2').int(), // d mod (q-1)
+    // @ts-ignore
     this.key('coefficient').int(), // (inverse of q) mod p
+    // @ts-ignore
     this.key('otherPrimeInfos').optional().use(OtherPrimeInfos)
   );
 });
 
 const OtherPrimeInfos = asn.define('OtherPrimeInfos', function(){
+  // @ts-ignore
   this.seqof(OtherPrimeInfo);
 });
 
 const OtherPrimeInfo = asn.define('OtherPrimeInfo', function(){
+  // @ts-ignore
   this.seq().obj(
+    // @ts-ignore
     this.key('prime').int(),
+    // @ts-ignore
     this.key('exponent').int(),
+    // @ts-ignore
     this.key('coefficient').int()
   );
 });

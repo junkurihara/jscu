@@ -1,4 +1,4 @@
-export default {
+const params : {[index: string]: any} = {
   '2048': {
     publicKey:{
       jwk: {
@@ -220,3 +220,5 @@ export default {
     }
   }
 };
+
+export default params;
