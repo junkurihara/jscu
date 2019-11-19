@@ -2,7 +2,11 @@
  * index.js
  */
 
-import {getRandomBytes, getRandomAsciiString, getRandomString, getRandomSampledString} from './random';
+import * as random from './random';
+
+export const getRandomBytes = random.getRandomBytes;
+export const getRandomAsciiString = random.getRandomAsciiString;
+export const getRandomString = random.getRandomString;
+export const getRandomSampledString = random.getRandomSampledString;
 
 export default {getRandomBytes, getRandomAsciiString, getRandomString, getRandomSampledString};
-export {getRandomBytes, getRandomAsciiString, getRandomString, getRandomSampledString};
