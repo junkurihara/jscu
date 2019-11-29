@@ -18,23 +18,21 @@ import jsHash from 'hash.js';
  *  or UnsupportedEnvironment, i.e., a case where even pure js implementation won't work.
  */
 export const compute = async (msg: Uint8Array, hash: HashTypes = 'SHA-256') : Promise<Uint8Array> => {
-  const webCrypto = util.getWebCrypto();
-  const nodeCrypto = util.getNodeCrypto();
-  const msCrypto = util.getMsCrypto();
+  const env = util.getCrypto();
 
   let msgHash;
   let errMsg;
   let native = true;
 
   try{
-    if (typeof webCrypto !== 'undefined' && typeof webCrypto.digest === 'function' && typeof msCrypto === 'undefined') { // for modern browsers
-      msgHash = await webCrypto.digest(hash, msg);
+    if (env.name === 'webCrypto' && typeof env.crypto.digest === 'function') { // for modern browsers
+      msgHash = await env.crypto.digest(hash, msg);
     }
-    else if (typeof nodeCrypto !== 'undefined' ) { // for node
-      msgHash = nodedigest(hash, msg, nodeCrypto);
+    else if (env.name === 'nodeCrypto') { // for node
+      msgHash = nodedigest(hash, msg, env.crypto);
     }
-    else if (typeof msCrypto !== 'undefined' && typeof msCrypto.digest === 'function') { // for legacy ie 11
-      msgHash = await msdigest(hash, msg, msCrypto);
+    else if (env.name === 'msCrypto' && typeof env.crypto.digest === 'function') { // for legacy ie 11
+      msgHash = await msdigest(hash, msg, env.crypto);
     }
     else native = false;
   } catch(e) {
@@ -43,11 +41,9 @@ export const compute = async (msg: Uint8Array, hash: HashTypes = 'SHA-256') : Pr
   }
 
   if (!native){
-    try {
-      msgHash = purejs(hash, msg);
-    }
+    try { msgHash = purejs(hash, msg); }
     catch(e){
-      errMsg = `${errMsg} => ${e.message}`;
+      errMsg = `${(typeof errMsg === 'undefined') ? '': errMsg} => ${e.message}`;
       throw new Error(`UnsupportedEnvironment: ${errMsg}`);
     }
   }
