@@ -52,14 +52,14 @@ export const encrypt = async (
   assertAlgorithms({name, iv, tagLength});
   if(params.ciphers[name].tagLength && !tagLength) tagLength = params.ciphers[name].tagLength;
 
-  const webCrypto = await util.getWebCryptoAll(); // web crypto api
-  const nodeCrypto = await util.getNodeCrypto(); // node crypto
+  const env = util.getCrypto();
 
-  if (typeof webCrypto !== 'undefined' && typeof webCrypto.importKey === 'function' && typeof webCrypto.encrypt === 'function') {// for web API including IE...
-    return webapi.encrypt(msg, key, {name, iv, additionalData, tagLength}, webCrypto);
+  if (env.name === 'webCrypto' || env.name === 'msCrypto') {// for web API including IE...
+    if (typeof env.crypto.importKey !== 'function' || typeof env.crypto.encrypt !== 'function') throw new Error('UnsupportedWebCrypto');
+    return webapi.encrypt(msg, key, {name, iv, additionalData, tagLength}, env.crypto);
   }
-  else if (typeof nodeCrypto !== 'undefined' ) { // for node
-    return nodeapi.encrypt(msg, key, {name, iv, additionalData, tagLength}, nodeCrypto);
+  else if (env.name === 'nodeCrypto') { // for node
+    return nodeapi.encrypt(msg, key, {name, iv, additionalData, tagLength}, env.crypto);
 
   } else throw new Error('UnsupportedEnvironment'); // TODO:fallback to native implementation
 };
@@ -85,14 +85,14 @@ export const decrypt = async (
   assertAlgorithms({name, iv, tagLength});
   if(params.ciphers[name].tagLength && !tagLength) tagLength = params.ciphers[name].tagLength;
 
-  const webCrypto = await util.getWebCryptoAll(); // web crypto api
-  const nodeCrypto = await util.getNodeCrypto(); // node crypto
+  const env = util.getCrypto();
 
-  if (typeof webCrypto !== 'undefined' && typeof webCrypto.importKey === 'function' && typeof webCrypto.encrypt === 'function') {
-    return webapi.decrypt(data, key, {name, iv, additionalData, tagLength}, webCrypto);
+  if (env.name === 'webCrypto' || env.name === 'msCrypto') {// for web API including IE...
+    if (typeof env.crypto.importKey !== 'function' || typeof env.crypto.decrypt !== 'function') throw new Error('UnsupportedWebCrypto');
+    return webapi.decrypt(data, key, {name, iv, additionalData, tagLength}, env.crypto);
   }
-  else if (typeof nodeCrypto !== 'undefined'){
-    return nodeapi.decrypt(data, key, {name, iv, additionalData, tagLength}, nodeCrypto);
+  else if (env.name === 'nodeCrypto') { // for node
+    return nodeapi.decrypt(data, key, {name, iv, additionalData, tagLength}, env.crypto);
   } else throw new Error('UnsupportedEnvironment');
 };
 
@@ -112,16 +112,16 @@ export const wrapKey = async (
   // assertion
   if(keyToBeWrapped.length % 8 > 0) throw new Error('WrappedKeyMustBeMultipleOf8');
 
-  const webCrypto = await util.getWebCryptoAll(); // web crypto api
-  const nodeCrypto = await util.getNodeCrypto(); // node crypto
+  const env = util.getCrypto();
 
   const iv = <Uint8Array>(params.wrapKeys['AES-KW'].defaultIv);
 
-  if (typeof webCrypto !== 'undefined' && typeof webCrypto.importKey === 'function' && typeof webCrypto.wrapKey === 'function') {// for web API including IE...
-    return webapi.wrapKey(keyToBeWrapped, wrappingKey, {name, iv}, webCrypto);
+  if (env.name === 'webCrypto' || env.name === 'msCrypto') {// for web API including IE...
+    if (typeof env.crypto.importKey !== 'function' || typeof env.crypto.wrapKey !== 'function') throw new Error('UnsupportedWebCrypto');
+    return webapi.wrapKey(keyToBeWrapped, wrappingKey, {name, iv}, env.crypto);
   }
-  else if (typeof nodeCrypto !== 'undefined' ) { // for node
-    return nodeapi.wrapKey(keyToBeWrapped, wrappingKey, {name, iv}, nodeCrypto);
+  else if (env.name === 'nodeCrypto') { // for node
+    return nodeapi.wrapKey(keyToBeWrapped, wrappingKey, {name, iv}, env.crypto);
   } else {
     throw new Error('UnsupportedEnvironment'); // TODO:fallback to native implementation
   }
@@ -139,16 +139,16 @@ export const unwrapKey = async (
   wrappingKey: Uint8Array,
   {name}: {name: 'AES-KW'}
 ) => {
-  const webCrypto = await util.getWebCryptoAll(); // web crypto api
-  const nodeCrypto = await util.getNodeCrypto(); // node crypto
+  const env = util.getCrypto();
 
   const iv = <Uint8Array>(params.wrapKeys['AES-KW'].defaultIv);
 
-  if (typeof webCrypto !== 'undefined' && typeof webCrypto.importKey === 'function' && typeof webCrypto.wrapKey === 'function') {// for web API including IE...
-    return webapi.unwrapKey(wrappedKey, wrappingKey, {name, iv}, webCrypto);
+  if (env.name === 'webCrypto' || env.name === 'msCrypto') {// for web API including IE...
+    if (typeof env.crypto.importKey !== 'function' || typeof env.crypto.unwrapKey !== 'function') throw new Error('UnsupportedWebCrypto');
+    return webapi.unwrapKey(wrappedKey, wrappingKey, {name, iv}, env.crypto);
   }
-  else if (typeof nodeCrypto !== 'undefined' ) { // for node
-    return nodeapi.unwrapKey(wrappedKey, wrappingKey, {name, iv}, nodeCrypto);
+  else if (env.name === 'nodeCrypto') { // for node
+    return nodeapi.unwrapKey(wrappedKey, wrappingKey, {name, iv}, env.crypto);
   } else {
     throw new Error('UnsupportedEnvironment'); // TODO:fallback to native implementation
   }
