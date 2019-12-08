@@ -10,7 +10,7 @@ const BN = asn.bignum;
 import rfc5280 from 'asn1.js-rfc5280';
 import BufferMod from 'buffer';
 import {DER, HashTypes, RsaPssOptions, SignatureType} from './typedef';
-const Buffer = BufferMod.Buffer;
+const BufferR = BufferMod.Buffer;
 
 /**
  * Sign TBSCertificate under the issuer's RSA private key in JWK format.
@@ -33,7 +33,7 @@ export const getSignature = async (
   else {
     signature = await rsa.sign( encodedTbsCertificate, privateJwk, params.signatureAlgorithms[algorithm].hash, { name: 'RSASSA-PKCS1-v1_5' });
   }
-  return {unused: 0, data: Buffer.from(signature)};
+  return {unused: 0, data: BufferR.from(signature)};
 };
 
 /**
@@ -44,18 +44,18 @@ export const getSignature = async (
 export const encodeRsassaPssParams = (
   options: RsaPssOptions
 ): DER => {
-  if (options.hash === 'SHA-1' && options.saltLength === 20 && options.explicit === false) return Buffer.from([0x30, 0x00]);
+  if (options.hash === 'SHA-1' && options.saltLength === 20 && options.explicit === false) return BufferR.from([0x30, 0x00]);
   else {
     const pssParams = {
       hashAlgorithm: {
         algorithm: params.hashes[<HashTypes>options.hash].oid,
-        parameters: Buffer.from(params.ans1null)
+        parameters: BufferR.from(params.ans1null)
       },
       maskGenAlgorithm: {
         algorithm: params.maskGeneratorFunctions.MGF1.oid, // only MGF1 is available
         parameters: rfc5280.AlgorithmIdentifier.encode({
           algorithm: params.hashes[<HashTypes>options.hash].oid,
-          parameters: Buffer.from(params.ans1null)
+          parameters: BufferR.from(params.ans1null)
         }, 'der')
       },
       saltLength: new BN(options.saltLength),
