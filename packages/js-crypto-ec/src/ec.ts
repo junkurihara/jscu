@@ -15,16 +15,15 @@ import {JsonWebKeyPair, CurveTypes, HashTypes, SignatureFormat} from './typedef'
  * @throws {Error} - Throws if UnsupportedEnvironment, i.e., neither WebCrypto, NodeCrypto, nor PureJS codes works.
  */
 export const generateKey = async (namedCurve: CurveTypes ='P-256'): Promise<JsonWebKeyPair> => {
-  const webCrypto = util.getWebCrypto(); // web crypto api
-  const nodeCrypto = util.getNodeCrypto(); // implementation on node.js
+  const env = util.getCrypto();
 
   let pure: boolean = false;
   let keyPair: JsonWebKeyPair;
   try {
-    if (typeof webCrypto !== 'undefined' && typeof webCrypto.generateKey === 'function' && typeof webCrypto.exportKey === 'function') { // for web API
-      keyPair = await webapi.generateKey(namedCurve, webCrypto);
-    } else if (typeof nodeCrypto !== 'undefined') { // for node
-      keyPair = await nodeapi.generateKey(namedCurve, nodeCrypto);
+    if (env.name === 'webCrypto' && typeof env.crypto.generateKey === 'function' && typeof env.crypto.exportKey === 'function') { // for web API
+      keyPair = await webapi.generateKey(namedCurve, env.crypto);
+    } else if (env.name === 'nodeCrypto') { // for node
+      keyPair = await nodeapi.generateKey(namedCurve, env.crypto);
     } else {
       pure = true;
       keyPair = await purejs.generateKey(namedCurve);
@@ -59,16 +58,15 @@ export const sign = async (
   hash: HashTypes = 'SHA-256',
   signatureFormat: SignatureFormat ='raw'
 ): Promise<Uint8Array> => {
-  const webCrypto = util.getWebCrypto(); // web crypto api
-  const nodeCrypto = util.getNodeCrypto(); // implementation on node.js
+  const env = util.getCrypto();
 
   let pure: boolean = false;
   let signature: Uint8Array;
   try {
-    if (typeof webCrypto !== 'undefined' && typeof webCrypto.importKey === 'function' && typeof webCrypto.sign === 'function') { // for web API
-      signature = await webapi.sign(msg, privateJwk, hash, signatureFormat, webCrypto);
-    } else if (typeof nodeCrypto !== 'undefined') { // for node
-      signature = await nodeapi.sign(msg, privateJwk, hash, signatureFormat, nodeCrypto);
+    if (env.name === 'webCrypto' && typeof env.crypto.importKey === 'function' && typeof env.crypto.sign === 'function') { // for web API
+      signature = await webapi.sign(msg, privateJwk, hash, signatureFormat, env.crypto);
+    } else if (env.name === 'nodeCrypto') { // for node
+      signature = await nodeapi.sign(msg, privateJwk, hash, signatureFormat, env.crypto);
     } else {
       pure = true;
       signature = await purejs.sign(msg, privateJwk, hash, signatureFormat);
@@ -105,16 +103,15 @@ export const verify = async (
   hash: HashTypes = 'SHA-256',
   signatureFormat: SignatureFormat='raw'
 ): Promise<boolean> => {
-  const webCrypto = util.getWebCrypto(); // web crypto api
-  const nodeCrypto = util.getNodeCrypto(); // implementation on node.js
+  const env = util.getCrypto();
 
   let pure: boolean = false;
   let valid: boolean;
   try {
-    if (typeof webCrypto !== 'undefined' && typeof webCrypto.importKey === 'function' && typeof webCrypto.sign === 'function') { // for web API
-      valid = await webapi.verify(msg, signature, publicJwk, hash, signatureFormat, webCrypto);
-    } else if (typeof nodeCrypto !== 'undefined') { // for node
-      valid = await nodeapi.verify(msg, signature, publicJwk, hash, signatureFormat, nodeCrypto);
+    if (env.name === 'webCrypto' && typeof env.crypto.importKey === 'function' && typeof env.crypto.sign === 'function') { // for web API
+      valid = await webapi.verify(msg, signature, publicJwk, hash, signatureFormat, env.crypto);
+    } else if (env.name === 'nodeCrypto') { // for node
+      valid = await nodeapi.verify(msg, signature, publicJwk, hash, signatureFormat, env.crypto);
     } else {
       pure = true;
       valid = await purejs.verify(msg, signature, publicJwk, hash, signatureFormat);
@@ -145,17 +142,15 @@ export const verify = async (
 export const deriveSecret = async (publicJwk: JsonWebKey, privateJwk: JsonWebKey): Promise<Uint8Array> => {
   // assertion
   if(publicJwk.crv !== privateJwk.crv) throw new Error('UnmatchedCurveName');
-
-  const webCrypto = util.getWebCrypto(); // web crypto api
-  const nodeCrypto = util.getNodeCrypto(); // implementation on node.js
+  const env = util.getCrypto();
 
   let pure: boolean = false;
   let secret: Uint8Array;
   try {
-    if (typeof webCrypto !== 'undefined' && typeof webCrypto.importKey === 'function' && typeof webCrypto.sign === 'function') { // for web API
-      secret = await webapi.deriveSecret(publicJwk, privateJwk, webCrypto);
-    } else if (typeof nodeCrypto !== 'undefined') { // for node
-      secret = nodeapi.deriveSecret(publicJwk, privateJwk, nodeCrypto);
+    if (env.name === 'webCrypto' && typeof env.crypto.importKey === 'function' && typeof env.crypto.deriveBits === 'function') { // for web API
+      secret = await webapi.deriveSecret(publicJwk, privateJwk, env.crypto);
+    } else if (env.name === 'nodeCrypto') { // for node
+      secret = nodeapi.deriveSecret(publicJwk, privateJwk, env.crypto);
     } else {
       pure = true;
       secret = await purejs.deriveSecret(publicJwk, privateJwk);

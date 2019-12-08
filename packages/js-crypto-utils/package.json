@@ -1,6 +1,6 @@
 {
   "name": "js-crypto-utils",
-  "version": "0.18.1",
+  "version": "0.18.2",
   "description": "JavaScript cryptographic utilities for OpenSSL-WebCrypto compatibility including PEM/X509-JWK converter.",
   "main": "dist/index.js",
   "scripts": {
@@ -41,17 +41,17 @@
     "openssl"
   ],
   "dependencies": {
-    "js-crypto-aes": "^0.7.1",
-    "js-crypto-ec": "^0.6.1",
-    "js-crypto-hash": "^0.6.1",
-    "js-crypto-hkdf": "^0.7.1",
-    "js-crypto-hmac": "^0.6.1",
-    "js-crypto-key-utils": "^0.7.1",
-    "js-crypto-pbkdf": "^0.5.1",
-    "js-crypto-random": "^0.4.1",
-    "js-crypto-rsa": "^0.6.1",
+    "js-crypto-aes": "^0.7.2",
+    "js-crypto-ec": "^0.6.2",
+    "js-crypto-hash": "^0.6.2",
+    "js-crypto-hkdf": "^0.7.2",
+    "js-crypto-hmac": "^0.6.2",
+    "js-crypto-key-utils": "^0.7.2",
+    "js-crypto-pbkdf": "^0.5.2",
+    "js-crypto-random": "^0.4.2",
+    "js-crypto-rsa": "^0.6.2",
     "js-encoding-utils": "0.5.6",
-    "js-x509-utils": "^0.5.1",
+    "js-x509-utils": "^0.5.2",
     "lodash.clonedeep": "~4.5.0"
   },
   "devDependencies": {

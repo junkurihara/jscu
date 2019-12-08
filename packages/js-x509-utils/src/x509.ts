@@ -13,7 +13,7 @@ import {Key} from 'js-crypto-key-utils';
 
 import BufferMod from 'buffer';
 import {AsnFormat, X509EncodingOptions, DER, PEM, SignatureType} from './typedef';
-const Buffer = BufferMod.Buffer;
+const BufferR = BufferMod.Buffer;
 
 
 /**
@@ -58,7 +58,7 @@ export const fromJwk = async (
   const signature: {algorithm: number[], parameters?: DER} = { algorithm: params.signatureAlgorithms[options.signature].oid };
   if (options.signature === 'rsassaPss') {
     signature.parameters = rsa.encodeRsassaPssParams(options.pssParams);
-  } else signature.parameters = Buffer.from(params.ans1null);
+  } else signature.parameters = BufferR.from(params.ans1null);
 
   const issuer = {type: 'rdnSequence', value: setRDNSequence(options.issuer)};
 
@@ -71,7 +71,7 @@ export const fromJwk = async (
   const subject = {type: 'rdnSequence', value: setRDNSequence(options.subject)};
 
   const publicObj = new Key('jwk', publicJwk);
-  const spkiDer = Buffer.from(<Uint8Array>await publicObj.export('der', {compact: false, outputPublic: true})); // {compact: false} is active only for ecc keys
+  const spkiDer = BufferR.from(<Uint8Array>await publicObj.export('der', {compact: false, outputPublic: true})); // {compact: false} is active only for ecc keys
   const subjectPublicKeyInfo = rfc5280.SubjectPublicKeyInfo.decode(spkiDer, 'der');
 
   // elements of Certificate
@@ -117,7 +117,7 @@ export const toJwk = async (
   else if (format === 'der') x509bin = certX509;
   else throw new Error('InvalidFormatSpecification');
 
-  const binKeyBuffer = Buffer.from(<DER>x509bin); // This must be Buffer object to get decoded;
+  const binKeyBuffer = BufferR.from(<DER>x509bin); // This must be Buffer object to get decoded;
 
   const decoded = rfc5280.Certificate.decode(binKeyBuffer, 'der'); // decode binary x509-formatted public key to parsed object
   const binSpki = rfc5280.SubjectPublicKeyInfo.encode(decoded.tbsCertificate.subjectPublicKeyInfo, 'der');
@@ -143,7 +143,7 @@ export const parse = (
   else if (format === 'der') x509bin = certX509;
   else throw new Error('InvalidFormatSpecification');
 
-  const binKeyBuffer = Buffer.from(<DER>x509bin); // This must be Buffer object to get decoded;
+  const binKeyBuffer = BufferR.from(<DER>x509bin); // This must be Buffer object to get decoded;
 
   const decoded = rfc5280.Certificate.decode(binKeyBuffer, 'der'); // decode binary x509-formatted public key to parsed object
   const sigOid = decoded.signatureAlgorithm.algorithm;

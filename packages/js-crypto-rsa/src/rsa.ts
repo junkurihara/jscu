@@ -23,16 +23,15 @@ export const generateKey = async (
   modulusLength: ModulusLength = 2048,
   publicExponent: Uint8Array = new Uint8Array([0x01, 0x00, 0x01])
 ): Promise<JsonWebKeyPair> => {
-  const webCrypto = util.getWebCryptoAll(); // web crypto api
-  const nodeCrypto = util.getNodeCrypto(); // implementation on node.js
+  const env = util.getCrypto();
 
   let pure: boolean = false;
   let keyPair: JsonWebKeyPair;
   try {
-    if (typeof webCrypto !== 'undefined' && typeof webCrypto.generateKey === 'function' && typeof webCrypto.exportKey === 'function') { // for web API
-      keyPair = await webapi.generateKey(modulusLength, publicExponent, webCrypto);
-    } else if (typeof nodeCrypto !== 'undefined') { // for node
-      keyPair = await nodeapi.generateKey(modulusLength, publicExponent, nodeCrypto);
+    if (env.name === 'webCrypto' && typeof env.crypto.generateKey === 'function' && typeof env.crypto.exportKey === 'function') { // for web API
+      keyPair = await webapi.generateKey(modulusLength, publicExponent, env.crypto);
+    } else if (env.name === 'nodeCrypto') { // for node
+      keyPair = await nodeapi.generateKey(modulusLength, publicExponent, env.crypto);
     } else {
       pure = true;
       throw new Error('UnsupportedPureJsEnvironment');
@@ -69,17 +68,16 @@ export const sign = async (
     );
   }
 
-  const webCrypto = util.getWebCryptoAll(); // web crypto api
-  const nodeCrypto = util.getNodeCrypto(); // implementation on node.js
+  const env = util.getCrypto();
 
 
   let pure: boolean = false;
   let signature: Uint8Array;
   try {
-    if (typeof webCrypto !== 'undefined' && typeof webCrypto.sign === 'function' && typeof webCrypto.importKey === 'function') { // for web API
-      signature = await webapi.signRsa(msg, privateJwk, hash, algorithm, webCrypto);
-    } else if (typeof nodeCrypto !== 'undefined') { // for node
-      signature = await nodeapi.signRsa(msg, privateJwk, hash, algorithm, nodeCrypto);
+    if (env.name === 'webCrypto' && typeof env.crypto.sign === 'function' && typeof env.crypto.importKey === 'function') { // for web API
+      signature = await webapi.signRsa(msg, privateJwk, hash, algorithm, env.crypto);
+    } else if (env.name === 'nodeCrypto') { // for node
+      signature = await nodeapi.signRsa(msg, privateJwk, hash, algorithm, env.crypto);
     } else {
       pure = true;
       throw new Error('UnsupportedPureJsEnvironment');
@@ -116,16 +114,15 @@ export const verify = async (
     checkPssLength('verify', {k: jseu.encoder.decodeBase64Url(<string>(publicJwk.n)).length, hash, saltLength: <number>(algorithm.saltLength)});
   }
 
-  const webCrypto = util.getWebCryptoAll(); // web crypto api
-  const nodeCrypto = util.getNodeCrypto(); // implementation on node.js
+  const env = util.getCrypto();
 
   let pure: boolean = false;
   let valid: boolean;
   try {
-    if (typeof webCrypto !== 'undefined' && typeof webCrypto.verify === 'function' && typeof webCrypto.importKey === 'function') { // for web API
-      valid = await webapi.verifyRsa(msg, signature, publicJwk, hash, algorithm, webCrypto);
-    } else if (typeof nodeCrypto !== 'undefined') { // for node
-      valid = await nodeapi.verifyRsa(msg, signature, publicJwk, hash, algorithm, nodeCrypto);
+    if (env.name === 'webCrypto' && typeof env.crypto.verify === 'function' && typeof env.crypto.importKey === 'function') { // for web API
+      valid = await webapi.verifyRsa(msg, signature, publicJwk, hash, algorithm, env.crypto);
+    } else if (env.name === 'nodeCrypto') { // for node
+      valid = await nodeapi.verifyRsa(msg, signature, publicJwk, hash, algorithm, env.crypto);
     } else {
       pure = true;
       throw new Error('UnsupportedPureJsEnvironment');
@@ -160,18 +157,15 @@ export const encrypt = async (
     { k: jseu.encoder.decodeBase64Url(<string>(publicJwk.n)).length, label, hash, mLen: msg.length, cLen: 0}
   );
 
-
-  const webCrypto = util.getWebCryptoAll(); // web crypto api
-  const nodeCrypto = util.getNodeCrypto(); // implementation on node.js
-
+  const env = util.getCrypto();
 
   let pure: boolean = false;
   let encrypted: Uint8Array;
   try {
-    if (typeof webCrypto !== 'undefined' && typeof webCrypto.encrypt === 'function' && typeof webCrypto.importKey === 'function') { // for web API
-      encrypted = await webapi.encryptRsa(msg, publicJwk, hash, label, webCrypto);
-    } else if (typeof nodeCrypto !== 'undefined') { // for node
-      encrypted = await nodeapi.encryptRsa(msg, publicJwk, hash, label, nodeCrypto);
+    if (env.name === 'webCrypto' && typeof env.crypto.encrypt === 'function' && typeof env.crypto.importKey === 'function') { // for web API
+      encrypted = await webapi.encryptRsa(msg, publicJwk, hash, label, env.crypto);
+    } else if (env.name === 'nodeCrypto') { // for node
+      encrypted = await nodeapi.encryptRsa(msg, publicJwk, hash, label, env.crypto);
     } else {
       pure = true;
       throw new Error('UnsupportedPureJsEnvironment');
@@ -206,16 +200,15 @@ export const decrypt = async (
     { k: jseu.encoder.decodeBase64Url(<string>(privateJwk.n)).length, label, hash, mLen: 0, cLen: data.length}
   );
 
-  const webCrypto = util.getWebCryptoAll(); // web crypto api
-  const nodeCrypto = util.getNodeCrypto(); // implementation on node.js
+  const env = util.getCrypto();
 
   let pure: boolean = false;
   let decrypted: Uint8Array;
   try {
-    if (typeof webCrypto !== 'undefined' && typeof webCrypto.decrypt === 'function' && typeof webCrypto.importKey === 'function') { // for web API
-      decrypted = await webapi.decryptRsa(data, privateJwk, hash, label, webCrypto);
-    } else if (typeof nodeCrypto !== 'undefined') { // for node
-      decrypted = await nodeapi.decryptRsa(data, privateJwk, hash, label, nodeCrypto);
+    if (env.name === 'webCrypto' && typeof env.crypto.decrypt === 'function' && typeof env.crypto.importKey === 'function') { // for web API
+      decrypted = await webapi.decryptRsa(data, privateJwk, hash, label, env.crypto);
+    } else if (env.name === 'nodeCrypto') { // for node
+      decrypted = await nodeapi.decryptRsa(data, privateJwk, hash, label, env.crypto);
     } else {
       pure = true;
       throw new Error('UnsupportedPureJsEnvironment');

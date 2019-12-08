@@ -16,29 +16,27 @@ import jschash from 'js-crypto-hash';
  * @throws {Error} - Throws if UnsupportedEnvironment, i.e., even neither WebCrypto, NodeCrypto nor PureJS is available.
  */
 export const compute = async (key: Uint8Array, data: Uint8Array, hash: HashTypes = 'SHA-256'): Promise<Uint8Array> => {
-  const webCrypto = util.getWebCrypto(); // web crypto api
-  const nodeCrypto = util.getNodeCrypto(); // node crypto
-  const msCrypto = util.getMsCrypto(); // damn ms crypto
+  const env = util.getCrypto();
 
   let msgKeyedHash;
   let errMsg;
   let native = true;
 
   try {
-    if (typeof webCrypto !== 'undefined' && typeof webCrypto.importKey === 'function' && typeof webCrypto.sign === 'function') {
-      const keyObj = await webCrypto.importKey('raw', key, {
+    if (env.name === 'webCrypto' && typeof env.crypto.importKey === 'function' && typeof env.crypto.sign === 'function') {
+      const keyObj = await env.crypto.importKey('raw', key, {
         name: 'HMAC',
         hash: {name: hash}
       }, false, ['sign', 'verify']);
-      msgKeyedHash = await webCrypto.sign({name: 'HMAC', hash: {name: hash}}, keyObj, data);
-    } else if (typeof msCrypto !== 'undefined') {
+      msgKeyedHash = await env.crypto.sign({name: 'HMAC', hash: {name: hash}}, keyObj, data);
+    } else if (env.name === 'msCrypto') {
       const keyObj = await msImportKey('raw', key, {
         name: 'HMAC',
         hash: {name: hash}
-      }, false, ['sign', 'verify'], msCrypto);
-      msgKeyedHash = await msHmac(hash, keyObj, data, msCrypto);
-    } else if (typeof nodeCrypto !== 'undefined') { // for node
-      const f = nodeCrypto.createHmac(params.hashes[hash].nodeName, key);
+      }, false, ['sign', 'verify'], env.crypto);
+      msgKeyedHash = await msHmac(hash, keyObj, data, env.crypto);
+    } else if (env.name === 'nodeCrypto') { // for node
+      const f = env.crypto.createHmac(params.hashes[hash].nodeName, key);
       msgKeyedHash = f.update(data).digest();
     } else native = false;
   } catch (e) {

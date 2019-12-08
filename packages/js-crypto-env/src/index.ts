@@ -55,5 +55,20 @@ const getMsCrypto = () : undefined|any => {
   return undefined;
 };
 
-export default {getNodeCrypto, getWebCrypto, getMsCrypto, getWebCryptoAll, getRootWebCryptoAll};
-export {getNodeCrypto, getWebCrypto, getMsCrypto, getWebCryptoAll, getRootWebCryptoAll};
+/**
+ * Get native crypto lib name.
+ * @return {name: 'msCrypto'|'webCrypto'|'nodeCrypto'|undefined, crypto?: any}
+ */
+const getCrypto = (): {name: 'msCrypto'|'webCrypto'|'nodeCrypto'|undefined, crypto?: any} => {
+  const webCrypto = getWebCrypto();
+  const nodeCrypto = getNodeCrypto();
+  const msCrypto = getMsCrypto();
+
+  if (typeof nodeCrypto !== 'undefined') return {name: 'nodeCrypto', crypto: nodeCrypto};
+  else if(typeof webCrypto !== 'undefined' && typeof msCrypto === 'undefined') return {name: 'webCrypto', crypto: webCrypto};
+  else if (typeof msCrypto !== 'undefined') return {name: 'msCrypto', crypto: msCrypto};
+  else return {name: undefined};
+};
+
+export default {getNodeCrypto, getWebCrypto, getMsCrypto, getWebCryptoAll, getRootWebCryptoAll, getCrypto};
+export {getNodeCrypto, getWebCrypto, getMsCrypto, getWebCryptoAll, getRootWebCryptoAll, getCrypto};

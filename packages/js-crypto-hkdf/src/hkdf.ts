@@ -27,22 +27,18 @@ export const compute = async (
   info: string = '',
   salt: Uint8Array|null = null
 ): Promise<{key: Uint8Array, salt: Uint8Array}> => {
-  const webCrypto = util.getWebCrypto(); // web crypto api
-  const msCrypto = util.getMsCrypto();
+  const env = util.getCrypto();
 
   let key;
   if(!salt) salt = random.getRandomBytes(length);
 
-  if (typeof webCrypto !== 'undefined'
-    && typeof webCrypto.importKey === 'function'
-    && typeof webCrypto.deriveBits === 'function'
-    && typeof msCrypto === 'undefined') {
+  if (env.name === 'webCrypto' && typeof env.crypto.importKey === 'function' && typeof env.crypto.deriveBits === 'function') {
     try { // modern browsers supporting HKDF
-      const masterObj = await webCrypto.importKey(
+      const masterObj = await env.crypto.importKey(
         'raw', master, {name: 'HKDF'}, false, ['deriveKey', 'deriveBits']
       );
       const hkdfCtrParams = { name: 'HKDF', salt, info: jseu.encoder.stringToArrayBuffer(info), hash};
-      key = await webCrypto.deriveBits(hkdfCtrParams, masterObj, length * 8);
+      key = await env.crypto.deriveBits(hkdfCtrParams, masterObj, length * 8);
       key = new Uint8Array(key);
     }
     catch (e) { // fall back to pure js implementation
