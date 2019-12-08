@@ -1,6 +1,6 @@
 {
   "name": "js-crypto-hash",
-  "version": "0.6.1",
+  "version": "0.6.2",
   "description": "Universal Module for Hash Function in JavaScript",
   "main": "dist/index.js",
   "scripts": {
@@ -39,7 +39,7 @@
   "dependencies": {
     "buffer": "~5.4.3",
     "hash.js": "~1.1.7",
-    "js-crypto-env": "^0.3.0",
+    "js-crypto-env": "^0.3.1",
     "md5": "~2.2.1",
     "sha3": "~2.1.0"
   },
