@@ -40,7 +40,7 @@
   "dependencies": {
     "asn1.js": "~5.2.0",
     "asn1.js-rfc5280": "~3.0.0",
-    "bn.js": "~5.0.0",
+    "bn.js": "~5.1.0",
     "buffer": "~5.4.0",
     "js-crypto-ec": "^0.6.2",
     "js-crypto-key-utils": "^0.7.2",
