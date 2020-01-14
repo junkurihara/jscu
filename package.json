@@ -2,7 +2,7 @@
   "name": "jscu",
   "private": true,
   "license": "MIT",
-  "version": "0.18.2",
+  "version": "0.18.3",
   "root_package": "packages/js-crypto-utils",
   "workspaces": [
     "packages/*"
