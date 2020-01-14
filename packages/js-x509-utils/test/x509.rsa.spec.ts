@@ -44,6 +44,7 @@ describe(`${envName}: RSA: Generated JWK public key should be successfully conve
           subject: name
         }
       );
+      console.log(x509.info(crt,'pem'));
       const parsed = await x509.parse(crt, 'pem');
       // console.log(parsed.signatureAlgorithm);
       const re = await rsa.verify(
@@ -83,6 +84,7 @@ describe(`${envName}: RSA: Generated JWK public key should be successfully conve
         subject: name
       }
     );
+    console.log(x509.info(crt,'pem'));
     const parsed = await x509.parse(crt, 'pem');
     const re = await rsa.verify(
       parsed.tbsCertificate,
@@ -121,7 +123,8 @@ describe(`${envName}: RSA: Generated JWK public key should be successfully conve
           pssParams: {saltLength: constantSaltLen, hash}
         }
       );
-      const parsed = await x509.parse(crt, 'pem');
+      console.log(x509.info(crt,'pem'));
+      const parsed = x509.parse(crt, 'pem');
       // console.log(parsed.signatureAlgorithm);
       const re = await rsa.verify(
         parsed.tbsCertificate,

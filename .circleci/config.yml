@@ -45,7 +45,7 @@ jobs:
       # merge and upload coverage reports
       - run: sudo apt install lcov
       - run: mkdir -p coverage
-      - run: find ./packages  -name lcov.info -exec echo -a {} \; | xargs lcov -o ./coverage/merged-lcov.info
+      - run: find ./packages -name lcov.info -exec echo -a {} \; | xargs lcov -o ./coverage/merged-lcov.info
       - codecov/upload:
           file: ./coverage/merged-lcov.info
 
