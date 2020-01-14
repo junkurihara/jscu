@@ -137,15 +137,7 @@ export const parse = (
   certX509: PEM|DER,
   format: AsnFormat = 'pem'
 ) => {
-
-  let x509bin;
-  if (format === 'pem') x509bin = jseu.formatter.pemToBin(<string>certX509);
-  else if (format === 'der') x509bin = certX509;
-  else throw new Error('InvalidFormatSpecification');
-
-  const binKeyBuffer = BufferR.from(<DER>x509bin); // This must be Buffer object to get decoded;
-
-  const decoded = rfc5280.Certificate.decode(binKeyBuffer, 'der'); // decode binary x509-formatted public key to parsed object
+  const decoded = info(certX509, format);
   const sigOid = decoded.signatureAlgorithm.algorithm;
   const sigParam = decoded.signatureAlgorithm.parameters;
 
@@ -167,7 +159,27 @@ export const parse = (
   };
 };
 
+/**
+ * Parse X.509 certificate and return parsed info
+ * @param {DER|PEM} certX509 - X.509 public key certificate in DER or PEM format.
+ * @param {AsnFormat} format - 'der' or 'pem'
+ * @return {{tbsCertificate: Uint8Array, signatureValue: Uint8Array, signatureAlgorithm: String}} - Parsed object.
+ * @throws {Error} - Throws if UnsupportedSignatureAlgorithm or InvalidFormatSpecification.
+ */
 
+export const info = (
+  certX509: PEM|DER,
+  format: AsnFormat = 'pem'
+) => {
+  let x509bin;
+  if (format === 'pem') x509bin = jseu.formatter.pemToBin(<string>certX509);
+  else if (format === 'der') x509bin = certX509;
+  else throw new Error('InvalidFormatSpecification');
+
+  const binKeyBuffer = BufferR.from(<DER>x509bin); // This must be Buffer object to get decoded;
+
+  return rfc5280.Certificate.decode(binKeyBuffer, 'der'); // decode binary x509-formatted public key to parsed object
+};
 
 /**
  * Set RDN sequence for issuer and subject fields

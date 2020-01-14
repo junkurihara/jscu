@@ -64,7 +64,8 @@ describe(`${envName}: Generated JWK EC public key should be successfully convert
                 subject: name
               }
             );
-            const parsed = await x509.parse(crt, 'pem');
+            console.log(x509.info(crt,'pem'));
+            const parsed = x509.parse(crt, 'pem');
             // console.log(parsed.signatureAlgorithm);
             re = await ec.verify(parsed.tbsCertificate, parsed.signatureValue, kp.publicKey, parsed.signatureAlgorithm.parameters.hash, 'der');
           } catch (e) { re = false; }
