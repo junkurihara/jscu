@@ -991,10 +991,10 @@
   resolved "https://registry.yarnpkg.com/@types/color-name/-/color-name-1.1.1.tgz#1c1261bbeaa10a8055bbc5d8ab84b7b2afc846a0"
   integrity sha512-rr+OQyAjxze7GgWrSaJwydHStIhHq2lvY3BOC2Mj7KnzI7XK0Uw1TOOdI9lDoajEbSWLiYgoo4f1R51erQfhPQ==
 
-"@types/elliptic@6.4.11":
-  version "6.4.11"
-  resolved "https://registry.yarnpkg.com/@types/elliptic/-/elliptic-6.4.11.tgz#f8c84575bf7f4bd0f9e9bebe476b26bc8ac770e2"
-  integrity sha512-NjpGyjDWsFroeSUidp0CQ77ooabPOm4PoOExkZi80z1Nw0aoa/S6qX4dPFoLOUCFTmA6sSfrEem2AAysP/lE9g==
+"@types/elliptic@6.4.12":
+  version "6.4.12"
+  resolved "https://registry.yarnpkg.com/@types/elliptic/-/elliptic-6.4.12.tgz#e8add831f9cc9a88d9d84b3733ff669b68eaa124"
+  integrity sha512-gP1KsqoouLJGH6IJa28x7PXb3cRqh83X8HCLezd2dF+XcAIMKYv53KV+9Zn6QA561E120uOqZBQ+Jy/cl+fviw==
   dependencies:
     "@types/bn.js" "*"
 
