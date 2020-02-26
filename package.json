@@ -47,7 +47,7 @@
     "karma-sourcemap-loader": "0.3.7",
     "karma-webpack": "4.0.2",
     "lerna": "3.20.2",
-    "mocha": "7.0.1",
+    "mocha": "7.1.0",
     "mocha-sinon": "2.1.0",
     "nyc": "15.0.0",
     "source-map-support": "0.5.16",
