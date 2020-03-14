@@ -28,7 +28,7 @@
     "jscu"
   ],
   "devDependencies": {
-    "@types/chai": "4.2.10",
+    "@types/chai": "4.2.11",
     "@types/mocha": "7.0.2",
     "@types/node": "10.17.17",
     "istanbul-instrumenter-loader": "3.0.1",
