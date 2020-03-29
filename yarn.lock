@@ -6643,10 +6643,10 @@ mkdirp@^0.5.3:
   dependencies:
     minimist "^1.2.5"
 
-mocha-sinon@2.1.0:
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/mocha-sinon/-/mocha-sinon-2.1.0.tgz#61e92727e577bee44cac6f32162dcec33c1301e5"
-  integrity sha512-E+rqBhoCQlvo+Kn9SY9qvoO/TWqJFnmxG70dyVYdFc6LGZAq08dr+pV2yUP4sBeMMYGYABB8T7NHNsG+4scy/A==
+mocha-sinon@2.1.2:
+  version "2.1.2"
+  resolved "https://registry.yarnpkg.com/mocha-sinon/-/mocha-sinon-2.1.2.tgz#8db30195fa45611e565a9f1743ffd0cb4bf1eb9d"
+  integrity sha512-j6eIQGgOFddcgE1kUFKSvXR9oCuSEiRzv2XUK4iJcntObi2X2vYDvRwvOWxECUZl2dJ+Ciex5fYYni05Lx4azA==
 
 mocha@7.1.1:
   version "7.1.1"
