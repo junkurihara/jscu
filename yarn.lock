@@ -1079,10 +1079,10 @@
   resolved "https://registry.yarnpkg.com/@types/node/-/node-10.17.17.tgz#7a183163a9e6ff720d86502db23ba4aade5999b8"
   integrity sha512-gpNnRnZP3VWzzj5k3qrpRC6Rk3H/uclhAVo1aIvwzK5p5cOrs9yEyQ8H/HBsBY0u5rrWxXEiVPQ0dEB6pkjE8Q==
 
-"@types/node@12.12.32":
-  version "12.12.32"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-12.12.32.tgz#0ccc836d273e8a3cddf568daf22729cfa57c1925"
-  integrity sha512-44/reuCrwiQEsXud3I5X3sqI5jIXAmHB5xoiyKUw965olNHF3IWKjBLKK3F9LOSUZmK+oDt8jmyO637iX+hMgA==
+"@types/node@12.12.33":
+  version "12.12.33"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-12.12.33.tgz#800eed80f280f591a5fa942b7d3ee0db6b56d254"
+  integrity sha512-KXxfbd6nOiC0rF/JV2F93nZEKecoKPJ+VQTwrApXHj9g5fyUmnIloflMT3w3m9wdCqNEJExGWFXLmimo21DLNA==
 
 "@typescript-eslint/eslint-plugin@2.26.0":
   version "2.26.0"
