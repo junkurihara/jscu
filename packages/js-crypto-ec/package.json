@@ -40,7 +40,7 @@
   ],
   "dependencies": {
     "asn1.js": "~5.3.0",
-    "buffer": "~5.5.0",
+    "buffer": "~5.6.0",
     "elliptic": "~6.5.0",
     "js-crypto-env": "^0.3.2",
     "js-crypto-hash": "^0.6.3",
