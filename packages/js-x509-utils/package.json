@@ -41,7 +41,7 @@
     "asn1.js": "~5.3.0",
     "asn1.js-rfc5280": "~3.0.0",
     "bn.js": "~5.1.0",
-    "buffer": "~5.5.0",
+    "buffer": "~5.6.0",
     "js-crypto-ec": "^0.6.3",
     "js-crypto-key-utils": "^0.7.3",
     "js-crypto-random": "^0.4.3",
