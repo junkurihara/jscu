@@ -50,7 +50,7 @@
     "mocha": "7.1.1",
     "mocha-sinon": "2.1.2",
     "nyc": "15.0.1",
-    "source-map-support": "0.5.18",
+    "source-map-support": "0.5.19",
     "ts-loader": "7.0.1",
     "ts-node": "8.9.0",
     "tsc": "1.20150623.0",
