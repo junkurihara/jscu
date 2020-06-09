@@ -15,7 +15,7 @@ defaults: &defaults
     # - image: circleci/mongo:3.4.4
 
 orbs:
-  codecov: codecov/codecov@1.0.5
+  codecov: codecov/codecov@1.1.0
 
 jobs:
   test:
