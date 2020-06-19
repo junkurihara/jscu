@@ -39,7 +39,7 @@
     "ecdh"
   ],
   "dependencies": {
-    "asn1.js": "~5.4.0",
+    "asn1.js": "~5.4.1",
     "buffer": "~5.6.0",
     "elliptic": "~6.5.0",
     "js-crypto-env": "^0.3.2",
