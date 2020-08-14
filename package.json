@@ -34,7 +34,7 @@
     "cross-env": "7.0.2",
     "esdoc": "1.1.0",
     "esdoc-standard-plugin": "1.0.0",
-    "eslint": "7.6.0",
+    "eslint": "7.7.0",
     "istanbul-instrumenter-loader": "3.0.1",
     "jsdom": "16.4.0",
     "karma": "5.1.1",
