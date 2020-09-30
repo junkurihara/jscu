@@ -29,12 +29,6 @@ export const compute = async (key: Uint8Array, data: Uint8Array, hash: HashTypes
         hash: {name: hash}
       }, false, ['sign', 'verify']);
       msgKeyedHash = await env.crypto.sign({name: 'HMAC', hash: {name: hash}}, keyObj, data);
-    } else if (env.name === 'msCrypto') {
-      const keyObj = await msImportKey('raw', key, {
-        name: 'HMAC',
-        hash: {name: hash}
-      }, false, ['sign', 'verify'], env.crypto);
-      msgKeyedHash = await msHmac(hash, keyObj, data, env.crypto);
     } else if (env.name === 'nodeCrypto') { // for node
       const f = env.crypto.createHmac(params.hashes[hash].nodeName, key);
       msgKeyedHash = f.update(data).digest();
@@ -101,16 +95,3 @@ export const verify = async (key: Uint8Array, data: Uint8Array, mac: Uint8Array,
   const newMac = await compute(key, data, hash);
   return (mac.toString() === newMac.toString());
 };
-
-
-// function definitions for damn ms ie
-const msImportKey = (type: any, key: any, alg: any, ext: any, use: any, webCrypto: any) => new Promise ( (resolve, reject) => {
-  const op = webCrypto.importKey(type, key, alg, ext, use);
-  op.oncomplete = (evt: any) => { resolve(evt.target.result); };
-  op.onerror = () => { reject('KeyImportingFailed'); };
-});
-const msHmac = (hash: HashTypes, k: any, d: Uint8Array, webCrypto: any) => new Promise ( (resolve, reject) => {
-  const op = webCrypto.sign({name: 'HMAC', hash: {name: hash}}, k, d);
-  op.oncomplete = (evt: any) => { resolve(new Uint8Array(evt.target.result)); };
-  op.onerror = () => { reject('ComputingHMACFailed'); };
-});

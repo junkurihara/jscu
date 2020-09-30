@@ -118,7 +118,7 @@ This library has the following limitations at this point.
 
 - Node.js must be >= v10.12.0 to generate RSA keys.
 
-- Some functions does not work in legacy browsers like MS Edge and IE11. In particular, RSA-PSS scheme does not work due to lack of native implementation in IE, and the label for RSA-OAEP encryption cannot be employed since IE does not support it. Also MS Edge is incompatible with RSA-OAEP and more and more. This library heavily relies on the native (but standardized) implementation of RSA cryptographic modules in browsers and Node.js and it does not employ pure-JS RSA implementations for compatibility yet. Currently, we strongly recommend you to use this library in more modern environments, and, honestly, you should discard the IE and Edge ASAP.
+- Some functions does not work in legacy browsers like older MS Edge. In particular,  MS Edge is incompatible with RSA-OAEP and more and more. This library heavily relies on the native (but standardized) implementation of RSA cryptographic modules in browsers and Node.js and it does not employ pure-JS RSA implementations for compatibility yet. Currently, we strongly recommend you to use this library in more modern environments, and, honestly, you should discard the MS Edge ASAP. IE is completely out of our scope.
 
 # License
 Licensed under the MIT license, see `LICENSE` file.

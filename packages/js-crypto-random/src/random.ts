@@ -76,12 +76,12 @@ export const getRandomSampledString = (len: number, candidates: string) => {
  * @throws {Error} - Throws if UnsupportedEnvironment.
  */
 export const getRandomBytes = (len: number) : Uint8Array => {
-  const webCrypto = util.getRootWebCryptoAll(); // web crypto api or ms crypto
+  const webCrypto = util.getRootWebCrypto(); // web crypto api
   const nodeCrypto = util.getNodeCrypto(); // implementation on node.js
 
   if (typeof webCrypto !== 'undefined' && typeof webCrypto.getRandomValues === 'function') {
     const array = new Uint8Array(len);
-    webCrypto.getRandomValues(array); // for modern browsers or legacy ie 11
+    webCrypto.getRandomValues(array); // for modern browsers
     return array;
   }
   else if (typeof nodeCrypto !== 'undefined' ) { // for node

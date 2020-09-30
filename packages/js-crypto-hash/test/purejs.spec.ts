@@ -10,14 +10,13 @@ import {testVectors} from './test-vector';
 // const should = chai.should();
 const expect = chai.expect;
 
-interface Window { crypto: { subtle: {digest: any}}; msCrypto: { subtle: {digest: any}}; }
+interface Window { crypto: { subtle: {digest: any}}; }
 declare const window: Window;
 
 const hashes = ['SHA-256', 'SHA-384', 'SHA-512', 'SHA-1', 'MD5', 'SHA3-512', 'SHA3-384', 'SHA3-256', 'SHA3-224'];
 describe(`${envName}: Hash generation test in PureJS for webcrypto`, () => {
   before( async () => {
     if (typeof window !== 'undefined' && typeof window.crypto !== 'undefined') window.crypto.subtle.digest = undefined;
-    if (typeof window !== 'undefined' && typeof window.msCrypto !== 'undefined') window.msCrypto.subtle.digest = undefined;
   });
 
   it('Hash should be generated for each hash algorithms in Pure JS for webcrypto', async () => {

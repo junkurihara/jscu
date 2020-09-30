@@ -6,6 +6,7 @@ const envName = env.envName;
 import sample from './sampleEncrypted';
 
 import * as chai from 'chai';
+import {AsnEncryptOptionsWithPassphrase} from '../src/typedef';
 // const should = chai.should();
 const expect = chai.expect;
 
@@ -49,7 +50,7 @@ describe(`${envName}: RSA/EC Key conversion from/to JWK test.`, () => {
         const jwkpri = await privateKey.export('pem').catch( () => {result = false; });
         const pempri = await privateKey.export(
           'pem', {
-            encryptParams: Object.assign({ passphrase: 'kddilabs' }, encOptions)
+            encryptParams: <AsnEncryptOptionsWithPassphrase>{...encOptions, passphrase: 'kddilabs'}
           }
         ).catch( () => {result = false; });
 
@@ -122,7 +123,7 @@ describe(`${envName}: RSA/EC Key conversion from/to JWK test.`, () => {
         const jwkpri = await privateKey.export('pem').catch( () => {result = false; });
         const pempri = await privateKey.export(
           'pem', {
-            encryptParams: Object.assign({ passphrase: 'kddilabs' }, encOptions)
+            encryptParams: <AsnEncryptOptionsWithPassphrase>{...encOptions, passphrase: 'kddilabs'}
           }
         ).catch( () => {result = false; });
 
