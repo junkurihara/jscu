@@ -149,12 +149,7 @@ const parsed = x509.parse(crtsample, 'pem');
 
 # Note
 ## Limitations
-Due to the lack of native implementations of some primitive algorithms, the following signing algorithms do not work in legacy IE11.
-- ECDSA: `ecdsa-with-sha1` and `ecdsa-with-sha512`
-- RSASSA-PKCS-v1_5: `Sha1WithRsaEncryption` and `Sha512WithRsaEncryption`
-- RSA-PSS: All
-
-Also the followings are not supported in Edge.
+Legacy IE is NOT supported at all. Also the followings are not supported in Edge.
 - ECDSA: `ecdsa-with-sha1`
 - RSASSA-PKCS-v1_5: `Sha1WithRsaEncryption`
 - RSA-PSS: All

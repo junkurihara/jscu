@@ -10,7 +10,7 @@ const hmac = env.library;
 const envName = env.envName;
 
 
-interface Window { crypto: { subtle: {sign: any}}; msCrypto: { subtle: {sign: any}}; }
+interface Window { crypto: { subtle: {sign: any}};}
 declare const window: Window;
 
 const hashes: Array<HashTypes> = ['SHA-256', 'SHA-384', 'SHA-512', 'MD5', 'SHA-1', 'SHA3-224', 'SHA3-256', 'SHA3-384', 'SHA3-512'];
@@ -18,7 +18,6 @@ describe(`${envName}: HMAC test in PureJS environment`, () => {
   const msg = random.getRandomBytes(32);
   before( async () => {
     if (typeof window !== 'undefined' && typeof window.crypto !== 'undefined') window.crypto.subtle.sign = undefined;
-    if (typeof window !== 'undefined' && typeof window.msCrypto !== 'undefined') window.msCrypto.subtle.sign = undefined;
   });
 
   it('HMAC successfully generates and verify a MAC in PureJS environment', async function () {

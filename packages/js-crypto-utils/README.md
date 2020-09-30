@@ -263,13 +263,13 @@ One of the listed APIs/libraries is automatically chosen and leveraged for each 
   * WebCrypto API for browsers
   * NodeCrypto for Node.js 
   * [elliptic](https://github.com/indutny/elliptic) for browsers
-- RSA-PSS, RSASSA-PKCS1-v1_5, RSA-OAEP (RSA-PSSS does not work in IE and Edge)
+- RSA-PSS, RSASSA-PKCS1-v1_5, RSA-OAEP (RSA-PSSS does not work in Edge)
   * WebCrypto API for browsers
   * NodeCrypto for Node.js
 - Key format conversion:
   * WebCrypto API for browsers
   * [asn1.js](https://github.com/indutny/asn1.js) for browsers and Node.js
-- X.509 generation from JWK, and extraction of JWK from X.509 (may not work in IE due to RSA)
+- X.509 generation from JWK, and extraction of JWK from X.509
   * WebCrypto API for browsers
   * NodeCrypto for Node.js
   * [elliptic](https://github.com/indutny/elliptic) for browsers
@@ -278,10 +278,11 @@ One of the listed APIs/libraries is automatically chosen and leveraged for each 
   * NodeCrypto for Node.js
 - Random, hash, HKDF, HMAC, JWK Thumbprint
   * WebCrypto API for browsers
-  * MsCrypto for IE
   * NodeCrypto for Node.js
   
-  Especially for Hash functions, we shall use the following pure JS implementation for some browsers (WebCrypto does not support SHA-3 yet). SHA-512/SHA-1 does not work in IE, SHA-1 doesn't in Edge. I believe IE/Edge should be discarded ASAP.
+  IE is completely out of our scope now.
+  
+  Especially for Hash functions, we shall use the following pure JS implementation for some browsers (WebCrypto does not support SHA-3 yet). SHA-1 doesn't work in Edge. I believe Edge should be discarded ASAP.
   * [sha3](https://www.npmjs.com/package/sha3) for SHA3-224, SHA3-256, SHA3-384 and SHA3-512 for browsers
   * [hash.js](https://www.npmjs.com/package/hash.js) for SHA-1, SHA-256, SHA-384, SHA-512 for some legacy browsers
   * [md5](https://www.npmjs.com/package/md5) for MD5 for some legacy browsers

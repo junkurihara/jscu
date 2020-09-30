@@ -54,7 +54,7 @@ export const encrypt = async (
 
   const env = util.getCrypto();
 
-  if (env.name === 'webCrypto' || env.name === 'msCrypto') {// for web API including IE...
+  if (env.name === 'webCrypto') {// for web API
     if (typeof env.crypto.importKey !== 'function' || typeof env.crypto.encrypt !== 'function') throw new Error('UnsupportedWebCrypto');
     return webapi.encrypt(msg, key, {name, iv, additionalData, tagLength}, env.crypto);
   }
@@ -87,7 +87,7 @@ export const decrypt = async (
 
   const env = util.getCrypto();
 
-  if (env.name === 'webCrypto' || env.name === 'msCrypto') {// for web API including IE...
+  if (env.name === 'webCrypto') {// for web API
     if (typeof env.crypto.importKey !== 'function' || typeof env.crypto.decrypt !== 'function') throw new Error('UnsupportedWebCrypto');
     return webapi.decrypt(data, key, {name, iv, additionalData, tagLength}, env.crypto);
   }
@@ -116,7 +116,7 @@ export const wrapKey = async (
 
   const iv = <Uint8Array>(params.wrapKeys['AES-KW'].defaultIv);
 
-  if (env.name === 'webCrypto' || env.name === 'msCrypto') {// for web API including IE...
+  if (env.name === 'webCrypto') {// for web API
     if (typeof env.crypto.importKey !== 'function' || typeof env.crypto.wrapKey !== 'function') throw new Error('UnsupportedWebCrypto');
     return webapi.wrapKey(keyToBeWrapped, wrappingKey, {name, iv}, env.crypto);
   }
@@ -143,7 +143,7 @@ export const unwrapKey = async (
 
   const iv = <Uint8Array>(params.wrapKeys['AES-KW'].defaultIv);
 
-  if (env.name === 'webCrypto' || env.name === 'msCrypto') {// for web API including IE...
+  if (env.name === 'webCrypto') {// for web API
     if (typeof env.crypto.importKey !== 'function' || typeof env.crypto.unwrapKey !== 'function') throw new Error('UnsupportedWebCrypto');
     return webapi.unwrapKey(wrappedKey, wrappingKey, {name, iv}, env.crypto);
   }

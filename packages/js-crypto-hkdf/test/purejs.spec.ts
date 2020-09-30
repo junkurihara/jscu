@@ -10,7 +10,7 @@ import {HashTypes} from '../src/params';
 const expect = chai.expect;
 
 
-interface Window { crypto: { subtle: {deriveBits: any}}; msCrypto: { subtle: {deriveBits: any}}; }
+interface Window { crypto: { subtle: {deriveBits: any}};}
 declare const window: Window;
 
 
@@ -26,7 +26,6 @@ describe(`${envName}: HKDF test in PureJS environment`, () => {
 
   it('HKDF is done with automatic salt generation in PureJS Environment', async function () {
     this.timeout(20000);
-    if(typeof window !== 'undefined' && typeof (<any>window).msCrypto !== 'undefined') hashes = ['SHA-256', 'SHA-384']; // SHA-512 doesn't work in IE
     await Promise.all(hashes.map( async (hash) => {
       const d = await hkdf.compute(masterSecret, hash, length, '', null);
       expect(d.key).to.be.a('Uint8Array');
