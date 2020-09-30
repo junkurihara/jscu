@@ -1,6 +1,6 @@
 {
   "name": "js-crypto-env",
-  "version": "0.3.2",
+  "version": "1.0.0",
   "description": "Shared environment modules for jscu",
   "main": "dist/index.js",
   "scripts": {
@@ -26,7 +26,5 @@
   "homepage": "https://github.com/junkurihara/jscu/tree/master/packages/js-crypto-env#readme",
   "keywords": [
     "jscu"
-  ],
-  "devDependencies": {
-  }
+  ]
 }
