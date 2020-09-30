@@ -22,7 +22,6 @@ describe(`${envName}: HKDF test`, () => {
 
   it('HKDF is done with automatic salt generation', async function () {
     this.timeout(20000);
-    if(typeof window !== 'undefined' && typeof (<any> window).msCrypto !== 'undefined') hashes = ['SHA-256', 'SHA-384']; // SHA-512 doesn't work in IE
     await Promise.all(hashes.map( async (hash) => {
       const d = await hkdf.compute(masterSecret, hash, length, '', null);
       expect(d.key).to.be.a('Uint8Array');
@@ -34,7 +33,6 @@ describe(`${envName}: HKDF test`, () => {
 
   it('When the same salt is given, the same hash is obtained with HKDF', async function () {
     this.timeout(20000);
-    if(typeof window !== 'undefined' && typeof (<any>window).msCrypto !== 'undefined') hashes = ['SHA-256', 'SHA-384']; // SHA-512 doesn't work in IE
     await Promise.all(hashes.map( async (hash) => {
       const d = await hkdf.compute(masterSecret, hash, length, '', null);
       expect(d.key).to.be.a('Uint8Array');
@@ -62,7 +60,6 @@ describe(`${envName}: HKDF test`, () => {
 
   it('When the fixed salt is given, the mac is always fixed', async function () {
     this.timeout(20000);
-    if(typeof window !== 'undefined' && typeof (<any>window).msCrypto !== 'undefined') hashes = ['SHA-256', 'SHA-384']; // SHA-512 doesn't work in IE
     await Promise.all(hashes.map( async (hash) => {
       const d = await hkdf.compute(masterSecret, hash, length, '', masterSecret);
       expect(d.key).to.be.a('Uint8Array');

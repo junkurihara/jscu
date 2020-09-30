@@ -31,9 +31,6 @@ export const compute = async (msg: Uint8Array, hash: HashTypes = 'SHA-256') : Pr
     else if (env.name === 'nodeCrypto') { // for node
       msgHash = nodedigest(hash, msg, env.crypto);
     }
-    else if (env.name === 'msCrypto' && typeof env.crypto.digest === 'function') { // for legacy ie 11
-      msgHash = await msdigest(hash, msg, env.crypto);
-    }
     else native = false;
   } catch(e) {
     errMsg = e.message;
@@ -51,23 +48,6 @@ export const compute = async (msg: Uint8Array, hash: HashTypes = 'SHA-256') : Pr
   return new Uint8Array(msgHash);
 };
 
-/**
- * Compute hash using MsCrypto implementation
- * @param {HashTypes} hash - Name of hash algorithm like SHA-256
- * @param {Uint8Array} msg - Byte array of message to be hashed.
- * @param {Object} msCrypto - msCrypto object.
- * @return {Promise<Uint8Array>} - Hash value.
- * @throws {Error} - Throws if hashing failed.
- */
-const msdigest = (hash: HashTypes, msg: Uint8Array, msCrypto: any) : Promise<Uint8Array> => new Promise((resolve, reject) => {
-  const op = msCrypto.digest(hash, msg);
-  op.oncomplete = (evt: any) => {
-    resolve(evt.target.result);
-  };
-  op.onerror = (e: Error) => {
-    reject(e);
-  };
-});
 
 /**
  * Compute hash using Node.js implementation

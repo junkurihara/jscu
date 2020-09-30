@@ -20,19 +20,13 @@ export const wrapKey = async (
   {name, iv}: {name: 'AES-KW', iv: Uint8Array},
   webCrypto: any
 ): Promise<Uint8Array> => {
-  // @ts-ignore
-  if (typeof window.msCrypto === 'undefined') {
-    // modern browsers
-    try {
-      const kek = await webCrypto.importKey('raw', wrappingKey, {name}, false, ['wrapKey', 'unwrapKey']);
-      const cek = await webCrypto.importKey('raw', keyToBeWrapped, {name}, true, ['wrapKey', 'unwrapKey']);
-      const data = await webCrypto.wrapKey('raw', cek, kek, {name, iv});
-      return new Uint8Array(data);
-    } catch (e) { throw new Error(`WebCrypto_FailedToWrapKey - ${e.message}`); }
+  try {
+    const kek = await webCrypto.importKey('raw', wrappingKey, {name}, false, ['wrapKey', 'unwrapKey']);
+    const cek = await webCrypto.importKey('raw', keyToBeWrapped, {name}, true, ['wrapKey', 'unwrapKey']);
+    const data = await webCrypto.wrapKey('raw', cek, kek, {name, iv});
+    return new Uint8Array(data);
   }
-  else {
-    throw new Error('ThrowAwayIeAsap');
-  }
+  catch (e) { throw new Error(`WebCrypto_FailedToWrapKey - ${e.message}`); }
 };
 
 /**
@@ -50,18 +44,12 @@ export const unwrapKey = async (
   {name, iv}: {name: 'AES-KW', iv: Uint8Array},
   webCrypto: any
 ): Promise<Uint8Array> => {
-  // @ts-ignore
-  if (typeof window.msCrypto === 'undefined') {
-    // modern browsers
-    try {
-      const kek = await webCrypto.importKey('raw', unwrappingKey, {name}, false, ['wrapKey', 'unwrapKey']);
-      const cek = await webCrypto.unwrapKey('raw', wrappedKey, kek, {name, iv}, {name: 'AES-GCM'}, true, ['encrypt', 'decrypt']);
-      return new Uint8Array(await webCrypto.exportKey('raw', cek));
-    } catch (e) { throw new Error(`WebCrypto_FailedToUnwrapKey - ${e.message}`); }
+  try {
+    const kek = await webCrypto.importKey('raw', unwrappingKey, {name}, false, ['wrapKey', 'unwrapKey']);
+    const cek = await webCrypto.unwrapKey('raw', wrappedKey, kek, {name, iv}, {name: 'AES-GCM'}, true, ['encrypt', 'decrypt']);
+    return new Uint8Array(await webCrypto.exportKey('raw', cek));
   }
-  else {
-    throw new Error('ThrowAwayMsIeAsap');
-  }
+  catch (e) { throw new Error(`WebCrypto_FailedToUnwrapKey - ${e.message}`); }
 };
 
 /**
@@ -72,7 +60,7 @@ export const unwrapKey = async (
  * @param {Uint8Array} [iv] - Byte array of initial vector if required.
  * @param {Uint8Array} [additionalData] - Byte array of additional data if required.
  * @param {Number} [tagLength] - Authentication tag length if required.
- * @param {Object} webCrypto - WebCrypto object, i.e., window.crypto.subtle or window.msCrypto.subtle
+ * @param {Object} webCrypto - WebCrypto object, i.e., window.crypto.subtle
  * @return {Promise<Uint8Array>} - Encrypted data byte array.
  * @throws {Error} - Throws if UnsupportedCipher.
  */
@@ -84,31 +72,12 @@ export const encrypt = async (
 ): Promise<Uint8Array> => {
   const encryptionConfig = setCipherParams({name, iv, additionalData, tagLength});
 
-  // @ts-ignore
-  if (typeof window.msCrypto === 'undefined') {
-    // modern browsers
-    try {
-      const sessionKeyObj = await webCrypto.importKey('raw', key, encryptionConfig, false, ['encrypt', 'decrypt']);
-      const data = await webCrypto.encrypt(encryptionConfig, sessionKeyObj, msg);
-      return new Uint8Array(data);
-    } catch (e) {
-      throw new Error(`WebCrypto_EncryptionFailure: ${e.message}`);
-    }
-  }
-  else {
-    try {
-      const sessionKeyObj = await msImportKey('raw', key, encryptionConfig, false, ['encrypt', 'decrypt'], webCrypto);
-      const encryptedObj = await msEncrypt(encryptionConfig, sessionKeyObj, msg, webCrypto);
-
-      if (name === 'AES-GCM') {
-        const data = new Uint8Array((<any>encryptedObj).ciphertext.byteLength + (<any>encryptedObj).tag.byteLength);
-        data.set(new Uint8Array((<any>encryptedObj).ciphertext));
-        data.set(new Uint8Array((<any>encryptedObj).tag), (<any>encryptedObj).ciphertext.byteLength);
-        return data;
-      } else return new Uint8Array(<any>encryptedObj);
-    } catch (e) {
-      throw new Error(`ThrowAwayMsIeAsap: ${e.message}`);
-    }
+  try {
+    const sessionKeyObj = await webCrypto.importKey('raw', key, encryptionConfig, false, ['encrypt', 'decrypt']);
+    const data = await webCrypto.encrypt(encryptionConfig, sessionKeyObj, msg);
+    return new Uint8Array(data);
+  } catch (e) {
+    throw new Error(`WebCrypto_EncryptionFailure: ${e.message}`);
   }
 };
 
@@ -120,7 +89,7 @@ export const encrypt = async (
  * @param {Uint8Array} [iv] - Byte array of initial vector if required.
  * @param {Uint8Array} [additionalData] - Byte array of additional data if required.
  * @param {Number} [tagLength] - Authentication tag length if required.
- * @param {Object} webCrypto - WebCrypto object, i.e., window.crypto.subtle or window.msCrypto.subtle
+ * @param {Object} webCrypto - WebCrypto object, i.e., window.crypto.subtle
  * @return {Promise<Uint8Array>} - Decrypted plaintext message.
  * @throws {Error} - Throws if UnsupportedCipher or DecryptionFailure.
  */
@@ -132,32 +101,12 @@ export const decrypt = async (
 ): Promise<Uint8Array> => {
   const decryptionConfig = setCipherParams({name, iv, additionalData, tagLength});
 
-  // @ts-ignore
-  if (!window.msCrypto) {
-    // modern browsers
-    try {
-      const sessionKeyObj = await webCrypto.importKey('raw', key, decryptionConfig, false, ['encrypt', 'decrypt']);
-      const msg = await webCrypto.decrypt(decryptionConfig, sessionKeyObj, data);
-      return new Uint8Array(msg);
-    } catch (e) {
-      throw new Error(`WebCrypto_DecryptionFailure: ${e.message}`);
-    }
-  }
-  else {
-    try {
-      const sessionKeyObj = await msImportKey('raw', key, decryptionConfig, false, ['encrypt', 'decrypt'], webCrypto);
-      let msg;
-      if (name === 'AES-GCM') {
-        const ciphertext = data.slice(0, data.length - <number>tagLength);
-        const tag = data.slice(data.length - <number>tagLength, data.length);
-        msg = await msDecrypt(Object.assign(decryptionConfig, {tag}), sessionKeyObj, ciphertext, webCrypto);
-      } else {
-        msg = await msDecrypt(decryptionConfig, sessionKeyObj, data, webCrypto);
-      }
-      return new Uint8Array(<any>msg);
-    } catch (e) {
-      throw new Error(`ThrowAwayMsIeAsap: ${e.message}`);
-    }
+  try {
+    const sessionKeyObj = await webCrypto.importKey('raw', key, decryptionConfig, false, ['encrypt', 'decrypt']);
+    const msg = await webCrypto.decrypt(decryptionConfig, sessionKeyObj, data);
+    return new Uint8Array(msg);
+  } catch (e) {
+    throw new Error(`WebCrypto_DecryptionFailure: ${e.message}`);
   }
 };
 
@@ -192,21 +141,3 @@ const setCipherParams = ({name, iv, additionalData, tagLength}: cipherOptions): 
 
   return alg;
 };
-
-// function definitions for IE
-// should die asap
-const msImportKey = (type: any, key: any, alg: any, ext: any, use: any, webCrypto:any) => new Promise ( (resolve, reject) => {
-  const op = webCrypto.importKey(type, key, alg, ext, use);
-  op.oncomplete = (evt: any) => { resolve(evt.target.result); };
-  op.onerror = () => { reject('KeyImportingFailed'); };
-});
-const msEncrypt = (alg: any, key: any, msg: any, webCrypto:any) => new Promise ( (resolve, reject) => {
-  const op = webCrypto.encrypt(alg, key, msg);
-  op.oncomplete = (evt: any) => { resolve(evt.target.result); };
-  op.onerror = () => { reject('EncryptionFailure'); };
-});
-const msDecrypt = (alg: any, key: any, data: any, webCrypto:any) => new Promise ( (resolve, reject) => {
-  const op = webCrypto.decrypt(alg, key, data);
-  op.oncomplete = (evt: any) => { resolve(evt.target.result); };
-  op.onerror = () => { reject('DecryptionFailure'); };
-});
