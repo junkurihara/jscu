@@ -5,16 +5,17 @@
 import * as params from './params';
 import * as rsa from './rsa';
 import * as ecdsa from './ec';
-import BN from 'bn.js';
 import rfc5280 from 'asn1.js-rfc5280';
 import jseu from 'js-encoding-utils';
 import random from 'js-crypto-random';
 import {Key} from 'js-crypto-key-utils';
 
-import BufferMod from 'buffer';
+import * as BufferMod from 'buffer';
 import {AsnFormat, X509EncodingOptions, DER, PEM, SignatureType} from './typedef';
 const BufferR = BufferMod.Buffer;
 
+// import BN from 'bn.js';
+const BN = require('bn.js'); // work around
 
 /**
  * Convert public key in JWK format to X.509 PEM or DER object.

@@ -5,7 +5,6 @@
 import ec from 'js-crypto-ec';
 import rsa from 'js-crypto-rsa';
 import { Key } from 'js-crypto-key-utils';
-import cloneDeep from 'lodash.clonedeep';
 import {
   DecryptionOption, ECDecryptionOption,
   ECEncryptionOption,
@@ -19,6 +18,9 @@ import {
 } from './typedef';
 import * as pkcec from './pkcec';
 import * as params from './params';
+
+const cloneDeep = require('lodash.clonedeep'); // work around
+// import cloneDeep from 'lodash.clonedeep';
 
 /**
  * Generate key pair in JWK format

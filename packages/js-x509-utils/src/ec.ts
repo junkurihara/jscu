@@ -4,7 +4,7 @@
 
 import * as params from './params';
 import ec from 'js-crypto-ec';
-import BufferMod from 'buffer';
+import * as BufferMod from 'buffer';
 import {SignatureType} from './typedef';
 const BufferR = BufferMod.Buffer;
 

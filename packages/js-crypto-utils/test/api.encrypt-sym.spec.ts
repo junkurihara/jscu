@@ -1,7 +1,4 @@
 import {getTestEnv} from './prepare';
-import * as chai from 'chai';
-// const should = chai.should();
-const expect = chai.expect;
 const env = getTestEnv();
 //const jscu = env.library;
 const envName = env.envName;
@@ -13,11 +10,10 @@ import pbdkf from 'js-crypto-pbkdf';
 describe(`${envName}: Symmetric Encryption test with PBKDF2`, () => {
   let msg: Uint8Array;
   const password = 'HelloWorldMyPassword';
-  before( async function () {
-    this.timeout(10000);
+  beforeAll( async () => {
     msg = new Uint8Array(32);
     for(let i = 0; i < 32; i++) msg[i] = 0xFF & i;
-  });
+  },10000);
 
   it('AES Encryption/Decryption with Passwords via PBKDF2', async () => {
     //////////////////////
@@ -91,7 +87,7 @@ describe(`${envName}: Symmetric Encryption test with PBKDF2`, () => {
       aesKeyReceiver,
       <any>ciphertextObject.aesParams
     );
-    expect(decrypted.toString() === msg.toString()).to.be.true;
+    expect(decrypted.toString() === msg.toString()).toBeTruthy();
   });
 });
 

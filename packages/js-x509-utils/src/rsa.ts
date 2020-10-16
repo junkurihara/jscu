@@ -8,7 +8,7 @@ import rsa from 'js-crypto-rsa';
 import asn from 'asn1.js';
 const BN = asn.bignum;
 import rfc5280 from 'asn1.js-rfc5280';
-import BufferMod from 'buffer';
+import * as BufferMod from 'buffer';
 import {DER, HashTypes, RsaPssOptions, SignatureType} from './typedef';
 const BufferR = BufferMod.Buffer;
 

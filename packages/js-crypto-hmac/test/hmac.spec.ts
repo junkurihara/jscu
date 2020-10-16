@@ -1,8 +1,5 @@
 import random from 'js-crypto-random';
 import jseu from 'js-encoding-utils';
-import * as chai from 'chai';
-// const should = chai.should();
-const expect = chai.expect;
 
 import {getTestEnv} from './prepare';
 import {HashTypes} from '../src/params';
@@ -26,39 +23,33 @@ const testVectors = {
 
 const hashes: Array<HashTypes> = ['SHA-256', 'SHA-384', 'SHA-512', 'SHA-1', 'MD5', 'SHA3-512', 'SHA3-384', 'SHA3-256', 'SHA3-224'];
 describe(`${envName}: HMAC test`, () => {
-  before( () => {});
+  beforeAll( () => {});
 
-  it('HMAC successfully generates and verify a MAC', async function () {
-    this.timeout(20000);
+  it('HMAC successfully generates and verify a MAC', async () =>  {
     const array = await Promise.all(hashes.map( async (hash) => {
-      const d = await hmac.compute(testKey, testMsg, hash);
+      const d: Uint8Array = await hmac.compute(testKey, testMsg, hash);
       //console.log(`${hash}: ${jseu.encoder.arrayBufferToHexString(d)}`);
-      expect(d).to.be.a('Uint8Array');
-      expect(jseu.encoder.arrayBufferToHexString(d)).to.equal(testVectors[hash]);
+      expect(jseu.encoder.arrayBufferToHexString(d)).toBe(testVectors[hash]);
       return hmac.verify(testKey, testMsg, d, hash);
     }));
     console.log(array);
-    expect(array.every((a) => (a === true))).to.be.true;
-  });
+    expect(array.every((a) => (a === true))).toBeTruthy();
+  }, 20000);
 
-  it('HMAC successfully generates unique MAC for unique key', async function () {
-    this.timeout(20000);
+  it('HMAC successfully generates unique MAC for unique key', async () => {
     const msg = random.getRandomBytes(32);
     const array = await Promise.all(hashes.map( async (hash) => {
       const keya = await random.getRandomBytes(32);
       const keyb = await random.getRandomBytes(32);
-      const da = await hmac.compute(keya, msg, hash);
-      const db = await hmac.compute(keyb, msg, hash);
-      expect(da).to.be.a('Uint8Array');
-      expect(db).to.be.a('Uint8Array');
+      const da: Uint8Array = await hmac.compute(keya, msg, hash);
+      const db: Uint8Array = await hmac.compute(keyb, msg, hash);
       return da.toString() !== db.toString();
     }));
     console.log(array);
-    expect(array.every((a) => (a === true))).to.be.true;
-  });
+    expect(array.every((a) => (a === true))).toBeTruthy();
+  }, 20000);
 
-  it('If msg is overwritten, it can be detected via MAC', async function () {
-    this.timeout(20000);
+  it('If msg is overwritten, it can be detected via MAC', async () => {
     const msg = random.getRandomBytes(32);
     const key = await random.getRandomBytes(32);
     const newMsg = new Uint8Array(msg);
@@ -72,8 +63,8 @@ describe(`${envName}: HMAC test`, () => {
     console.log(origArray);
     console.log(altArray);
 
-    expect(array.every( (x) => x)).to.be.true;
+    expect(array.every( (x) => x)).toBeTruthy();
 
-  });
+  }, 20000);
 });
 

@@ -4,7 +4,7 @@
 
 import {namedCurves} from './params';
 import asn from 'asn1.js';
-import BufferMod from 'buffer';
+import * as BufferMod from 'buffer';
 import {CurveTypes} from './typedef';
 const Buffer = BufferMod.Buffer;
 const BN = asn.bignum;

@@ -3,11 +3,6 @@ const env = getTestEnv();
 const hkdf = env.library;
 const envName = env.envName;
 
-
-import * as chai from 'chai';
-// const should = chai.should();
-const expect = chai.expect;
-
 describe(`${envName}: NIST Concat KDF Test`, () => {
   it('test', async () => {
     const concat = await hkdf.nistConcatKdf(
@@ -19,6 +14,6 @@ describe(`${envName}: NIST Concat KDF Test`, () => {
       'SHA-256'
     );
     const testVec = new Uint8Array([86, 170, 141, 234, 248, 35, 109, 32, 92, 34, 40, 205, 113, 167, 16, 26]);
-    expect(testVec.toString()).to.equal(concat.toString());
+    expect(testVec.toString()).toEqual(concat.toString());
   });
 });

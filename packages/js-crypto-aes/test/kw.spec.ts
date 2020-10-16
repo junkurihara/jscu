@@ -4,9 +4,6 @@ const aes = env.library;
 const envName = env.envName;
 
 import jseu from 'js-encoding-utils';
-import * as chai from 'chai';
-// const should = chai.should();
-const expect = chai.expect;
 
 // from https://tools.ietf.org/html/rfc3394
 const testVectors = [
@@ -25,22 +22,21 @@ const testVectors = [
 
 
 describe(`${envName}: Wrap and Unwrap with AES-KW Test`, () => {
-  before( async () => {
+  beforeAll( async () => {
   });
 
-  it('Encrypt and decrypt with AES-KW succeeds correctly with default iv', async function() {
-    this.timeout(5000);
+  it('Encrypt and decrypt with AES-KW succeeds correctly with default iv', async () => {
     await Promise.all(testVectors.map( async (testVec) => {
       const kEK = jseu.encoder.hexStringToArrayBuffer(testVec.kek);
       const cEK = jseu.encoder.hexStringToArrayBuffer(testVec.cek);
 
       const x = await aes.wrapKey(cEK, kEK, {name: 'AES-KW'});
-      expect(jseu.encoder.arrayBufferToHexString(x).toUpperCase()).to.equal(testVec.output);
+      expect(jseu.encoder.arrayBufferToHexString(x).toUpperCase()).toBe(testVec.output);
 
       const y = await aes.unwrapKey(x, kEK, {name: 'AES-KW'});
-      expect(jseu.encoder.arrayBufferToHexString(y).toUpperCase()).to.equal(testVec.cek);
+      expect(jseu.encoder.arrayBufferToHexString(y).toUpperCase()).toBe(testVec.cek);
     }));
 
-  });
+  },5000);
 
 });

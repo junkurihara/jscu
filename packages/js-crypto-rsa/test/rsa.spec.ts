@@ -7,10 +7,7 @@ const envName = env.envName;
 import rsaSmaple from './rsa_sample';
 import * as oaep from '../src/oaep';
 import jseu from 'js-encoding-utils';
-import * as chai from 'chai';
 import {JsonWebKeyPair, ModulusLength} from '../src/typedef';
-// const should = chai.should();
-const expect = chai.expect;
 
 describe(`${envName}: RSA cryptography test`, () => {
 
@@ -18,12 +15,11 @@ describe(`${envName}: RSA cryptography test`, () => {
   const keys: Array<JsonWebKeyPair|null> = [];
   const msgLen = 128;
   const msg = new Uint8Array(msgLen);
-  before( async () => {
+  beforeAll( async () => {
     for(let i = 0; i < msgLen; i++) msg[i] = 0xFF & i;
   });
 
-  it('JWK key pair is correctly generated', async function () {
-    this.timeout(500000);
+  it('JWK key pair is correctly generated', async () => {
     const results = await Promise.all(modulusLength.map(async (n) => {
       let result = true;
       const key: JsonWebKeyPair|null = await rsa.generateKey(n).catch((e: Error) => {
@@ -37,11 +33,10 @@ describe(`${envName}: RSA cryptography test`, () => {
     }));
     console.log(results);
     console.log(keys);
-    expect(results.every((r) => r)).to.be.true;
-  });
+    expect(results.every((r) => r)).toBeTruthy();
+  }, 500000);
 
-  it('Message is successfully encrypted and encrypted', async function () {
-    this.timeout(5000);
+  it('Message is successfully encrypted and encrypted', async () => {
     const results = await Promise.all(Object.keys(rsaSmaple).map( async (kp) => {
       let result = true;
       const encrypted = await rsa.encrypt(msg, rsaSmaple[kp].publicKey.jwk, 'SHA-256')
@@ -50,43 +45,40 @@ describe(`${envName}: RSA cryptography test`, () => {
       const decrypted = await rsa.decrypt(encrypted, rsaSmaple[kp].privateKey.jwk, 'SHA-256')
         .catch( (e: Error) => {result = false; console.error(e); return '';});
 
-      expect(result).to.be.true;
+      expect(result).toBeTruthy();
       return (decrypted.toString() === msg.toString());
     }));
     console.log(results);
-    expect(results.every( (r) => r)).to.be.true;
-  });
+    expect(results.every( (r) => r)).toBeTruthy();
+  },5000);
 
-  it('OAEP', async function (){
-    this.timeout(50000);
+  it('OAEP', async () => {
     const em = await oaep.emeOaepEncode(msg, new Uint8Array([]), 256, 'SHA-256');
     // console.log(em);
     const msgPrime = await oaep.emeOaepDecode(em, new Uint8Array([]), 256, 'SHA-256');
-    expect(msg.toString() === msgPrime.toString()).to.be.true;
-  });
+    expect(msg.toString() === msgPrime.toString()).toBeTruthy();
+  },5000);
 
-  it('RSASSA-PKCS1-v1_5: Message is successfully signed and verified with generated JWK pairs', async function () {
-    this.timeout(5000);
+  it('RSASSA-PKCS1-v1_5: Message is successfully signed and verified with generated JWK pairs', async () => {
     const results = await Promise.all(Object.keys(rsaSmaple).map( async (kp) => {
       let result = true;
-      const sign = await rsa.sign(msg, rsaSmaple[kp].privateKey.jwk, 'SHA-256', {name: 'RSASSA-PKCS1-v1_5'}).catch( (e) => {result = false; console.error(e);});
+      const sign = await rsa.sign(msg, rsaSmaple[kp].privateKey.jwk, 'SHA-256', {name: 'RSASSA-PKCS1-v1_5'}).catch( (e: any) => {result = false; console.error(e);});
       // console.log(sign);
       // console.log(jseu.encoder.encodeBase64(sign));
       const valid = await rsa.verify(msg, <Uint8Array>sign, rsaSmaple[kp].publicKey.jwk, 'SHA-256', {name: 'RSASSA-PKCS1-v1_5'})
         .catch( (e: Error) => {result = false; console.error(e);});
-      expect(result).to.be.true;
+      expect(result).toBeTruthy();
 
       return valid;
     }));
     console.log(results);
-    expect(results.every( (r) => r)).to.be.true;
-  });
+    expect(results.every( (r) => r)).toBeTruthy();
+  }, 5000);
 
-  it('RSA-PSS: Message is successfully signed and verified with generated JWK pairs', async function () {
-    this.timeout(5000);
+  it('RSA-PSS: Message is successfully signed and verified with generated JWK pairs', async () => {
     const results = await Promise.all(Object.keys(rsaSmaple).map(async (kp) => {
       let result = true;
-      const sign = await rsa.sign(msg, rsaSmaple[kp].privateKey.jwk, 'SHA-256').catch((e) => {
+      const sign = await rsa.sign(msg, rsaSmaple[kp].privateKey.jwk, 'SHA-256').catch((e: any) => {
         console.error(e);
         result = false;
       });
@@ -96,13 +88,13 @@ describe(`${envName}: RSA cryptography test`, () => {
           console.error(e);
           result = false;
         });
-      expect(result).to.be.true;
+      expect(result).toBeTruthy();
 
       return valid;
     }));
     console.log(results);
-    expect(results.every((r) => r)).to.be.true;
-  });
+    expect(results.every((r) => r)).toBeTruthy();
+  }, 50000);
 
 
   it('Compatibility test', async () => {
@@ -115,33 +107,33 @@ describe(`${envName}: RSA cryptography test`, () => {
 
     const decrypted = await rsa.decrypt(<Uint8Array>(jseu.encoder.decodeBase64(webEnc)), rsaSmaple['2048'].privateKey.jwk, 'SHA-256');
     console.log(decrypted.toString() === msg.toString());
-    expect(decrypted.toString() === msg.toString()).to.be.true;
+    expect(decrypted.toString() === msg.toString()).toBeTruthy();
 
     const valid = await rsa.verify(msg, <Uint8Array>jseu.encoder.decodeBase64(webSig), rsaSmaple['2048'].publicKey.jwk, 'SHA-256', {
       name: 'RSA-PSS',
       saltLength: 192
     });
     console.log(valid);
-    expect(valid).to.be.true;
+    expect(valid).toBeTruthy();
 
     const validP = await rsa.verify(msg, <Uint8Array>jseu.encoder.decodeBase64(webSigPKCS1V15), rsaSmaple['2048'].publicKey.jwk, 'SHA-256', {name: 'RSASSA-PKCS1-v1_5'});
     console.log(validP);
-    expect(validP).to.be.true;
+    expect(validP).toBeTruthy();
 
     const decryptedNode = await rsa.decrypt(<Uint8Array>jseu.encoder.decodeBase64(nodeEnc), rsaSmaple['2048'].privateKey.jwk, 'SHA-256');
     console.log(decryptedNode.toString() === msg.toString());
-    expect(decryptedNode.toString() === msg.toString()).to.be.true;
+    expect(decryptedNode.toString() === msg.toString()).toBeTruthy();
 
     const validNode = await rsa.verify(msg, <Uint8Array>jseu.encoder.decodeBase64(nodeSig), rsaSmaple['2048'].publicKey.jwk, 'SHA-256', {
       name: 'RSA-PSS',
       saltLength: 192
     });
     console.log(validNode);
-    expect(validNode).to.be.true;
+    expect(validNode).toBeTruthy();
 
     const validNodeP = await rsa.verify(msg, <Uint8Array>jseu.encoder.decodeBase64(nodeSigPKCS1V15), rsaSmaple['2048'].publicKey.jwk, 'SHA-256', {name: 'RSASSA-PKCS1-v1_5'});
     console.log(validNodeP);
-    expect(validNodeP).to.be.true;
-  });
+    expect(validNodeP).toBeTruthy();
+  }, 50000);
 
 });
