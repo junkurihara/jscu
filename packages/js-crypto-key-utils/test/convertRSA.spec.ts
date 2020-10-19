@@ -7,10 +7,6 @@ import sampleRSA from './sampleRsa';
 
 import jseu from 'js-encoding-utils';
 
-import * as chai from 'chai';
-// const should = chai.should();
-const expect = chai.expect;
-
 const objectSort = (obj: any) => {
   const keys = Object.keys(obj).sort();
   const map: {[index: string]: any} = {};
@@ -29,7 +25,7 @@ const prune = (jwk: JsonWebKey) => {
 
 const bits = ['2048', '4096'];
 describe(`${envName}: RSA Key conversion from/to JWK test.`, () => {
-  before(async () => {
+  beforeAll(async () => {
   });
 
   it('JWK RSA should be successfully converted from PEM', async () => {
@@ -45,7 +41,7 @@ describe(`${envName}: RSA Key conversion from/to JWK test.`, () => {
         && (JSON.stringify(objectSort(jwkpri)) === JSON.stringify(objectSort(prune(sampleRSA[bitLen].privateKey.jwk))));
     }));
     console.log(array);
-    expect( array.every( (a) => a)).to.be.true;
+    expect( array.every( (a) => a)).toBeTruthy();
   });
 
   it('PEM RSA should be successfully converted from JWK', async () => {
@@ -60,7 +56,7 @@ describe(`${envName}: RSA Key conversion from/to JWK test.`, () => {
       return (pempub === sampleRSA[bitLen].publicKey.pem) && (pempri === sampleRSA[bitLen].privateKey.pem);
     }));
     console.log(array);
-    expect( array.every( (a) => a)).to.be.true;
+    expect( array.every( (a) => a)).toBeTruthy();
   });
 
   it('JWK RSA should be successfully converted from DER', async () => {
@@ -79,7 +75,7 @@ describe(`${envName}: RSA Key conversion from/to JWK test.`, () => {
         && (JSON.stringify(objectSort(jwkpri)) === JSON.stringify(objectSort(prune(sampleRSA[bitLen].privateKey.jwk))));
     }));
     console.log(array);
-    expect( array.every( (a) => a)).to.be.true;
+    expect( array.every( (a) => a)).toBeTruthy();
   });
 
   it('DER RSA should be successfully converted from JWK', async () => {
@@ -95,7 +91,7 @@ describe(`${envName}: RSA Key conversion from/to JWK test.`, () => {
         && (derpri.toString() === jseu.formatter.pemToBin(sampleRSA[bitLen].privateKey.pem).toString());
     }));
     console.log(array);
-    expect( array.every( (a) => a)).to.be.true;
+    expect( array.every( (a) => a)).toBeTruthy();
   });
 
 });

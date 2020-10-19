@@ -5,7 +5,7 @@
 import * as params from './params';
 import {PBES2ESParams, PBEParameter, PBES2Params, PBKDF2Params, OneAsymmetricKey, EncryptedPrivateKeyInfo} from './asn1def';
 import des from 'des.js';
-import BufferMod from 'buffer';
+import * as BufferMod from 'buffer';
 import asn from 'asn1.js';
 import jseu from 'js-encoding-utils';
 import pbkdf from 'js-crypto-pbkdf';

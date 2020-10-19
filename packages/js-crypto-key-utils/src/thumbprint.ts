@@ -4,7 +4,7 @@
 
 import jseu from 'js-encoding-utils';
 import hash from 'js-crypto-hash';
-import BufferMod from 'buffer';
+import * as BufferMod from 'buffer';
 import {HashTypes, JwkThumbprintFormat} from './typedef';
 const Buffer = BufferMod.Buffer;
 

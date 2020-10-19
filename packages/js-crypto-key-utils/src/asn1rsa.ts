@@ -4,7 +4,7 @@
 
 import asn from 'asn1.js';
 import jseu from 'js-encoding-utils';
-import BufferMod from 'buffer';
+import * as BufferMod from 'buffer';
 const Buffer = BufferMod.Buffer;
 import * as params from './params';
 import {appendLeadingZeros, pruneLeadingZeros} from './util';

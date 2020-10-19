@@ -5,11 +5,8 @@ const envName = env.envName;
 
 import ec from 'js-crypto-ec';
 
-import * as chai from 'chai';
 import {CurveTypes} from 'js-crypto-ec/dist/typedef';
 import {SignatureType} from '../src/typedef';
-// const should = chai.should();
-const expect = chai.expect;
 
 const curves: Array<CurveTypes> = ['P-256', 'P-384', 'P-521', 'P-256K'];
 const sigopt: Array<SignatureType> = ['ecdsa-with-sha256', 'ecdsa-with-sha384', 'ecdsa-with-sha512', 'ecdsa-with-sha1'];
@@ -29,15 +26,13 @@ const crtsample = '-----BEGIN CERTIFICATE-----\n' +
 describe(`${envName}: Generated JWK EC public key should be successfully converted to X509 PEM certificate and vice versa`, () => {
   let keySet: Array<any> = [];
   let msg;
-  before(async function () {
-    this.timeout(20000);
+  beforeAll(async () => {
     keySet = await Promise.all(curves.map(async (crv) => await ec.generateKey(crv)));
     msg = new Uint8Array(32);
     for (let i = 0; i < 32; i++) msg[i] = 0xFF & i;
-  });
+  }, 20000);
 
-  it('Transform JWKs to X509 PEMs as self certs and verify generated ones', async function () {
-    this.timeout(20000);
+  it('Transform JWKs to X509 PEMs as self certs and verify generated ones', async () => {
     const name = {
       countryName: 'JP',
       stateOrProvinceName: 'Tokyo',
@@ -69,24 +64,23 @@ describe(`${envName}: Generated JWK EC public key should be successfully convert
             // console.log(parsed.signatureAlgorithm);
             re = await ec.verify(parsed.tbsCertificate, parsed.signatureValue, kp.publicKey, parsed.signatureAlgorithm.parameters.hash, 'der');
           } catch (e) { re = false; }
-          expect(re, `failed at ${so}`).to.be.true;
+          expect(re).toBeTruthy();
           result = re && result;
         }));
         return result;
       })
     );
     console.log(array);
-    expect(array.every( (x) => x)).to.be.true;
-  });
+    expect(array.every( (x) => x)).toBeTruthy();
+  },20000);
 
-  it('Transform X509 Self Signed PEM to JWK, and verify it', async function () {
-    this.timeout(20000);
+  it('Transform X509 Self Signed PEM to JWK, and verify it', async () => {
     const jwkey = await x509.toJwk(crtsample, 'pem');
 
     const parsed = x509.parse(crtsample, 'pem');
     const re = await ec.verify(parsed.tbsCertificate, parsed.signatureValue, jwkey, parsed.signatureAlgorithm.parameters.hash, 'der');
     console.log(re);
-    expect(re).to.be.true;
-  });
+    expect(re).toBeTruthy();
+  }, 20000);
 
 });

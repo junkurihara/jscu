@@ -6,7 +6,7 @@ import * as util from 'js-crypto-env';
 import params, {HashTypes, Sha3LenType} from './params';
 import md5 from 'md5';
 import {SHA3} from 'sha3';
-import jsHash from 'hash.js';
+import * as jsHash from 'hash.js';
 
 
 /**

@@ -4,9 +4,6 @@ const aes = env.library;
 const envName = env.envName;
 
 import jseu from 'js-encoding-utils';
-import * as chai from 'chai';
-// const should = chai.should();
-const expect = chai.expect;
 
 // https://tools.ietf.org/html/rfc3686
 const testVectors = [
@@ -25,22 +22,21 @@ const testVectors = [
 ];
 
 describe(`${envName}: Encryption and Decryption with AES-CTR Test`, () => {
-  before( async () => {
+  beforeAll( async () => {
   });
 
-  it('Encrypt and decrypt with AES-CTR succeeds correctly', async function() {
-    this.timeout(5000);
+  it('Encrypt and decrypt with AES-CTR succeeds correctly', async () => {
     await Promise.all(testVectors.map( async (testVec) => {
 
       const key = jseu.encoder.hexStringToArrayBuffer(testVec.key);
       const data = jseu.encoder.hexStringToArrayBuffer(testVec.data);
       const iv = jseu.encoder.hexStringToArrayBuffer(testVec.iv);
       const encrypted = await aes.encrypt(data, key, {name: 'AES-CTR', iv});
-      expect(jseu.encoder.arrayBufferToHexString(encrypted).toUpperCase()).to.equal(testVec.output);
+      expect(jseu.encoder.arrayBufferToHexString(encrypted).toUpperCase()).toBe(testVec.output);
       const decrypted = await aes.decrypt(encrypted, key, {name: 'AES-CTR', iv});
-      expect(jseu.encoder.arrayBufferToHexString(decrypted).toUpperCase()).to.equal(testVec.data);
+      expect(jseu.encoder.arrayBufferToHexString(decrypted).toUpperCase()).toBe(testVec.data);
     }));
-  });
+  }, 5000);
 
 
 });

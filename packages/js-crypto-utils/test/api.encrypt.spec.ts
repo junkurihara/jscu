@@ -1,8 +1,5 @@
 import {getTestEnv} from './prepare';
-import * as chai from 'chai';
 import {CurveTypes, HashTypes, ModulusLength, PKCCiphertextObject} from '../src/typedef';
-// const should = chai.should();
-const expect = chai.expect;
 const env = getTestEnv();
 const jscu = env.library;
 const envName = env.envName;
@@ -15,13 +12,12 @@ describe(`${envName}: Encryption test`, () => {
   let ecKeySet: Array<any> = [];
   let rsaKeySet: Array<any> = [];
   let msg: Uint8Array;
-  before( async function () {
-    this.timeout(10000);
+  beforeAll( async () => {
     ecKeySet = await Promise.all(curves.map( async (crv) => [ await jscu.pkc.generateKey('EC', {namedCurve: crv}), await jscu.pkc.generateKey('EC', {namedCurve: crv})]));
     rsaKeySet = await Promise.all(mods.map( async (nLen) => await jscu.pkc.generateKey('RSA', {modulusLength: nLen})));
     msg = new Uint8Array(32);
     for(let i = 0; i < 32; i++) msg[i] = 0xFF & i;
-  });
+  },10000);
 
   it('ECDH: Encrypted message is successfully generated and decrypted with AES-GCM', async () => {
     for (let i = 0; i < curves.length; i++) {
@@ -46,7 +42,7 @@ describe(`${envName}: Encryption test`, () => {
         };
         const decrypted = await jscu.pkc.decrypt(encrypted.data, ecKeySet[i][0].privateKey, decryptionOptions);
 
-        expect(msg.toString() === decrypted.toString()).to.be.true;
+        expect(msg.toString() === decrypted.toString()).toBeTruthy();
       }
     }
   });
@@ -74,7 +70,7 @@ describe(`${envName}: Encryption test`, () => {
         };
         const decrypted = await jscu.pkc.decrypt(encrypted.data, ecKeySet[i][0].privateKey, decryptionOptions);
 
-        expect(keyMsg.toString()).to.equal(decrypted.toString());
+        expect(keyMsg.toString()).toEqual(decrypted.toString());
       }
     }
   });
@@ -82,13 +78,13 @@ describe(`${envName}: Encryption test`, () => {
   it('RSA-OAEP: Encrypted message is successfully generated and decrypted', async () => {
     const results = await Promise.all(rsaKeySet.map( async (kp) => {
       let result = true;
-      const encrypted = await jscu.pkc.encrypt(msg, kp.publicKey, {hash: 'SHA-256'}).catch( (e) => {console.error(e); result = false;});
-      const decrypted = await jscu.pkc.decrypt((<PKCCiphertextObject>encrypted).data, kp.privateKey, {hash: 'SHA-256'}).catch( (e) => {result = false; console.error(e);});
+      const encrypted = await jscu.pkc.encrypt(msg, kp.publicKey, {hash: 'SHA-256'}).catch( (e: any) => {console.error(e); result = false;});
+      const decrypted = await jscu.pkc.decrypt((<PKCCiphertextObject>encrypted).data, kp.privateKey, {hash: 'SHA-256'}).catch( (e: any) => {result = false; console.error(e);});
 
-      expect(result).to.be.true;
+      expect(result).toBeTruthy();
       return ((<Uint8Array>decrypted).toString() === msg.toString());
     }));
-    expect(results.every( (r) => r)).to.be.true;
+    expect(results.every( (r) => r)).toBeTruthy();
   });
 });
 
