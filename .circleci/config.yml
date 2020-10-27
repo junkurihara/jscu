@@ -8,6 +8,9 @@ defaults: &defaults
   docker:
     # specify the version you desire here
     - image: circleci/node:lts-browsers
+      auth:
+        username: $DOCKERHUB_USER
+        password: $DOCKERHUB_TOKEN
 
     # Specify service dependencies here if necessary
     # CircleCI maintains a library of pre-built images
@@ -93,18 +96,24 @@ workflows:
   test-publish:
     jobs:
     - test:
+        context:
+          - docker-hub-cred
         filters:
           tags:
             only: /^v[0-9]+(\.[0-9]+)*/
     - publish:
+        context:
+          - docker-hub-cred
         requires:
-        - test
+          - test
         filters:
           tags:
             only: /^v[0-9]+(\.[0-9]+)*/
           branches:
             ignore: /.*/
     - webpage:
+        context:
+          - docker-hub-cred
         requires:
           - test
         filters:
