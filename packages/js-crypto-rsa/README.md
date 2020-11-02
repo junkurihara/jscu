@@ -94,19 +94,12 @@ rsa.encrypt(
   msg,
   publicJwk,
   'SHA-256', // optional, for OAEP. default is 'SHA-256'
-  { // optional
-    name: 'RSA-PSS', // default. 'RSASSA-PKCS1-v1_5' is also available.
-    // label: new Uint8Array([...]) // optional
-  }).then( (encrypted) => {
+  ).then( (encrypted) => {
   // now you get an encrypted message in Uint8Array
     return rsa.decrypt(
       encrypted,
       privateJwk,
       'SHA-256', // optional, for OAEP. default is 'SHA-256'
-      { // optional
-        name: 'RSA-PSS', // default. 'RSASSA-PKCS1-v1_5' is also available.
-        // label: new Uint8Array([...]) // optional
-      }
     );  
 }).then( (decrypted) => {
   // now you get the decrypted message
