@@ -46,7 +46,7 @@
   ],
   "dependencies": {
     "asn1.js": "~5.4.1",
-    "buffer": "~5.7.0",
+    "buffer": "~6.0.0",
     "des.js": "~1.0.0",
     "elliptic": "~6.5.0",
     "js-crypto-aes": "^1.0.0",
