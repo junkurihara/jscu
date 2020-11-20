@@ -232,7 +232,9 @@ export class Key {
     if(this._isEncrypted) throw new Error('DecryptionRequired');
     return new Promise( (resolve, reject) => {
       this.export('jwk')
-        .then( (r) => resolve( (<JsonWebKey>r).kty))
+        .then( (r) => {
+          resolve( <string>((<JsonWebKey>r).kty));
+        })
         .catch( (e) => {reject(e);});
     });
   }
