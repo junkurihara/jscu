@@ -29,7 +29,7 @@
     "webcrypto"
   ],
   "devDependencies": {
-    "js-crypto-random": "^1.0.0",
+    "js-crypto-random": "1.0.0",
     "js-encoding-utils": "0.6.2"
   },
   "dependencies": {
