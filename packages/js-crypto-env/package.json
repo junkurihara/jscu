@@ -6,6 +6,7 @@
   "scripts": {
     "test": "yarn jest",
     "karma": "karma start",
+    "karma:window": "karma start",
     "tsc": "tsc --build ./tsconfig.json",
     "babel": "cross-env NODE_ENV=production yarn tsc",
     "build": "rm -rf ./dist && npm run babel",

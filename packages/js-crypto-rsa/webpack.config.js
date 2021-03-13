@@ -1,5 +1,5 @@
 const path = require('path');
-// const webpack = require('webpack');
+const webpack = require('webpack');
 const base = require('./webpack.config.base');
 
 const config = {
@@ -35,7 +35,12 @@ const config = {
   },
   externals: {
     crypto: true
-  }
+  },
+  plugins: [
+    new webpack.ProvidePlugin({
+      Buffer: ['buffer', 'Buffer'],
+    })
+  ]
 };
 
 module.exports = (env, argv) => {
