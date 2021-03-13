@@ -9,3 +9,4 @@ coverage
 .nyc_output
 dist
 esdocs
+yarn.lock

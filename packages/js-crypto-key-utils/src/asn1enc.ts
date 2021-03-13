@@ -6,7 +6,7 @@ import * as asn1ec from './asn1ec';
 import * as asn1rsa from './asn1rsa';
 import {publicKeyAlgorithms, getAlgorithmFromOid} from './params';
 import jseu from 'js-encoding-utils';
-import BufferMod from 'buffer';
+import * as BufferMod from 'buffer';
 import {OneAsymmetricKey, SubjectPublicKeyInfo, KeyStructure} from './asn1def';
 import {encryptEncryptedPrivateKeyInfo, decryptEncryptedPrivateKeyInfo} from './rfc8018';
 import {getJwkType} from './util';

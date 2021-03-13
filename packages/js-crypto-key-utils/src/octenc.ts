@@ -4,7 +4,7 @@
 
 import * as params from './params';
 import jseu from 'js-encoding-utils';
-import elliptic from 'elliptic';
+import * as elliptic from 'elliptic';
 import {getJwkType, getSec1KeyType} from './util';
 import {OctetFormat, PublicOrPrivate, OctetEC, CurveTypes} from './typedef';
 const Ec = elliptic.ec;

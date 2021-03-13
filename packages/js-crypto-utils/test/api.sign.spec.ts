@@ -1,8 +1,5 @@
 import {getTestEnv} from './prepare';
-import * as chai from 'chai';
 import {CurveTypes, HashTypes, ModulusLength} from '../src/typedef';
-// const should = chai.should();
-const expect = chai.expect;
 const env = getTestEnv();
 const jscu = env.library;
 const envName = env.envName;
@@ -13,14 +10,13 @@ describe(`${envName}: Signing and verification test via exported api`, () => {
   let ecKeySet: Array<any> = [];
   let rsaKeySet: Array<any> = [];
   let msg: Uint8Array;
-  before( async function () {
-    this.timeout(10000);
+  beforeAll( async () => {
     ecKeySet = await Promise.all(curves.map( async (crv) => await jscu.pkc.generateKey('EC', {namedCurve: crv})));
     const mods: Array<ModulusLength> = [2048, 4096];
     rsaKeySet = await Promise.all(mods.map( async (nLen) => await jscu.pkc.generateKey('RSA', {modulusLength: nLen})));
     msg = new Uint8Array(32);
     for(let i = 0; i < 32; i++) msg[i] = 0xFF & i;
-  });
+  },10000);
 
 
 
@@ -29,7 +25,7 @@ describe(`${envName}: Signing and verification test via exported api`, () => {
       for (let j = 0; j < hashes.length; j++){
         const sig = await jscu.pkc.sign(msg, ecKeySet[i].privateKey, hashes[j]);
         const result = await jscu.pkc.verify(msg, sig, ecKeySet[i].publicKey, hashes[j]);
-        expect(result).to.be.true;
+        expect(result).toBeTruthy();
       }
     }
   });
@@ -45,7 +41,7 @@ describe(`${envName}: Signing and verification test via exported api`, () => {
         }
         return result;
       }));
-    expect(array.every( (r) => r)).to.be.true;
+    expect(array.every( (r) => r)).toBeTruthy();
   });
 
   it('RSASSA-PKCS1-v1_5 Signing and verification should be done successfully', async () => {
@@ -59,7 +55,7 @@ describe(`${envName}: Signing and verification test via exported api`, () => {
         }
         return result;
       }));
-    expect(array.every( (r) => r)).to.be.true;
+    expect(array.every( (r) => r)).toBeTruthy();
   });
 
 });

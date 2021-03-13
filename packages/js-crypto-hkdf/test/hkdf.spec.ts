@@ -3,48 +3,41 @@ const env = getTestEnv();
 const hkdf = env.library;
 const envName = env.envName;
 
-
-import * as chai from 'chai';
 import {HashTypes} from '../src/params';
-// const should = chai.should();
-const expect = chai.expect;
 
-
-let hashes: Array<HashTypes> = [//'SHA-256', 'SHA-384', 'SHA-512', 'SHA-1', 'MD5',
+const hashes: Array<HashTypes> = [//'SHA-256', 'SHA-384', 'SHA-512', 'SHA-1', 'MD5',
   'SHA3-224', 'SHA3-256', 'SHA3-384', 'SHA3-512'];
 describe(`${envName}: HKDF test`, () => {
   let masterSecret: Uint8Array;
   const length = 144;
-  before( async () => {
+  beforeAll( async () => {
     masterSecret = new Uint8Array(32);
     for(let i = 0; i < 32; i++) masterSecret[i] = 0xFF & i;
   });
 
-  it('HKDF is done with automatic salt generation', async function () {
-    this.timeout(20000);
+  it('HKDF is done with automatic salt generation', async () => {
     await Promise.all(hashes.map( async (hash) => {
       const d = await hkdf.compute(masterSecret, hash, length, '', null);
-      expect(d.key).to.be.a('Uint8Array');
-      expect(d.salt).to.be.a('Uint8Array');
-      expect(d.key.byteLength, `failed at ${hash}`).to.be.equal(length);
+      expect(d.key).toBeInstanceOf(Uint8Array);
+      expect(d.salt).toBeInstanceOf(Uint8Array);
+      expect(d.key.byteLength === length).toBeTruthy();
     }));
 
-  });
+  },20000);
 
-  it('When the same salt is given, the same hash is obtained with HKDF', async function () {
-    this.timeout(20000);
+  it('When the same salt is given, the same hash is obtained with HKDF', async () => {
     await Promise.all(hashes.map( async (hash) => {
       const d = await hkdf.compute(masterSecret, hash, length, '', null);
-      expect(d.key).to.be.a('Uint8Array');
-      expect(d.salt).to.be.a('Uint8Array');
-      expect(d.key.byteLength, `failed at ${hash}`).to.be.equal(length);
+      expect(d.key).toBeInstanceOf(Uint8Array);
+      expect(d.salt).toBeInstanceOf(Uint8Array);
+      expect(d.key.byteLength).toBe(length);
 
       const dash = await hkdf.compute(masterSecret, hash, length, '', d.salt);
-      expect(dash.key).to.be.a('Uint8Array');
-      expect(dash.salt).to.be.a('Uint8Array');
-      expect(dash.key.toString() === d.key.toString(), `failed at ${hash}`).to.be.true;
+      expect(dash.key).toBeInstanceOf(Uint8Array);
+      expect(dash.salt).toBeInstanceOf(Uint8Array);
+      expect(dash.key.toString() === d.key.toString()).toBeTruthy();
     }));
-  });
+  },20000);
 
   const fixedMACs = {
     'SHA-256': '124,145,193,234,149,107,107,61,61,58,9,228,216,212,69,71,240,202,118,194,180,114,113,80,57,24,232,113,213,155,191,166,26,1,94,230,244,185,171,102,20,246,59,203,245,200,17,25,92,22,196,106,168,145,125,94,125,84,101,149,119,146,250,243,152,225,232,129,232,101,106,19,55,157,34,240,146,204,162,5,235,156,31,230,188,36,176,44,67,35,99,135,83,197,177,236,167,63,60,93,47,189,225,162,175,151,241,234,151,223,136,25,249,206,88,208,28,111,166,235,128,33,40,15,90,219,238,153,152,79,97,115,33,89,55,168,181,141,76,237,144,181,57,117',
@@ -58,14 +51,13 @@ describe(`${envName}: HKDF test`, () => {
     'SHA3-224': '225,31,13,201,159,206,231,102,165,126,252,0,172,229,177,221,4,25,134,170,228,146,145,251,82,245,30,210,232,195,152,24,188,226,140,196,146,189,223,209,166,127,92,222,248,140,155,6,80,59,245,77,245,29,15,31,179,157,85,234,119,207,158,133,206,248,245,80,71,16,151,241,148,99,149,148,78,125,145,36,97,140,49,57,116,4,177,49,139,113,23,173,231,207,79,200,177,111,232,215,105,219,118,229,87,196,60,57,106,250,17,214,0,102,77,113,39,150,71,170,32,188,39,247,172,80,83,216,163,133,177,8,202,34,188,255,85,41,251,175,226,71,76,151',
   };
 
-  it('When the fixed salt is given, the mac is always fixed', async function () {
-    this.timeout(20000);
+  it('When the fixed salt is given, the mac is always fixed', async () => {
     await Promise.all(hashes.map( async (hash) => {
       const d = await hkdf.compute(masterSecret, hash, length, '', masterSecret);
-      expect(d.key).to.be.a('Uint8Array');
-      expect(d.salt).to.be.a('Uint8Array');
-      expect(d.key.toString() === fixedMACs[hash]).to.be.true;
+      expect(d.key).toBeInstanceOf(Uint8Array);
+      expect(d.salt).toBeInstanceOf(Uint8Array);
+      expect(d.key.toString() === fixedMACs[hash]).toBeTruthy();
     }));
-  });
+  },20000);
 });
 

@@ -6,10 +6,7 @@ const envName = env.envName;
 import sampleEC from './sampleEc';
 import sampleRSA from './sampleRsa';
 
-import * as chai from 'chai';
 import {HashTypes} from '../src/typedef';
-// const should = chai.should();
-const expect = chai.expect;
 
 //const curves = ['P-256', 'P-384', 'P-521', 'P-256K'];
 const bits = ['2048', '4096'];
@@ -17,7 +14,7 @@ const hashes: HashTypes[] = [ 'SHA-256', 'SHA-384', 'SHA-512'];
 describe(`${envName}: JWK thumbprint generation test.`, () => {
 
   let keySet: any[] = [];
-  before(async () => {
+  beforeAll(async () => {
     keySet= sampleEC.ecKey; //await Promise.all(curves.map(async (crv) => await ec.generateKey(crv)));
   });
 
@@ -27,7 +24,7 @@ describe(`${envName}: JWK thumbprint generation test.`, () => {
         async (h) => {
           const key = new keyutils.Key('jwk', jwkey.publicKey);
           const tp = await key.getJwkThumbprint(h);
-          expect(tp instanceof Uint8Array).to.be.true;
+          expect(tp instanceof Uint8Array).toBeTruthy();
           return tp;
         }
       ))
@@ -41,7 +38,7 @@ describe(`${envName}: JWK thumbprint generation test.`, () => {
         async (h) => {
           const key = new keyutils.Key('jwk', jwkey.publicKey);
           const tp = await key.getJwkThumbprint(h, 'hex');
-          expect(typeof(tp)==='string').to.be.true;
+          expect(typeof(tp)==='string').toBeTruthy();
           return tp;
         }
       ))
@@ -55,7 +52,7 @@ describe(`${envName}: JWK thumbprint generation test.`, () => {
         async (h) => {
           const key = new keyutils.Key('jwk', sampleRSA[bitLen].publicKey.jwk);
           const tp = await key.getJwkThumbprint(h);
-          expect(tp instanceof Uint8Array).to.be.true;
+          expect(tp instanceof Uint8Array).toBeTruthy();
           return tp;
         }
       ))
@@ -69,7 +66,7 @@ describe(`${envName}: JWK thumbprint generation test.`, () => {
         async (h) => {
           const key = new keyutils.Key('jwk', sampleRSA[bitLen].publicKey.jwk);
           const tp = await key.getJwkThumbprint(h, 'hex');
-          expect(typeof(tp)==='string').to.be.true;
+          expect(typeof(tp)==='string').toBeTruthy();
           return tp;
         }
       ))

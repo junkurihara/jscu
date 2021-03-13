@@ -7,17 +7,14 @@ import sample from './sample_crt';
 
 import rsa from 'js-crypto-rsa';
 import {Key} from 'js-crypto-key-utils';
-import * as chai from 'chai';
 import {HashTypes, SignatureType} from '../src/typedef';
-// const should = chai.should();
-const expect = chai.expect;
 
 const hashes: Array<HashTypes> = ['SHA-256', 'SHA-384', 'SHA-512'];//, 'SHA-1'];
 const pkcs1s: Array<SignatureType> = [ 'sha256WithRSAEncryption', 'sha384WithRSAEncryption', 'sha512WithRSAEncryption']; // RSASSA-PKCS1-v1_5
 const constantSaltLen = 32;
 
 describe(`${envName}: RSA: Generated JWK public key should be successfully converted to X509 PEM certificate and vice versa`, () => {
-  before(async () => {
+  beforeAll(async () => {
   });
 
   it('Transform JWKs to X509 RSASSA-PKCS1-v1_5 PEM as self signed cert and verify generated one', async () => {
@@ -57,7 +54,7 @@ describe(`${envName}: RSA: Generated JWK public key should be successfully conve
       return re;
     }));
     console.log(results);
-    expect(results.every( (elem) => elem === true)).to.be.true;
+    expect(results.every( (elem) => elem === true)).toBeTruthy();
   });
 
   it('Transform JWKs to X509 RSA-PSS Empty Parameter PEM as self signed cert and verify generated one', async () => {
@@ -94,7 +91,7 @@ describe(`${envName}: RSA: Generated JWK public key should be successfully conve
       {name: 'RSA-PSS', saltLength: parsed.signatureAlgorithm.parameters.saltLength}
     );
     console.log(re);
-    expect(re).to.be.true;
+    expect(re).toBeTruthy();
   });
 
   it('Transform JWKs to X509 RSA-PSS Explicit Parameter PEM as self signed cert and verify generated one', async () => {
@@ -136,7 +133,7 @@ describe(`${envName}: RSA: Generated JWK public key should be successfully conve
       return re;
     }));
     console.log(results);
-    expect(results.every( (elem) => elem === true)).to.be.true;
+    expect(results.every( (elem) => elem === true)).toBeTruthy();
   });
 
   it('Transform X509 Self Signed RSASSA-PKCS1-v1_5 PEM to JWK, and verify it', async () => {
@@ -151,7 +148,7 @@ describe(`${envName}: RSA: Generated JWK public key should be successfully conve
     );
     // = await rsa.verify(parsed.tbsCertificate, parsed.signatureValue, jwkey, parsed.hash, 'der');
     console.log(re);
-    expect(re).to.be.true;
+    expect(re).toBeTruthy();
   });
 
   it('Transform X509 Self Signed RSA-PSS Explicit Parameter PEM to JWK, and verify it', async () => {
@@ -198,7 +195,7 @@ describe(`${envName}: RSA: Generated JWK public key should be successfully conve
     );
     // = await rsa.verify(parsed.tbsCertificate, parsed.signatureValue, jwkey, parsed.hash, 'der');
     console.log(re);
-    expect(re).to.be.true;
+    expect(re).toBeTruthy();
   });
 
   it('Transform X509 Self Signed RSA-PSS Empty Parameter PEM to JWK, and verify it', async () => {
@@ -241,7 +238,7 @@ describe(`${envName}: RSA: Generated JWK public key should be successfully conve
       {name: 'RSA-PSS', saltLength: parsed.signatureAlgorithm.parameters.saltLength}
     );
     console.log(re);
-    expect(re).to.be.true;
+    expect(re).toBeTruthy();
   });
 
 });

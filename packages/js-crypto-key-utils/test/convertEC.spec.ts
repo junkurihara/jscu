@@ -5,10 +5,7 @@ const envName = env.envName;
 
 import ecKey from './sampleEc';
 
-import * as chai from 'chai';
 //import {CurveTypes} from '../src/typedef';
-// const should = chai.should();
-const expect = chai.expect;
 
 const objectSort = (obj: any) => {
   const keys = Object.keys(obj).sort();
@@ -29,10 +26,9 @@ const prune = (jwk: JsonWebKey) => {
 describe(`${envName}: EC Key conversion from/to JWK test.`, () => {
   
   let ECKeySet: any[] = [];
-  before(async function (){
-    this.timeout(20000);
+  beforeAll(async function (){
     ECKeySet = ecKey.ecKey;//await Promise.all(curves.map(async (crv) => await ec.generateKey(crv)));
-  });
+  }, 20000);
 
   it('JWK EC should be successfully converted to PEM and re-converted to JWK correctly', async () => {
     const array = await Promise.all(ECKeySet.map( async (key) => {
@@ -61,7 +57,7 @@ describe(`${envName}: EC Key conversion from/to JWK test.`, () => {
       return res;
     }));
     console.log(array);
-    expect(array.every( (elem) => elem)).to.be.true;
+    expect(array.every( (elem) => elem)).toBeTruthy();
   });
 
   it('JWK EC should be successfully converted to PEM and re-converted to JWK correctly with public key compact form', async () => {
@@ -83,7 +79,7 @@ describe(`${envName}: EC Key conversion from/to JWK test.`, () => {
         && (JSON.stringify(objectSort(jwkpri)) === JSON.stringify(objectSort(prune(key.privateKey))));
     }));
     console.log(array);
-    expect(array.every( (elem) => elem)).to.be.true;
+    expect(array.every( (elem) => elem)).toBeTruthy();
   });
 
 
@@ -107,7 +103,7 @@ describe(`${envName}: EC Key conversion from/to JWK test.`, () => {
           && (JSON.stringify(objectSort(jwkpri)) === JSON.stringify(objectSort(prune(key.privateKey))));
     }));
     console.log(array);
-    expect(array.every( (elem) => elem)).to.be.true;
+    expect(array.every( (elem) => elem)).toBeTruthy();
   });
 
   it('JWK EC should be successfully converted to DER and re-converted to JWK correctly with public key compact form', async () => {
@@ -128,7 +124,7 @@ describe(`${envName}: EC Key conversion from/to JWK test.`, () => {
           && (JSON.stringify(objectSort(jwkpri)) === JSON.stringify(objectSort(prune(key.privateKey))));
     }));
     console.log(array);
-    expect(array.every( (elem) => elem)).to.be.true;
+    expect(array.every( (elem) => elem)).toBeTruthy();
   });
 
   it('JWK EC should be successfully converted to uncompressed-octet formed key and vice varsa', async () => {
@@ -149,7 +145,7 @@ describe(`${envName}: EC Key conversion from/to JWK test.`, () => {
           && (JSON.stringify(objectSort(jwkpri)) === JSON.stringify(objectSort(prune(key.privateKey))));
     }));
     console.log(array);
-    expect(array.every( (elem) => elem)).to.be.true;
+    expect(array.every( (elem) => elem)).toBeTruthy();
   });
 
   it('JWK EC should be successfully converted to compact-octet formed key and vice varsa', async () => {
@@ -171,7 +167,7 @@ describe(`${envName}: EC Key conversion from/to JWK test.`, () => {
         && (JSON.stringify(objectSort(jwkpri)) === JSON.stringify(objectSort(prune(key.privateKey))));
     }));
     console.log(array);
-    expect(array.every( (elem) => elem)).to.be.true;
+    expect(array.every( (elem) => elem)).toBeTruthy();
   });
 
 });

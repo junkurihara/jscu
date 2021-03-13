@@ -1,18 +1,15 @@
 {
   "name": "js-crypto-env",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Shared environment modules for jscu",
   "main": "dist/index.js",
   "scripts": {
-    "test": "cross-env NODE_ENV=test nyc mocha --recursive $(find test -name '*.spec.ts')",
-    "test:bundle": "npm run build && cross-env TEST_ENV=bundle npm run test",
-    "karma": "cross-env TEST_ENV=source karma start",
-    "karma:bundle": "cross-env TEST_ENV=bundle karma start",
-    "karma:window": "cross-env TEST_ENV=window karma start",
+    "test": "yarn jest",
+    "karma": "karma start",
     "tsc": "tsc --build ./tsconfig.json",
     "babel": "cross-env NODE_ENV=production yarn tsc",
     "build": "rm -rf ./dist && npm run babel",
-    "cleanup": "rm -rf ./dist coverage .nyc_output"
+    "cleanup": "rm -rf ./dist coverage ./node_modules"
   },
   "author": "Jun Kurihara",
   "license": "MIT",

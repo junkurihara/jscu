@@ -5,10 +5,7 @@ const envName = env.envName;
 
 import sample from './sampleEncrypted';
 
-import * as chai from 'chai';
 import {AsnEncryptOptionsWithPassphrase} from '../src/typedef';
-// const should = chai.should();
-const expect = chai.expect;
 
 const objectSort = (obj: any) => {
   const keys = Object.keys(obj).sort();
@@ -32,11 +29,10 @@ describe(`${envName}: RSA/EC Key conversion from/to JWK test.`, () => {
   const rsaSample = sample.RSA;
   const ecSample = sample.EC;
 
-  before(async () => {
+  beforeAll(async () => {
   });
 
-  it('RSA PBES1 and PBES2 PEM keys can be successfully converted and reconverted to/from JWK', async function (){
-    this.timeout(50000);
+  it('RSA PBES1 and PBES2 PEM keys can be successfully converted and reconverted to/from JWK', async () => {
     const array = await Promise.all(Object.keys(rsaSample).map( async (key) => {
       const elem = await Promise.all(encOptionArray.map( async (encOptions) => {
         let result = true;
@@ -71,7 +67,7 @@ describe(`${envName}: RSA/EC Key conversion from/to JWK test.`, () => {
       return elem.every( (x) => x);
     }));
     console.log(`result: ${array}`);
-    expect(array.every( (x) => x)).to.be.true;
+    expect(array.every( (x) => x)).toBeTruthy();
 
     // AES256 encrypted key sample
     // const test = '-----BEGIN ENCRYPTED PRIVATE KEY-----\n' +
@@ -105,11 +101,10 @@ describe(`${envName}: RSA/EC Key conversion from/to JWK test.`, () => {
     //   'ywUZpixaRCAyxa2Bbjcm/lKsUfdMq8cgzRW51wTpFlMs\n' +
     //   '-----END ENCRYPTED PRIVATE KEY-----';
     // console.log(await keyutils.toJwkFrom('pem', test, {passphrase: 'kddilabs'}).catch( () => {result = false;}));
-  });
+  }, 50000);
 
 
-  it('EC PBES1 and PBES2 PEM keys can be successfully converted and reconverted to/from JWK', async function() {
-    this.timeout(50000);
+  it('EC PBES1 and PBES2 PEM keys can be successfully converted and reconverted to/from JWK', async () => {
     const array = await Promise.all(Object.keys(ecSample).map( async (key) => {
       const elem = await Promise.all(encOptionArray.map( async (encOptions) => {
         let result = true;
@@ -145,7 +140,7 @@ describe(`${envName}: RSA/EC Key conversion from/to JWK test.`, () => {
       return elem.every( (x) => x);
     }));
     console.log(`result: ${array}`);
-    expect(array.every( (x) => x)).to.be.true;
-  });
+    expect(array.every( (x) => x)).toBeTruthy();
+  }, 50000);
 
 });

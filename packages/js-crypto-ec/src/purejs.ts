@@ -8,7 +8,7 @@ import random from 'js-crypto-random';
 import jschash from 'js-crypto-hash';
 import {Key} from 'js-crypto-key-utils';
 import jseu from 'js-encoding-utils';
-import elliptic from 'elliptic';
+import * as elliptic from 'elliptic';
 import {JsonWebKeyPair, CurveTypes, HashTypes, SignatureFormat} from './typedef';
 const Ec = elliptic.ec;
 

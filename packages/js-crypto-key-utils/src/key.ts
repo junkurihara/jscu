@@ -3,7 +3,6 @@
  */
 import {fromJwkTo, toJwkFrom} from './converter';
 import {getJwkThumbprint} from './thumbprint';
-import cloneDeep from 'lodash.clonedeep';
 import jseu from 'js-encoding-utils';
 import {getJwkType, getSec1KeyType, isAsn1Encrypted, isAsn1Public} from './util';
 import {
@@ -16,6 +15,8 @@ import {
   KeyExportOptions,
   JwkThumbprintFormat, HashTypes
 } from './typedef';
+
+const cloneDeep = require('lodash.clonedeep');
 
 type CurrentKeyStatus = {jwk: boolean, der: boolean, oct: boolean};
 /**
@@ -231,7 +232,9 @@ export class Key {
     if(this._isEncrypted) throw new Error('DecryptionRequired');
     return new Promise( (resolve, reject) => {
       this.export('jwk')
-        .then( (r) => resolve( (<JsonWebKey>r).kty))
+        .then( (r) => {
+          resolve( <string>((<JsonWebKey>r).kty));
+        })
         .catch( (e) => {reject(e);});
     });
   }
