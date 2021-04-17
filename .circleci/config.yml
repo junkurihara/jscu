@@ -7,7 +7,7 @@ defaults: &defaults
   working_directory: ~/repo
   docker:
     # specify the version you desire here
-    - image: circleci/node:lts-browsers
+    - image: cimg/node:lts-browsers
       auth:
         username: $DOCKERHUB_USER
         password: $DOCKERHUB_TOKEN
@@ -19,11 +19,15 @@ defaults: &defaults
 
 orbs:
   codecov: codecov/codecov@1.1.4
+  browser-tools: circleci/browser-tools@1.1.0
 
 jobs:
   test:
     <<: *defaults
     steps:
+      - browser-tools/install-chrome
+      - browser-tools/install-chromedriver
+      
       - checkout
 
       - run:
