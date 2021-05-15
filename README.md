@@ -12,7 +12,7 @@ jscu: A Universal Cryptographic Library for JavaScript
 
 > **Terminated to support MS IE11 and released v1.0 (Sep. 30, 2020).**
 
-# Introduction and Overview of this monorepo
+# Introduction and overview of this monorepo
 This project called `jscu` is being developed to provide unified cryptographic APIs for browsers and Node.js. There currently exist various sophisticated cryptographic suites for JavaScript that are implemented as native functions, e.g., WebCrypto API and `crypto` in Node.js. However, they have different interfaces and are NOT supported at all platforms. For instance, FireFox cannot be fed PKCS8-formatted private key in WebCrypto API but Chrome does. On the other hand, such suites have not been designed to keep compatibility to existing non-Web cryptographic suites like OpenSSL. This can be seen from the fact that WebCrypto API does not support PEM-formatted keys. Hence we (actually I!) need to write ugly codes so as to enable apps to work in various environments. From this observation, we aim that this library provides support functions to fill such gaps among JS cryptographic suites and that between JavaScript and other popular crypto suites.
 
 In particular, this library provides unified APIs of the following cryptographic functions that works in most modern browsers and Node.js.
@@ -41,7 +41,7 @@ Additionally, this library provides random, hash, AES, HMAC, HKDF, and PBKDF fun
 
 The structure of the package is described in the README.md of the [root package](https://github.com/junkurihara/jscu/tree/develop/packages/js-crypt-utils), and hence we should start from there. But we can use various cryptographic functions not only via the root package, [`js-crypto-utils`](https://github.com/junkurihara/jscu/tree/develop/packages/js-crypt-utils), but also by directly importing subpackages of intended functions. We should refer to README.md of each subpackage for its detailed usage.
 
-# For Developers and Contributors
+# For Developers and contributors
 
 Using `npm` package is the simplest way to fully leverage `jscu` functions. Considering you fork, develop, and update `jscu` packages themselves, i.e., as developers and contributors, usage of this monorepo and procedures for NPM deployment are summarized as follows.
 
