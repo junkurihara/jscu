@@ -17,7 +17,7 @@ describe(`${envName}: Encryption test`, () => {
     rsaKeySet = await Promise.all(mods.map( async (nLen) => await jscu.pkc.generateKey('RSA', {modulusLength: nLen})));
     msg = new Uint8Array(32);
     for(let i = 0; i < 32; i++) msg[i] = 0xFF & i;
-  },10000);
+  },20000);
 
   it('ECDH: Encrypted message is successfully generated and decrypted with AES-GCM', async () => {
     for (let i = 0; i < curves.length; i++) {
