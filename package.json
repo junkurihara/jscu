@@ -30,7 +30,7 @@
     "cross-env": "7.0.3",
     "esdoc": "1.1.0",
     "esdoc-standard-plugin": "1.0.0",
-    "eslint": "7.28.0",
+    "eslint": "7.29.0",
     "jasmine-core": "3.7.1",
     "jest": "27.0.4",
     "karma": "6.3.4",
