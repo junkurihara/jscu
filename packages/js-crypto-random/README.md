@@ -29,8 +29,8 @@ At your project directory, do either one of the following.
 Then you should import the package as follows.
 
 ```shell
-import aes from 'js-crypto-random'; // for npm
-import aes from 'path/to/js-crypto-random/dist/index.js'; // for github
+import random from 'js-crypto-random'; // for npm
+import random from 'path/to/js-crypto-random/dist/index.js'; // for github
 ```
 
 The bundled file is also given as `js-crypto-random/dist/jscrandom.bundle.js` for a use case where the module is imported as a `window.jscrandom` object via `script` tags.
