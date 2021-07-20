@@ -27,8 +27,8 @@ At your project directory, do either one of the following.
 Then you should import the package as follows.
 
 ```shell
-import rsa from 'js-x509-utils'; // for npm
-import rsa from 'path/to/js-x509-utils/dist/index.js'; // for github
+import x509 from 'js-x509-utils'; // for npm
+import x509 from 'path/to/js-x509-utils/dist/index.js'; // for github
 ```
 
 The bundled file is also given as `js-x509-utils/dist/x509.bundle.js` for a use case where the module is imported as a `window.x509` object via `script` tags.
