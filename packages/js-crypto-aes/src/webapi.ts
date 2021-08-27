@@ -26,7 +26,14 @@ export const wrapKey = async (
     const data = await webCrypto.wrapKey('raw', cek, kek, {name, iv});
     return new Uint8Array(data);
   }
-  catch (e) { throw new Error(`WebCrypto_FailedToWrapKey - ${e.message}`); }
+  catch (e: unknown) {
+    if (e instanceof Error) {
+      throw new Error(`WebCrypto_FailedToWrapKey - ${e.message}`);
+    }
+    else {
+      throw new Error('WebCrypto_FailedToWrapKey');
+    }
+  }
 };
 
 /**
@@ -49,7 +56,14 @@ export const unwrapKey = async (
     const cek = await webCrypto.unwrapKey('raw', wrappedKey, kek, {name, iv}, {name: 'AES-GCM'}, true, ['encrypt', 'decrypt']);
     return new Uint8Array(await webCrypto.exportKey('raw', cek));
   }
-  catch (e) { throw new Error(`WebCrypto_FailedToUnwrapKey - ${e.message}`); }
+  catch (e: unknown) {
+    if (e instanceof Error) {
+      throw new Error(`WebCrypto_FailedToUnwrapKey - ${e.message}`);
+    }
+    else {
+      throw new Error('WebCrypto_FailedToUnwrapKey');
+    }
+  }
 };
 
 /**
@@ -76,8 +90,13 @@ export const encrypt = async (
     const sessionKeyObj = await webCrypto.importKey('raw', key, encryptionConfig, false, ['encrypt', 'decrypt']);
     const data = await webCrypto.encrypt(encryptionConfig, sessionKeyObj, msg);
     return new Uint8Array(data);
-  } catch (e) {
-    throw new Error(`WebCrypto_EncryptionFailure: ${e.message}`);
+  } catch (e: unknown) {
+    if (e instanceof Error) {
+      throw new Error(`WebCrypto_EncryptionFailure: ${e.message}`);
+    }
+    else {
+      throw new Error('WebCrypto_EncryptionFailure');
+    }
   }
 };
 
@@ -105,8 +124,13 @@ export const decrypt = async (
     const sessionKeyObj = await webCrypto.importKey('raw', key, decryptionConfig, false, ['encrypt', 'decrypt']);
     const msg = await webCrypto.decrypt(decryptionConfig, sessionKeyObj, data);
     return new Uint8Array(msg);
-  } catch (e) {
-    throw new Error(`WebCrypto_DecryptionFailure: ${e.message}`);
+  } catch (e: unknown) {
+    if (e instanceof Error) {
+      throw new Error(`WebCrypto_DecryptionFailure: ${e.message}`);
+    }
+    else {
+      throw new Error('WebCrypto_DecryptionFailure');
+    }
   }
 };
 

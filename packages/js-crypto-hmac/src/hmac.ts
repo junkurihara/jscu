@@ -33,17 +33,23 @@ export const compute = async (key: Uint8Array, data: Uint8Array, hash: HashTypes
       const f = env.crypto.createHmac(params.hashes[hash].nodeName, key);
       msgKeyedHash = f.update(data).digest();
     } else native = false;
-  } catch (e) {
-    errMsg = e.message;
+  } catch (e: unknown) {
+    if (e instanceof Error) {
+      errMsg = e.message;
+    }
     native = false;
   }
 
   if (!native){
     try {
       msgKeyedHash = await purejs(key, data, hash);
-    } catch (e) {
-      errMsg = `${errMsg} => ${e.message}`;
-      throw new Error(`UnsupportedEnvironments: ${errMsg}`);
+    } catch (e: unknown) {
+      if (e instanceof Error) {
+        errMsg = `${errMsg} => ${e.message}`;
+        throw new Error(`UnsupportedEnvironments: ${errMsg}`);
+      } else {
+        throw new Error('UnsupportedEnvironments');
+      }
     }
   }
 

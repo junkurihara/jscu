@@ -32,16 +32,24 @@ export const compute = async (msg: Uint8Array, hash: HashTypes = 'SHA-256') : Pr
       msgHash = nodedigest(hash, msg, env.crypto);
     }
     else native = false;
-  } catch(e) {
-    errMsg = e.message;
+  } catch(e: unknown) {
+    if (e instanceof Error) {
+      errMsg = e.message;
+    }
     native = false;
   }
 
   if (!native){
     try { msgHash = purejs(hash, msg); }
-    catch(e){
-      errMsg = `${(typeof errMsg === 'undefined') ? '': errMsg} => ${e.message}`;
-      throw new Error(`UnsupportedEnvironment: ${errMsg}`);
+    catch(e: unknown){
+      if (e instanceof Error) {
+        errMsg = `${(typeof errMsg === 'undefined') ? '' : errMsg} => ${e.message}`;
+        throw new Error(`UnsupportedEnvironment: ${errMsg}`);
+      }
+      else {
+        throw new Error('UnsupportedEnvironment');
+      }
+
     }
   }
 

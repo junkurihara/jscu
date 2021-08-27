@@ -30,8 +30,14 @@ export const generateKey = async (namedCurve: CurveTypes ='P-256'): Promise<Json
     }
     return keyPair;
   }
-  catch (e) {
-    if (pure) throw new Error(`UnsupportedEnvironment: ${e.message}`);
+  catch (e: unknown) {
+    if (pure) {
+      if (e instanceof Error) {
+        throw new Error(`UnsupportedEnvironment: ${e.message}`);
+      } else {
+        throw new Error('UnsupportedEnvironment');
+      }
+    }
     else {
       keyPair = await purejs.generateKey(namedCurve)
         .catch( (finalError: Error) => {
@@ -74,7 +80,13 @@ export const sign = async (
     return signature;
   }
   catch (e) {
-    if (pure) throw new Error(`UnsupportedEnvironment: ${e.message}`);
+    if (pure) {
+      if (e instanceof Error) {
+        throw new Error(`UnsupportedEnvironment: ${e.message}`);
+      } else {
+        throw new Error('UnsupportedEnvironment');
+      }
+    }
     else {
       signature = await purejs.sign(msg, privateJwk, hash, signatureFormat)
         .catch( (finalError: Error) => {
@@ -119,7 +131,13 @@ export const verify = async (
     return valid;
   }
   catch (e) {
-    if (pure) throw new Error(`UnsupportedEnvironment: ${e.message}`);
+    if (pure) {
+      if (e instanceof Error) {
+        throw new Error(`UnsupportedEnvironment: ${e.message}`);
+      } else {
+        throw new Error('UnsupportedEnvironment');
+      }
+    }
     else {
       valid = await purejs.verify(msg, signature, publicJwk, hash, signatureFormat)
         .catch( (finalError: Error) => {
@@ -158,7 +176,13 @@ export const deriveSecret = async (publicJwk: JsonWebKey, privateJwk: JsonWebKey
     return secret;
   }
   catch (e) {
-    if (pure) throw new Error(`UnsupportedEnvironment: ${e.message}`);
+    if (pure) {
+      if (e instanceof Error) {
+        throw new Error(`UnsupportedEnvironment: ${e.message}`);
+      } else {
+        throw new Error('UnsupportedEnvironment');
+      }
+    }
     else {
       secret = await purejs.deriveSecret(publicJwk, privateJwk)
         .catch( (finalError: Error) => {
