@@ -21,7 +21,7 @@
     "karma:window": "lerna run karma:window"
   },
   "devDependencies": {
-    "@types/elliptic": "6.4.13",
+    "@types/elliptic": "6.4.14",
     "@types/jest": "27.0.2",
     "@types/node": "16.11.6",
     "@typescript-eslint/eslint-plugin": "5.3.0",
