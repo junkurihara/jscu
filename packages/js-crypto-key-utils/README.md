@@ -1,14 +1,13 @@
 Universal Module for Cryptographic Key Utilities in JavaScript
 --
 [![npm version](https://badge.fury.io/js/js-crypto-key-utils.svg)](https://badge.fury.io/js/js-crypto-key-utils)
-[![Dependencies](https://david-dm.org/junkurihara/jscu.svg?path=packages/js-crypto-key-utils)](https://david-dm.org/junkurihara/jscu?path=packages/js-crypto-key-utils)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 
 > **WARNING**: At this time this solution should be considered suitable for research and experimentation, further code and security review is needed before utilization in a production application.
 
 # Introduction and Overview
-This library is designed to 'universally' provide several functions for a cryptographic key handling, which means it works both on most browsers and on Node.js just by importing from npm/source code. This key utility library provides converters for EC/RSA keys in PEM/DER<->JWK, octet form of EC keys <-> JWK, and computation of JWK thumbprints. Especially for the conversion PEM/DER <->JWK, encryption and decryption of private key in DER/PEM are supported. 
+This library is designed to 'universally' provide several functions for a cryptographic key handling, which means it works both on most browsers and on Node.js just by importing from npm/source code. This key utility library provides converters for EC/RSA keys in PEM/DER<->JWK, octet form of EC keys <-> JWK, and computation of JWK thumbprints. Especially for the conversion PEM/DER <->JWK, encryption and decryption of private key in DER/PEM are supported.
 
 # Installation
 At your project directory, do either one of the following.
@@ -34,12 +33,12 @@ import keyutil from 'path/to/js-crypto-key-utils/dist/index.js'; // for github
 
 The bundled file is also given as `js-crypto-key-utils/dist/jsckey.bundle.js` for a use case where the module is imported as a `window.jsckey` object via `script` tags.
 
-  
+
 # Usage
 Supported key types are Json Web Key (JWK, [RFC7517](https://tools.ietf.org/html/rfc7517)), and PEM/DER. Octet-Formatted Key ([SECG SEC1](http://www.secg.org/sec1-v2.pdf) 2.3.3 and 2.3.4, link to PDF) is also available for elliptic curve cryptography keys. Note that for PEM/DER, public keys are encoded to the form of `SubjectPublicKeyInfo` (SPKI) defined as a part of X.509 public key certificate ([RFC5280](https://tools.ietf.org/html/rfc5280)). The detailed encoding rule for elliptic curve cryptographic keys is given in [RFC5480](https://tools.ietf.org/html/rfc5480). On the other hand, private keys are encoded to hte form of `PrivateKeyInfo` defined in PKCS#8 ([RFC5958](https://tools.ietf.org/html/rfc5958)). The detailed encoding rule for elliptic curve cryptographic keys is given in [RFC5915](https://tools.ietf.org/html/rfc5915) as well as SPKI. Please refer to [RFC3447](https://tools.ietf.org/html/rfc3447) for the detailed encoding rule of RSA public and private keys.
 
 ## Instantiation
-At first, you need to instantiate `Key` object by importing various type of keys. 
+At first, you need to instantiate `Key` object by importing various type of keys.
 
 ```javascript
 const yourStringPemKey = '------BEGIN PRIVATE...'; // SPKI (public key) or PKCS8 (either encrypted or plaintext private key)
@@ -49,7 +48,7 @@ const yourOctetFormKey = new Uint8Array([0x04, ...]) // only for Elliptic Curve 
 
 const keyObjFromPem = new keyutil.Key('pem', yourStringPemKey);
 const keyObjFromDer = new keyutil.Key('der', yourBinaryDerKey);
-const keyObjFromJwk = new keyutil.Key('jwk', yourJasonWebKey); 
+const keyObjFromJwk = new keyutil.Key('jwk', yourJasonWebKey);
 const keyObjFromOct = new keyutil.Key('oct', yourOctetFormKey, {namedCurve: '...'}); //namedCurve like 'P-256K' is required.
 ```
 
@@ -143,7 +142,7 @@ if(!keyObj.isEncrypted) thumbprint = await keyObj.getJwkThumbprint();
 if(!keyObj.isEncrypted) thumbprint = await keyObj.getJwkThumbprint(
   'SHA-512',
   'hex' // output is hex string
-); 
+);
 ```
 Note that the thumbprint generated from a public key is exactly same as that from its paired private key.
 

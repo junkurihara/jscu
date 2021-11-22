@@ -1,7 +1,6 @@
 Universal Module for Elliptic Curve Cryptography (ECDSA and ECDH) in JavaScript
 --
 [![npm version](https://badge.fury.io/js/js-crypto-ec.svg)](https://badge.fury.io/js/js-crypto-ec)
-[![Dependencies](https://david-dm.org/junkurihara/jscu.svg?path=packages/js-crypto-ec)](https://david-dm.org/junkurihara/jscu?path=packages/js-crypto-ec)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 > **WARNING**: At this time this solution should be considered suitable for research and experimentation, further code and security review is needed before utilization in a production application.
@@ -36,7 +35,7 @@ import ec from 'path/to/js-crypto-ec/dist/index.js'; // for github
 
 The bundled file is also given as `js-crypto-ec/dist/jscec.bundle.js` for a use case where the module is imported as a `window.jscec` object via `script` tags.
 
-  
+
 # Usage
 This library always uses JWK-formatted keys ([RFC7517](https://tools.ietf.org/html/rfc7517)) to do any operations. If you utilize keys of other format, like PEM, please use [`js-crypto-key-utils`](https://github.com/junkurihara/js-crypto-key-utils) to convert them to JWK.
 
@@ -70,8 +69,8 @@ ec.sign(
     sign,
     publicJwk,
     'SHA-256',
-    'raw' // input signature is not formatted. DER-encoded signature is available with 'der'. 
-    );  
+    'raw' // input signature is not formatted. DER-encoded signature is available with 'der'.
+    );
 }).then( (valid) => {
   // now you get the result of verification in boolean
 });

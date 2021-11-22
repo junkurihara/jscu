@@ -1,7 +1,6 @@
 JavaScript Cryptographic Utilities for Browsers and Node.js Crypto-Suite Compatibility
 --
 [![npm version](https://badge.fury.io/js/js-crypto-utils.svg)](https://badge.fury.io/js/js-crypto-utils)
-[![Dependencies](https://david-dm.org/junkurihara/jscu.svg?path=packages/js-crypto-utils)](https://david-dm.org/junkurihara/jscu?path=packages/js-crypto-utils)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 > **WARNING**: At this time this solution should be considered suitable for research and experimentation, further code and security review is needed before utilization in a production application.
@@ -13,11 +12,11 @@ Firstly, this library provides following functions that works in most modern bro
 - ECDSA signing, verification, key generation (P-256/P-384/P-521/P-256K)
 - RSA-PSS/RSASSA-PKCS1-v1_5 signing, verification, key generation.
 - Encryption using ECDH and HKDF.
-- Encryption using RSA-OAEP. 
+- Encryption using RSA-OAEP.
 - Public/private key format conversion between JWK and PEM/DER (SPKI for public/PKCS8 for private)
 - Generation of JWK Thumbprint
 - Generation of X.509 public key certificate from JWK and extraction of JWK public key from X.509 public key certificate.
-Additionally, this library provides random, hash, AES, HMAC, HKDF, and PBKDF functions. 
+Additionally, this library provides random, hash, AES, HMAC, HKDF, and PBKDF functions.
 
 # Module structure
 The module structure of this library can be illustrated as follows.
@@ -63,7 +62,7 @@ We should note that most of this library's functions are independently available
 
 Please refer to the above repos for further information.
 
-**NOTE**: If you would use only few modules and employ neither `Key` nor `pkc`, we highly recommend use our independent modules since those independent ones are relatively small and this library would be overkill. 
+**NOTE**: If you would use only few modules and employ neither `Key` nor `pkc`, we highly recommend use our independent modules since those independent ones are relatively small and this library would be overkill.
 
 
 # Installation
@@ -104,7 +103,7 @@ jscu.pkc.generateKey(  // key generation
 .then( async (keyPair) => { // get a key pair in jscu.Key object
   const msg = new Uint8Array(32);
   for(let i = 0; i < 32; i++) msg[i] = 0xFF & i;
-  
+
   const sig = await jscu.pkc.sign(msg, keyPair.privateKey, 'SHA-256'); // uint8array
   const result = await jscu.pkc.verify(msg, sig, keyPair.publicKey, 'SHA-256'); // true or false
 });
@@ -119,7 +118,7 @@ jscu.pkc.generateKey(  // key generation
 .then( async (keyPair) => { // get a key pair in jscu.Key object
   const msg = new Uint8Array(32);
   for(let i = 0; i < 32; i++) msg[i] = 0xFF & i;
-  
+
   // case of RSA-PSS
   // RSASSA-PKCS1-v1_5 is supported as well. see test files.
   const sig = await jscu.pkc.sign(msg, keyPair.privateKey, 'SHA-256', {name: 'RSA-PSS', saltLength: 32}); // uint8array
@@ -151,7 +150,7 @@ jscu.pkc.generateKey(  // key generation
   };
   const encrypted = await jscu.pkc.encrypt(msg, remotePublicKey, optionsEncryption);
   // now you get the encrypted message
-  
+
   ////////////////////////////
   // decryption at remote side
   ////////////////////////////
@@ -168,7 +167,7 @@ jscu.pkc.generateKey(  // key generation
   // now you get decrypted message
 });
 ```
-Note that AES and HKDF are independently available from `jscu.aes` and `jscu.hkdf` as well as `random` and `hash`. Also note that the HKDF employed in this library is the one specified in RFC5869 (https://tools.ietf.org/html/rfc5869). 
+Note that AES and HKDF are independently available from `jscu.aes` and `jscu.hkdf` as well as `random` and `hash`. Also note that the HKDF employed in this library is the one specified in RFC5869 (https://tools.ietf.org/html/rfc5869).
 
 
 ## RSA-OAEP encryption and decryption
@@ -186,7 +185,7 @@ jscu.pkc.encrypt(
 ).then( (encrypted) => {
  // now you get the encrypted message
  return jscu.pkc.decrypt(
-   encrypted, 
+   encrypted,
    privateKey,
    {hash: 'SHA-256'}); // for OAEP
 }).then( (decrypted) => {
@@ -215,7 +214,7 @@ This library also re-convert keys in PEM/DER to JWK as follows.
 const publicKeyObjectR = new jscu.Key('pem', publicASN);
 const publicJwkR = publicKeyObjectR.export('jwk');
 ```
-Note that JWK/DER/PEM-formatted RSA keys can be handled in the similar manner to the above. 
+Note that JWK/DER/PEM-formatted RSA keys can be handled in the similar manner to the above.
 
 ## Generation of self-signed X.509 certificate from JWK-formatted public key
 ```javascript
@@ -247,21 +246,21 @@ jscu.keyUtil.x509.fromJwk(
   // now you get the certificate in PEM string
 });
 ```
-For `signature`, `rsassaPss` (RSA-PSS) and `sha*WithRSAEncryption` (RSASSA-PKCS1-v1_5) are available as well. When `rsassaPss` is specified, `saltLength` and `hash` are required as its params. 
+For `signature`, `rsassaPss` (RSA-PSS) and `sha*WithRSAEncryption` (RSASSA-PKCS1-v1_5) are available as well. When `rsassaPss` is specified, `saltLength` and `hash` are required as its params.
 
 ## Extract JWK from X.509 certificate
 ```javascript
-const crtsample = '-----BEGIN CERTIFICATE-----...'; 
+const crtsample = '-----BEGIN CERTIFICATE-----...';
 const jwkey = jscu.keyUtil.x509.toJwk(crtsample, 'pem');
-// now you get JWK public key from PEM-formatted certificate     
+// now you get JWK public key from PEM-formatted certificate
 ```
-  
+
 # Notes
 One of the listed APIs/libraries is automatically chosen and leveraged for each implemented function, and unified interfaces are provided for browsers and Node.js.
 
 - ECDSA and ECDH:
   * WebCrypto API for browsers
-  * NodeCrypto for Node.js 
+  * NodeCrypto for Node.js
   * [elliptic](https://github.com/indutny/elliptic) for browsers
 - RSA-PSS, RSASSA-PKCS1-v1_5, RSA-OAEP (RSA-PSSS does not work in Edge)
   * WebCrypto API for browsers
@@ -279,9 +278,9 @@ One of the listed APIs/libraries is automatically chosen and leveraged for each 
 - Random, hash, HKDF, HMAC, JWK Thumbprint
   * WebCrypto API for browsers
   * NodeCrypto for Node.js
-  
+
   IE is completely out of our scope now.
-  
+
   Especially for Hash functions, we shall use the following pure JS implementation for some browsers (WebCrypto does not support SHA-3 yet). SHA-1 doesn't work in Edge. I believe Edge should be discarded ASAP.
   * [sha3](https://www.npmjs.com/package/sha3) for SHA3-224, SHA3-256, SHA3-384 and SHA3-512 for browsers
   * [hash.js](https://www.npmjs.com/package/hash.js) for SHA-1, SHA-256, SHA-384, SHA-512 for some legacy browsers

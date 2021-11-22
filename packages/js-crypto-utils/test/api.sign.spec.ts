@@ -16,7 +16,7 @@ describe(`${envName}: Signing and verification test via exported api`, () => {
     rsaKeySet = await Promise.all(mods.map( async (nLen) => await jscu.pkc.generateKey('RSA', {modulusLength: nLen})));
     msg = new Uint8Array(32);
     for(let i = 0; i < 32; i++) msg[i] = 0xFF & i;
-  },10000);
+  },20000);
 
 
 

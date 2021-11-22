@@ -7,7 +7,7 @@ defaults: &defaults
   working_directory: ~/repo
   docker:
     # specify the version you desire here
-    - image: circleci/node:lts-browsers
+    - image: cimg/node:lts-browsers
       auth:
         username: $DOCKERHUB_USER
         password: $DOCKERHUB_TOKEN
@@ -18,12 +18,16 @@ defaults: &defaults
     # - image: circleci/mongo:3.4.4
 
 orbs:
-  codecov: codecov/codecov@1.1.3
+  codecov: codecov/codecov@3.2.2
+  browser-tools: circleci/browser-tools@1.2.3
 
 jobs:
   test:
     <<: *defaults
     steps:
+      - browser-tools/install-chrome
+      - browser-tools/install-chromedriver
+
       - checkout
 
       - run:
@@ -46,7 +50,7 @@ jobs:
       - run: yarn test
       - run: yarn karma
       # merge and upload coverage reports
-      - run: sudo apt install lcov
+      - run: sudo apt update && sudo apt install lcov
       - run: mkdir -p coverage
       - run: find ./packages -name lcov.info -exec echo -a {} \; | xargs lcov -o ./coverage/merged-lcov.info
       - codecov/upload:
@@ -106,6 +110,7 @@ workflows:
           - docker-hub-cred
         requires:
           - test
+          - npm
         filters:
           tags:
             only: /^v[0-9]+(\.[0-9]+)*/

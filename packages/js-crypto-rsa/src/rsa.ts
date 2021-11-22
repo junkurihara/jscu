@@ -39,9 +39,13 @@ export const generateKey = async (
 
     return keyPair;
   }
-  catch(e){
-    if(pure) throw new Error(e.message);
-    else throw new Error(`UnsupportedEnvironment: ${e.message}`);
+  catch(e: unknown){
+    if (e instanceof Error) {
+      if (pure) throw new Error(e.message);
+      else throw new Error(`UnsupportedEnvironment: ${e.message}`);
+    } else {
+      throw new Error('UnsupportedEnvironment');
+    }
   }
 };
 
@@ -85,9 +89,13 @@ export const sign = async (
 
     return signature;
   }
-  catch(e){
-    if(pure) throw new Error(e.message);
-    else throw new Error(`UnsupportedEnvironment: ${e.message}`);
+  catch(e: unknown){
+    if (e instanceof Error) {
+      if (pure) throw new Error(e.message);
+      else throw new Error(`UnsupportedEnvironment: ${e.message}`);
+    } else {
+      throw new Error('UnsupportedEnvironment');
+    }
   }
 
 };
@@ -130,9 +138,13 @@ export const verify = async (
 
     return valid;
   }
-  catch(e){
-    if(pure) throw new Error(e.message);
-    else throw new Error(`UnsupportedEnvironment: ${e.message}`);
+  catch(e: unknown){
+    if (e instanceof Error) {
+      if (pure) throw new Error(e.message);
+      else throw new Error(`UnsupportedEnvironment: ${e.message}`);
+    } else {
+      throw new Error('UnsupportedEnvironment');
+    }
   }
 };
 
@@ -173,9 +185,13 @@ export const encrypt = async (
 
     return encrypted;
   }
-  catch(e){
-    if(pure) throw new Error(e.message);
-    else throw new Error(`UnsupportedEnvironment: ${e.message}`);
+  catch(e: unknown){
+    if (e instanceof Error) {
+      if (pure) throw new Error(e.message);
+      else throw new Error(`UnsupportedEnvironment: ${e.message}`);
+    } else {
+      throw new Error('UnsupportedEnvironment');
+    }
   }
 };
 
@@ -216,8 +232,12 @@ export const decrypt = async (
 
     return decrypted;
   }
-  catch(e) {
-    if (pure) throw new Error(e.message);
-    else throw new Error(`UnsupportedEnvironment: ${e.message}`);
+  catch(e: unknown) {
+    if (e instanceof Error) {
+      if (pure) throw new Error(e.message);
+      else throw new Error(`UnsupportedEnvironment: ${e.message}`);
+    } else {
+      throw new Error('UnsupportedEnvironment');
+    }
   }
 };

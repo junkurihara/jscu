@@ -1,7 +1,6 @@
 Universal Module for RSA Cryptography (RSA-OAEP and RSASSA-PSS/PKCS1-V1_5) in JavaScript
 --
 [![npm version](https://badge.fury.io/js/js-crypto-rsa.svg)](https://badge.fury.io/js/js-crypto-rsa)
-[![Dependencies](https://david-dm.org/junkurihara/jscu.svg?path=packages/js-crypto-rsa)](https://david-dm.org/junkurihara/jscu?path=packages/js-crypto-rsa)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 > **WARNING**: At this time this solution should be considered suitable for research and experimentation, further code and security review is needed before utilization in a production application.
@@ -34,7 +33,7 @@ import rsa from 'path/to/js-crypto-rsa/dist/index.js'; // for github
 
 The bundled file is also given as `js-crypto-rsa/dist/jscrsa.bundle.js` for a use case where the module is imported as a `window.jscrsa` object via `script` tags.
 
-    
+
 # Usage
 
 This library always uses JWK-formatted keys ([RFC7517](https://tools.ietf.org/html/rfc7517)) to do any operations. If you utilize keys of other format, like PEM, please use [`js-crypto-key-utils`](https://github.com/junkurihara/js-crypto-key-utils) to convert them to JWK.
@@ -75,8 +74,8 @@ rsa.sign(
       { // optional
         name: 'RSA-PSS', // default. 'RSASSA-PKCS1-v1_5' is also available.
         saltLength: 64 // default is the same as hash length
-      } 
-    );  
+      }
+    );
 }).then( (valid) => {
   // now you get the result of verification in boolean
 });
@@ -100,7 +99,7 @@ rsa.encrypt(
       encrypted,
       privateJwk,
       'SHA-256', // optional, for OAEP. default is 'SHA-256'
-    );  
+    );
 }).then( (decrypted) => {
   // now you get the decrypted message
 });
