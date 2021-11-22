@@ -1,7 +1,6 @@
 Universal Module for Password-based Key Derivation Function (PBKDF) in JavaScript
 --
 [![npm version](https://badge.fury.io/js/js-crypto-pbkdf.svg)](https://badge.fury.io/js/js-crypto-pbkdf)
-[![Dependencies](https://david-dm.org/junkurihara/jscu.svg?path=packages/js-crypto-pbkdf)](https://david-dm.org/junkurihara/jscu?path=packages/js-crypto-pbkdf)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 > **WARNING**: At this time this solution should be considered suitable for research and experimentation, further code and security review is needed before utilization in a production application.
@@ -35,7 +34,7 @@ import pbkdf from 'path/to/js-crypto-pbkdf/dist/index.js'; // for github
 
 The bundled file is also given as `js-crypto-pbkdf/dist/jscpbkdf.bundle.js` for a use case where the module is imported as a `window.jscpbkdf` object via `script` tags.
 
-  
+
 # Usage
 
 ## PBKDF2
@@ -47,7 +46,7 @@ const password = 'password'; // string or Uint8Array
 const salt = ...; // Uint8Array
 const iterationCount = 2048;
 const derivedKeyLen = 32;
-const hash = 'SHA-256'; // 'SHA-384', 'SHA-512', 'SHA-1', 'MD5', 'SHA3-512', 'SHA3-384', 'SHA3-256', or 'SHA3-224' 
+const hash = 'SHA-256'; // 'SHA-384', 'SHA-512', 'SHA-1', 'MD5', 'SHA3-512', 'SHA3-384', 'SHA3-256', or 'SHA3-224'
 
 pbkdf.pbkdf2(
   password,
@@ -69,7 +68,7 @@ const password = 'password'; // string or Uint8Array
 const salt = ...; // Uint8Array
 const iterationCount = 2048;
 const derivedKeyLen = 32;
-const hash = 'SHA-256'; // 'SHA-384', 'SHA-512', 'SHA-1', 'MD5', 'SHA3-512', 'SHA3-384', 'SHA3-256', or 'SHA3-224'  
+const hash = 'SHA-256'; // 'SHA-384', 'SHA-512', 'SHA-1', 'MD5', 'SHA3-512', 'SHA3-384', 'SHA3-256', or 'SHA3-224'
 
 pbkdf.pbkdf1(
   password,

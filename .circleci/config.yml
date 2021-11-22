@@ -27,7 +27,7 @@ jobs:
     steps:
       - browser-tools/install-chrome
       - browser-tools/install-chromedriver
-      
+
       - checkout
 
       - run:
@@ -110,6 +110,7 @@ workflows:
           - docker-hub-cred
         requires:
           - test
+          - npm
         filters:
           tags:
             only: /^v[0-9]+(\.[0-9]+)*/

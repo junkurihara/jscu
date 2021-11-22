@@ -1,7 +1,6 @@
-Universal Module of X.509 Certificate Utilities in JavaScript 
+Universal Module of X.509 Certificate Utilities in JavaScript
 --
 [![npm version](https://badge.fury.io/js/js-x509-utils.svg)](https://badge.fury.io/js/js-x509-utils)
-[![Dependencies](https://david-dm.org/junkurihara/jscu.svg?path=packages/js-x509-utils)](https://david-dm.org/junkurihara/jscu?path=packages/js-x509-utils)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 > **WARNING**: At this time this solution should be considered suitable for research and experimentation, further code and security review is needed before utilization in a production application.
@@ -32,7 +31,7 @@ import x509 from 'path/to/js-x509-utils/dist/index.js'; // for github
 ```
 
 The bundled file is also given as `js-x509-utils/dist/x509.bundle.js` for a use case where the module is imported as a `window.x509` object via `script` tags.
-  
+
 # Usage
 This library always uses JWK-formatted keys ([RFC7517](https://tools.ietf.org/html/rfc7517)) to do any operations. If you utilize keys of other format, like PEM, please use [`js-crypto-key-utils`](https://github.com/junkurihara/js-crypto-key-utils) to convert them to JWK.
 
@@ -134,9 +133,9 @@ x509.fromJwk(
 
 ## Extract JWK from X.509 certificate
 ```javascript
-const crtsample = '-----BEGIN CERTIFICATE-----...'; 
+const crtsample = '-----BEGIN CERTIFICATE-----...';
 const jwkey = x509.toJwk(crtsample, 'pem');
-// now you get JWK public key from PEM-formatted certificate     
+// now you get JWK public key from PEM-formatted certificate
 ```
 
 ## Extract signature and message body from X.509 certificate
@@ -154,7 +153,7 @@ Legacy IE is NOT supported at all. Also the followings are not supported in Edge
 - RSASSA-PKCS-v1_5: `Sha1WithRsaEncryption`
 - RSA-PSS: All
 
-**Note that referring to RFC, `Sha1WithRsaEncryption` is the default algorithm when empty params for RSA-SSA-PKCS-v1_5, and hence MS environment does not support such existing certificates. Hence we strongly recommend to use other modern browsers.** 
+**Note that referring to RFC, `Sha1WithRsaEncryption` is the default algorithm when empty params for RSA-SSA-PKCS-v1_5, and hence MS environment does not support such existing certificates. Hence we strongly recommend to use other modern browsers.**
 
 
 ## ECDSA
