@@ -36,6 +36,6 @@
     "sha3": "~2.1.0"
   },
   "devDependencies": {
-    "js-encoding-utils": "0.6.6"
+    "js-encoding-utils": "0.7.1"
   }
 }
