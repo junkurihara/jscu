@@ -53,7 +53,7 @@
     "js-crypto-hash": "^1.0.3",
     "js-crypto-pbkdf": "^1.0.3",
     "js-crypto-random": "^1.0.3",
-    "js-encoding-utils": "0.6.6",
+    "js-encoding-utils": "0.7.1",
     "lodash.clonedeep": "~4.5.0"
   }
 }
