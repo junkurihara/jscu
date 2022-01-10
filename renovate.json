@@ -22,9 +22,5 @@
     "every weekend",
     "before 11am every weekday"	
   ],
-  "packageRules": [
-    {
-      "excludePackageNames": ["colors"]
-    }
-  ]
+  "ignoreDeps": ["colors"]
 }
