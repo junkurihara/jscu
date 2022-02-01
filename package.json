@@ -33,7 +33,7 @@
     "eslint": "8.8.0",
     "jasmine-core": "4.0.0",
     "jest": "27.4.7",
-    "karma": "6.3.12",
+    "karma": "6.3.13",
     "karma-chrome-launcher": "3.1.0",
     "karma-cli": "2.0.0",
     "karma-jasmine": "4.0.1",
