@@ -1,6 +1,6 @@
 {
   "name": "js-crypto-hmac",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Universal Module for HMAC (Hash-based Message Authentication Code) in JavaScript",
   "main": "dist/index.js",
   "scripts": {
@@ -32,7 +32,7 @@
     "js-encoding-utils": "0.7.1"
   },
   "dependencies": {
-    "js-crypto-env": "^1.0.3",
-    "js-crypto-hash": "^1.0.3"
+    "js-crypto-env": "^1.0.4",
+    "js-crypto-hash": "^1.0.4"
   }
 }
