@@ -21,5 +21,6 @@
     "after 9pm every weekday",
     "every weekend",
     "before 11am every weekday"	
-  ]
+  ],
+  "ignoreDeps": ["colors"]
 }
