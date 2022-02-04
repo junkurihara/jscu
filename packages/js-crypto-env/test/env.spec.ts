@@ -14,4 +14,3 @@ describe('Common env test', () => {
   });
 
 });
-

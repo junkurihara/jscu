@@ -6,7 +6,11 @@
  * @return {undefined|Object} - Node.js crypto object
  */
 const getNodeCrypto = () : undefined|any => {
-  if(typeof window !== 'undefined') return undefined;
+  if (typeof window !== 'undefined' && window.crypto) {
+    return undefined;
+  } else if (typeof window === 'undefined' && typeof crypto !== 'undefined') {
+    return undefined;
+  }
   else return require('crypto');
 };
 
@@ -15,7 +19,12 @@ const getNodeCrypto = () : undefined|any => {
  * @return {undefined|Object} - WebCrypto API object
  */
 const getWebCrypto = () : undefined|any => {
-  if (typeof window !== 'undefined' && window.crypto) return window.crypto.subtle;
+  if (typeof window !== 'undefined' && window.crypto) { // standard window.crypto
+    return window.crypto.subtle;
+  } else if (typeof window === 'undefined' && typeof crypto !== 'undefined'){ // case of service worker
+    // eslint-disable-next-line no-undef
+    return crypto.subtle;
+  }
   return undefined;
 };
 
@@ -25,7 +34,12 @@ const getWebCrypto = () : undefined|any => {
  * @return {undefined|Object} - WebCrypto API object
  */
 const getRootWebCrypto = () : undefined|any => {
-  if (typeof window !== 'undefined' && window.crypto) return window.crypto;
+  if (typeof window !== 'undefined' && window.crypto) {
+    return window.crypto;
+  } else if (typeof window === 'undefined' && typeof crypto !== 'undefined'){
+    // eslint-disable-next-line no-undef
+    return crypto;
+  }
   return undefined;
 };
 
