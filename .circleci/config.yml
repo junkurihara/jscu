@@ -30,9 +30,8 @@ jobs:
 
       - checkout
 
-      - run:
-          name: update-npm
-          command: 'sudo npm install -g npm@latest'
+      - node/install-packages:
+          pkg-manager: yarn
 
       # Download and cache dependencies
       - restore_cache:
