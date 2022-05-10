@@ -31,7 +31,7 @@
     "esdoc": "1.1.0",
     "esdoc-standard-plugin": "1.0.0",
     "eslint": "8.15.0",
-    "jasmine-core": "4.1.0",
+    "jasmine-core": "4.1.1",
     "jest": "28.1.0",
     "karma": "6.3.19",
     "karma-chrome-launcher": "3.1.1",
