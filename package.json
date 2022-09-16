@@ -22,7 +22,7 @@
   },
   "devDependencies": {
     "@types/elliptic": "6.4.14",
-    "@types/jest": "29.0.2",
+    "@types/jest": "29.0.3",
     "@types/node": "16.11.59",
     "@typescript-eslint/eslint-plugin": "5.37.0",
     "@typescript-eslint/parser": "5.37.0",
