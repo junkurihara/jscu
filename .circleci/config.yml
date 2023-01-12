@@ -29,6 +29,7 @@ jobs:
       - browser-tools/install-chrome
       - browser-tools/install-chromedriver
 
+      - run: rm -rf ~/repo/*
       - checkout
 
       - node/install-packages:
