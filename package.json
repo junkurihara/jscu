@@ -41,7 +41,7 @@
     "lerna": "6.6.1",
     "ts-jest": "29.0.5",
     "ts-loader": "9.4.2",
-    "typescript": "5.0.2",
+    "typescript": "5.0.3",
     "webpack": "5.77.0",
     "webpack-cli": "5.0.1"
   },
