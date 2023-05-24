@@ -18,7 +18,7 @@ defaults: &defaults
     # - image: circleci/mongo:3.4.4
 
 orbs:
-  codecov: codecov/codecov@3.2.4
+  codecov: codecov/codecov@3.2.5
   browser-tools: circleci/browser-tools@1.4.1
   node: circleci/node@5.1.0
 
