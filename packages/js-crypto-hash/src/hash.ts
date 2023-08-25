@@ -86,7 +86,7 @@ const purejs = async (hash: HashTypes, msg: Uint8Array) : Promise<Uint8Array> =>
     // sha3
     const sha3Len: number = params.hashes[hash].hashSize * 8;
     const sha3obj = new SHA3(<Sha3LenType>sha3Len);
-    const {Buffer} = await import('node:buffer');
+    const {Buffer} = await import('buffer');
     sha3obj.update(Buffer.from(msg));
     h = sha3obj.digest('binary');
   }
