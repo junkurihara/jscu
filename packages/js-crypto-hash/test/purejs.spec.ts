@@ -29,4 +29,3 @@ describe(`${envName}: Hash generation test in PureJS for webcrypto`, () => {
     }));
   });
 });
-

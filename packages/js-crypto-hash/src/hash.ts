@@ -40,7 +40,7 @@ export const compute = async (msg: Uint8Array, hash: HashTypes = 'SHA-256') : Pr
   }
 
   if (!native){
-    try { msgHash = purejs(hash, msg); }
+    try { msgHash = await purejs(hash, msg); }
     catch(e: unknown){
       if (e instanceof Error) {
         errMsg = `${(typeof errMsg === 'undefined') ? '' : errMsg} => ${e.message}`;
@@ -77,7 +77,7 @@ const nodedigest = (hash: HashTypes, msg: Uint8Array, nodeCrypto: any) : Uint8Ar
  * @param {Uint8Array} msg - Byte array of message to be hashed.
  * @return {Uint8Array} - Hash value.
  */
-const purejs = (hash: HashTypes, msg: Uint8Array) : Uint8Array => {
+const purejs = async (hash: HashTypes, msg: Uint8Array) : Promise<Uint8Array> => {
   let h;
   if(hash === 'MD5'){
     h = md5(Array.from(msg), {asBytes: true});
@@ -86,7 +86,7 @@ const purejs = (hash: HashTypes, msg: Uint8Array) : Uint8Array => {
     // sha3
     const sha3Len: number = params.hashes[hash].hashSize * 8;
     const sha3obj = new SHA3(<Sha3LenType>sha3Len);
-    const Buffer = require('buffer/').Buffer;
+    const {Buffer} = await import('node:buffer');
     sha3obj.update(Buffer.from(msg));
     h = sha3obj.digest('binary');
   }
