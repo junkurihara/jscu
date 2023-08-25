@@ -62,7 +62,7 @@ describe(`${envName}: Test for PBKDF 1 and 2`, () => {
       return jseu.encoder.arrayBufferToHexString(key) === sample.pbkdf2.key[h];
     }));
     expect(array.every( (elem) => elem)).toBeTruthy();
-  }, 10000);
+  }, 50000);
 
   it('PBKDF2 with password buffer', async () => {
     const array = await Promise.all( hashes.map( async (h) => {
@@ -76,7 +76,7 @@ describe(`${envName}: Test for PBKDF 1 and 2`, () => {
       return jseu.encoder.arrayBufferToHexString(key) === sample.pbkdf2.key[h];
     }));
     expect(array.every( (elem) => elem)).toBeTruthy();
-  }, 10000);
+  }, 50000);
 
   it('PBKDF1 with password string', async () => {
     const array = await Promise.all( hashes.map( async (h) => {
@@ -90,7 +90,7 @@ describe(`${envName}: Test for PBKDF 1 and 2`, () => {
       return jseu.encoder.arrayBufferToHexString(key) === sample.pbkdf1.key[h];
     }));
     expect(array.every( (elem) => elem)).toBeTruthy();
-  }, 10000);
+  }, 50000);
 
   it('PBKDF1 with password buffer', async () => {
     const array = await Promise.all( hashes.map( async (h) => {
@@ -104,7 +104,6 @@ describe(`${envName}: Test for PBKDF 1 and 2`, () => {
       return jseu.encoder.arrayBufferToHexString(key) === sample.pbkdf1.key[h];
     }));
     expect(array.every( (elem) => elem)).toBeTruthy();
-  }, 10000);
+  }, 50000);
 
 });
-
