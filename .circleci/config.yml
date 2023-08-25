@@ -18,8 +18,9 @@ defaults: &defaults
     # - image: circleci/mongo:3.4.4
 
 orbs:
-  codecov: codecov/codecov@3.2.2
-  browser-tools: circleci/browser-tools@1.2.4
+  codecov: codecov/codecov@3.2.5
+  browser-tools: circleci/browser-tools@1.4.4
+  node: circleci/node@5.1.0
 
 jobs:
   test:
@@ -28,11 +29,11 @@ jobs:
       - browser-tools/install-chrome
       - browser-tools/install-chromedriver
 
+      - run: rm -rf ~/repo/*
       - checkout
 
-      - run:
-          name: update-npm
-          command: 'sudo npm install -g npm@latest'
+      - node/install-packages:
+          pkg-manager: yarn
 
       # Download and cache dependencies
       - restore_cache:

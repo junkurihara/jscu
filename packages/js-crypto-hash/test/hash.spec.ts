@@ -26,4 +26,3 @@ describe(`${envName}: Hash generation test`, () => {
     }));
   });
 });
-
