@@ -39,6 +39,6 @@
     "js-crypto-hash": "^1.0.5",
     "js-crypto-key-utils": "^1.0.5",
     "js-crypto-random": "^1.0.4",
-    "js-encoding-utils": "0.7.1"
+    "js-encoding-utils": "0.7.3"
   }
 }

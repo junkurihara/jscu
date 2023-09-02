@@ -29,7 +29,7 @@
     "webcrypto"
   ],
   "devDependencies": {
-    "js-encoding-utils": "0.7.1"
+    "js-encoding-utils": "0.7.3"
   },
   "dependencies": {
     "js-crypto-env": "^1.0.4",
