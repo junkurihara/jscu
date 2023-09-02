@@ -6,9 +6,11 @@ name: test
 on:
   # Triggers the workflow on push or pull request events but only for the develop branch
   push:
-    branches: [ develop ]
+    branches: [master, develop]
+    tags:
+      - "*"
   pull_request:
-    branches: [ develop ]
+    branches: [master, develop]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -22,7 +24,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [ 18.x, 20.x ]
+        node-version: [18.x, 20.x]
 
     steps:
       - uses: actions/checkout@v3
@@ -34,7 +36,7 @@ jobs:
 
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
-        run: echo "::set-output name=dir::$(yarn cache dir)"
+        run: echo "dir=$(yarn cache dir)" >> $GITHUB_OUTPUT
 
       - uses: actions/cache@v3
         id: yarn-cache # use this to check for `cache-hit` (`steps.yarn-cache.outputs.cache-hit != 'true'`)
@@ -58,19 +60,71 @@ jobs:
       - name: Test with karma
         run: yarn karma
 
-#      - name: Install lcov
-#        run: sudo apt install lcov
-#    # Steps represent a sequence of tasks that will be executed as part of the job
-#    steps:
-#      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-#      - uses: actions/checkout@v2
-#
-#      # Runs a single command using the runners shell
-#      - name: Run a one-line script
-#        run: echo Hello, world!
-#
-#      # Runs a set of commands using the runners shell
-#      - name: Run a multi-line script
-#        run: |
-#          echo Add other actions to build,
-#          echo test, and deploy your project.
+      - name: Install lcov and merge coverage info
+        run: |
+          sudo apt install lcov
+          find ./coverage  -name lcov.info -exec echo -a {} \; | xargs lcov -o ./coverage/merged-lcov.info
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          files: ./coverage/merged-lcov.info
+
+  webpage:
+    needs: test
+    if: ${{ (github.ref_name == 'master') }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: "20.x"
+      - run: |
+          yarn
+          yarn docs
+          mv esdocs ~/docs
+
+      - name: Setup git
+        env:
+          WEBPAGE_REPO_DEPLOY_KEY: ${{ secrets.WEBPAGE_REPO_DEPLOY_KEY }}
+        run: |
+          echo "$WEBPAGE_REPO_DEPLOY_KEY" > ~/deploy_key.pem
+          chmod 600 ~/deploy_key.pem
+          git config --global user.email "junkurihara@users.noreply.github.com"
+          git config --global user.name "J via GitHub Actions"
+
+      - name: Update and deploy pages
+        env:
+          GIT_SSH_COMMAND: ssh -i ~/deploy_key.pem -o StrictHostKeyChecking=no -F /dev/null
+        run: |
+          mkdir -p ~/jscu-webpage
+          cd ~/jscu-webpage
+          git clone git@github.com:junkurihara/jscu-webpage.git .
+          rm -rf ./docs
+          mv ~/docs ./docs
+          git add .
+          if ! git diff --cached --quiet; then
+            echo 'Updated page and push via GitHub Actions'
+            git commit -am 'Updated page and push via GitHub Actions'
+            git push origin master
+          fi
+
+  publish:
+    needs: test
+    if: startsWith(github.event.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      # Setup .npmrc file to publish to npm
+      - uses: actions/setup-node@v3
+        with:
+          node-version: "20.x"
+          registry-url: "https://registry.npmjs.org"
+          # Defaults to the user or organization that owns the workflow file
+          scope: "@octocat"
+      - run: |
+          yarn
+          yarn build
+          bash scripts/publish.sh
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
