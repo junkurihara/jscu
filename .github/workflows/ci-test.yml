@@ -63,6 +63,7 @@ jobs:
       - name: Install lcov and merge coverage info
         run: |
           sudo apt install lcov
+          mkdir -p ./coverage
           find ./coverage  -name lcov.info -exec echo -a {} \; | xargs lcov -o ./coverage/merged-lcov.info
 
       - name: Upload coverage to Codecov
