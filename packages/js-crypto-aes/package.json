@@ -1,6 +1,6 @@
 {
   "name": "js-crypto-aes",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Universal Module for AES Encryption and Decryption in JavaScript",
   "main": "dist/index.js",
   "scripts": {
