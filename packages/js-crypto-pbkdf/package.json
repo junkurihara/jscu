@@ -1,6 +1,6 @@
 {
   "name": "js-crypto-pbkdf",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "Universal Module for Password-based Key Derivation Function (PBKDF) in JavaScript",
   "main": "dist/index.js",
   "scripts": {
@@ -31,8 +31,8 @@
     "rfc8018"
   ],
   "dependencies": {
-    "js-crypto-hash": "^1.0.6",
-    "js-crypto-hmac": "^1.0.6",
+    "js-crypto-hash": "^1.0.7",
+    "js-crypto-hmac": "^1.0.7",
     "js-encoding-utils": "0.7.3"
   }
 }

@@ -1,6 +1,6 @@
 {
   "name": "js-crypto-aes",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Universal Module for AES Encryption and Decryption in JavaScript",
   "main": "dist/index.js",
   "scripts": {
@@ -29,10 +29,10 @@
     "webcrypto"
   ],
   "devDependencies": {
-    "js-crypto-random": "^1.0.4",
+    "js-crypto-random": "^1.0.5",
     "js-encoding-utils": "0.7.3"
   },
   "dependencies": {
-    "js-crypto-env": "^1.0.4"
+    "js-crypto-env": "^1.0.5"
   }
 }

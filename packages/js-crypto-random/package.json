@@ -1,6 +1,6 @@
 {
   "name": "js-crypto-random",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Universal Module for Secure Random Generator in JavaScript",
   "main": "dist/index.js",
   "scripts": {
@@ -29,6 +29,6 @@
     "webcrypto"
   ],
   "dependencies": {
-    "js-crypto-env": "^1.0.4"
+    "js-crypto-env": "^1.0.5"
   }
 }
