@@ -41,6 +41,6 @@
     "js-encoding-utils": "0.7.3"
   },
   "devDependencies": {
-    "@types/elliptic": "6.4.15"
+    "@types/elliptic": "6.4.16"
   }
 }
