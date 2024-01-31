@@ -68,7 +68,7 @@ jobs:
           find ./packages -name lcov.info -exec echo -a {} \; | xargs lcov -o ./coverage/merged-lcov.info
 
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v4
         with:
           files: ./coverage/merged-lcov.info
 
