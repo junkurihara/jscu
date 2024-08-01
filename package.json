@@ -39,7 +39,7 @@
     "karma-jasmine": "5.1.0",
     "karma-typescript": "5.5.4",
     "lerna": "8.1.7",
-    "ts-jest": "29.2.3",
+    "ts-jest": "29.2.4",
     "ts-loader": "9.5.1",
     "typescript": "5.2.2",
     "webpack": "5.93.0",
