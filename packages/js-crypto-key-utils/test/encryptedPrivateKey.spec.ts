@@ -67,7 +67,7 @@ describe(`${envName}: RSA/EC Key conversion from/to JWK test.`, () => {
       return elem.every( (x) => x);
     }));
     console.log(`result: ${array}`);
-    expect(array.every( (x) => x)).toBeTruthy();
+    expect(array.every( (x: any) => x)).toBeTruthy();
 
     // AES256 encrypted key sample
     // const test = '-----BEGIN ENCRYPTED PRIVATE KEY-----\n' +
@@ -140,7 +140,7 @@ describe(`${envName}: RSA/EC Key conversion from/to JWK test.`, () => {
       return elem.every( (x) => x);
     }));
     console.log(`result: ${array}`);
-    expect(array.every( (x) => x)).toBeTruthy();
+    expect(array.every( (x: any) => x)).toBeTruthy();
   }, 50000);
 
 });
