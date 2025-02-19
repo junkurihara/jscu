@@ -38,7 +38,7 @@
     "karma-cli": "2.0.0",
     "karma-jasmine": "5.1.0",
     "karma-typescript": "5.5.4",
-    "lerna": "8.1.9",
+    "lerna": "8.2.0",
     "ts-jest": "29.2.5",
     "ts-loader": "9.5.2",
     "typescript": "5.2.2",
