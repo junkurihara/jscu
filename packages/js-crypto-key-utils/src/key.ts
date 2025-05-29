@@ -16,7 +16,7 @@ import {
   JwkThumbprintFormat, HashTypes
 } from './typedef';
 
-const cloneDeep = require('lodash.clonedeep');
+import cloneDeep from 'lodash.clonedeep';
 
 type CurrentKeyStatus = {jwk: boolean, der: boolean, oct: boolean};
 /**
