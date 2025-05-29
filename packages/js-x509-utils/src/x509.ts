@@ -14,8 +14,7 @@ import * as BufferMod from 'buffer';
 import {AsnFormat, X509EncodingOptions, DER, PEM, SignatureType} from './typedef';
 const BufferR = BufferMod.Buffer;
 
-// import BN from 'bn.js';
-const BN = require('bn.js'); // work around
+import BN from 'bn.js';
 
 /**
  * Convert public key in JWK format to X.509 PEM or DER object.

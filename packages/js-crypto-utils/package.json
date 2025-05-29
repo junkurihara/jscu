@@ -50,5 +50,8 @@
     "js-encoding-utils": "0.7.3",
     "js-x509-utils": "^1.0.7",
     "lodash.clonedeep": "~4.5.0"
+  },
+  "devDependencies": {
+    "@types/lodash.clonedeep": "4.5.9"
   }
 }
