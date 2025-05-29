@@ -11,7 +11,16 @@ interface Window { crypto: { subtle: {sign: any}};}
 declare const window: Window;
 
 const hashes: Array<HashTypes> = ['SHA-256', 'SHA-384', 'SHA-512', 'MD5', 'SHA-1', 'SHA3-224', 'SHA3-256', 'SHA3-384', 'SHA3-512'];
-describe(`${envName}: HMAC test in PureJS environment`, () => {
+describe('HMAC test in PureJS environment', () => {
+  let hmac: any;
+  let envName: string;
+
+  beforeAll(async () => {
+    const env = await getTestEnv();
+    hmac = env.library;
+    envName = env.envName;
+  });
+
   const msg = random.getRandomBytes(32);
   beforeAll( async () => {
     if (typeof window !== 'undefined' && typeof window.crypto !== 'undefined') window.crypto.subtle.sign = undefined;

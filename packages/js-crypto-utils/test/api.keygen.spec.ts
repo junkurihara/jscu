@@ -25,7 +25,16 @@ async function rsaKeyPairAssert(publicJwk: JsonWebKey, privateJwk: JsonWebKey){
   expect(publicJwk.e).toEqual(privateJwk.e);
 }
 
-describe(`${envName}: Key generation test via exported api`, () => {
+describe('Key generation test via exported api', () => {
+  let jscu: any;
+  let envName: string;
+
+  beforeAll(async () => {
+    const env = await getTestEnv();
+    jscu = env.library;
+    envName = env.envName;
+  });
+
 
   const curves: Array<CurveTypes> = ['P-256', 'P-384', 'P-521', 'P-256K'];
   it('ECDSA Key Generation should be done successfully', async function () {

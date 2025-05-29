@@ -1,11 +1,17 @@
 import {getTestEnv} from './prepare';
-const env = getTestEnv();
-const elliptic = env.library;
-const envName = env.envName;
 
 import {JsonWebKeyPair, CurveTypes} from '../src/typedef';
 
-describe(`${envName}: Elliptic curve cryptography test`, () => {
+describe('Elliptic curve cryptography test', () => {
+  let elliptic: any;
+  let envName: string;
+
+  beforeAll(async () => {
+    const env = await getTestEnv();
+    elliptic = env.library;
+    envName = env.envName;
+  });
+
 
   const curves: Array<CurveTypes> = ['P-256', 'P-384', 'P-521', 'P-256K'];
   const keys: Array<JsonWebKeyPair> = [];

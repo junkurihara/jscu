@@ -22,7 +22,16 @@ const testVectors = {
 };
 
 const hashes: Array<HashTypes> = ['SHA-256', 'SHA-384', 'SHA-512', 'SHA-1', 'MD5', 'SHA3-512', 'SHA3-384', 'SHA3-256', 'SHA3-224'];
-describe(`${envName}: HMAC test`, () => {
+describe('HMAC test', () => {
+  let hmac: any;
+  let envName: string;
+
+  beforeAll(async () => {
+    const env = await getTestEnv();
+    hmac = env.library;
+    envName = env.envName;
+  });
+
   beforeAll( () => {});
 
   it('HMAC successfully generates and verify a MAC', async () =>  {

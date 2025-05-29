@@ -1,7 +1,4 @@
 import {getTestEnv} from './prepare';
-const env = getTestEnv();
-const keyutils = env.library;
-const envName = env.envName;
 
 import sample from './sampleEncrypted';
 
@@ -14,7 +11,16 @@ const objectSort = (obj: any) => {
   return map;
 };
 
-describe(`${envName}: RSA/EC Key conversion from/to JWK test.`, () => {
+describe('RSA/EC Key conversion from/to JWK test.', () => {
+  let keyutils: any;
+  let envName: string;
+
+  beforeAll(async () => {
+    const env = await getTestEnv();
+    keyutils = env.library;
+    envName = env.envName;
+  });
+
   const encOptionArray = [
     {algorithm: 'pbes2'}, // = AES256 with hmachWithSHA256
     {algorithm: 'pbes2', cipher: 'aes128-cbc', prf: 'hmacWithSHA256'},

@@ -1,7 +1,4 @@
 import {getTestEnv} from './prepare';
-const env = getTestEnv();
-const x509 = env.library;
-const envName = env.envName;
 
 import ec from 'js-crypto-ec';
 
@@ -23,7 +20,16 @@ const crtsample = '-----BEGIN CERTIFICATE-----\n' +
   'UR3om5rYSWmj7rgz0uJxoaZkkNH4xM2Zfss=\n' +
   '-----END CERTIFICATE-----';
 
-describe(`${envName}: Generated JWK EC public key should be successfully converted to X509 PEM certificate and vice versa`, () => {
+describe('Generated JWK EC public key should be successfully converted to X509 PEM certificate and vice versa', () => {
+  let x509: any;
+  let envName: string;
+
+  beforeAll(async () => {
+    const env = await getTestEnv();
+    x509 = env.library;
+    envName = env.envName;
+  });
+
   let keySet: Array<any> = [];
   let msg;
   beforeAll(async () => {

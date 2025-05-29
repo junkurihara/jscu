@@ -1,7 +1,4 @@
 import {getTestEnv} from './prepare';
-const env = getTestEnv();
-const keyutils = env.library;
-const envName = env.envName;
 
 import sampleRSA from './sampleRsa';
 
@@ -24,7 +21,16 @@ const prune = (jwk: JsonWebKey) => {
 
 
 const bits = ['2048', '4096'];
-describe(`${envName}: RSA Key conversion from/to JWK test.`, () => {
+describe('RSA Key conversion from/to JWK test.', () => {
+  let keyutils: any;
+  let envName: string;
+
+  beforeAll(async () => {
+    const env = await getTestEnv();
+    keyutils = env.library;
+    envName = env.envName;
+  });
+
   beforeAll(async () => {
   });
 

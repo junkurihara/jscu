@@ -4,7 +4,16 @@ const env = getTestEnv();
 const jscu = env.library;
 const envName = env.envName;
 
-describe(`${envName}: Signing and verification test via exported api`, () => {
+describe('Signing and verification test via exported api', () => {
+  let jscu: any;
+  let envName: string;
+
+  beforeAll(async () => {
+    const env = await getTestEnv();
+    jscu = env.library;
+    envName = env.envName;
+  });
+
   const curves: Array<CurveTypes> = ['P-256', 'P-384', 'P-521', 'P-256K'];
   const hashes: Array<HashTypes> = [ 'SHA-256', 'SHA-384', 'SHA-512'];
   let ecKeySet: Array<any> = [];

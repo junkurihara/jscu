@@ -1,7 +1,4 @@
 import {getTestEnv} from './prepare';
-const env = getTestEnv();
-const keyutils = env.library;
-const envName = env.envName;
 
 import ecKey from './sampleEc';
 
@@ -23,7 +20,16 @@ const prune = (jwk: JsonWebKey) => {
 
 
 //const curves: CurveTypes[] = ['P-256', 'P-384', 'P-521'];
-describe(`${envName}: EC Key conversion from/to JWK test.`, () => {
+describe('EC Key conversion from/to JWK test.', () => {
+  let keyutils: any;
+  let envName: string;
+
+  beforeAll(async () => {
+    const env = await getTestEnv();
+    keyutils = env.library;
+    envName = env.envName;
+  });
+
   
   let ECKeySet: any[] = [];
   beforeAll(async function (){

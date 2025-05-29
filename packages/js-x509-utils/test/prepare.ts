@@ -5,7 +5,7 @@
 const base = require('../webpack.config.base');
 
 
-export const getTestEnv = () => {
+export const getTestEnv = async () => {
   let envName;
   let message;
   let library;
@@ -21,7 +21,7 @@ export const getTestEnv = () => {
   }
   else {
     envName = 'Source';
-    library = require('../src/index');
+    library = await import('../src/index');
     message = '**This is a test with source codes in src.**';
   }
 
