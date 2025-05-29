@@ -1,27 +1,33 @@
-import { defineConfig } from 'vitest/config';
+import { defineConfig } from "vitest/config";
 
 export default defineConfig({
   test: {
     browser: {
       enabled: true,
-      name: 'chromium',
-      provider: 'playwright',
+      name: "chromium",
+      provider: "playwright",
       headless: true,
-      screenshotOnFailure: false
+      screenshotOnFailure: false,
     },
-    include: ['**/test/**/*.spec.ts'],
+    include: ["**/test/**/*.spec.ts"],
     globals: true,
     coverage: {
-      provider: 'v8',
-      reporter: ['text', 'html', 'lcov'],
-      include: ['src/**/*.ts'],
-      exclude: ['test/**/*', '**/*.d.ts', '**/*.spec.ts'],
-      reportsDirectory: 'coverage/vitest-browser'
+      provider: "v8",
+      reporter: ["text", "html", "lcov"],
+      include: ["src/**/*.ts"],
+      exclude: ["test/**/*", "**/*.d.ts", "**/*.spec.ts"],
+      reportsDirectory: "coverage/vitest-browser",
     },
     testTimeout: 30000,
-    setupFiles: ['./test/setup-browser.ts']
+    setupFiles: ["./test/setup-browser.ts"],
   },
   resolve: {
-    conditions: ['browser', 'default']
-  }
+    conditions: ["browser", "default"],
+  },
+  define: {
+    global: "globalThis",
+  },
+  optimizeDeps: {
+    include: ["buffer"],
+  },
 });
