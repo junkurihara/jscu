@@ -2,7 +2,6 @@
  * prepare.ts
  */
 
-
 // Get library name from package name
 function getLibraryName() {
   const packageName = 'js-crypto-ec';
@@ -16,7 +15,8 @@ export const getTestEnv = async () => {
   let library;
   console.log(typeof process !== "undefined" ? process.env.TEST_ENV : "browser");
 
-  if (typeof window !== "undefined" && typeof (<any>window)[getLibraryName()] !== "undefined") {
+  if (typeof process !== "undefined" && process.env.TEST_ENV === 'window'){
+    if(typeof window !== 'undefined' && typeof (<any>window)[getLibraryName()] !== 'undefined'){
       envName = 'Window';
       library = (<any>window)[getLibraryName()];
       message = '**This is a test with a library imported from window.**';
