@@ -13,6 +13,8 @@ export default defineConfig({
       exclude: ["test/**/*", "**/*.d.ts", "**/*.spec.ts"],
       reportsDirectory: "coverage/vitest",
     },
+    // Global test timeout
+    testTimeout: 30000,
   },
   esbuild: {
     target: "node14",
