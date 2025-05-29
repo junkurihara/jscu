@@ -34,33 +34,37 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
-      - name: Get yarn cache directory path
-        id: yarn-cache-dir-path
-        run: echo "dir=$(yarn cache dir)" >> $GITHUB_OUTPUT
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Get pnpm store directory
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
 
       - uses: actions/cache@v4
-        id: yarn-cache # use this to check for `cache-hit` (`steps.yarn-cache.outputs.cache-hit != 'true'`)
+        name: Setup pnpm cache
         with:
-          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          path: ${{ env.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: |
-            ${{ runner.os }}-yarn-
+            ${{ runner.os }}-pnpm-store-
 
-      - name: Update npm and install packages
-        run: |
-          npm i -g npm@latest yarn@latest
-          yarn install
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
 
       - name: Build packages
-        run: yarn babel
+        run: pnpm babel
 
-      - name: Test with jest
-        run: yarn test
+      - name: Install Playwright browsers
+        run: npx playwright install chromium
 
-      - name: Test with karma
-        run: yarn karma
+      - name: Test with Vitest (Node.js and Browser)
+        run: pnpm test:all
 
-      - name: Install lcov and merge coverage info
+      - name: Install lcov and merge Vitest coverage info
         run: |
           sudo apt update
           sudo apt install lcov
@@ -82,8 +86,8 @@ jobs:
         with:
           node-version: "22.x"
       - run: |
-          yarn
-          yarn docs
+          pnpm install --frozen-lockfile
+          pnpm docs
           mv esdocs ~/docs
 
       - name: Setup git
@@ -124,9 +128,14 @@ jobs:
           registry-url: "https://registry.npmjs.org"
           # Defaults to the user or organization that owns the workflow file
           scope: "@octocat"
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
       - run: |
-          yarn
-          yarn build
+          pnpm install --frozen-lockfile
+          pnpm build
           bash scripts/publish.sh
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
