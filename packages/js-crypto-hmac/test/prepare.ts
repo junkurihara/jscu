@@ -2,8 +2,13 @@
  * prepare.ts
  */
 
-const base = require('../webpack.config.base');
 
+// Get library name from package name
+function getLibraryName() {
+  const packageName = 'js-crypto-hmac';
+  // Convert package name to library name (e.g., js-crypto-hash -> jscu)
+  return 'jscu'; // Default library name
+}
 
 export const getTestEnv = async () => {
   let envName;
@@ -12,9 +17,9 @@ export const getTestEnv = async () => {
   console.log(process.env.TEST_ENV);
 
   if (process.env.TEST_ENV === 'window'){
-    if(typeof window !== 'undefined' && typeof (<any>window)[base.libName] !== 'undefined'){
+    if(typeof window !== 'undefined' && typeof (<any>window)[getLibraryName()] !== 'undefined'){
       envName = 'Window';
-      library = (<any>window)[base.libName];
+      library = (<any>window)[getLibraryName()];
       message = '**This is a test with a library imported from window.**';
     }
     else throw new Error('The library is not loaded in window object.');
