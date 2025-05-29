@@ -70,7 +70,7 @@ const rfc5869 = async (
   const len = params.hashes[hash].hashSize;
 
   // RFC5869 Step 1 (Extract)
-  const prk = await hmac.compute(salt, master, hash);
+  const prk = new Uint8Array(await hmac.compute(salt, master, hash));
 
   // RFC5869 Step 2 (Expand)
   let t = new Uint8Array([]);
@@ -81,7 +81,7 @@ const rfc5869 = async (
     concat.set(t);
     concat.set(uintInfo, t.length);
     concat.set(new Uint8Array([i+1]), t.length + uintInfo.length);
-    t = await hmac.compute(prk, concat, hash);
+    t = new Uint8Array(await hmac.compute(prk, concat, hash));
     okm.set(t, len * i);
   }
   return okm.slice(0, length);

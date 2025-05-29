@@ -53,7 +53,7 @@ export const compute = async (key: Uint8Array, data: Uint8Array, hash: HashTypes
     }
   }
 
-  return new Uint8Array(msgKeyedHash);
+  return new Uint8Array(msgKeyedHash as ArrayBuffer);
 };
 
 

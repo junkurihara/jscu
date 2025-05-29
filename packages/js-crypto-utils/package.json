@@ -4,14 +4,19 @@
   "description": "JavaScript cryptographic utilities for OpenSSL-WebCrypto compatibility including PEM/X509-JWK converter.",
   "main": "dist/index.js",
   "scripts": {
-    "test": "yarn jest",
-    "karma": "karma start",
-    "karma:window": "yarn webpack && cross-env TEST_ENV=window karma start",
+    "test": "pnpm jest",
+    "vitest": "vitest run",
+    "vitest:browser": "vitest run --config ./vitest.browser.config.js",
     "babel": "cross-env NODE_ENV=production tsc --build ./tsconfig.json",
     "webpack": "webpack --mode development --config webpack.config.js",
     "webpack:prod": "webpack --mode production --config webpack.config.js",
-    "build": "rm -rf ./dist && yarn babel && yarn webpack:prod",
-    "cleanup": "rm -rf ./dist coverage ./node_modules"
+    "build": "rm -rf ./dist && pnpm babel && pnpm webpack:prod",
+    "cleanup": "rm -rf ./dist coverage ./node_modules",
+    "vitest:watch": "vitest",
+    "vitest:ui": "vitest --ui"
+  },
+  "engines": {
+    "node": ">=24.0.0"
   },
   "author": "Jun Kurihara",
   "license": "MIT",

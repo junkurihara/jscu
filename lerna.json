@@ -1,6 +1,6 @@
 {
   "version": "independent",
-  "npmClient": "yarn",
+  "npmClient": "pnpm",
   "command": {
     "publish": {
       "ignoreChanges": [
@@ -15,7 +15,7 @@
     },
     "bootstrap": {
       "ignore": "component-*",
-      "npmClientArgs": ["--no-lockfile"]
+      "npmClientArgs": ["--no-frozen-lockfile"]
     }
   },
   "packages": ["packages/*"]

@@ -1,15 +1,19 @@
 import {getTestEnv} from './prepare';
-const env = getTestEnv();
-const hash = env.library;
-const envName = env.envName;
-
 import {testVectors} from './test-vector';
 import jseu from 'js-encoding-utils';
 import params from '../src/params';
 
-
 const hashes = ['SHA-256', 'SHA-384', 'SHA-512', 'SHA-1', 'MD5', 'SHA3-512', 'SHA3-384', 'SHA3-256', 'SHA3-224'];
-describe(`${envName}: Hash generation test`, () => {
+
+describe('Hash generation test', () => {
+  let hash: any;
+  let envName: string;
+
+  beforeAll(async () => {
+    const env = await getTestEnv();
+    hash = env.library;
+    envName = env.envName;
+  });
 
   it('Hash should be generated for each hash algorithms', async () => {
     const str = Object.keys(testVectors)[0];

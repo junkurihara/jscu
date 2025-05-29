@@ -4,13 +4,15 @@
   "description": "Shared environment modules for jscu",
   "main": "dist/index.js",
   "scripts": {
-    "test": "yarn jest",
-    "karma": "karma start",
-    "karma:window": "karma start",
+    "test": "pnpm jest",
     "tsc": "tsc --build ./tsconfig.json",
-    "babel": "cross-env NODE_ENV=production yarn tsc",
+    "babel": "cross-env NODE_ENV=production pnpm tsc",
     "build": "rm -rf ./dist && npm run babel",
-    "cleanup": "rm -rf ./dist coverage ./node_modules"
+    "cleanup": "rm -rf ./dist coverage ./node_modules",
+    "vitest": "vitest run",
+    "vitest:browser": "vitest run --config ./vitest.browser.config.js",
+    "vitest:watch": "vitest",
+    "vitest:ui": "vitest --ui"
   },
   "author": "Jun Kurihara",
   "license": "MIT",
@@ -24,5 +26,8 @@
   "homepage": "https://github.com/junkurihara/jscu/tree/master/packages/js-crypto-env#readme",
   "keywords": [
     "jscu"
-  ]
+  ],
+  "engines": {
+    "node": ">=24.0.0"
+  }
 }

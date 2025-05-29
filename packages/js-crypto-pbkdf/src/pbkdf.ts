@@ -35,10 +35,10 @@ export const pbkdf2 = async (
     const seed = new Uint8Array(s.length + 4);
     seed.set(s);
     seed.set(nwbo(i+1, 4), s.length);
-    let u = await jschmac.compute(uintP, seed, hash);
+    let u = new Uint8Array(await jschmac.compute(uintP, seed, hash));
     let outputF = new Uint8Array(u);
     for(let j = 1; j < c; j++){
-      u = await jschmac.compute(uintP, u, hash);
+      u = new Uint8Array(await jschmac.compute(uintP, u, hash));
       outputF = u.map( (elem, idx) => elem ^ outputF[idx]);
     }
     return {index: i, value: outputF};
@@ -58,7 +58,7 @@ export const pbkdf2 = async (
 // network byte order
 const nwbo = (num: number, len: number): Uint8Array => {
   const arr = new Uint8Array(len);
-  for(let i=0; i<len; i++) arr[i] = 0xFF && (num >> ((len - i - 1)*8));
+  for(let i=0; i<len; i++) arr[i] = 0xFF & (num >> ((len - i - 1)*8));
   return arr;
 };
 
@@ -87,8 +87,7 @@ export const pbkdf1 = async (
   seed.set(p);
   seed.set(s, p.length);
   for(let i = 0; i < c; i++){
-    seed = await jschash.compute(seed, hash);
+    seed = new Uint8Array(await jschash.compute(seed, hash));
   }
   return seed.slice(0, dkLen);
 };
-

@@ -53,7 +53,7 @@ export const compute = async (msg: Uint8Array, hash: HashTypes = 'SHA-256') : Pr
     }
   }
 
-  return new Uint8Array(msgHash);
+  return new Uint8Array(msgHash as ArrayBuffer);
 };
 
 
@@ -95,5 +95,5 @@ const purejs = async (hash: HashTypes, msg: Uint8Array) : Promise<Uint8Array> =>
     h = jsHash[params.hashes[hash].nodeName]().update(msg).digest();
   }
 
-  return new Uint8Array(h);
+  return new Uint8Array(h as ArrayBuffer);
 };
