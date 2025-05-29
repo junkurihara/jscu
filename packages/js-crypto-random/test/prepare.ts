@@ -14,9 +14,9 @@ export const getTestEnv = async () => {
   let envName;
   let message;
   let library;
-  console.log(process.env.TEST_ENV);
+  console.log(typeof process !== "undefined" ? process.env.TEST_ENV : "browser");
 
-  if (process.env.TEST_ENV === 'window'){
+  if (typeof process !== "undefined" && process.env.TEST_ENV === 'window'){
     if(typeof window !== 'undefined' && typeof (<any>window)[getLibraryName()] !== 'undefined'){
       envName = 'Window';
       library = (<any>window)[getLibraryName()];
