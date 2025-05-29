@@ -53,7 +53,7 @@ jobs:
             ${{ runner.os }}-pnpm-store-
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: pnpm install --no-frozen-lockfile
 
       - name: Build packages
         run: pnpm babel
@@ -92,7 +92,7 @@ jobs:
           version: 9
 
       - run: |
-          pnpm install --frozen-lockfile
+          pnpm install --no-frozen-lockfile
           pnpm docs
           mv esdocs ~/docs
 
@@ -140,7 +140,7 @@ jobs:
           version: 9
 
       - run: |
-          pnpm install --frozen-lockfile
+          pnpm install --no-frozen-lockfile
           pnpm build
           bash scripts/publish.sh
         env:
