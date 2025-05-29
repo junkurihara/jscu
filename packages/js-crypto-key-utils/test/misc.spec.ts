@@ -66,7 +66,7 @@ describe('RSA/EC Key conversion from/to JWK test.', () => {
     }));
     console.log(array);
     // expect(array.every( (elem) => elem)).toBeTruthy();
-  }, 4000);
+  });
 
 
   it('Status Change Test', async () => {
