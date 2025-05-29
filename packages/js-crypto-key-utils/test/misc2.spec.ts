@@ -1,13 +1,16 @@
 import {getTestEnv} from './prepare';
-const env = getTestEnv();
-const Key = env.library.Key;
-const envName = env.envName;
-
 import jseu from 'js-encoding-utils';
 import {pruneLeadingZeros, appendLeadingZeros} from '../src/util';
 
+describe('RSA Key pruning leading zeros and appending leading zeros', () => {
+  let Key: any;
+  let envName: string;
 
-describe(`${envName}: RSA Key pruning leading zeros and appending leading zeros`, () => {
+  beforeAll(async () => {
+    const env = await getTestEnv();
+    Key = env.library.Key;
+    envName = env.envName;
+  });
 
   const badRSA = {
     'kty': 'RSA',

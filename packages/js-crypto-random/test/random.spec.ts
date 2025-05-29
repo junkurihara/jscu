@@ -1,9 +1,14 @@
 import {getTestEnv} from './prepare';
-const env = getTestEnv();
-const random = env.library;
-const envName = env.envName;
 
-describe(`${envName}: Random generation test`, () => {
+describe('Random generation test', () => {
+  let random: any;
+  let envName: string;
+
+  beforeAll(async () => {
+    const env = await getTestEnv();
+    random = env.library;
+    envName = env.envName;
+  });
 
   it('Random bytes of desired length should be generated successfully', () => {
     const r: Uint8Array = random.getRandomBytes(32);

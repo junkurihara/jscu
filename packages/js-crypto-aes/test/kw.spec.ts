@@ -1,7 +1,4 @@
 import {getTestEnv} from './prepare';
-const env = getTestEnv();
-const aes = env.library;
-const envName = env.envName;
 
 import jseu from 'js-encoding-utils';
 
@@ -21,7 +18,16 @@ const testVectors = [
 ];
 
 
-describe(`${envName}: Wrap and Unwrap with AES-KW Test`, () => {
+describe('Wrap and Unwrap with AES-KW Test', () => {
+  let aes: any;
+  let envName: string;
+
+  beforeAll(async () => {
+    const env = await getTestEnv();
+    aes = env.library;
+    envName = env.envName;
+  });
+
   beforeAll( async () => {
   });
 

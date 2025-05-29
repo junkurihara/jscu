@@ -1,15 +1,20 @@
 import {getTestEnv} from './prepare';
-const env = getTestEnv();
-const rsa = env.library;
-const envName = env.envName;
-
 
 import rsaSmaple from './rsa_sample';
 import * as oaep from '../src/oaep';
 import jseu from 'js-encoding-utils';
 import {JsonWebKeyPair, ModulusLength} from '../src/typedef';
 
-describe(`${envName}: RSA cryptography test`, () => {
+describe('RSA cryptography test', () => {
+  let rsa: any;
+  let envName: string;
+
+  beforeAll(async () => {
+    const env = await getTestEnv();
+    rsa = env.library;
+    envName = env.envName;
+  });
+
 
   const modulusLength: Array<ModulusLength> = [2048, 4096];
   const keys: Array<JsonWebKeyPair|null> = [];

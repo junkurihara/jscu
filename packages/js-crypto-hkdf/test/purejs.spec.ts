@@ -1,7 +1,4 @@
 import {getTestEnv} from './prepare';
-const env = getTestEnv();
-const hkdf = env.library;
-const envName = env.envName;
 
 import {HashTypes} from '../src/params';
 
@@ -10,7 +7,16 @@ declare const window: Window;
 
 
 const hashes: Array<HashTypes> = ['SHA-256', 'SHA-384', 'SHA-512', 'SHA-1', 'MD5', 'SHA3-224', 'SHA3-256', 'SHA3-384', 'SHA3-512'];
-describe(`${envName}: HKDF test in PureJS environment`, () => {
+describe('HKDF test in PureJS environment', () => {
+  let hkdf: any;
+  let envName: string;
+
+  beforeAll(async () => {
+    const env = await getTestEnv();
+    hkdf = env.library;
+    envName = env.envName;
+  });
+
   let masterSecret: Uint8Array;
   const length = 144;
   beforeAll( async () => {

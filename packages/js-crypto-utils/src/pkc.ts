@@ -19,8 +19,7 @@ import {
 import * as pkcec from './pkcec';
 import * as params from './params';
 
-const cloneDeep = require('lodash.clonedeep'); // work around
-// import cloneDeep from 'lodash.clonedeep';
+import cloneDeep from 'lodash.clonedeep';
 
 /**
  * Generate key pair in JWK format

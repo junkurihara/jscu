@@ -1,9 +1,4 @@
 import {getTestEnv} from './prepare';
-const env = getTestEnv();
-const Key = env.library.Key;
-const envName = env.envName;
-
-
 import sampleRSA from './sampleRsa';
 import sampleEC from './sampleEc';
 import jseu from 'js-encoding-utils';
@@ -17,10 +12,16 @@ const objectSort = (obj: any) => {
 
 const bits = ['2048', '4096'];
 // const curves = ['P-256', 'P-384', 'P-521', 'P-256K'];
-describe(`${envName}: RSA/EC Key conversion from/to JWK test.`, () => {
 
+describe('RSA/EC Key conversion from/to JWK test.', () => {
+  let Key: any;
+  let envName: string;
   let ECKeySet: any[] = [];
+
   beforeAll(async () => {
+    const env = await getTestEnv();
+    Key = env.library.Key;
+    envName = env.envName;
     ECKeySet = sampleEC.ecKey;//await Promise.all(curves.map(async (crv) => await ec.generateKey(crv)));
   }, 20000);
 
@@ -65,7 +66,7 @@ describe(`${envName}: RSA/EC Key conversion from/to JWK test.`, () => {
     }));
     console.log(array);
     // expect(array.every( (elem) => elem)).toBeTruthy();
-  }, 4000);
+  });
 
 
   it('Status Change Test', async () => {

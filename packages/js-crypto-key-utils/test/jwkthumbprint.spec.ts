@@ -1,7 +1,4 @@
 import {getTestEnv} from './prepare';
-const env = getTestEnv();
-const keyutils = env.library;
-const envName = env.envName;
 
 import sampleEC from './sampleEc';
 import sampleRSA from './sampleRsa';
@@ -11,7 +8,16 @@ import {HashTypes} from '../src/typedef';
 //const curves = ['P-256', 'P-384', 'P-521', 'P-256K'];
 const bits = ['2048', '4096'];
 const hashes: HashTypes[] = [ 'SHA-256', 'SHA-384', 'SHA-512'];
-describe(`${envName}: JWK thumbprint generation test.`, () => {
+describe('JWK thumbprint generation test.', () => {
+  let keyutils: any;
+  let envName: string;
+
+  beforeAll(async () => {
+    const env = await getTestEnv();
+    keyutils = env.library;
+    envName = env.envName;
+  });
+
 
   let keySet: any[] = [];
   beforeAll(async () => {

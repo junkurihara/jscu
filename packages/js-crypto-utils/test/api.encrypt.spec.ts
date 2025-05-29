@@ -5,7 +5,16 @@ const jscu = env.library;
 const envName = env.envName;
 
 
-describe(`${envName}: Encryption test`, () => {
+describe('Encryption test', () => {
+  let jscu: any;
+  let envName: string;
+
+  beforeAll(async () => {
+    const env = await getTestEnv();
+    jscu = env.library;
+    envName = env.envName;
+  });
+
   const curves: Array<CurveTypes> = ['P-256', 'P-384', 'P-521'];
   const mods: Array<ModulusLength> = [2048, 4096];
   const hashes: Array<HashTypes> = [ 'SHA-256', 'SHA-384', 'SHA-512'];

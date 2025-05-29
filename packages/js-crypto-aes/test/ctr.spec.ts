@@ -1,7 +1,4 @@
 import {getTestEnv} from './prepare';
-const env = getTestEnv();
-const aes = env.library;
-const envName = env.envName;
 
 import jseu from 'js-encoding-utils';
 
@@ -21,7 +18,16 @@ const testVectors = [
     output: 'F05E231B3894612C49EE000B804EB2A9B8306B508F839D6A5530831D9344AF1C' },
 ];
 
-describe(`${envName}: Encryption and Decryption with AES-CTR Test`, () => {
+describe('Encryption and Decryption with AES-CTR Test', () => {
+  let aes: any;
+  let envName: string;
+
+  beforeAll(async () => {
+    const env = await getTestEnv();
+    aes = env.library;
+    envName = env.envName;
+  });
+
   beforeAll( async () => {
   });
 

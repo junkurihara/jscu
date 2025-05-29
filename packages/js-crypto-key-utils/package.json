@@ -4,14 +4,16 @@
   "description": "Universal Module for Cryptographic Key Utilities in JavaScript, including PEM-JWK converters",
   "main": "dist/index.js",
   "scripts": {
-    "test": "yarn jest",
-    "karma": "karma start",
-    "karma:window": "yarn webpack && cross-env TEST_ENV=window karma start",
+    "test": "vitest run --coverage",
     "babel": "cross-env NODE_ENV=production tsc --build ./tsconfig.json",
     "webpack": "webpack --mode development --config webpack.config.js",
     "webpack:prod": "webpack --mode production --config webpack.config.js",
-    "build": "rm -rf ./dist && yarn babel && yarn webpack:prod",
-    "cleanup": "rm -rf ./dist coverage ./node_modules"
+    "build": "rm -rf ./dist && pnpm babel && pnpm webpack:prod",
+    "cleanup": "rm -rf ./dist coverage ./node_modules",
+    "vitest": "vitest run --coverage",
+    "vitest:browser": "vitest run --config ./vitest.browser.config.js",
+    "vitest:watch": "vitest",
+    "vitest:ui": "vitest --ui"
   },
   "author": "Jun Kurihara",
   "license": "MIT",
@@ -46,14 +48,20 @@
   ],
   "dependencies": {
     "asn1.js": "~5.4.1",
-    "buffer": "~6.0.0",
+    "buffer": "6.0.3",
     "des.js": "~1.1.0",
-    "elliptic": "~6.6.0",
+    "elliptic": "6.6.1",
     "js-crypto-aes": "^1.0.6",
     "js-crypto-hash": "^1.0.7",
     "js-crypto-pbkdf": "^1.0.7",
     "js-crypto-random": "^1.0.5",
     "js-encoding-utils": "0.7.3",
     "lodash.clonedeep": "~4.5.0"
+  },
+  "devDependencies": {
+    "@types/lodash.clonedeep": "4.5.9"
+  },
+  "engines": {
+    "node": ">=24.0.0"
   }
 }

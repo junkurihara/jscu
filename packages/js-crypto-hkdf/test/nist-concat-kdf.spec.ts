@@ -1,9 +1,15 @@
 import {getTestEnv} from './prepare';
-const env = getTestEnv();
-const hkdf = env.library;
-const envName = env.envName;
 
-describe(`${envName}: NIST Concat KDF Test`, () => {
+describe('NIST Concat KDF Test', () => {
+  let hkdf: any;
+  let envName: string;
+
+  beforeAll(async () => {
+    const env = await getTestEnv();
+    hkdf = env.library;
+    envName = env.envName;
+  });
+
   it('test', async () => {
     const concat = await hkdf.nistConcatKdf(
       new Uint8Array([158, 86, 217, 29, 129, 113, 53, 211, 114, 131, 66, 131, 191, 132,

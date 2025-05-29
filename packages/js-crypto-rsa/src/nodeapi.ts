@@ -6,9 +6,7 @@ import * as params from './params';
 import {Key} from 'js-crypto-key-utils';
 import jseu from 'js-encoding-utils';
 import * as oaep from './oaep';
-//import BN from 'bn.js';
-const BN = require('bn.js');
-require('buffer');// work around
+import BN from 'bn.js';
 
 import {HashTypes, JsonWebKeyPair, ModulusLength, RSASignAlgorithm} from './typedef';
 
@@ -165,5 +163,3 @@ export const decryptRsa = async (
   }
   return new Uint8Array(decrypted);
 };
-
-

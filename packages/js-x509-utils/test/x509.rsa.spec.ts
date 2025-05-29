@@ -1,7 +1,4 @@
 import {getTestEnv} from './prepare';
-const env = getTestEnv();
-const x509 = env.library;
-const envName = env.envName;
 
 import sample from './sample_crt';
 
@@ -13,7 +10,16 @@ const hashes: Array<HashTypes> = ['SHA-256', 'SHA-384', 'SHA-512'];//, 'SHA-1'];
 const pkcs1s: Array<SignatureType> = [ 'sha256WithRSAEncryption', 'sha384WithRSAEncryption', 'sha512WithRSAEncryption']; // RSASSA-PKCS1-v1_5
 const constantSaltLen = 32;
 
-describe(`${envName}: RSA: Generated JWK public key should be successfully converted to X509 PEM certificate and vice versa`, () => {
+describe('RSA: Generated JWK public key should be successfully converted to X509 PEM certificate and vice versa', () => {
+  let x509: any;
+  let envName: string;
+
+  beforeAll(async () => {
+    const env = await getTestEnv();
+    x509 = env.library;
+    envName = env.envName;
+  });
+
   beforeAll(async () => {
   });
 

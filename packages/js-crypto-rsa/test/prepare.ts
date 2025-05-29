@@ -2,26 +2,30 @@
  * prepare.ts
  */
 
-const base = require('../webpack.config.base');
+// Get library name from package name
+function getLibraryName() {
+  const packageName = 'js-crypto-rsa';
+  // Convert package name to library name (e.g., js-crypto-hash -> jscu)
+  return 'jscu'; // Default library name
+}
 
-
-export const getTestEnv = () => {
+export const getTestEnv = async () => {
   let envName;
   let message;
   let library;
-  console.log(process.env.TEST_ENV);
+  console.log(typeof process !== "undefined" ? process.env.TEST_ENV : "browser");
 
-  if (process.env.TEST_ENV === 'window'){
-    if(typeof window !== 'undefined' && typeof (<any>window)[base.libName] !== 'undefined'){
+  if (typeof process !== "undefined" && process.env.TEST_ENV === 'window'){
+    if(typeof window !== 'undefined' && typeof (<any>window)[getLibraryName()] !== 'undefined'){
       envName = 'Window';
-      library = (<any>window)[base.libName];
+      library = (<any>window)[getLibraryName()];
       message = '**This is a test with a library imported from window.**';
     }
     else throw new Error('The library is not loaded in window object.');
   }
   else {
     envName = 'Source';
-    library = require('../src/index');
+    library = await import('../src/index');
     message = '**This is a test with source codes in src.**';
   }
 

@@ -1,8 +1,4 @@
 import {getTestEnv} from './prepare';
-const env = getTestEnv();
-const hash = env.library;
-const envName = env.envName;
-
 import jseu from 'js-encoding-utils';
 import params, {HashTypes} from '../src/params';
 import {testVectors} from './test-vector';
@@ -11,8 +7,15 @@ interface Window { crypto: { subtle: {digest: any}}; }
 declare const window: Window;
 
 const hashes = ['SHA-256', 'SHA-384', 'SHA-512', 'SHA-1', 'MD5', 'SHA3-512', 'SHA3-384', 'SHA3-256', 'SHA3-224'];
-describe(`${envName}: Hash generation test in PureJS for webcrypto`, () => {
+
+describe('Hash generation test in PureJS for webcrypto', () => {
+  let hash: any;
+  let envName: string;
+
   beforeAll( async () => {
+    const env = await getTestEnv();
+    hash = env.library;
+    envName = env.envName;
     if (typeof window !== 'undefined' && typeof window.crypto !== 'undefined') window.crypto.subtle.digest = undefined;
   });
 

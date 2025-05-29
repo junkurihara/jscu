@@ -46,7 +46,16 @@ const sample = {
   }
 };
 
-describe(`${envName}: Test for PBKDF 1 and 2`, () => {
+describe('Test for PBKDF 1 and 2', () => {
+  let pbkdf: any;
+  let envName: string;
+
+  beforeAll(async () => {
+    const env = await getTestEnv();
+    pbkdf = env.library;
+    envName = env.envName;
+  });
+
   beforeAll( async () => {
   });
 

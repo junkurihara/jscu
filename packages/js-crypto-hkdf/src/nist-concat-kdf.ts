@@ -24,12 +24,12 @@ export const nistConcatKdf = async (
   const output = new Uint8Array(params.hashes[hash].hashSize * reps);
   let counter = new Uint8Array(4);
   for(let i = 0; i < reps; i++){
-    counter = increment(counter);
+    counter = new Uint8Array(increment(counter));
     const msg = new Uint8Array(4 + sharedSecret.length + otherInfoBytes.length);
     msg.set(counter);
     msg.set(sharedSecret, counter.length);
     msg.set(otherInfoBytes, counter.length + sharedSecret.length);
-    const ki = await digest.compute(msg, hash);
+    const ki = new Uint8Array(await digest.compute(msg, hash));
     output.set(ki, i*params.hashes[hash].hashSize);
   }
 
