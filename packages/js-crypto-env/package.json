@@ -4,7 +4,7 @@
   "description": "Shared environment modules for jscu",
   "main": "dist/index.js",
   "scripts": {
-    "test": "pnpm jest",
+    "test": "vitest run",
     "tsc": "tsc --build ./tsconfig.json",
     "babel": "cross-env NODE_ENV=production pnpm tsc",
     "build": "rm -rf ./dist && npm run babel",

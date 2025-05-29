@@ -4,7 +4,7 @@
   "description": "Universal Module for Secure Random Generator in JavaScript",
   "main": "dist/index.js",
   "scripts": {
-    "test": "pnpm jest",
+    "test": "vitest run",
     "babel": "cross-env NODE_ENV=production tsc --build ./tsconfig.json",
     "webpack": "webpack --mode development --config webpack.config.js",
     "webpack:prod": "webpack --mode production --config webpack.config.js",

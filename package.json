@@ -19,7 +19,7 @@
     "test": "lerna run test",
     "test:vitest": "lerna run vitest",
     "test:browser": "lerna run vitest:browser",
-    "test:all": "lerna run test && lerna run vitest && lerna run vitest:browser",
+    "test:all": "lerna run test && lerna run vitest:browser",
     "vitest": "lerna run vitest",
     "vitest:browser": "lerna run vitest:browser",
     "vitest:watch": "lerna run vitest:watch",
