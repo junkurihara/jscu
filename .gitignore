@@ -10,3 +10,4 @@ coverage
 dist
 esdocs
 yarn.lock
+pnpm-lock.yaml
