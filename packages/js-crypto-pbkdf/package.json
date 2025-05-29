@@ -4,13 +4,13 @@
   "description": "Universal Module for Password-based Key Derivation Function (PBKDF) in JavaScript",
   "main": "dist/index.js",
   "scripts": {
-    "test": "vitest run",
+    "test": "vitest run --coverage",
     "babel": "cross-env NODE_ENV=production tsc --build ./tsconfig.json",
     "webpack": "webpack --mode development --config webpack.config.js",
     "webpack:prod": "webpack --mode production --config webpack.config.js",
     "build": "rm -rf ./dist && pnpm babel && pnpm webpack:prod",
     "cleanup": "rm -rf ./dist coverage ./node_modules",
-    "vitest": "vitest run",
+    "vitest": "vitest run --coverage",
     "vitest:browser": "vitest run --config ./vitest.browser.config.js",
     "vitest:watch": "vitest",
     "vitest:ui": "vitest --ui"

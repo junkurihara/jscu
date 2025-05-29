@@ -4,8 +4,8 @@
   "description": "JavaScript cryptographic utilities for OpenSSL-WebCrypto compatibility including PEM/X509-JWK converter.",
   "main": "dist/index.js",
   "scripts": {
-    "test": "vitest run",
-    "vitest": "vitest run",
+    "test": "vitest run --coverage",
+    "vitest": "vitest run --coverage",
     "vitest:browser": "vitest run --config ./vitest.browser.config.js",
     "babel": "cross-env NODE_ENV=production tsc --build ./tsconfig.json",
     "webpack": "webpack --mode development --config webpack.config.js",

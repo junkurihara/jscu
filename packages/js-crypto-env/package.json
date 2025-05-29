@@ -4,12 +4,12 @@
   "description": "Shared environment modules for jscu",
   "main": "dist/index.js",
   "scripts": {
-    "test": "vitest run",
+    "test": "vitest run --coverage",
     "tsc": "tsc --build ./tsconfig.json",
     "babel": "cross-env NODE_ENV=production pnpm tsc",
     "build": "rm -rf ./dist && npm run babel",
     "cleanup": "rm -rf ./dist coverage ./node_modules",
-    "vitest": "vitest run",
+    "vitest": "vitest run --coverage",
     "vitest:browser": "vitest run --config ./vitest.browser.config.js",
     "vitest:watch": "vitest",
     "vitest:ui": "vitest --ui"
