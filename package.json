@@ -38,7 +38,7 @@
     "cross-env": "7.0.3",
     "esdoc": "1.1.0",
     "esdoc-standard-plugin": "1.0.0",
-    "eslint": "9.27.0",
+    "eslint": "9.28.0",
     "glob": "11.0.2",
     "jest": "29.7.0",
     "lerna": "8.2.2",
