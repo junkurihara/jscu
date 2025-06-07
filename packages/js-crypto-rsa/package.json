@@ -44,7 +44,7 @@
     "js-encoding-utils": "0.7.3"
   },
   "devDependencies": {
-    "@types/bn.js": "5.1.6"
+    "@types/bn.js": "5.2.0"
   },
   "engines": {
     "node": ">=24.0.0"
