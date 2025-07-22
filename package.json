@@ -40,7 +40,7 @@
     "esdoc-standard-plugin": "1.0.0",
     "eslint": "9.31.0",
     "glob": "11.0.3",
-    "jest": "30.0.4",
+    "jest": "30.0.5",
     "lerna": "8.2.3",
     "playwright": "1.54.1",
     "ts-jest": "29.4.0",
