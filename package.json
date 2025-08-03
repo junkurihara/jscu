@@ -43,7 +43,7 @@
     "jest": "30.0.5",
     "lerna": "8.2.3",
     "playwright": "1.54.2",
-    "ts-jest": "29.4.0",
+    "ts-jest": "29.4.1",
     "ts-loader": "9.5.2",
     "typescript": "5.9.2",
     "vitest": "3.2.4",
