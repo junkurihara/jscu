@@ -12,3 +12,4 @@ esdocs
 yarn.lock
 pnpm-lock.yaml
 __screenshots__
+.claude
