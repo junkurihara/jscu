@@ -49,7 +49,7 @@
     "typescript": "5.9.3",
     "vitest": "4.0.18",
     "webpack": "5.105.4",
-    "webpack-cli": "6.0.1"
+    "webpack-cli": "7.0.0"
   },
   "resolutions": {
     "colors": "1.4.0"
