@@ -43,7 +43,7 @@
     "glob": "13.0.6",
     "jest": "30.3.0",
     "lerna": "9.0.7",
-    "playwright": "1.59.0",
+    "playwright": "1.59.1",
     "ts-jest": "29.4.9",
     "ts-loader": "9.5.4",
     "typescript": "5.9.3",
