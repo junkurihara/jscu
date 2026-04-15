@@ -19,7 +19,8 @@
     "test": "lerna run test",
     "test:vitest": "lerna run vitest",
     "test:browser": "lerna run vitest:browser",
-    "test:all": "lerna run test && lerna run vitest:browser",
+    "test:web": "lerna run vitest:browser",
+    "test:all": "pnpm run test && pnpm run test:web",
     "vitest": "lerna run vitest",
     "vitest:browser": "lerna run vitest:browser",
     "vitest:watch": "lerna run vitest:watch",
@@ -28,7 +29,7 @@
   "devDependencies": {
     "@types/elliptic": "6.4.18",
     "@types/jest": "30.0.0",
-    "@types/node": "24.12.2",
+    "@types/node": "25.6.0",
     "@typescript-eslint/eslint-plugin": "8.58.2",
     "@typescript-eslint/parser": "8.58.2",
     "@vitest/browser": "4.1.4",
@@ -46,7 +47,7 @@
     "playwright": "1.59.1",
     "ts-jest": "29.4.9",
     "ts-loader": "9.5.7",
-    "typescript": "5.9.3",
+    "typescript": "6.0.2",
     "vitest": "4.1.4",
     "webpack": "5.106.1",
     "webpack-cli": "7.0.2"

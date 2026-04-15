@@ -59,7 +59,7 @@ jobs:
         run: pnpm babel
 
       - name: Install Playwright browsers
-        run: npx playwright install chromium
+        run: pnpm exec playwright install --with-deps chromium
 
       - name: Test with Vitest (Node.js and Browser)
         run: pnpm test:all
