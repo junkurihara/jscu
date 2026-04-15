@@ -1,2 +1,6 @@
 packages:
   - 'packages/*'
+allowBuilds:
+  core-js: true
+  nx: true
+  unrs-resolver: true
