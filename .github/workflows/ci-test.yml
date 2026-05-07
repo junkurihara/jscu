@@ -37,7 +37,7 @@ jobs:
       - name: Install pnpm
         uses: pnpm/action-setup@v6
         with:
-          version: 10
+          version: 11
 
       - name: Get pnpm store directory
         shell: bash
@@ -89,7 +89,7 @@ jobs:
       - name: Install pnpm
         uses: pnpm/action-setup@v6
         with:
-          version: 10
+          version: 11
 
       - run: |
           pnpm install --no-frozen-lockfile
@@ -137,7 +137,7 @@ jobs:
       - name: Install pnpm
         uses: pnpm/action-setup@v6
         with:
-          version: 10
+          version: 11
 
       - run: |
           pnpm install --no-frozen-lockfile
