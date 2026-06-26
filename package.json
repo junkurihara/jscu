@@ -50,7 +50,7 @@
     "typescript": "6.0.3",
     "vitest": "4.1.9",
     "webpack": "5.108.1",
-    "webpack-cli": "7.0.3"
+    "webpack-cli": "7.1.0"
   },
   "resolutions": {
     "colors": "1.4.0"
