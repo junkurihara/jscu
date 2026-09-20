@@ -34,10 +34,16 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
+      # The pnpm version is pinned in the root package.json (devDependencies) so that
+      # Dependabot keeps it up to date; pnpm/action-setup itself cannot read it from there.
+      - name: Read pnpm version from package.json
+        id: pnpm-version
+        run: echo "version=$(node -p "require('./package.json').devDependencies.pnpm")" >> "$GITHUB_OUTPUT"
+
       - name: Install pnpm
         uses: pnpm/action-setup@v6
         with:
-          version: 12
+          version: ${{ steps.pnpm-version.outputs.version }}
 
       - name: Get pnpm store directory
         shell: bash
@@ -86,10 +92,16 @@ jobs:
         with:
           node-version: "24.x"
 
+      # The pnpm version is pinned in the root package.json (devDependencies) so that
+      # Dependabot keeps it up to date; pnpm/action-setup itself cannot read it from there.
+      - name: Read pnpm version from package.json
+        id: pnpm-version
+        run: echo "version=$(node -p "require('./package.json').devDependencies.pnpm")" >> "$GITHUB_OUTPUT"
+
       - name: Install pnpm
         uses: pnpm/action-setup@v6
         with:
-          version: 12
+          version: ${{ steps.pnpm-version.outputs.version }}
 
       - run: |
           pnpm install --no-frozen-lockfile
@@ -134,10 +146,16 @@ jobs:
           registry-url: "https://registry.npmjs.org"
           # Defaults to the user or organization that owns the workflow file
           scope: "@octocat"
+      # The pnpm version is pinned in the root package.json (devDependencies) so that
+      # Dependabot keeps it up to date; pnpm/action-setup itself cannot read it from there.
+      - name: Read pnpm version from package.json
+        id: pnpm-version
+        run: echo "version=$(node -p "require('./package.json').devDependencies.pnpm")" >> "$GITHUB_OUTPUT"
+
       - name: Install pnpm
         uses: pnpm/action-setup@v6
         with:
-          version: 12
+          version: ${{ steps.pnpm-version.outputs.version }}
 
       - run: |
           pnpm install --no-frozen-lockfile
@@ -145,29 +163,3 @@ jobs:
           bash scripts/publish.sh
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-  # Merge Dependabot's minor/patch updates automatically once the test job has passed.
-  # Major updates are left for manual review, which mirrors the former Renovate policy.
-  # A plain squash merge is used instead of GitHub's auto-merge feature because the
-  # latter only waits for CI when the target branch has required status checks.
-  dependabot-auto-merge:
-    needs: test
-    if: github.event_name == 'pull_request' && github.event.pull_request.user.login == 'dependabot[bot]'
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      pull-requests: write
-    steps:
-      - name: Fetch Dependabot metadata
-        id: metadata
-        uses: dependabot/fetch-metadata@v3
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Squash-merge minor and patch updates
-        if: steps.metadata.outputs.update-type == 'version-update:semver-minor' || steps.metadata.outputs.update-type == 'version-update:semver-patch'
-        # --repo makes gh skip local branch handling, so --delete-branch only removes the remote branch.
-        run: gh pr merge --squash --delete-branch --repo "$GITHUB_REPOSITORY" "$PR_URL"
-        env:
-          PR_URL: ${{ github.event.pull_request.html_url }}
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
