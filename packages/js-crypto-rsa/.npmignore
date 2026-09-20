@@ -21,5 +21,4 @@ tsconfig.json
 .circleci/
 coverage/
 .nyc_output
-renovate.json
 *.map

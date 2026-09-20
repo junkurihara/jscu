@@ -18,5 +18,4 @@ webpack.dev.js
 .circleci/
 coverage/
 .nyc_output
-renovate.json
 *.map
