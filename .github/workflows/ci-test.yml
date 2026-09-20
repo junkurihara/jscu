@@ -24,7 +24,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [24.x, 25.x]
+        node-version: [24.x, 26.x]
 
     steps:
       - uses: actions/checkout@v7
@@ -34,10 +34,16 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
+      # The pnpm version is pinned in the root package.json (devDependencies) so that
+      # Dependabot keeps it up to date; pnpm/action-setup itself cannot read it from there.
+      - name: Read pnpm version from package.json
+        id: pnpm-version
+        run: echo "version=$(node -p "require('./package.json').devDependencies.pnpm")" >> "$GITHUB_OUTPUT"
+
       - name: Install pnpm
         uses: pnpm/action-setup@v6
         with:
-          version: 12
+          version: ${{ steps.pnpm-version.outputs.version }}
 
       - name: Get pnpm store directory
         shell: bash
@@ -86,10 +92,16 @@ jobs:
         with:
           node-version: "24.x"
 
+      # The pnpm version is pinned in the root package.json (devDependencies) so that
+      # Dependabot keeps it up to date; pnpm/action-setup itself cannot read it from there.
+      - name: Read pnpm version from package.json
+        id: pnpm-version
+        run: echo "version=$(node -p "require('./package.json').devDependencies.pnpm")" >> "$GITHUB_OUTPUT"
+
       - name: Install pnpm
         uses: pnpm/action-setup@v6
         with:
-          version: 12
+          version: ${{ steps.pnpm-version.outputs.version }}
 
       - run: |
           pnpm install --no-frozen-lockfile
@@ -134,10 +146,16 @@ jobs:
           registry-url: "https://registry.npmjs.org"
           # Defaults to the user or organization that owns the workflow file
           scope: "@octocat"
+      # The pnpm version is pinned in the root package.json (devDependencies) so that
+      # Dependabot keeps it up to date; pnpm/action-setup itself cannot read it from there.
+      - name: Read pnpm version from package.json
+        id: pnpm-version
+        run: echo "version=$(node -p "require('./package.json').devDependencies.pnpm")" >> "$GITHUB_OUTPUT"
+
       - name: Install pnpm
         uses: pnpm/action-setup@v6
         with:
-          version: 12
+          version: ${{ steps.pnpm-version.outputs.version }}
 
       - run: |
           pnpm install --no-frozen-lockfile

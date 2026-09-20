@@ -1,0 +1,64 @@
+# Dependabot version updates. This replaces the former Renovate setup (renovate.json).
+# Reference: https://docs.github.com/code-security/dependabot/working-with-dependabot/dependabot-options-reference
+version: 2
+updates:
+  # npm dependencies of the pnpm workspace. Dependabot discovers every workspace
+  # package from the root package.json ("workspaces") and pnpm-workspace.yaml, so a
+  # single entry for the repository root covers packages/* as well.
+  - package-ecosystem: "npm"
+    directory: "/"
+    # Renovate ran outside business hours in Asia/Tokyo; check once a day at night.
+    schedule:
+      interval: "daily"
+      time: "22:00"
+      timezone: "Asia/Tokyo"
+    open-pull-requests-limit: 10
+    # Keep the existing requirement style (exact pins stay pinned, ranges stay ranges)
+    # and only bump a requirement when the new version is outside of it. This keeps
+    # workspace-internal references such as "^1.0.7" untouched.
+    versioning-strategy: "increase-if-necessary"
+    labels:
+      - "update-dependencies"
+    assignees:
+      - "junkurihara"
+    # Same convention as Renovate's semantic prefixes:
+    # "fix(deps): ..." for dependencies, "chore(deps-dev): ..." for devDependencies.
+    commit-message:
+      prefix: "fix"
+      prefix-development: "chore"
+      include: "scope"
+    # Group monorepo packages into a single pull request (Renovate's group:monorepos).
+    groups:
+      typescript-eslint:
+        patterns:
+          - "@typescript-eslint/*"
+      vitest:
+        patterns:
+          - "vitest"
+          - "@vitest/*"
+      jest:
+        patterns:
+          - "jest"
+          - "@jest/*"
+      playwright:
+        patterns:
+          - "playwright"
+          - "@playwright/*"
+    ignore:
+      # Pinned via "resolutions"/"overrides" in the root package.json on purpose.
+      - dependency-name: "colors"
+
+  # GitHub Actions used in .github/workflows.
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "daily"
+      time: "22:00"
+      timezone: "Asia/Tokyo"
+    labels:
+      - "update-dependencies"
+    assignees:
+      - "junkurihara"
+    commit-message:
+      prefix: "chore"
+      include: "scope"

@@ -1,6 +1,8 @@
 packages:
   - 'packages/*'
 allowBuilds:
+  '@parcel/watcher': false
   core-js: true
   nx: true
+  pnpm: true
   unrs-resolver: true
