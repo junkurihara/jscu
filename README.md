@@ -3,8 +3,6 @@
 --
 
 ![Unit Test](https://github.com/junkurihara/jscu/actions/workflows/ci-test.yml/badge.svg)
-[![codecov](https://codecov.io/gh/junkurihara/jscu/branch/develop/graph/badge.svg)](https://codecov.io/gh/junkurihara/jscu)
-[![Maintainability](https://api.codeclimate.com/v1/badges/3e20cff0e8e062363a13/maintainability.svg)](https://codeclimate.com/github/junkurihara/jscu/maintainability)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 > **WARNING**: At this time this solution should be considered suitable for research and experimentation, further code and security review is needed before utilization in a production application.

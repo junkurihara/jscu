@@ -70,18 +70,6 @@ jobs:
       - name: Test with Vitest (Node.js and Browser)
         run: pnpm test:all
 
-      - name: Install lcov and merge Vitest coverage info
-        run: |
-          sudo apt update
-          sudo apt install lcov
-          mkdir -p ./coverage
-          find ./packages -name lcov.info -exec echo -a {} \; | xargs lcov -o ./coverage/merged-lcov.info
-
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v7
-        with:
-          files: ./coverage/merged-lcov.info
-
   webpage:
     needs: test
     if: ${{ (github.ref_name == 'master') }}
