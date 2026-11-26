@@ -5,10 +5,9 @@ NPMDIRS=`find ./packages -maxdepth 2 -type f -name "package.json" | sed "s/\(\.\
 for DIR in ${NPMDIRS}; do
   echo -e "\n-- ${DIR} --"
   pushd $DIR
-  ../../node_modules/.bin/can-npm-publish --vorbose
+  ../../node_modules/.bin/can-npm-publish --verbose
   if [[ $? = 0 ]]; then
-    echo "Authenticate with registry"
-    echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > .npmrc
+    # Authentication is done by npm Trusted Publishing (OIDC) in GitHub Actions.
     echo "Publish updated package"
     npm publish
   else

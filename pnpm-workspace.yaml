@@ -1,5 +1,9 @@
 packages:
   - 'packages/*'
+# Always link workspace packages that satisfy the declared ranges. With the default (false),
+# pnpm prefers the published registry copies, so tests would run against old releases instead
+# of the local sources until a version bump makes the registry lookup fail.
+linkWorkspacePackages: true
 allowBuilds:
   '@parcel/watcher': false
   core-js: true

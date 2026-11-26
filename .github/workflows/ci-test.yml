@@ -125,6 +125,11 @@ jobs:
     needs: test
     if: startsWith(github.event.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
+    # npm Trusted Publishing (OIDC): each package must register this workflow (ci-test.yml)
+    # as a trusted publisher on npmjs.com. Requires npm >= 11.5.1, bundled with Node.js 24.x.
+    permissions:
+      id-token: write
+      contents: read
     steps:
       - uses: actions/checkout@v7
       # Setup .npmrc file to publish to npm
@@ -149,5 +154,3 @@ jobs:
           pnpm install --no-frozen-lockfile
           pnpm build
           bash scripts/publish.sh
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
