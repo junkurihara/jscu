@@ -31,11 +31,11 @@
     "webcrypto"
   ],
   "dependencies": {
-    "buffer": "~6.0.0",
+    "buffer": "~6.0.3",
     "hash.js": "~1.1.7",
     "js-crypto-env": "^1.0.5",
     "md5": "~2.3.0",
-    "sha3": "~2.1.0"
+    "sha3": "~2.1.4"
   },
   "devDependencies": {
     "js-encoding-utils": "0.7.3"

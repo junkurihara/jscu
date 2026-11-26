@@ -35,7 +35,7 @@
     "rfc3447"
   ],
   "dependencies": {
-    "bn.js": "~5.2.2",
+    "bn.js": "~5.2.5",
     "buffer": "~6.0.3",
     "js-crypto-env": "^1.0.5",
     "js-crypto-hash": "^1.0.7",
