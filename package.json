@@ -2,7 +2,7 @@
   "name": "jscu",
   "private": true,
   "license": "MIT",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "root_package": "packages/js-crypto-utils",
   "workspaces": [
     "packages/*"
@@ -47,7 +47,6 @@
     "playwright": "1.65.1",
     "pnpm": "12.23.0",
     "ts-jest": "29.4.15",
-    "ts-loader": "9.6.2",
     "typescript": "7.0.2",
     "vitest": "5.1.2",
     "webpack": "5.113.0",

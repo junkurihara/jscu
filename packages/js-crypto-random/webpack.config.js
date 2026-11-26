@@ -3,7 +3,9 @@ const webpack = require('webpack');
 const base = require('./webpack.config.base');
 
 const config = {
-  entry: ['./src/index.ts'],
+  // Bundle the tsc output of `pnpm babel` instead of the TS sources: ts-loader cannot run on
+  // TypeScript 7, whose `typescript` package no longer exposes the compiler API.
+  entry: ['./dist/index.js'],
 
   output: {
     filename: `${base.libName}.bundle.js`,
@@ -15,23 +17,8 @@ const config = {
     globalObject: 'this' // for node js import
   },
   resolve: {
-    extensions: ['.ts', '.tsx', '.js', '.jsx' ],
+    extensions: ['.js', '.jsx' ],
     modules: ['node_modules']
-  },
-  module: {
-    rules: [
-      {
-        test: /\.ts$/,
-        use: {
-          loader: 'ts-loader',
-          options: {
-            transpileOnly: true,
-            configFile: 'webpack.tsconfig.json', // for tree shaking https://mizchi.dev/202006101314-switch-tsconfig-on-webpack
-          },
-        },
-        exclude: path.join(__dirname, 'node_modules') // exclude: /node_modules/
-      },
-    ],
   },
   externals: {
     crypto: true
